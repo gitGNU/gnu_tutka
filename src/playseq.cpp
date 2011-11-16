@@ -93,15 +93,12 @@ Playseq *Playseq::parse(QDomElement element)
                 }
 
                 // Get block number
-                QDomElement temp = cur.firstChild().toElement();
-                if (!temp.isNull()) {
-                    block = temp.text().toInt();
-                }
+                block = cur.text().toInt();
 
-                while (playseq->blockNumbers.count() < number - 1) {
+                while (playseq->blockNumbers.count() < number) {
                     playseq->blockNumbers.append(0);
                 }
-                if (playseq->blockNumbers.count() < number) {
+                if (playseq->blockNumbers.count() == number) {
                     playseq->blockNumbers.append(block);
                 } else {
                     playseq->blockNumbers.replace(number, block);

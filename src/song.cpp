@@ -342,10 +342,10 @@ Song *Song::parse(QDomElement element)
                                 number = prop.value().toInt();
                             }
 
-                            while (song->blocks.count() < number - 1) {
+                            while (song->blocks.count() < number) {
                                 song->blocks.append(Block());
                             }
-                            if (song->blocks.count() < number) {
+                            if (song->blocks.count() == number) {
                                 song->blocks.append(*block);
                             } else {
                                 song->blocks.replace(number, *block);
@@ -373,10 +373,10 @@ Song *Song::parse(QDomElement element)
                             // Get playing sequence
                             QDomElement temp2 = temp.firstChild().toElement();
                             if (!temp2.isNull()) {
-                                while (song->sections.count() < number - 1) {
+                                while (song->sections.count() < number) {
                                     song->sections.append(0);
                                 }
-                                if (song->sections.count() < number) {
+                                if (song->sections.count() == number) {
                                     song->sections.append(temp2.text().toInt());
                                 } else {
                                     song->sections.replace(number, temp2.text().toInt());
@@ -404,10 +404,10 @@ Song *Song::parse(QDomElement element)
                                 number = prop.value().toInt();
                             }
 
-                            while (song->playseqs.count() < number - 1) {
+                            while (song->playseqs.count() < number) {
                                 song->playseqs.append(Playseq());
                             }
-                            if (song->playseqs.count() < number) {
+                            if (song->playseqs.count() == number) {
                                 song->playseqs.append(*playseq);
                             } else {
                                 song->playseqs.replace(number, *playseq);
@@ -432,10 +432,10 @@ Song *Song::parse(QDomElement element)
                                 number = prop.value().toInt();
                             }
 
-                            while (song->instruments.count() < number - 1) {
+                            while (song->instruments.count() < number) {
                                 song->instruments.append(Instrument());
                             }
-                            if (song->instruments.count() < number) {
+                            if (song->instruments.count() == number) {
                                 song->instruments.append(*instrument);
                             } else {
                                 song->instruments.replace(number, *instrument);
@@ -460,7 +460,7 @@ Song *Song::parse(QDomElement element)
                                 track = prop.value().toInt();
                             }
 
-                            while (song->tracks.length() < track) {
+                            while (song->tracks.count() <= track) {
                                 song->tracks.append(Track());
                             }
 
@@ -538,10 +538,10 @@ Song *Song::parse(QDomElement element)
                                 number = prop.value().toInt();
                             }
 
-                            while (song->messages.count() < number - 1) {
+                            while (song->messages.count() < number) {
                                 song->messages.append(Message());
                             }
-                            if (song->messages.count() < number) {
+                            if (song->messages.count() == number) {
                                 song->messages.append(*message);
                             } else {
                                 song->messages.replace(number, *message);
