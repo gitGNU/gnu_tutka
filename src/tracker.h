@@ -30,6 +30,9 @@ public:
     explicit Tracker(QWidget *parent = 0);
     void setSong(Song *song);
     void setPattern(Block *pattern);
+    void setNumChannels(int n);
+    void setCmdpage(int cmdpage);
+    void setPatpos(int row);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);

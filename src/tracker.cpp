@@ -13,7 +13,7 @@ Tracker::Tracker(QWidget *parent) :
     disp_startx(0),
     disp_chanwidth(0),
     disp_cursor(0),
-    fontdesc("Monospace 9"),
+    fontdesc("Monospace", 9),
     fontw(0),
     fonth(0),
     fontc(0),
@@ -123,7 +123,7 @@ void Tracker::calculateFontSize()
     QFontMetrics metrics(fontdesc);
     fontw = metrics.width('X');
     fonth = metrics.height();
-    fontc = metrics.height() / 2;
+    fontc = metrics.ascent();
 }
 
 void Tracker::note2string(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf)
@@ -167,15 +167,11 @@ void Tracker::note2string(unsigned char note, unsigned char instrument, unsigned
 
 void Tracker::clearNotesLine(int y, int pattern_row)
 {
-    QBrush gc = bg_gc;
-
     // cursor line
-    if (pattern_row == patpos) {
-        gc = bg_cursor_gc;
-    }
+    QBrush gc = pattern_row == patpos ? bg_cursor_gc : bg_gc;
 
     QPainter painter(pixmap);
-    painter.fillRect(0, y, geometry().width(), fonth, bg_gc);
+    painter.fillRect(0, y, geometry().width(), fonth, gc);
 }
 
 void Tracker::printNotesLine(int y, int ch, int numch, int row, int cursor)
@@ -203,13 +199,14 @@ void Tracker::printNotesLine(int y, int ch, int numch, int row, int cursor)
     }
 
     QPainter painter(pixmap);
-    painter.setBrush(notes_gc);
+    y += fontc;
 
     // The row number
     sprintf(buf, "%03d", row);
-    if (cursor) {
-        painter.drawText(1, y, buf);
-    }
+    painter.setPen(notes_gc.color());
+    painter.setBackground(cursor ? bg_cursor_gc : bg_gc);
+    painter.setFont(fontdesc);
+    painter.drawText(1, y, buf);
 
     // The notes
     int j = 0;
@@ -218,10 +215,13 @@ void Tracker::printNotesLine(int y, int ch, int numch, int row, int cursor)
         note2string(curpattern->note(row, ch), curpattern->instrument(row, ch), curpattern->command(row, ch, cmdpage), curpattern->commandValue(row, ch, cmdpage), buf);
 
         if (cursor) {
+            painter.setBackground(bg_cursor_gc);
             painter.drawText(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, y, buf);
         } else if (row >= rbs && row <= rbe && ch >= cbs && ch <= cbe) {
+            painter.setBackground(misc_gc);
             painter.drawText(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, y, buf);
         } else {
+            painter.setBackground(notes_gc);
             painter.drawText(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, y, buf);
         }
     }
@@ -262,9 +262,8 @@ void Tracker::printNotes(int x, int y, int w, int h, int cursor_row, bool enable
 void Tracker::printBars()
 {
     // Draw the separation bars
-    misc_gc = colors[TRACKERCOL_BARS];
     QPainter painter(pixmap);
-    painter.setBrush(misc_gc);
+    painter.setPen(colors[TRACKERCOL_BARS]);
     int x1 = disp_startx - 3;
     for (int i = 0; i <= disp_numchans; i++, x1 += disp_chanwidth) {
         painter.drawLine(x1, 0, x1, geometry().height() - 1);
@@ -285,19 +284,21 @@ void Tracker::printChannelHeaders()
         for (int i = 1; i <= disp_numchans; i++, x += disp_chanwidth) {
             QString name = song->track(i + leftchan - 1)->name;
             QString buf = QString("%1: %2").arg(i + leftchan).arg(name);
+            QColor color;
 
             if (song->track(i + leftchan - 1)->mute && !song->track(i + leftchan - 1)->solo) {
-                misc_gc = colors[TRACKERCOL_CHANNEL_HEADER_MUTE];
+                color = colors[TRACKERCOL_CHANNEL_HEADER_MUTE];
             } else if (!song->track(i + leftchan - 1)->mute && song->track(i + leftchan - 1)->solo) {
-                misc_gc = colors[TRACKERCOL_CHANNEL_HEADER_SOLO];
+                color = colors[TRACKERCOL_CHANNEL_HEADER_SOLO];
             } else if (song->track(i + leftchan - 1)->mute && song->track(i + leftchan - 1)->solo) {
-                misc_gc = colors[TRACKERCOL_CHANNEL_HEADER_MUTE_SOLO];
+                color = colors[TRACKERCOL_CHANNEL_HEADER_MUTE_SOLO];
             } else {
-                misc_gc = colors[TRACKERCOL_CHANNEL_HEADER];
+                color = colors[TRACKERCOL_CHANNEL_HEADER];
             }
 
-            painter.setBrush(misc_gc);
-            painter.drawText(x + 2, 0, buf);
+            painter.setPen(color);
+            painter.setFont(fontdesc);
+            painter.drawText(x + 2, fontc, buf);
         }
     }
 }
@@ -344,9 +345,8 @@ void Tracker::printCursor()
 
     x = x * fontw + disp_startx + (cursor_ch - leftchan) * disp_chanwidth - 1;
 
-    misc_gc = colors[TRACKERCOL_CURSOR];
     QPainter painter(pixmap);
-    painter.setBrush(misc_gc);
+    painter.setPen(colors[TRACKERCOL_CURSOR]);
     painter.drawRect(x, y, width * fontw, fonth - 1);
 }
 
@@ -418,6 +418,49 @@ void Tracker::resizeEvent(QResizeEvent *event)
 
     initDisplay(geometry().width(), geometry().height());
     drawStupid(QRect(QPoint(), geometry().size()));
+}
+
+void Tracker::setNumChannels(int n)
+{
+    if (num_channels != n) {
+        num_channels = n;
+
+        // Make sure the cursor is inside the tracker
+        if (cursor_ch >= num_channels) {
+            cursor_ch = num_channels - 1;
+        }
+
+        initDisplay(geometry().width(), geometry().height());
+        update();
+
+        //g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, t->leftchan, t->num_channels, t->disp_numchans);
+    }
+}
+
+void Tracker::setCmdpage(int cmdpage)
+{
+    if (this->cmdpage != cmdpage) {
+        this->cmdpage = cmdpage;
+
+        update();
+    }
+}
+
+void Tracker::setPatpos(int row)
+{
+    if (!((curpattern == NULL && row == 0) || (row < curpattern->length()))) {
+        return;
+    }
+
+    if (patpos != row) {
+        patpos = row;
+//        g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, row, curpattern->length, disp_rows);
+
+        if (inSelMode) {
+            // Force re-draw of patterns in block selection mode
+            update();
+        }
+    }
 }
 
 void Tracker::setSong(Song *song)

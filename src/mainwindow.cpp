@@ -28,10 +28,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    Song *song = new Song;
+    Song *song = Song::load("/home/vesuri/MIDI/Tutka/Live/annamulletahtitaivas.xml");
     ui->setupUi(this);
     ui->trackerMain->setSong(song);
     ui->trackerMain->setPattern(song->block(0));
+    ui->trackerMain->setNumChannels(song->block(0)->tracks());
 }
 
 MainWindow::~MainWindow()
