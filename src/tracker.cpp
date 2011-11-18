@@ -51,79 +51,239 @@ Tracker::Tracker(QWidget *parent) :
 
 //    gdk_window_set_user_data(widgewindow, widget);
 //    gdk_window_set_background(widgewindow, &colors[TRACKERCOL_BG]);
-
-//    tracker_fonts_render(widget);
 }
 
-void Tracker::paintEvent(QPaintEvent *event)
+void Tracker::setNumChannels(int n)
 {
-    drawClever(event->rect());
-}
+    if (num_channels != n) {
+        num_channels = n;
 
-void Tracker::initColors()
-{
-    static const int default_colors[] = {
-      10, 20, 30,
-      100, 100, 100,
-      50, 60, 70,
-      230, 230, 230,
-      170, 170, 200,
-      230, 200, 0,
-      115, 100, 0,
-      255, 230, 200,
-      172, 150, 0,
-      250, 100, 50
-    };
+        // Make sure the cursor is inside the tracker
+        if (cursor_ch >= num_channels) {
+            cursor_ch = num_channels - 1;
+        }
 
-    const int *p = default_colors;
-    QColor *c = colors;
+        initDisplay(geometry().width(), geometry().height());
+        update();
 
-    for (int n = 0; n < TRACKERCOL_LAST; n++, c++) {
-        c->setRed(*p++);
-        c->setGreen(*p++);
-        c->setBlue(*p++);
+        //g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, t->leftchan, t->num_channels, t->disp_numchans);
     }
 }
 
-void Tracker::initDisplay(int width, int height)
+void Tracker::setCmdpage(int cmdpage)
 {
-    int line_numbers_space = 3 * fontw;
+    if (this->cmdpage != cmdpage) {
+        this->cmdpage = cmdpage;
 
-    height -= fonth;
-    disp_rows = height / fonth;
-    if (!(disp_rows % 2)) {
-        disp_rows--;
+        update();
     }
-    disp_cursor = disp_rows / 2;
-    disp_starty = (height - fonth * disp_rows) / 2 + fonth;
-
-    disp_chanwidth = TRACKER_CHANNEL_WIDTH * fontw;
-    int u = width - line_numbers_space - 10;
-    disp_numchans = u / disp_chanwidth;
-
-    if (disp_numchans > num_channels) {
-        disp_numchans = num_channels;
-    }
-
-    disp_startx = (u - disp_numchans * disp_chanwidth) / 2 + line_numbers_space + 5;
-//    adjust_xpanning(t);
-
-    if (curpattern) {
-//        g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, patpos, curpattern->length, disp_rows);
-//        g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, leftchan, num_channels, disp_numchans);
-    }
-
-    delete pixmap;
-    pixmap = new QPixmap(geometry().width(), geometry().height());
-    pixmap->fill(Qt::transparent);
 }
 
-void Tracker::calculateFontSize()
+void Tracker::setPatpos(int row)
 {
-    QFontMetrics metrics(fontdesc);
-    fontw = metrics.width('X');
-    fonth = metrics.height();
-    fontc = metrics.ascent();
+    if (!((curpattern == NULL && row == 0) || (row < curpattern->length()))) {
+        return;
+    }
+
+    if (patpos != row) {
+        patpos = row;
+//        g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, row, curpattern->length, disp_rows);
+
+        if (inSelMode) {
+            // Force re-draw of patterns in block selection mode
+            update();
+        }
+    }
+}
+
+void Tracker::redraw()
+{
+    update();
+}
+
+void Tracker::redrawRow(int)
+{
+    // This is yet to be optimized :-)
+    redraw();
+}
+
+void Tracker::redrawCurrentRow()
+{
+    redrawRow(patpos);
+}
+
+void Tracker::setSong(Song *song)
+{
+    this->song = song;
+}
+
+void Tracker::setPattern(Block *pattern)
+{
+    if (curpattern != pattern) {
+        curpattern = pattern;
+        if (pattern != NULL) {
+            // Make sure the cursor is inside the tracker
+            if (patpos >= pattern->length()) {
+                patpos = pattern->length() - 1;
+            }
+
+            if (cursor_ch >= pattern->tracks()) {
+                cursor_ch = pattern->tracks() - 1;
+            }
+
+//            g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, patpos, pattern->length, disp_rows);
+        }
+        update();
+    }
+}
+
+void Tracker::setXpanning(int left_channel)
+{
+    if (leftchan != left_channel) {
+        if (!(left_channel + disp_numchans <= num_channels)) {
+            return;
+        }
+
+        leftchan = left_channel;
+        update();
+
+        if (cursor_ch < leftchan) {
+            cursor_ch = leftchan;
+        } else if (cursor_ch >= leftchan + disp_numchans) {
+            cursor_ch = leftchan + disp_numchans - 1;
+        }
+
+        //g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, leftchan, num_channels, disp_numchans);
+    }
+}
+
+void Tracker::adjustXpanning()
+{
+    if (leftchan + disp_numchans > num_channels) {
+        setXpanning(num_channels - disp_numchans);
+    } else if (cursor_ch < leftchan) {
+        setXpanning(cursor_ch);
+    } else if (cursor_ch >= leftchan + disp_numchans) {
+        setXpanning(cursor_ch - disp_numchans + 1);
+    }
+}
+
+void Tracker::stepCursorItem(int direction)
+{
+    if (!(direction == -1 || direction == 1)) {
+        return;
+    }
+
+    cursor_item += direction;
+    if (cursor_item > 6) {
+        cursor_item %= 7;
+        stepCursorChannel(direction);
+    } else if (cursor_item < 0) {
+        cursor_item += 7;
+        stepCursorChannel(direction);
+    } else {
+        adjustXpanning();
+        update();
+    }
+}
+
+void Tracker::stepCursorChannel(int direction)
+{
+    cursor_ch += direction;
+
+    if (cursor_ch < 0) {
+        cursor_ch = num_channels - 1;
+    } else if (cursor_ch >= num_channels) {
+        cursor_ch = 0;
+    }
+
+    adjustXpanning();
+
+    if (inSelMode) {
+        // Force re-draw of patterns in block selection mode
+        update();
+    }
+}
+
+void Tracker::stepCursorRow(int direction)
+{
+    int newpos = patpos + direction;
+
+    while (newpos < 0) {
+        newpos += curpattern->length();
+    }
+    newpos %= curpattern->length();
+
+    setPatpos(newpos);
+}
+
+void Tracker::markSelection(bool enable)
+{
+    if (!enable) {
+        sel_end_ch = cursor_ch;
+        sel_end_row = patpos;
+        inSelMode = false;
+    } else {
+        sel_start_ch = sel_end_ch = cursor_ch;
+        sel_start_row = sel_end_row = patpos;
+        inSelMode = true;
+        redraw();
+    }
+}
+
+void Tracker::clearMarkSelection()
+{
+    if (sel_start_ch != -1) {
+        sel_start_ch = sel_end_ch = -1;
+        sel_start_row = sel_end_row = -1;
+        inSelMode = false;
+        redraw();
+    }
+}
+
+bool Tracker::isInSelectionMode()
+{
+    return inSelMode;
+}
+
+void Tracker::getSelectionRect(int *chStart, int *rowStart, int *nChannel, int *nRows)
+{
+    if (!inSelMode) {
+        if (sel_start_ch <= sel_end_ch) {
+            *nChannel = sel_end_ch - sel_start_ch + 1;
+            *chStart = sel_start_ch;
+        } else {
+            *nChannel = sel_start_ch - sel_end_ch + 1;
+            *chStart = sel_end_ch;
+        }
+        if (sel_start_row <= sel_end_row) {
+            *nRows = sel_end_row - sel_start_row + 1;
+            *rowStart = sel_start_row;
+        } else {
+            *nRows = sel_start_row - sel_end_row + 1;
+            *rowStart = sel_end_row;
+        }
+    } else {
+        if (sel_start_ch <= cursor_ch) {
+            *nChannel = cursor_ch - sel_start_ch + 1;
+            *chStart = sel_start_ch;
+        } else {
+            *nChannel = sel_start_ch - cursor_ch + 1;
+            *chStart = cursor_ch;
+        }
+        if (sel_start_row <= patpos) {
+            *nRows = patpos - sel_start_row + 1;
+            *rowStart = sel_start_row;
+        } else {
+            *nRows = sel_start_row - patpos + 1;
+            *rowStart = patpos;
+        }
+    }
+}
+
+bool Tracker::isValidSelection()
+{
+    return (sel_start_ch >= 0 && sel_start_ch < curpattern->tracks() && sel_end_ch >= 0 && sel_end_ch < curpattern->tracks() && sel_start_row >= 0 && sel_start_row < curpattern->length() && sel_end_row >= 0 && sel_end_row < curpattern->length());
 }
 
 void Tracker::note2string(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf)
@@ -164,6 +324,7 @@ void Tracker::note2string(unsigned char note, unsigned char instrument, unsigned
     buf[12] = ' ';
     buf[13] = 0;
 }
+
 
 void Tracker::clearNotesLine(int y, int pattern_row)
 {
@@ -405,6 +566,241 @@ void Tracker::drawStupid(const QRect &area)
     update(area);
 }
 
+void Tracker::initDisplay(int width, int height)
+{
+    int line_numbers_space = 3 * fontw;
+
+    height -= fonth;
+    disp_rows = height / fonth;
+    if (!(disp_rows % 2)) {
+        disp_rows--;
+    }
+    disp_cursor = disp_rows / 2;
+    disp_starty = (height - fonth * disp_rows) / 2 + fonth;
+
+    disp_chanwidth = TRACKER_CHANNEL_WIDTH * fontw;
+    int u = width - line_numbers_space - 10;
+    disp_numchans = u / disp_chanwidth;
+
+    if (disp_numchans > num_channels) {
+        disp_numchans = num_channels;
+    }
+
+    disp_startx = (u - disp_numchans * disp_chanwidth) / 2 + line_numbers_space + 5;
+//    adjust_xpanning(t);
+
+    if (curpattern) {
+//        g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, patpos, curpattern->length, disp_rows);
+//        g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, leftchan, num_channels, disp_numchans);
+    }
+
+    delete pixmap;
+    pixmap = new QPixmap(geometry().width(), geometry().height());
+    pixmap->fill(Qt::transparent);
+}
+
+void Tracker::reset()
+{
+    patpos = 0;
+    cursor_ch = 0;
+    cursor_item = 0;
+    leftchan = 0;
+    curpattern = NULL;
+    initDisplay(geometry().width(), geometry().height());
+    adjustXpanning();
+    update();
+}
+
+void Tracker::initColors()
+{
+    static const int default_colors[] = {
+      10, 20, 30,
+      100, 100, 100,
+      50, 60, 70,
+      230, 230, 230,
+      170, 170, 200,
+      230, 200, 0,
+      115, 100, 0,
+      255, 230, 200,
+      172, 150, 0,
+      250, 100, 50
+    };
+
+    const int *p = default_colors;
+    QColor *c = colors;
+
+    for (int n = 0; n < TRACKERCOL_LAST; n++, c++) {
+        c->setRed(*p++);
+        c->setGreen(*p++);
+        c->setBlue(*p++);
+    }
+}
+
+void Tracker::calculateFontSize()
+{
+    QFontMetrics metrics(fontdesc);
+    fontw = metrics.width('X');
+    fonth = metrics.height();
+    fontc = metrics.ascent();
+}
+
+bool Tracker::setFont(const QString &fontname)
+{
+    fontdesc.setFamily(fontname);
+
+    calculateFontSize();
+    reset();
+
+    return true;
+}
+
+void Tracker::mouseToCursorPos(int x, int y, int *cursor_ch, int *cursor_item, int *patpos)
+{
+    int HPatHalf;
+
+    // Calc the column (channel and pos in channel)
+    if (x < disp_startx) {
+        if (leftchan) {
+            *cursor_ch = leftchan - 1;
+        } else {
+            *cursor_ch = leftchan;
+        }
+        *cursor_item = 0;
+    } else if (x > disp_startx + disp_numchans * disp_chanwidth) {
+        if (leftchan + disp_numchans < num_channels) {
+            *cursor_ch = leftchan + disp_numchans;
+            *cursor_item = 0;
+        } else {
+            *cursor_ch = num_channels - 1;
+            *cursor_item = 6;
+        }
+    } else {
+        /* WTF */
+        *cursor_ch = leftchan + ((x - disp_startx) / disp_chanwidth);
+        *cursor_item = (x - (disp_startx + (*cursor_ch - leftchan) * disp_chanwidth)) / fontw;
+        if (*cursor_item < 4) {
+            *cursor_item = 0;
+        } else if (*cursor_item == 4) {
+            *cursor_item = 1;
+        } else if (*cursor_item == 5 || *cursor_item == 6) {
+            *cursor_item = 2;
+        } else if (*cursor_item == 7) {
+            *cursor_item = 3;
+        } else if (*cursor_item == 8 || *cursor_item == 9) {
+            *cursor_item = 4;
+        } else if (*cursor_item == 10) {
+            *cursor_item = 5;
+        } else if (*cursor_item >= 11) {
+            *cursor_item = 6;
+        }
+    }
+
+    // Calc the row
+    HPatHalf = disp_rows / 2;
+    if (y < disp_starty) {
+        *patpos = this->patpos - HPatHalf - 1;
+    } else if (y > disp_rows * fonth) {
+        *patpos = this->patpos + HPatHalf + 1;
+    } else {
+        *patpos = (y - disp_starty) / fonth;
+        if (this->patpos <= *patpos) {
+            *patpos = this->patpos + *patpos - HPatHalf;
+        } else {
+            *patpos = this->patpos - (HPatHalf - *patpos);
+        }
+    }
+    if (*patpos < 0) {
+        *patpos = 0;
+    } else if (*patpos >= curpattern->length()) {
+        *patpos = curpattern->length() - 1;
+    }
+}
+
+void Tracker::mousePressEvent(QMouseEvent *event)
+{
+    int x, y, cursor_ch, cursor_item, patpos;
+
+    x = event->x();
+    y = event->y();
+
+    if (mouse_selecting && event->button() != Qt::LeftButton) {
+        mouse_selecting = 0;
+    } else if (!mouse_selecting) {
+        button = event->button();
+        if (button == Qt::LeftButton) {
+            // Start selecting block
+            //g_signal_emit(GTK_OBJECT(t), tracker_signals[BLOCKMARK_SET_SIGNAL], 0, 1);
+            inSelMode = false;
+            mouseToCursorPos(x, y, &sel_start_ch, &cursor_item, &sel_start_row);
+            sel_end_row = sel_start_row;
+            sel_end_ch = sel_start_ch;
+            mouse_selecting = 1;
+            redraw();
+        } else if (button == Qt::RightButton) {
+            // Tracker cursor posititioning and clear block mark if any
+            if (inSelMode || sel_start_ch != -1) {
+                //g_signal_emit(GTK_OBJECT(t), tracker_signals[BLOCKMARK_SET_SIGNAL], 0, 0);
+                sel_start_ch = sel_end_ch = -1;
+                sel_start_row = sel_end_row = -1;
+                inSelMode = false;
+                redraw();
+            }
+            mouseToCursorPos(x, y, &cursor_ch, &cursor_item, &patpos);
+            if (cursor_ch != cursor_ch || cursor_item != cursor_item) {
+                cursor_ch = cursor_ch;
+                cursor_item = cursor_item;
+                adjustXpanning();
+            }
+            if (patpos != patpos) {
+                setPatpos(patpos);
+            }
+            update();
+        }
+    }
+}
+
+void Tracker::mouseMoveEvent(QMouseEvent *event)
+{
+    int x, y, cursor_item;
+
+    if (!mouse_selecting) {
+        return;
+    }
+
+    x = event->x();
+    y = event->y();
+
+    if (event->button() == Qt::LeftButton && mouse_selecting) {
+        mouseToCursorPos(x, y, &sel_end_ch, &cursor_item, &sel_end_row);
+
+        if (x > disp_startx + disp_numchans * disp_chanwidth && leftchan + disp_numchans < num_channels) {
+            sel_end_ch++;
+            setXpanning(leftchan + 1);
+        } else if (x < disp_startx && leftchan > 0) {
+            sel_end_ch--;
+            setXpanning(leftchan - 1);
+        }
+        if ((sel_end_row > patpos + (disp_rows / 2)) || (y > geometry().height() && patpos < sel_end_row))
+            setPatpos(patpos + 1);
+        else if ((sel_end_row < patpos - (disp_rows / 2)) || (y <= 0 && patpos > sel_end_row))
+            setPatpos(patpos - 1);
+        redraw();
+    }
+}
+
+void Tracker::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (mouse_selecting && event->button() == Qt::LeftButton) {
+        mouse_selecting = 0;
+        //g_signal_emit(GTK_OBJECT(t), tracker_signals[BLOCKMARK_SET_SIGNAL], 0, 0);
+    }
+}
+
+void Tracker::paintEvent(QPaintEvent *event)
+{
+    drawClever(event->rect());
+}
+
 void Tracker::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
@@ -418,72 +814,4 @@ void Tracker::resizeEvent(QResizeEvent *event)
 
     initDisplay(geometry().width(), geometry().height());
     drawStupid(QRect(QPoint(), geometry().size()));
-}
-
-void Tracker::setNumChannels(int n)
-{
-    if (num_channels != n) {
-        num_channels = n;
-
-        // Make sure the cursor is inside the tracker
-        if (cursor_ch >= num_channels) {
-            cursor_ch = num_channels - 1;
-        }
-
-        initDisplay(geometry().width(), geometry().height());
-        update();
-
-        //g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, t->leftchan, t->num_channels, t->disp_numchans);
-    }
-}
-
-void Tracker::setCmdpage(int cmdpage)
-{
-    if (this->cmdpage != cmdpage) {
-        this->cmdpage = cmdpage;
-
-        update();
-    }
-}
-
-void Tracker::setPatpos(int row)
-{
-    if (!((curpattern == NULL && row == 0) || (row < curpattern->length()))) {
-        return;
-    }
-
-    if (patpos != row) {
-        patpos = row;
-//        g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, row, curpattern->length, disp_rows);
-
-        if (inSelMode) {
-            // Force re-draw of patterns in block selection mode
-            update();
-        }
-    }
-}
-
-void Tracker::setSong(Song *song)
-{
-    this->song = song;
-}
-
-void Tracker::setPattern(Block *pattern)
-{
-    if (curpattern != pattern) {
-        curpattern = pattern;
-        if (pattern != NULL) {
-            // Make sure the cursor is inside the tracker
-            if (patpos >= pattern->length()) {
-                patpos = pattern->length() - 1;
-            }
-
-            if (cursor_ch >= pattern->tracks()) {
-                cursor_ch = pattern->tracks() - 1;
-            }
-
-//            g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, patpos, pattern->length, disp_rows);
-        }
-        update();
-    }
 }
