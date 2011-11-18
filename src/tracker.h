@@ -72,6 +72,7 @@ private:
     bool setFont(const QString &fontname);
     // If selecting, mouse is used to select in pattern
     void mouseToCursorPos(int x, int y, int *cursor_ch, int *cursor_item, int *patpos);
+    void queueDraw();
 
     int disp_rows;
     int disp_starty;
@@ -102,7 +103,7 @@ private:
     int sel_start_ch, sel_start_row;
     int sel_end_ch, sel_end_row;
 
-    int mouse_selecting;
+    bool mouse_selecting;
     int button;
 
 //    GdkPixmap **fonts_normal;

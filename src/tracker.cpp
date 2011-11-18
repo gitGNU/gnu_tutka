@@ -37,7 +37,7 @@ Tracker::Tracker(QWidget *parent) :
     sel_start_row(-1),
     sel_end_ch(-1),
     sel_end_row(-1),
-    mouse_selecting(0),
+    mouse_selecting(false),
     button(-1)
 {
     calculateFontSize();
@@ -64,7 +64,7 @@ void Tracker::setNumChannels(int n)
         }
 
         initDisplay(geometry().width(), geometry().height());
-        update();
+        queueDraw();
 
         //g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, t->leftchan, t->num_channels, t->disp_numchans);
     }
@@ -75,7 +75,7 @@ void Tracker::setCmdpage(int cmdpage)
     if (this->cmdpage != cmdpage) {
         this->cmdpage = cmdpage;
 
-        update();
+        queueDraw();
     }
 }
 
@@ -91,14 +91,14 @@ void Tracker::setPatpos(int row)
 
         if (inSelMode) {
             // Force re-draw of patterns in block selection mode
-            update();
+            queueDraw();
         }
     }
 }
 
 void Tracker::redraw()
 {
-    update();
+    queueDraw();
 }
 
 void Tracker::redrawRow(int)
@@ -133,7 +133,7 @@ void Tracker::setPattern(Block *pattern)
 
 //            g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, patpos, pattern->length, disp_rows);
         }
-        update();
+        queueDraw();
     }
 }
 
@@ -145,7 +145,7 @@ void Tracker::setXpanning(int left_channel)
         }
 
         leftchan = left_channel;
-        update();
+        queueDraw();
 
         if (cursor_ch < leftchan) {
             cursor_ch = leftchan;
@@ -183,7 +183,7 @@ void Tracker::stepCursorItem(int direction)
         stepCursorChannel(direction);
     } else {
         adjustXpanning();
-        update();
+        queueDraw();
     }
 }
 
@@ -201,7 +201,7 @@ void Tracker::stepCursorChannel(int direction)
 
     if (inSelMode) {
         // Force re-draw of patterns in block selection mode
-        update();
+        queueDraw();
     }
 }
 
@@ -532,15 +532,16 @@ void Tracker::drawClever(const QRect &area)
 
         // Scroll the stuff already drawn on the screen
         if (absdist < disp_rows) {
+            QPainter painter(pixmap);
             if (dist > 0) {
-                /* go down in pattern -- scroll up */
+                // go down in pattern -- scroll up
                 redrawcnt = absdist;
-//                gdk_window_copy_area(win, bg_gc, 0, y, win, 0, y + (absdist * fonth), widgeallocation.width, (disp_rows - absdist) * fonth);
+                painter.drawPixmap(0, y, *pixmap, 0, y + (absdist * fonth), geometry().width(), (disp_rows - absdist) * fonth);
                 y += (disp_rows - absdist) * fonth;
             } else if (dist < 0) {
-                /* go up in pattern -- scroll down */
+                // go up in pattern -- scroll down
                 redrawcnt = absdist;
-//                gdk_window_copy_area(win, bg_gc, 0, y + (absdist * fonth), win, 0, y, widgeallocation.width, (disp_rows - absdist) * fonth);
+                painter.drawPixmap(0, y + (absdist * fonth), *pixmap, 0, y, geometry().width(), (disp_rows - absdist) * fonth);
             }
         }
 
@@ -608,7 +609,7 @@ void Tracker::reset()
     curpattern = NULL;
     initDisplay(geometry().width(), geometry().height());
     adjustXpanning();
-    update();
+    queueDraw();
 }
 
 void Tracker::initColors()
@@ -724,7 +725,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
     y = event->y();
 
     if (mouse_selecting && event->button() != Qt::LeftButton) {
-        mouse_selecting = 0;
+        mouse_selecting = false;
     } else if (!mouse_selecting) {
         button = event->button();
         if (button == Qt::LeftButton) {
@@ -734,7 +735,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
             mouseToCursorPos(x, y, &sel_start_ch, &cursor_item, &sel_start_row);
             sel_end_row = sel_start_row;
             sel_end_ch = sel_start_ch;
-            mouse_selecting = 1;
+            mouse_selecting = true;
             redraw();
         } else if (button == Qt::RightButton) {
             // Tracker cursor posititioning and clear block mark if any
@@ -754,9 +755,11 @@ void Tracker::mousePressEvent(QMouseEvent *event)
             if (patpos != patpos) {
                 setPatpos(patpos);
             }
-            update();
+            queueDraw();
         }
     }
+
+    event->accept();
 }
 
 void Tracker::mouseMoveEvent(QMouseEvent *event)
@@ -770,7 +773,7 @@ void Tracker::mouseMoveEvent(QMouseEvent *event)
     x = event->x();
     y = event->y();
 
-    if (event->button() == Qt::LeftButton && mouse_selecting) {
+    if (event->buttons() &= Qt::LeftButton && mouse_selecting) {
         mouseToCursorPos(x, y, &sel_end_ch, &cursor_item, &sel_end_row);
 
         if (x > disp_startx + disp_numchans * disp_chanwidth && leftchan + disp_numchans < num_channels) {
@@ -780,20 +783,25 @@ void Tracker::mouseMoveEvent(QMouseEvent *event)
             sel_end_ch--;
             setXpanning(leftchan - 1);
         }
-        if ((sel_end_row > patpos + (disp_rows / 2)) || (y > geometry().height() && patpos < sel_end_row))
+        if ((sel_end_row > patpos + (disp_rows / 2)) || (y > geometry().height() && patpos < sel_end_row)) {
             setPatpos(patpos + 1);
-        else if ((sel_end_row < patpos - (disp_rows / 2)) || (y <= 0 && patpos > sel_end_row))
+        } else if ((sel_end_row < patpos - (disp_rows / 2)) || (y <= 0 && patpos > sel_end_row)) {
             setPatpos(patpos - 1);
+        }
         redraw();
     }
+
+    event->accept();
 }
 
 void Tracker::mouseReleaseEvent(QMouseEvent *event)
 {
     if (mouse_selecting && event->button() == Qt::LeftButton) {
-        mouse_selecting = 0;
+        mouse_selecting = false;
         //g_signal_emit(GTK_OBJECT(t), tracker_signals[BLOCKMARK_SET_SIGNAL], 0, 0);
     }
+
+    event->accept();
 }
 
 void Tracker::paintEvent(QPaintEvent *event)
@@ -814,4 +822,10 @@ void Tracker::resizeEvent(QResizeEvent *event)
 
     initDisplay(geometry().width(), geometry().height());
     drawStupid(QRect(QPoint(), geometry().size()));
+}
+
+void Tracker::queueDraw()
+{
+    oldpos = -2 * disp_rows;
+    update();
 }
