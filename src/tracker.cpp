@@ -46,11 +46,9 @@ Tracker::Tracker(QWidget *parent) :
     bg_gc = colors[TRACKERCOL_BG];
     bg_cursor_gc = colors[TRACKERCOL_BG_CURSOR];
     notes_gc = colors[TRACKERCOL_NOTES];
+    misc_gc = colors[TRACKERCOL_BG_SELECTION];
 
     initDisplay(geometry().width(), geometry().height());
-
-//    gdk_window_set_user_data(widgewindow, widget);
-//    gdk_window_set_background(widgewindow, &colors[TRACKERCOL_BG]);
 }
 
 void Tracker::setNumChannels(int n)
@@ -325,7 +323,6 @@ void Tracker::note2string(unsigned char note, unsigned char instrument, unsigned
     buf[13] = 0;
 }
 
-
 void Tracker::clearNotesLine(int y, int pattern_row)
 {
     // cursor line
@@ -360,14 +357,14 @@ void Tracker::printNotesLine(int y, int ch, int numch, int row, int cursor)
     }
 
     QPainter painter(pixmap);
-    y += fontc;
+    int fontY = y + fontc;
 
     // The row number
     sprintf(buf, "%03d", row);
     painter.setPen(notes_gc.color());
     painter.setBackground(cursor ? bg_cursor_gc : bg_gc);
     painter.setFont(fontdesc);
-    painter.drawText(1, y, buf);
+    painter.drawText(1, fontY, buf);
 
     // The notes
     int j = 0;
@@ -375,16 +372,14 @@ void Tracker::printNotesLine(int y, int ch, int numch, int row, int cursor)
     for (numch += ch; ch < numch; ch++, j++) {
         note2string(curpattern->note(row, ch), curpattern->instrument(row, ch), curpattern->command(row, ch, cmdpage), curpattern->commandValue(row, ch, cmdpage), buf);
 
+        QBrush brush;
         if (cursor) {
-            painter.setBackground(bg_cursor_gc);
-            painter.drawText(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, y, buf);
+            brush = bg_cursor_gc;
         } else if (row >= rbs && row <= rbe && ch >= cbs && ch <= cbe) {
-            painter.setBackground(misc_gc);
-            painter.drawText(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, y, buf);
-        } else {
-            painter.setBackground(notes_gc);
-            painter.drawText(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, y, buf);
+            brush = misc_gc;
         }
+        painter.fillRect(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, y, disp_chanwidth, fonth, brush);
+        painter.drawText(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, fontY, buf);
     }
 }
 
