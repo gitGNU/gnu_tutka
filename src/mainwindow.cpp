@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    Song *song = Song::load("/home/vesuri/MIDI/Tutka/Live/annamulletahtitaivas.xml");
+    Song *song = Song::load("/home/vesuri/MIDI/Tutka/meganerellu.xml");
     ui->setupUi(this);
     ui->trackerMain->setSong(song);
     ui->trackerMain->setPattern(song->block(0));

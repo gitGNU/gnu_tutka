@@ -484,10 +484,7 @@ Block *Block::parse(QDomElement element)
                 }
 
                 // Get the note
-                QDomElement temp = cur.firstChild().toElement();
-                if (!temp.isNull()) {
-                    note = temp.text().toInt();
-                }
+                note = cur.text().toInt();
 
                 // Set the note
                 block->setNote(line, track, 0, note, instrument);

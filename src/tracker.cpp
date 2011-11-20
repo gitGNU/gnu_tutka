@@ -742,12 +742,12 @@ void Tracker::mousePressEvent(QMouseEvent *event)
                 redraw();
             }
             mouseToCursorPos(x, y, &cursor_ch, &cursor_item, &patpos);
-            if (cursor_ch != cursor_ch || cursor_item != cursor_item) {
-                cursor_ch = cursor_ch;
-                cursor_item = cursor_item;
+            if (cursor_ch != this->cursor_ch || cursor_item != this->cursor_item) {
+                this->cursor_ch = cursor_ch;
+                this->cursor_item = cursor_item;
                 adjustXpanning();
             }
-            if (patpos != patpos) {
+            if (patpos != this->patpos) {
                 setPatpos(patpos);
             }
             queueDraw();
@@ -816,7 +816,7 @@ void Tracker::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 
     initDisplay(geometry().width(), geometry().height());
-    drawStupid(QRect(QPoint(), geometry().size()));
+    queueDraw();
 }
 
 void Tracker::queueDraw()

@@ -480,10 +480,7 @@ Song *Song::parse(QDomElement element)
                                 song->tracks[track].solo = prop.value().toInt();
                             }
 
-                            QDomElement temp2 = temp.firstChild().toElement();
-                            if (!temp2.isNull()) {
-                                song->tracks[track].name = temp2.text();
-                            }
+                            song->tracks[track].name = temp.text();
                         } else if (temp.nodeType() != QDomNode::CommentNode) {
                             qWarning("XML error: expected section, got %s\n", temp.tagName().toUtf8().constData());
                         }
