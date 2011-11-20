@@ -64,7 +64,7 @@ void Tracker::setNumChannels(int n)
         initDisplay(geometry().width(), geometry().height());
         queueDraw();
 
-        //g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, t->leftchan, t->num_channels, t->disp_numchans);
+        emit xpanningChanged(leftchan, num_channels, disp_numchans);
     }
 }
 
@@ -85,7 +85,7 @@ void Tracker::setPatpos(int row)
 
     if (patpos != row) {
         patpos = row;
-//        g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, row, curpattern->length, disp_rows);
+        emit patposChanged(row, curpattern->length(), disp_rows);
 
         if (inSelMode) {
             // Force re-draw of patterns in block selection mode
@@ -129,7 +129,7 @@ void Tracker::setPattern(Block *pattern)
                 cursor_ch = pattern->tracks() - 1;
             }
 
-//            g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, patpos, pattern->length, disp_rows);
+            emit patposChanged(patpos, pattern->length(), disp_rows);
         }
         queueDraw();
     }
@@ -151,7 +151,7 @@ void Tracker::setXpanning(int left_channel)
             cursor_ch = leftchan + disp_numchans - 1;
         }
 
-        //g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, leftchan, num_channels, disp_numchans);
+        emit xpanningChanged(leftchan, num_channels, disp_numchans);
     }
 }
 
@@ -583,11 +583,11 @@ void Tracker::initDisplay(int width, int height)
     }
 
     disp_startx = (u - disp_numchans * disp_chanwidth) / 2 + line_numbers_space + 5;
-//    adjust_xpanning(t);
+    adjustXpanning();
 
     if (curpattern) {
-//        g_signal_emit(GTK_OBJECT(t), tracker_signals[PATPOS_SIGNAL], 0, patpos, curpattern->length, disp_rows);
-//        g_signal_emit(GTK_OBJECT(t), tracker_signals[XPANNING_SIGNAL], 0, leftchan, num_channels, disp_numchans);
+        emit patposChanged(patpos, curpattern->length(), disp_rows);
+        emit xpanningChanged(leftchan, num_channels, disp_numchans);
     }
 
     delete pixmap;
@@ -725,7 +725,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
         button = event->button();
         if (button == Qt::LeftButton) {
             // Start selecting block
-            //g_signal_emit(GTK_OBJECT(t), tracker_signals[BLOCKMARK_SET_SIGNAL], 0, 1);
+            emit blockmarkSet(1);
             inSelMode = false;
             mouseToCursorPos(x, y, &sel_start_ch, &cursor_item, &sel_start_row);
             sel_end_row = sel_start_row;
@@ -735,7 +735,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
         } else if (button == Qt::RightButton) {
             // Tracker cursor posititioning and clear block mark if any
             if (inSelMode || sel_start_ch != -1) {
-                //g_signal_emit(GTK_OBJECT(t), tracker_signals[BLOCKMARK_SET_SIGNAL], 0, 0);
+                emit blockmarkSet(0);
                 sel_start_ch = sel_end_ch = -1;
                 sel_start_row = sel_end_row = -1;
                 inSelMode = false;
@@ -793,7 +793,7 @@ void Tracker::mouseReleaseEvent(QMouseEvent *event)
 {
     if (mouse_selecting && event->button() == Qt::LeftButton) {
         mouse_selecting = false;
-        //g_signal_emit(GTK_OBJECT(t), tracker_signals[BLOCKMARK_SET_SIGNAL], 0, 0);
+        emit blockmarkSet(0);
     }
 
     event->accept();

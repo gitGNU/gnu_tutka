@@ -38,6 +38,11 @@ public:
     void setPattern(Block *pattern);
     void setXpanning(int left_channel);
 
+signals:
+    void patposChanged(int, int, int);
+    void xpanningChanged(int, int, int);
+    void blockmarkSet(int);
+
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
