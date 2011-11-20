@@ -13,7 +13,7 @@ Tracker::Tracker(QWidget *parent) :
     disp_startx(0),
     disp_chanwidth(0),
     disp_cursor(0),
-    fontdesc("Monospace", 9),
+    fontdesc("Monospace", 8),
     fontw(0),
     fonth(0),
     fontc(0),
@@ -636,7 +636,7 @@ void Tracker::calculateFontSize()
 {
     QFontMetrics metrics(fontdesc);
     fontw = metrics.width('X');
-    fonth = metrics.height();
+    fonth = metrics.ascent() + 1;
     fontc = metrics.ascent();
 }
 
