@@ -4,16 +4,16 @@ OBJECTS_DIR = .obj
 SOURCES += main.cpp \
            block.cpp \
            instrument.cpp \
-           mainwindow.cpp \
+           gui.cpp \
            message.cpp \
            playseq.cpp \
            song.cpp \
            tracker.cpp \
            editor.cpp
 
-HEADERS += mainwindow.h \
-           block.h \
+HEADERS += block.h \
            instrument.h \
+           gui.h \
            message.h \
            playseq.h \
            song.h \

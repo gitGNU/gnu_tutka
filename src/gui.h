@@ -1,5 +1,5 @@
 /*
- * mainwindow.h
+ * gui.h
  *
  * Copyright 2002-2011 vesuri
  *
@@ -20,8 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef MAINWINDOW_H_
-#define MAINWINDOW_H_
+#ifndef GUI_H_
+#define GUI_H_
 
 #include <QMainWindow>
 
@@ -31,13 +31,13 @@ namespace Ui {
 
 class Editor;
 
-class MainWindow : public QMainWindow
+class GUI : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(Editor *editor, QWidget *parent = 0);
-    virtual ~MainWindow();
+    explicit GUI(Editor *editor, QWidget *parent = 0);
+    virtual ~GUI();
 
     void refreshAll();
 
@@ -52,4 +52,4 @@ private:
     Ui::MainWindow *mainWindow;
 };
 
-#endif /* MAINWINDOW_H_ */
+#endif /* GUI_H_ */

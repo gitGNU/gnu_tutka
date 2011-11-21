@@ -1,5 +1,5 @@
 /*
- * mainwindow.cpp
+ * gui.cpp
  *
  * Copyright 2002-2011 vesuri
  *
@@ -24,9 +24,9 @@
 #include "editor.h"
 #include "song.h"
 #include "ui_tutka.h"
-#include "mainwindow.h"
+#include "gui.h"
 
-MainWindow::MainWindow(Editor *editor, QWidget *parent) :
+GUI::GUI(Editor *editor, QWidget *parent) :
     QMainWindow(parent),
     editor(editor),
     mainWindow(new Ui::MainWindow)
@@ -34,12 +34,12 @@ MainWindow::MainWindow(Editor *editor, QWidget *parent) :
     mainWindow->setupUi(this);
 }
 
-MainWindow::~MainWindow()
+GUI::~GUI()
 {
     delete mainWindow;
 }
 
-void MainWindow::refreshAll()
+void GUI::refreshAll()
 {
     mainWindow->trackerMain->reset();
     mainWindow->trackerMain->setSong(editor->song());
@@ -48,7 +48,7 @@ void MainWindow::refreshAll()
 }
 
 #ifdef TODO
-void MainWindow::keyPressEvent(QKeyEvent *event)
+void GUI::keyPressEvent(QKeyEvent *event)
 {
     //    if (GTK_IS_ENTRY(GTK_WINDOW(widget)->focus_widget))
     //      return handled;
@@ -756,7 +756,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void MainWindow::keyReleaseEvent(QKeyEvent * event)
+void GUI::keyReleaseEvent(QKeyEvent * event)
 {
     /* Key has been released */
     if (!ctrl && !shift) {

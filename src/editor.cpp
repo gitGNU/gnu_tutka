@@ -20,12 +20,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "mainwindow.h"
+#include "gui.h"
 #include "song.h"
 #include "editor.h"
 
 Editor::Editor(const QString &filename) :
-    mainWindow(new MainWindow(this)),
+    gui(new GUI(this)),
     song_(NULL)
 {
     if (!filename.isEmpty()) {
@@ -34,13 +34,13 @@ Editor::Editor(const QString &filename) :
         song_ = new Song;
     }
 
-    mainWindow->show();
-    mainWindow->refreshAll();
+    gui->show();
+    gui->refreshAll();
 }
 
 Editor::~Editor()
 {
-    delete mainWindow;
+    delete gui;
     delete song_;
 }
 

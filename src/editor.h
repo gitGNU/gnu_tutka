@@ -23,7 +23,7 @@
 #ifndef EDITOR_H_
 #define EDITOR_H_
 
-class MainWindow;
+class GUI;
 class Song;
 
 class Editor {
@@ -34,7 +34,7 @@ public:
     Song *song();
 
 private:
-    MainWindow *mainWindow;
+    GUI *gui;
     Song *song_;
 };
 
