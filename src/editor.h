@@ -1,5 +1,5 @@
 /*
- * mainwindow.h
+ * editor.h
  *
  * Copyright 2002-2011 vesuri
  *
@@ -20,36 +20,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef MAINWINDOW_H_
-#define MAINWINDOW_H_
+#ifndef EDITOR_H_
+#define EDITOR_H_
 
-#include <QMainWindow>
+class MainWindow;
+class Song;
 
-namespace Ui {
-    class MainWindow;
-}
-
-class Editor;
-
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
-
+class Editor {
 public:
-    explicit MainWindow(Editor *editor, QWidget *parent = 0);
-    virtual ~MainWindow();
+    Editor(const QString &filename);
+    virtual ~Editor();
 
-    void refreshAll();
-
-protected:
-#ifdef TODO
-    virtual void keyPressEvent(QKeyEvent *event);
-    virtual void keyReleaseEvent(QKeyEvent *event);
-#endif
+    Song *song();
 
 private:
-    Editor *editor;
-    Ui::MainWindow *mainWindow;
+    MainWindow *mainWindow;
+    Song *song_;
 };
 
-#endif /* MAINWINDOW_H_ */
+#endif /* EDITOR_H_ */

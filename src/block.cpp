@@ -118,6 +118,7 @@ void Block::setTracks(unsigned int tracks)
     free(this->commands_);
 
     // Use new arrays
+    qWarning("XX SET TRAX");
     this->notes_ = notes;
     this->commands_ = commands;
     this->tracks_ = tracks;
@@ -151,6 +152,7 @@ void Block::setLength(unsigned int length)
     free(this->commands_);
 
     // Use new arrays
+    qWarning("XX SET LENGTH");
     this->notes_ = notes;
     this->commands_ = commands;
     this->length_ = length;

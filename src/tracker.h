@@ -37,6 +37,10 @@ public:
     void setSong(Song *song);
     void setPattern(Block *pattern);
     void setXpanning(int left_channel);
+    bool isInSelectionMode();
+    void markSelection(bool enable);
+    void stepCursorChannel(int direction);
+    void reset();
 
 signals:
     void patposChanged(int, int, int);
@@ -54,11 +58,8 @@ protected:
 private:
     void adjustXpanning();
     void stepCursorItem(int direction);
-    void stepCursorChannel(int direction);
     void stepCursorRow(int direction);
-    void markSelection(bool enable);
     void clearMarkSelection();
-    bool isInSelectionMode();
     void getSelectionRect(int *chStart, int *rowStart, int *nChannel, int *nRows);
     bool isValidSelection();
     void note2string(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf);
@@ -71,7 +72,6 @@ private:
     void drawClever(const QRect &area);
     void drawStupid(const QRect &area);
     void initDisplay(int width, int height);
-    void reset();
     void initColors();
     void calculateFontSize();
     bool setFont(const QString &fontname);

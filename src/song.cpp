@@ -47,17 +47,32 @@ Song::Song(const QString &name) :
     sendSync(false)
 {
     sections.append(0);
-    playseqs.append(Playseq());
-    blocks.append(Block(4, 64, 1));
+    playseqs.append(new Playseq);
+    blocks.append(new Block(4, 64, 1));
     for (int i = 1; i <= 4; i++) {
         // Give a descriptive name for the new track
-        tracks.append(Track(QString("Track %1").arg(i)));
+        tracks.append(new Track(QString("Track %1").arg(i)));
     }
     masterVolume = 127;
 }
 
 Song::~Song()
 {
+    foreach(Playseq *playseq, playseqs) {
+        delete playseq;
+    }
+    foreach(Block *block, blocks) {
+        delete block;
+    }
+    foreach(Instrument *instrument, instruments) {
+        delete instrument;
+    }
+    foreach(Track *track, tracks) {
+        delete track;
+   }
+    foreach(Message *message, messages) {
+        delete message;
+    }
 }
 
 void Song::insertBlock(unsigned int pos, int current)
@@ -68,13 +83,13 @@ void Song::insertBlock(unsigned int pos, int current)
     }
 
     // Insert a new block similar to the current block
-    blocks.insert(pos, Block(blocks[current].tracks(), blocks[current].length(), blocks[current].commandPages()));
+    blocks.insert(pos, new Block(blocks[current]->tracks(), blocks[current]->length(), blocks[current]->commandPages()));
 
     // Update playing sequences
     for (int i = 0; i < playseqs.count(); i++) {
-        for (unsigned int j = 0; j < playseqs[i].length(); j++) {
-            if (playseqs[i].at(j) >= pos) {
-                playseqs[i].set(j, playseqs[i].at(j) + 1);;
+        for (unsigned int j = 0; j < playseqs[i]->length(); j++) {
+            if (playseqs[i]->at(j) >= pos) {
+                playseqs[i]->set(j, playseqs[i]->at(j) + 1);;
             }
         }
     }
@@ -93,9 +108,9 @@ void Song::deleteBlock(unsigned int pos)
 
         // Update playing sequences
         for (int i = 0; i < playseqs.count(); i++) {
-            for (int j = 0; j < playseqs[i].length(); j++) {
-                if (playseqs[i].at(j) >= pos && playseqs[i].at(j) > 0) {
-                    playseqs[i].set(j, playseqs[i].at(j) - 1);
+            for (int j = 0; j < playseqs[i]->length(); j++) {
+                if (playseqs[i]->at(j) >= pos && playseqs[i]->at(j) > 0) {
+                    playseqs[i]->set(j, playseqs[i]->at(j) - 1);
                 }
             }
         }
@@ -111,7 +126,7 @@ void Song::insertPlayseq(unsigned int pos)
     }
 
     // Insert a new playing sequence
-    playseqs.insert(pos, Playseq());;
+    playseqs.insert(pos, new Playseq);
 
     // Update sections
     for (int i = 0; i < sections.count(); i++) {
@@ -172,7 +187,7 @@ void Song::insertMessage(unsigned int pos)
     }
 
     // Insert a new message
-    messages.insert(pos, Message());
+    messages.insert(pos, new Message());
 }
 
 void Song::deleteMessage(unsigned int pos)
@@ -213,8 +228,8 @@ bool Song::checkMaxTracks()
 
     // Check the maximum number of tracks;
     for (int i = 0; i < blocks.count(); i++) {
-        if (blocks[i].tracks() > max) {
-            max = blocks[i].tracks();
+        if (blocks[i]->tracks() > max) {
+            max = blocks[i]->tracks();
         }
     }
 
@@ -224,12 +239,12 @@ bool Song::checkMaxTracks()
     } else if (oldMax < max) {
         for (int i = oldMax; i < max; i++) {
             // Give a descriptive name for the new track
-            tracks.append(Track(QString("Track %1").arg(i + 1)));
+            tracks.append(new Track(QString("Track %1").arg(i + 1)));
         }
     } else {
         // Tracks removed: free track datas
         while (tracks.count() > max) {
-            tracks.removeLast();
+            delete tracks.takeLast();
         }
      }
 
@@ -239,28 +254,28 @@ bool Song::checkMaxTracks()
 void Song::checkInstrument(int instrument, unsigned short defaultMIDIInterface)
 {
     while (instrument >= instruments.count()) {
-        instruments.append(Instrument("Unnamed", defaultMIDIInterface));
+        instruments.append(new Instrument("Unnamed", defaultMIDIInterface));
     }
 }
 
 void Song::transpose(int instrument, int halfNotes)
 {
     for (int i = 0; i < blocks.count(); i++) {
-        blocks[i].transpose(instrument, halfNotes, 0, 0, blocks[i].tracks() - 1, blocks[i].length() - 1);
+        blocks[i]->transpose(instrument, halfNotes, 0, 0, blocks[i]->tracks() - 1, blocks[i]->length() - 1);
     }
 }
 
 void Song::expandShrink(int factor)
 {
     for (int i = 0; i < blocks.count(); i++) {
-        blocks[i].expandShrink(factor, 0, 0, blocks[i].tracks() - 1, blocks[i].length() - 1);
+        blocks[i]->expandShrink(factor, 0, 0, blocks[i]->tracks() - 1, blocks[i]->length() - 1);
     }
 }
 
 void Song::changeInstrument(int from, int to, bool swap)
 {
     for (int i = 0; i < blocks.count(); i++) {
-        blocks[i].changeInstrument(from, to, swap, 0, 0, blocks[i].tracks() - 1, blocks[i].length() - 1);
+        blocks[i]->changeInstrument(from, to, swap, 0, 0, blocks[i]->tracks() - 1, blocks[i]->length() - 1);
     }
 }
 
@@ -343,12 +358,13 @@ Song *Song::parse(QDomElement element)
                             }
 
                             while (song->blocks.count() < number) {
-                                song->blocks.append(Block());
+                                song->blocks.append(new Block);
                             }
                             if (song->blocks.count() == number) {
-                                song->blocks.append(*block);
+                                song->blocks.append(block);
                             } else {
-                                song->blocks.replace(number, *block);
+                                delete song->blocks.takeAt(number);
+                                song->blocks.insert(number, block);
                             }
                         }
                     }
@@ -405,12 +421,13 @@ Song *Song::parse(QDomElement element)
                             }
 
                             while (song->playseqs.count() < number) {
-                                song->playseqs.append(Playseq());
+                                song->playseqs.append(new Playseq);
                             }
                             if (song->playseqs.count() == number) {
-                                song->playseqs.append(*playseq);
+                                song->playseqs.append(playseq);
                             } else {
-                                song->playseqs.replace(number, *playseq);
+                                delete song->playseqs.takeAt(number);
+                                song->playseqs.insert(number, playseq);
                             }
                         }
                     }
@@ -433,12 +450,13 @@ Song *Song::parse(QDomElement element)
                             }
 
                             while (song->instruments.count() < number) {
-                                song->instruments.append(Instrument());
+                                song->instruments.append(new Instrument);
                             }
                             if (song->instruments.count() == number) {
-                                song->instruments.append(*instrument);
+                                song->instruments.append(instrument);
                             } else {
-                                song->instruments.replace(number, *instrument);
+                                delete song->instruments.takeAt(number);
+                                song->instruments.insert(number, instrument);
                             }
                         }
                     }
@@ -461,26 +479,26 @@ Song *Song::parse(QDomElement element)
                             }
 
                             while (song->tracks.count() <= track) {
-                                song->tracks.append(Track());
+                                song->tracks.append(new Track);
                             }
 
                             // Get volume, mute, solo and name
                             prop = temp.attributeNode("volume");
                             if (!prop.isNull()) {
-                                song->tracks[track].volume = prop.value().toInt();
+                                song->tracks[track]->volume = prop.value().toInt();
                             }
 
                             prop = temp.attributeNode("mute");
                             if (!prop.isNull()) {
-                                song->tracks[track].mute = prop.value().toInt();
+                                song->tracks[track]->mute = prop.value().toInt();
                             }
 
                             prop = temp.attributeNode("solo");
                             if (!prop.isNull()) {
-                                song->tracks[track].solo = prop.value().toInt();
+                                song->tracks[track]->solo = prop.value().toInt();
                             }
 
-                            song->tracks[track].name = temp.text();
+                            song->tracks[track]->name = temp.text();
                         } else if (temp.nodeType() != QDomNode::CommentNode) {
                             qWarning("XML error: expected section, got %s\n", temp.tagName().toUtf8().constData());
                         }
@@ -504,14 +522,14 @@ Song *Song::parse(QDomElement element)
                             }
 
                             while (song->tracks.count() < track) {
-                                song->tracks.append(Track());
+                                song->tracks.append(new Track);
                             }
 
                             // Get the volume
                             QDomElement temp2 = temp.firstChild().toElement();
                             if (!temp2.isNull()) {
-                                song->tracks[track].volume = temp2.text().toInt() & 127;
-                                song->tracks[track].mute = (temp2.text().toInt() & 128) >> 7;
+                                song->tracks[track]->volume = temp2.text().toInt() & 127;
+                                song->tracks[track]->mute = (temp2.text().toInt() & 128) >> 7;
                             }
                         } else if (temp.nodeType() != QDomNode::CommentNode) {
                             qWarning("XML error: expected trackvolume, got %s\n", temp.tagName().toUtf8().constData());
@@ -536,12 +554,13 @@ Song *Song::parse(QDomElement element)
                             }
 
                             while (song->messages.count() < number) {
-                                song->messages.append(Message());
+                                song->messages.append(new Message);
                             }
                             if (song->messages.count() == number) {
-                                song->messages.append(*message);
+                                song->messages.append(message);
                             } else {
-                                song->messages.replace(number, *message);
+                                delete song->messages.takeAt(number);
+                                song->messages.insert(number, message);
                             }
                         }
                     }
@@ -560,10 +579,10 @@ Song *Song::parse(QDomElement element)
 
 Block *Song::block(int number)
 {
-    return &blocks[number];
+    return blocks[number];
 }
 
 Track *Song::track(int number)
 {
-    return &tracks[number];
+    return tracks[number];
 }

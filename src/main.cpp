@@ -21,17 +21,15 @@
  */
 
 #include <QApplication>
-#include "mainwindow.h"
+#include "editor.h"
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    MainWindow *mainWindow = new MainWindow;
-    mainWindow->show();
+    Editor *editor = new Editor(argc > 1 ? argv[1] : "");
 
     int returnCode = app.exec();
 
-    delete mainWindow;
-
+    delete editor;
     return returnCode;
 }

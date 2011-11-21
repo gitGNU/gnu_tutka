@@ -103,17 +103,17 @@ private:
     // Section array
     QList<unsigned int> sections;
     // Playing sequence array
-    QList<Playseq> playseqs;
+    QList<Playseq *> playseqs;
     // Block array
-    QList<Block> blocks;
+    QList<Block *> blocks;
     // Instrument array
-    QList<Instrument> instruments;
+    QList<Instrument *> instruments;
     // Track volume array
-    QList<Track> tracks;
+    QList<Track *> tracks;
     // Master volume
     unsigned int masterVolume;
     // System Exclusive messages
-    QList<Message> messages;
+    QList<Message *> messages;
     // Whether to send MIDI sync or not
     bool sendSync;
 };

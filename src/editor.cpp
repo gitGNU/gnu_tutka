@@ -1,5 +1,5 @@
 /*
- * mainwindow.h
+ * editor.cpp
  *
  * Copyright 2002-2011 vesuri
  *
@@ -20,36 +20,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef MAINWINDOW_H_
-#define MAINWINDOW_H_
+#include "mainwindow.h"
+#include "song.h"
+#include "editor.h"
 
-#include <QMainWindow>
+Editor::Editor(const QString &filename) :
+    mainWindow(new MainWindow(this)),
+    song_(NULL)
+{
+    if (!filename.isEmpty()) {
+        song_ = Song::load(filename);
+    } else {
+        song_ = new Song;
+    }
 
-namespace Ui {
-    class MainWindow;
+    mainWindow->show();
+    mainWindow->refreshAll();
 }
 
-class Editor;
-
-class MainWindow : public QMainWindow
+Editor::~Editor()
 {
-    Q_OBJECT
+    delete mainWindow;
+    delete song_;
+}
 
-public:
-    explicit MainWindow(Editor *editor, QWidget *parent = 0);
-    virtual ~MainWindow();
-
-    void refreshAll();
-
-protected:
-#ifdef TODO
-    virtual void keyPressEvent(QKeyEvent *event);
-    virtual void keyReleaseEvent(QKeyEvent *event);
-#endif
-
-private:
-    Editor *editor;
-    Ui::MainWindow *mainWindow;
-};
-
-#endif /* MAINWINDOW_H_ */
+Song *Editor::song()
+{
+    return song_;
+}

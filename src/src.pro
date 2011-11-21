@@ -8,7 +8,8 @@ SOURCES += main.cpp \
            message.cpp \
            playseq.cpp \
            song.cpp \
-    tracker.cpp
+           tracker.cpp \
+           editor.cpp
 
 HEADERS += mainwindow.h \
            block.h \
@@ -16,7 +17,8 @@ HEADERS += mainwindow.h \
            message.h \
            playseq.h \
            song.h \
-    tracker.h
+           tracker.h \
+           editor.h
 
 FORMS += tutka.ui
 
