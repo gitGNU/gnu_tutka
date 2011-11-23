@@ -21,15 +21,28 @@
  */
 
 #include <QApplication>
-#include "editor.h"
+#include "gui.h"
+#include "player.h"
+#include "song.h"
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    Editor *editor = new Editor(argc > 1 ? argv[1] : "");
+    Player *player = new Player;
+    GUI *gui = new GUI(player);
+    Song *song;
+    if (argc > 1) {
+        song = Song::load(argv[1]);
+    } else {
+        song = new Song;
+    }
+
+    player->setSong(song);
+    gui->show();
 
     int returnCode = app.exec();
 
-    delete editor;
+    delete gui;
+    delete player;
     return returnCode;
 }

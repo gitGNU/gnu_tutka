@@ -4,21 +4,21 @@ OBJECTS_DIR = .obj
 SOURCES += main.cpp \
            block.cpp \
            instrument.cpp \
-           gui.cpp \
            message.cpp \
            playseq.cpp \
            song.cpp \
            tracker.cpp \
-           editor.cpp
+           player.cpp \
+           gui.cpp
 
 HEADERS += block.h \
            instrument.h \
-           gui.h \
            message.h \
            playseq.h \
            song.h \
            tracker.h \
-           editor.h
+           player.h \
+           gui.h
 
 FORMS += tutka.ui
 

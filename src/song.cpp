@@ -28,8 +28,8 @@
 #include "song.h"
 
 Track::Track(const QString &name) :
-    name(name),
-    volume(127),
+    name_(name),
+    volume_(127),
     mute(false),
     solo(false)
 {
@@ -37,6 +37,46 @@ Track::Track(const QString &name) :
 
 Track::~Track()
 {
+}
+
+void Track::setName(const QString &name)
+{
+    name_ = name;
+}
+
+QString Track::name() const
+{
+    return name_;
+}
+
+void Track::setVolume(unsigned int volume)
+{
+    volume_ = volume;
+}
+
+unsigned int Track::volume() const
+{
+    return volume_;
+}
+
+void Track::setMute(bool mute)
+{
+    mute = mute;
+}
+
+bool Track::isMuted() const
+{
+    return mute;
+}
+
+void Track::setSolo(bool solo)
+{
+    solo = solo;
+}
+
+bool Track::isSolo() const
+{
+    return solo;
 }
 
 Song::Song(const QString &name) :
@@ -485,20 +525,20 @@ Song *Song::parse(QDomElement element)
                             // Get volume, mute, solo and name
                             prop = temp.attributeNode("volume");
                             if (!prop.isNull()) {
-                                song->tracks[track]->volume = prop.value().toInt();
+                                song->tracks[track]->setVolume(prop.value().toInt());
                             }
 
                             prop = temp.attributeNode("mute");
                             if (!prop.isNull()) {
-                                song->tracks[track]->mute = prop.value().toInt();
+                                song->tracks[track]->setMute(prop.value().toInt() > 0);
                             }
 
                             prop = temp.attributeNode("solo");
                             if (!prop.isNull()) {
-                                song->tracks[track]->solo = prop.value().toInt();
+                                song->tracks[track]->setSolo(prop.value().toInt() > 0);
                             }
 
-                            song->tracks[track]->name = temp.text();
+                            song->tracks[track]->setName(temp.text());
                         } else if (temp.nodeType() != QDomNode::CommentNode) {
                             qWarning("XML error: expected section, got %s\n", temp.tagName().toUtf8().constData());
                         }
@@ -528,8 +568,8 @@ Song *Song::parse(QDomElement element)
                             // Get the volume
                             QDomElement temp2 = temp.firstChild().toElement();
                             if (!temp2.isNull()) {
-                                song->tracks[track]->volume = temp2.text().toInt() & 127;
-                                song->tracks[track]->mute = (temp2.text().toInt() & 128) >> 7;
+                                song->tracks[track]->setVolume(temp2.text().toInt() & 127);
+                                song->tracks[track]->setMute((temp2.text().toInt() & 128) > 0);
                             }
                         } else if (temp.nodeType() != QDomNode::CommentNode) {
                             qWarning("XML error: expected trackvolume, got %s\n", temp.tagName().toUtf8().constData());
@@ -585,4 +625,9 @@ Block *Song::block(int number)
 Track *Song::track(int number)
 {
     return tracks[number];
+}
+
+int Song::maxTracks() const
+{
+    return tracks.count();
 }

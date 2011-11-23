@@ -89,6 +89,7 @@ public:
     void expandShrink(int factor, int startTrack, int startLine, int endTrack, int endLine);
     // Changes or swaps an instrument to another
     void changeInstrument(int from, int to, bool swap, int startTrack, int startLine, int endTrack, int endLine);
+    void insertLine(int line, int track = -1);
 
     unsigned int tracks() const;
     unsigned int length() const;

@@ -1,5 +1,5 @@
 /*
- * editor.h
+ * player.h
  *
  * Copyright 2002-2011 vesuri
  *
@@ -20,22 +20,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef EDITOR_H_
-#define EDITOR_H_
+#ifndef PLAYER_H_
+#define PLAYER_H_
 
-class GUI;
+#include <QObject>
+
 class Song;
 
-class Editor {
-public:
-    Editor(const QString &filename);
-    virtual ~Editor();
+class Player : public QObject {
+    Q_OBJECT
 
-    Song *song();
+public:
+    Player(QObject *parent = NULL);
+    virtual ~Player();
+
+    void setSong(Song *song);
+
+signals:
+    void songChanged(Song *song);
 
 private:
-    GUI *gui;
-    Song *song_;
+    Song *song;
 };
 
-#endif /* EDITOR_H_ */
+#endif /* PLAYER_H_ */

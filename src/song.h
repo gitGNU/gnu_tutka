@@ -35,10 +35,23 @@ public:
     Track(const QString &name = QString());
     virtual ~Track();
 
+    QString name() const;
+    void setName(const QString &name);
+
+    unsigned int volume() const;
+    void setVolume(unsigned int volume);
+
+    bool isMuted() const;
+    void setMute(bool mute);
+
+    bool isSolo() const;
+    void setSolo(bool solo);
+
+private:
     // Name of the track
-    QString name;
+    QString name_;
     // Track volume
-    unsigned int volume;
+    unsigned int volume_;
     // Mute toggle
     bool mute;
     // Solo toggle
@@ -91,6 +104,7 @@ public:
 
     Block *block(int number);
     Track *track(int number);
+    int maxTracks() const;
 
 private:
     // Parses a song element in an XML file

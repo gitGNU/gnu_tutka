@@ -23,7 +23,7 @@ Tracker::Tracker(QWidget *parent) :
     misc_gc(Qt::green),
     pixmap(NULL),
     idle_handler(0),
-    song(NULL),
+    song_(NULL),
     curpattern(NULL),
     cmdpage(0),
     patpos(0),
@@ -68,7 +68,7 @@ void Tracker::setNumChannels(int n)
     }
 }
 
-void Tracker::setCmdpage(int cmdpage)
+void Tracker::setCommandPage(int cmdpage)
 {
     if (this->cmdpage != cmdpage) {
         this->cmdpage = cmdpage;
@@ -77,7 +77,7 @@ void Tracker::setCmdpage(int cmdpage)
     }
 }
 
-void Tracker::setPatpos(int row)
+void Tracker::setLine(int row)
 {
     if (!((curpattern == NULL && row == 0) || (row < curpattern->length()))) {
         return;
@@ -112,7 +112,7 @@ void Tracker::redrawCurrentRow()
 
 void Tracker::setSong(Song *song)
 {
-    this->song = song;
+    song_ = song;
 }
 
 void Tracker::setPattern(Block *pattern)
@@ -120,6 +120,8 @@ void Tracker::setPattern(Block *pattern)
     if (curpattern != pattern) {
         curpattern = pattern;
         if (pattern != NULL) {
+            setNumChannels(pattern->tracks());
+
             // Make sure the cursor is inside the tracker
             if (patpos >= pattern->length()) {
                 patpos = pattern->length() - 1;
@@ -187,6 +189,10 @@ void Tracker::stepCursorItem(int direction)
 
 void Tracker::stepCursorChannel(int direction)
 {
+    if (direction < 0 && cursor_item > 0) {
+        direction = 0;
+    }
+    cursor_item = 0;
     cursor_ch += direction;
 
     if (cursor_ch < 0) {
@@ -212,7 +218,7 @@ void Tracker::stepCursorRow(int direction)
     }
     newpos %= curpattern->length();
 
-    setPatpos(newpos);
+    setLine(newpos);
 }
 
 void Tracker::markSelection(bool enable)
@@ -436,17 +442,17 @@ void Tracker::printChannelHeaders()
     painter.fillRect(QRectF(0, disp_starty + disp_rows * fonth, geometry().width(), geometry().height() - (disp_starty + disp_rows * fonth)), bg_gc);
 
     // Write channel names
-    if (song != NULL) {
+    if (song_ != NULL) {
         for (int i = 1; i <= disp_numchans; i++, x += disp_chanwidth) {
-            QString name = song->track(i + leftchan - 1)->name;
+            QString name = song_->track(i + leftchan - 1)->name();
             QString buf = QString("%1: %2").arg(i + leftchan).arg(name);
             QColor color;
 
-            if (song->track(i + leftchan - 1)->mute && !song->track(i + leftchan - 1)->solo) {
+            if (song_->track(i + leftchan - 1)->isMuted() && !song_->track(i + leftchan - 1)->isSolo()) {
                 color = colors[TRACKERCOL_CHANNEL_HEADER_MUTE];
-            } else if (!song->track(i + leftchan - 1)->mute && song->track(i + leftchan - 1)->solo) {
+            } else if (!song_->track(i + leftchan - 1)->isMuted() && song_->track(i + leftchan - 1)->isSolo()) {
                 color = colors[TRACKERCOL_CHANNEL_HEADER_SOLO];
-            } else if (song->track(i + leftchan - 1)->mute && song->track(i + leftchan - 1)->solo) {
+            } else if (song_->track(i + leftchan - 1)->isMuted() && song_->track(i + leftchan - 1)->isSolo()) {
                 color = colors[TRACKERCOL_CHANNEL_HEADER_MUTE_SOLO];
             } else {
                 color = colors[TRACKERCOL_CHANNEL_HEADER];
@@ -748,7 +754,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
                 adjustXpanning();
             }
             if (patpos != this->patpos) {
-                setPatpos(patpos);
+                setLine(patpos);
             }
             queueDraw();
         }
@@ -779,9 +785,9 @@ void Tracker::mouseMoveEvent(QMouseEvent *event)
             setXpanning(leftchan - 1);
         }
         if ((sel_end_row > patpos + (disp_rows / 2)) || (y > geometry().height() && patpos < sel_end_row)) {
-            setPatpos(patpos + 1);
+            setLine(patpos + 1);
         } else if ((sel_end_row < patpos - (disp_rows / 2)) || (y <= 0 && patpos > sel_end_row)) {
-            setPatpos(patpos - 1);
+            setLine(patpos - 1);
         }
         redraw();
     }
@@ -823,4 +829,34 @@ void Tracker::queueDraw()
 {
     oldpos = -2 * disp_rows;
     update();
+}
+
+Song *Tracker::song() const
+{
+    return song_;
+}
+
+Block *Tracker::block() const
+{
+    return curpattern;
+}
+
+int Tracker::track() const
+{
+    return cursor_ch;
+}
+
+int Tracker::line() const
+{
+    return patpos;
+}
+
+int Tracker::commandPage() const
+{
+    return cmdpage;
+}
+
+int Tracker::cursorChannel() const
+{
+    return cursor_ch;
 }

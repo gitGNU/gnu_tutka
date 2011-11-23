@@ -1,5 +1,5 @@
 /*
- * editor.cpp
+ * player.cpp
  *
  * Copyright 2002-2011 vesuri
  *
@@ -20,31 +20,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "gui.h"
-#include "song.h"
-#include "editor.h"
+#include "player.h"
 
-Editor::Editor(const QString &filename) :
-    gui(new GUI(this)),
-    song_(NULL)
+Player::Player(QObject *parent) : QObject(parent), song(NULL)
 {
-    if (!filename.isEmpty()) {
-        song_ = Song::load(filename);
-    } else {
-        song_ = new Song;
-    }
-
-    gui->show();
-    gui->refreshAll();
 }
 
-Editor::~Editor()
+Player::~Player()
 {
-    delete gui;
-    delete song_;
 }
 
-Song *Editor::song()
+void Player::setSong(Song *song)
 {
-    return song_;
+    this->song = song;
+
+    emit songChanged(song);
 }

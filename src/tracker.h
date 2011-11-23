@@ -29,18 +29,26 @@ class Tracker : public QWidget
 public:
     explicit Tracker(QWidget *parent = 0);
     void setNumChannels(int n);
-    void setCmdpage(int cmdpage);
-    void setPatpos(int row);
+    void setCommandPage(int cmdpage);
+    void setLine(int row);
     void redraw();
     void redrawRow(int row);
     void redrawCurrentRow();
-    void setSong(Song *song);
-    void setPattern(Block *pattern);
     void setXpanning(int left_channel);
     bool isInSelectionMode();
     void markSelection(bool enable);
     void stepCursorChannel(int direction);
     void reset();
+    Song *song() const;
+    Block *block() const;
+    int track() const;
+    int line() const;
+    int commandPage() const;
+    int cursorChannel() const;
+
+public slots:
+    void setSong(Song *song);
+    void setPattern(Block *pattern);
 
 signals:
     void patposChanged(int, int, int);
@@ -94,7 +102,7 @@ private:
     QPixmap *pixmap;
     uint idle_handler;
 
-    Song *song;
+    Song *song_;
     Block *curpattern;
     int cmdpage;
     int patpos, oldpos;
@@ -110,10 +118,6 @@ private:
 
     bool mouse_selecting;
     int button;
-
-//    GdkPixmap **fonts_normal;
-//    GdkPixmap **fonts_cursor;
-//    GdkPixmap **fonts_select;
 };
 
 #endif // TRACKER_H

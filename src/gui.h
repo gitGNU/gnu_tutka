@@ -29,27 +29,24 @@ namespace Ui {
     class MainWindow;
 }
 
-class Editor;
+class Player;
 
 class GUI : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit GUI(Editor *editor, QWidget *parent = 0);
+    explicit GUI(Player *player, QWidget *parent = 0);
     virtual ~GUI();
 
-    void refreshAll();
-
 protected:
-#ifdef TODO
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
-#endif
 
 private:
-    Editor *editor;
+    Player *player;
     Ui::MainWindow *mainWindow;
+    QList<int> keyboardKeysDown;
 };
 
 #endif /* GUI_H_ */

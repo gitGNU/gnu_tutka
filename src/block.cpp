@@ -531,3 +531,22 @@ Block *Block::parse(QDomElement element)
 
     return block;
 }
+
+void Block::insertLine(int line, int track)
+{
+    int startTrack = track >= 0 ? track : 0;
+    int endTrack = track >= 0 ? (track + 1) : (tracks_ - 1);
+
+    // Move lines downwards
+    Block *block = copy(startTrack, line, endTrack, length_ - 1);
+    paste(block, startTrack, line + 1);
+
+    // Clear the inserted line
+    for (int j = startTrack; j < endTrack; j++) {
+        setNote(line, j, 0, 0, 0);
+        for (int i = 0; i < commandPages_; i++) {
+            setCommandFull(line, j, i, 0, 0);
+        }
+    }
+    delete block;
+}
