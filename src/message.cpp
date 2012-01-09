@@ -101,3 +101,13 @@ Message *Message::parse(QDomElement element)
     }
     return message;
 }
+
+unsigned int Message::length() const
+{
+    return data.length();
+}
+
+const char *Message::rawData() const
+{
+    return data.constData();
+}

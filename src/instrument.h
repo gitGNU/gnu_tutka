@@ -30,7 +30,7 @@ class QDomElement;
 
 class Instrument {
 public:
-    Instrument(const QString &name = "Unnamed", unsigned int midiInterface = 0);
+    Instrument(const QString &name_ = "Unnamed", unsigned int midiInterface_ = 0);
     virtual ~Instrument();
 
     // Parses an instrument element in an XML file
@@ -38,27 +38,38 @@ public:
     // Saves an instrument to an XML document
     //void instrument_save(struct instrument *, int, xmlNodePtr);
 
+    QString name() const;
+    unsigned int midiInterface() const;
+    QString midiInterfaceName() const;
+    unsigned short midiPreset() const;
+    unsigned char midiChannel() const;
+    unsigned char defaultVelocity() const;
+    char transpose() const;
+    unsigned char hold() const;
+    Block *arpeggio() const;
+    unsigned char basenote() const;
+
 private:
     // Name
-    QString name;
+    QString name_;
     // MIDI interface
-    unsigned int midiInterface;
+    unsigned int midiInterface_;
     // MIDI interface name (for remapping)
-    QString midiInterfaceName;
+    QString midiInterfaceName_;
     // MIDI preset
-    unsigned short midiPreset;
+    unsigned short midiPreset_;
     // MIDI channel
-    unsigned char midiChannel;
+    unsigned char midiChannel_;
     // Default velocity
-    unsigned char defaultVelocity;
+    unsigned char defaultVelocity_;
     // Transpose
-    char transpose;
+    char transpose_;
     // Holding time in ticks
-    unsigned char hold;
+    unsigned char hold_;
     // Arpeggio block
-    Block *arpeggio;
+    Block *arpeggio_;
     // Arpeggio base note
-    unsigned char basenote;
+    unsigned char basenote_;
 };
 
 #endif // INSTRUMENT_H_

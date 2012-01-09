@@ -43,6 +43,9 @@ public:
     // Saves a message to a file
     void saveBinary(const QString &filename);
 
+    unsigned int length() const;
+    const char *rawData() const;
+
 private:
     // Name
     QString name;

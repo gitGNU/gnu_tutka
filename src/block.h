@@ -29,24 +29,6 @@ class QDomElement;
 
 class Block {
 public:
-    enum {
-      COMMAND_PREVIOUS_COMMAND_VALUE = 0x00,
-      COMMAND_PITCH_WHEEL = 0x01,
-      COMMAND_END_BLOCK = 0x02,
-      COMMAND_PLAYSEQ_POSITION = 0x03,
-      COMMAND_PROGRAM_CHANGE = 0x07,
-      COMMAND_SEND_MESSAGE = 0x08,
-      COMMAND_HOLD = 0x09,
-      COMMAND_RETRIGGER = 0x0a,
-      COMMAND_DELAY = 0x0b,
-      COMMAND_VELOCITY = 0x0c,
-      COMMAND_CHANNEL_PRESSURE = 0x0d,
-      COMMAND_TPL = 0x0e,
-      COMMAND_TEMPO = 0x0f,
-      COMMAND_NOT_DEFINED = 0x10,
-      COMMAND_MIDI_CONTROLLERS = 0x80
-    };
-
     // Allocates a block
     Block(unsigned int tracks = 4, unsigned int length = 64, unsigned int commandPages = 1);
     virtual ~Block();
@@ -90,6 +72,8 @@ public:
     // Changes or swaps an instrument to another
     void changeInstrument(int from, int to, bool swap, int startTrack, int startLine, int endTrack, int endLine);
     void insertLine(int line, int track = -1);
+    /* Deletes a line from all tracks in the current block */
+    void deleteLine(int line, int track = -1);
 
     unsigned int tracks() const;
     unsigned int length() const;

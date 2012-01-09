@@ -29,7 +29,8 @@
 GUI::GUI(Player *player, QWidget *parent) :
     QMainWindow(parent),
     player(player),
-    mainWindow(new Ui::MainWindow)
+    mainWindow(new Ui::MainWindow),
+    chordStatus(0)
 {
     mainWindow->setupUi(this);
 
@@ -192,12 +193,14 @@ void GUI::keyPressEvent(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_Left:
             /* Alt-Left: Previous block */
-            editor->setBlock(editor->block - 1);
+            //TODO
+            //editor->setBlock(editor->block - 1);
             handled = true;
             break;
         case Qt::Key_Right:
             /* Alt-Right: Next block */
-            editor->setBlock(editor->block + 1);
+            //TODO
+            //editor->setBlock(editor->block + 1);
             handled = true;
             break;
         case '1':
@@ -214,15 +217,15 @@ void GUI::keyPressEvent(QKeyEvent *event)
             int channel = 9;
             if (event->key() >= '1' && event->key() <= '9')
                 channel = event->key() - '1';
-            if (channel < editor->songMaxtracksGet()) {
-                editor->songTrackMuteSet(channel, editor->song_track_mute_get(editor, channel) ? 0 : 1);
+            if (channel < song->maxTracks()) {
+                song->track(channel)->setMute(!song->track(channel)->isMuted());
             }
             break;
         }
         case Qt::Key_Backspace:
             /* Backspace: delete line */
-            if (widget == gmainWindow->window_main) {
-                editor->songBlockCurrentDeleteLineTrackAll();
+            if (QApplication::activeWindow() == this) {
+                block->deleteLine(tracker->line());
                 tracker->redraw();
                 handled = true;
             }
@@ -234,7 +237,7 @@ void GUI::keyPressEvent(QKeyEvent *event)
         char instrument = -1;
         char note = -1;
         char data = -1;
-        if (tracker->cursor_item == 0) {
+        if (tracker->cursorItem() == 0) {
             /* Editing notes */
             switch (event->key()) {
             case 'z':
@@ -341,7 +344,7 @@ void GUI::keyPressEvent(QKeyEvent *event)
             }
 
             if (data != -1) {
-                if (editor->chord) {
+                if (mainWindow->checkBoxChord->isChecked()) {
 
                     /* Chord mode: check if the key has already been pressed (key repeat) */
                     bool found = keyboardKeysDown.contains(event->key());
@@ -351,25 +354,25 @@ void GUI::keyPressEvent(QKeyEvent *event)
                         /* Add the key to the keys down list */
                         keyboardKeysDown.append(event->key());
 
-                        if (editor->edit) {
+                        if (mainWindow->checkBoxEdit->isChecked()) {
                             /* Set note and refresh */
-                            editor->songBlockCurrentNoteSet(editor->line, tracker->cursor_ch, editor->octave, data, editor->instrument + 1);
-                            tracker->redrawRow(editor->line);
+                            block->setNote(tracker->line(), tracker->cursorChannel(), mainWindow->comboBoxKeyboardOctaves->currentIndex(), data, mainWindow->spinBoxInstrument->value() + 1);
+                            tracker->redrawRow(tracker->line());
                         }
 
                         tracker->stepCursorChannel(1);
-                        editor->chordstatus++;
+                        chordStatus++;
                     }
-                } else if (editor->edit) {
+                } else if (mainWindow->checkBoxEdit->isChecked()) {
                     /* Set note and refresh */
-                    editor->songBlockCurrentNoteSet(editor->line, tracker->cursor_ch, editor->octave, data, editor->instrument + 1);
-                    tracker->redrawRow(editor->line);
+                    block->setNote(tracker->line(), tracker->cursorChannel(), mainWindow->comboBoxKeyboardOctaves->currentIndex(), data, mainWindow->spinBoxInstrument->value() + 1);
+                    tracker->redrawRow(tracker->line());
                     player->setLine(player->line() + mainWindow->spinBoxSpace->value());
                 }
                 handled = true;
             }
-        } else if (editor->edit) {
-            switch (tracker->cursor_item) {
+        } else if (mainWindow->checkBoxEdit->isChecked()) {
+            switch (tracker->cursorItem()) {
             case 1:
             case 2:
                 /* Editing instrument */
@@ -382,14 +385,14 @@ void GUI::keyPressEvent(QKeyEvent *event)
 
                 if (data != -1) {
                     /* Set instrument and refresh */
-                    int ins = editor->songBlockCurrentInstrumentGet(editor->line, tracker->cursor_ch);
-                    if (tracker->cursor_item == 1) {
+                    int ins = block->instrument(tracker->line(), tracker->cursorChannel());
+                    if (tracker->cursorItem() == 1) {
                         ins = (ins & 0x0f) | (data << 4);
                     } else {
                         ins = (ins & 0xf0) | data;
                     }
-                    editor->songBlockCurrentInstrumentSet(editor->line, tracker->cursor_ch, ins);
-                    tracker->redrawRow(editor->line);
+                    block->setInstrument(tracker->line(), tracker->cursorChannel(), ins);
+                    tracker->redrawRow(tracker->line());
                     player->setLine(player->line() + mainWindow->spinBoxSpace->value());
                     handled = true;
                 }
@@ -408,8 +411,8 @@ void GUI::keyPressEvent(QKeyEvent *event)
 
                 if (data != -1) {
                     /* Set effect and refresh */
-                    editor->songBlockCurrentCommandSet(editor->line, tracker->cursor_ch, editor->cmdpage, tracker->cursor_item - 3, data);
-                    tracker->redrawRow(editor->line);
+                    block->setCommand(tracker->line(), tracker->cursorChannel(), tracker->commandPage(), tracker->cursorItem() - 3, data);
+                    tracker->redrawRow(tracker->line());
                     player->setLine(player->line() + mainWindow->spinBoxSpace->value());
                     handled = true;
                 }
@@ -420,25 +423,22 @@ void GUI::keyPressEvent(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_Shift:
             /* Right shift: Play block */
-            editor->playerStart(MODE_PLAY_BLOCK, 0);
+            player->start(Player::PLAY_BLOCK, player->section(), player->position(), player->block(), 0);
             handled = true;
             break;
         case Qt::Key_Control:
             /* Right Control: Play song */
-            editor->playerStart(MODE_PLAY_SONG, 0);
+            player->start(Player::PLAY_SONG, player->section(), player->position(), player->block(), 0);
             handled = true;
             break;
         case Qt::Key_Space:
             /* If the song is playing, stop */
-            if (editor->playerModeGet() != MODE_IDLE) {
-                editor->playerStop();
+            if (player->mode() != Player::IDLE) {
+                player->stop();
             } else {
                 /* Otherwise toggle edit mode */
-                editor->edit ^= 1;
-
-                // TODO
                 mainWindow->checkBoxEdit->blockSignals(true);
-                mainWindow->checkBoxEdit->setChecked(true);
+                mainWindow->checkBoxEdit->setChecked(!mainWindow->checkBoxEdit->isChecked());
                 mainWindow->checkBoxEdit->blockSignals(false);
             }
             handled = true;
@@ -455,13 +455,9 @@ void GUI::keyPressEvent(QKeyEvent *event)
         case Qt::Key_F10:
         case Qt::Key_F11: {
             /* Set active keyboard octave */
-            GtkComboBox *combobox = GTK_COMBO_BOX(glade_xml_get_widget(gmainWindow->xml, "combobox_keyboard"));
-
-            editor->octave = event->key() - Qt::Key_F1;
-
-            g_signal_handlers_block_by_func(combobox, on_combobox_keyboard_changed, gui);
-            gtk_combo_box_set_active(combobox, event->key() - Qt::Key_F1);
-            g_signal_handlers_unblock_by_func(combobox, on_combobox_keyboard_changed, gui);
+            mainWindow->comboBoxKeyboardOctaves->blockSignals(true);
+            mainWindow->comboBoxKeyboardOctaves->setCurrentIndex(event->key() - Qt::Key_F1);
+            mainWindow->comboBoxKeyboardOctaves->blockSignals(false);
 
             handled = true;
             break;
@@ -630,72 +626,72 @@ void GUI::keyPressEvent(QKeyEvent *event)
             break;
         case Qt::Key_Down:
             /* Down: Go down -*/
-            if (widget == gmainWindow->window_main) {
-                editor->setLine(editor->line + 1);
+            if (QApplication::activeWindow() == this) {
+                tracker->setLine(tracker->line() + 1);
                 handled = true;
             }
             break;
         case Qt::Key_Up:
             /* Up: Go up */
-            if (widget == gmainWindow->window_main) {
-                editor->setLine(editor->line - 1);
+            if (QApplication::activeWindow() == this) {
+                tracker->setLine(tracker->line() - 1);
                 handled = true;
             }
             break;
         case Qt::Key_Left:
             /* Left: Go left */
-            if (widget == gmainWindow->window_main) {
+            if (QApplication::activeWindow() == this) {
                 tracker->stepCursorItem(-1);
                 handled = true;
             }
             break;
         case Qt::Key_Right:
             /* Right: Go right */
-            if (widget == gmainWindow->window_main) {
+            if (QApplication::activeWindow() == this) {
                 tracker->stepCursorItem(1);
                 handled = true;
             }
             break;
         case Qt::Key_Tab:
             /* Tab: Next track */
-            if (widget == gmainWindow->window_main) {
-                tracker->cursor_item = 0;
+            if (QApplication::activeWindow() == this) {
+                tracker->setCursorItem(0);
                 tracker->stepCursorChannel(1);
                 handled = true;
             }
             break;
         case Qt::Key_Home:
             /* End: Go to the beginning of block */
-            if (widget == gmainWindow->window_main) {
-                editor->setLine(editor, 0);
+            if (QApplication::activeWindow() == this) {
+                tracker->setLine(0);
                 handled = true;
             }
             break;
         case Qt::Key_End:
             /* End: Go to the end of block */
-            if (widget == gmainWindow->window_main) {
-                editor->setLine(editor, editor->songBlockCurrentLengthGet() - 1);
+            if (QApplication::activeWindow() == this) {
+                tracker->setLine(block->length() - 1);
                 handled = true;
             }
             break;
         case Qt::Key_PageDown:
             /* Page down: Go down 8 lines */
-            if (widget == gmainWindow->window_main) {
-                editor->setLine(editor->line + 8);
+            if (QApplication::activeWindow() == this) {
+                tracker->setLine(tracker->line() + 8);
                 handled = true;
             }
             break;
         case Qt::Key_PageUp:
             /* Page up: Go up 8 lines */
-            if (widget == gmainWindow->window_main) {
-                editor->setLine(editor->line - 8);
+            if (QApplication::activeWindow() == this) {
+                tracker->setLine(tracker->line() - 8);
                 handled = true;
             }
             break;
         case Qt::Key_Backspace:
             /* Backspace: delete line */
-            if (widget == gmainWindow->window_main) {
-                editor->songBlockCurrentDeleteLine(editor, tracker->cursor_ch);
+            if (QApplication::activeWindow() == this) {
+                block->deleteLine(tracker->line(), tracker->cursorChannel());
                 tracker->redraw();
                 handled = true;
             }
@@ -704,16 +700,16 @@ void GUI::keyPressEvent(QKeyEvent *event)
 
         /* Select an instrument if an instrument selection key was pressed */
         if (instrument != -1) {
-            editor->instrument = instrument;
+            mainWindow->spinBoxInstrument->setValue(instrument);
 
             /* Make sure the instrument exists */
-            editor->songInstrumentCurrentCheck();
+            song->checkInstrument(mainWindow->spinBoxInstrument->value(), 0);
             handled = true;
         }
 
         /* Play note if a key was pressed but not if cursor is in cmd pos */
-        if (note != -1 && tracker->cursor_item == 0) {
-            editor->playerPlayNote(note, tracker->cursor_ch);
+        if (note != -1 && tracker->cursorItem() == 0) {
+            player->playNote(mainWindow->spinBoxInstrument->value(), mainWindow->comboBoxKeyboardOctaves->currentIndex() * 12 + note, 127, tracker->cursorChannel());
             handled = true;
         }
     }
@@ -725,11 +721,14 @@ void GUI::keyPressEvent(QKeyEvent *event)
 
 void GUI::keyReleaseEvent(QKeyEvent * event)
 {
+    Tracker *tracker = mainWindow->trackerMain;
+    bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
+    bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
     bool handled = false;
 
     /* Key has been released */
     if (!ctrl && !shift) {
-        if (editor->chord && tracker->cursor_item == 0) {
+        if (mainWindow->checkBoxChord->isChecked() && tracker->cursorItem() == 0) {
             switch (event->key()) {
             case 'z':
             case 's':
@@ -772,10 +771,10 @@ void GUI::keyReleaseEvent(QKeyEvent * event)
 
                 /* Go to the previous channel */
                 tracker->stepCursorChannel(-1);
-                editor->chordstatus--;
+                chordStatus--;
 
                 /* If all chord notes have been released go to the next line */
-                if (editor->chordstatus == 0 && editor->edit) {
+                if (chordStatus == 0 && mainWindow->checkBoxEdit->isChecked()) {
                     player->setLine(player->line() + mainWindow->spinBoxSpace->value());
                 }
                 handled = true;

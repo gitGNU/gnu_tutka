@@ -28,8 +28,6 @@
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    Player *player = new Player;
-    GUI *gui = new GUI(player);
     Song *song;
     if (argc > 1) {
         song = Song::load(argv[1]);
@@ -37,7 +35,8 @@ int main(int argc, char **argv)
         song = new Song;
     }
 
-    player->setSong(song);
+    Player *player = new Player(song, NULL);
+    GUI *gui = new GUI(player);
     gui->show();
 
     int returnCode = app.exec();

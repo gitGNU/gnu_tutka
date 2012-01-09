@@ -47,6 +47,7 @@ private:
     Player *player;
     Ui::MainWindow *mainWindow;
     QList<int> keyboardKeysDown;
+    int chordStatus;
 };
 
 #endif /* GUI_H_ */

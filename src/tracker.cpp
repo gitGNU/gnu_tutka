@@ -187,6 +187,13 @@ void Tracker::stepCursorItem(int direction)
     }
 }
 
+void Tracker::setCursorItem(int cursorItem)
+{
+    cursor_item = cursorItem % 7;
+    adjustXpanning();
+    queueDraw();
+}
+
 void Tracker::stepCursorChannel(int direction)
 {
     if (direction < 0 && cursor_item > 0) {
@@ -859,4 +866,9 @@ int Tracker::commandPage() const
 int Tracker::cursorChannel() const
 {
     return cursor_ch;
+}
+
+int Tracker::cursorItem() const
+{
+    return cursor_item;
 }

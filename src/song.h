@@ -102,9 +102,22 @@ public:
     // Changes or swaps an instrument with another in all blocks of a song
     void changeInstrument(int from, int to, bool swap);
 
-    Block *block(int number);
-    Track *track(int number);
-    int maxTracks() const;
+    Block *block(unsigned int number) const;
+    Track *track(unsigned int number) const;
+    Playseq *playseq(unsigned int number) const;
+    Instrument *instrument(unsigned int number) const;
+    Message *message(unsigned int number) const;
+    unsigned int maxTracks() const;
+    unsigned int blocks() const;
+    unsigned int playseqs() const;
+    unsigned int sections() const;
+    unsigned int instruments() const;
+    unsigned int messages() const;
+    unsigned int section(unsigned int pos) const;
+    unsigned int masterVolume() const;
+    unsigned int tempo() const;
+    unsigned int ticksPerLine() const;
+    bool sendSync() const;
 
 private:
     // Parses a song element in an XML file
@@ -113,23 +126,23 @@ private:
     // Name of the song
     QString name;
     // Tempo, ticks per line
-    unsigned int tempo, ticksPerLine;
+    unsigned int tempo_, ticksPerLine_;
     // Section array
-    QList<unsigned int> sections;
+    QList<unsigned int> sections_;
     // Playing sequence array
-    QList<Playseq *> playseqs;
+    QList<Playseq *> playseqs_;
     // Block array
-    QList<Block *> blocks;
+    QList<Block *> blocks_;
     // Instrument array
-    QList<Instrument *> instruments;
+    QList<Instrument *> instruments_;
     // Track volume array
     QList<Track *> tracks;
     // Master volume
-    unsigned int masterVolume;
+    unsigned int masterVolume_;
     // System Exclusive messages
-    QList<Message *> messages;
+    QList<Message *> messages_;
     // Whether to send MIDI sync or not
-    bool sendSync;
+    bool sendSync_;
 };
 
 #endif // SONG_H_

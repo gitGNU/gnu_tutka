@@ -550,3 +550,22 @@ void Block::insertLine(int line, int track)
     }
     delete block;
 }
+
+void Block::deleteLine(int line, int track)
+{
+    int startTrack = track >= 0 ? track : 0;
+    int endTrack = track >= 0 ? (track + 1) : (tracks_ - 1);
+
+    // Move lines upwards
+    Block *block = copy(startTrack, line + 1, endTrack, length_ - 1);
+    paste(block, startTrack, line);
+
+    // Clear the last line
+    for (int j = startTrack; j < endTrack; j++) {
+        setNote(length_ - 1, j, 0, 0, 0);
+        for (int i = 0; i < commandPages_; i++) {
+            setCommandFull(length_ - 1, j, i, 0, 0);
+        }
+    }
+    delete block;
+}

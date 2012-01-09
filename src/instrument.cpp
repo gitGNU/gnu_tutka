@@ -25,15 +25,15 @@
 #include "instrument.h"
 
 Instrument::Instrument(const QString &name, unsigned int midiInterface) :
-    name(name),
-    midiInterface(midiInterface),
-    midiPreset(0),
-    midiChannel(0),
-    defaultVelocity(127),
-    transpose(0),
-    hold(0),
-    arpeggio(NULL),
-    basenote(0)
+    name_(name),
+    midiInterface_(midiInterface),
+    midiPreset_(0),
+    midiChannel_(0),
+    defaultVelocity_(127),
+    transpose_(0),
+    hold_(0),
+    arpeggio_(NULL),
+    basenote_(0)
 {
 }
 
@@ -52,7 +52,7 @@ Instrument *Instrument::parse(QDomElement element)
         instrument = new Instrument;
         prop = element.attributeNode("name");
         if (!prop.isNull()) {
-            instrument->name = prop.value();
+            instrument->name_ = prop.value();
         }
 
         // Get instrument contents
@@ -62,44 +62,44 @@ Instrument *Instrument::parse(QDomElement element)
                 // Get output properties
                 prop = cur.attributeNode("midiinterface");
                 if (!prop.isNull()) {
-                    instrument->midiInterfaceName = prop.value();
+                    instrument->midiInterfaceName_ = prop.value();
                 }
 
                 prop = cur.attributeNode("midipreset");
                 if (!prop.isNull()) {
-                    instrument->midiPreset = prop.value().toInt();
+                    instrument->midiPreset_ = prop.value().toInt();
                 }
 
                 prop = cur.attributeNode("midichannel");
                 if (!prop.isNull()) {
-                    instrument->midiChannel = prop.value().toInt();
+                    instrument->midiChannel_ = prop.value().toInt();
                 }
 
                 prop = cur.attributeNode("defaultvelocity");
                 if (!prop.isNull()) {
-                    instrument->defaultVelocity = prop.value().toInt();
+                    instrument->defaultVelocity_ = prop.value().toInt();
                 }
 
                 prop = cur.attributeNode("transpose");
                 if (!prop.isNull()) {
-                    instrument->transpose = prop.value().toInt();
+                    instrument->transpose_ = prop.value().toInt();
                 }
 
                 prop = cur.attributeNode("hold");
                 if (!prop.isNull()) {
-                    instrument->hold = prop.value().toInt();
+                    instrument->hold_ = prop.value().toInt();
                 }
             } else if (cur.tagName() == "arpeggio") {
                 // Get arpeggio properties
                 prop = cur.attributeNode("basenote");
                 if (!prop.isNull()) {
-                    instrument->basenote = prop.value().toInt();
+                    instrument->basenote_ = prop.value().toInt();
                 }
 
                 // Parse and add all block elements
-                for (QDomElement temp = cur.firstChild().toElement(); !temp.isNull() && instrument->arpeggio == NULL; temp = temp.nextSibling().toElement()) {
+                for (QDomElement temp = cur.firstChild().toElement(); !temp.isNull() && instrument->arpeggio_ == NULL; temp = temp.nextSibling().toElement()) {
                     if (temp.isElement()) {
-                        instrument->arpeggio = Block::parse(temp);
+                        instrument->arpeggio_ = Block::parse(temp);
                     }
                 }
             }

@@ -45,6 +45,10 @@ public:
     int line() const;
     int commandPage() const;
     int cursorChannel() const;
+    int cursorItem() const;
+    void stepCursorItem(int direction);
+    void stepCursorRow(int direction);
+    void setCursorItem(int cursorItem);
 
 public slots:
     void setSong(Song *song);
@@ -65,8 +69,6 @@ protected:
 
 private:
     void adjustXpanning();
-    void stepCursorItem(int direction);
-    void stepCursorRow(int direction);
     void clearMarkSelection();
     void getSelectionRect(int *chStart, int *rowStart, int *nChannel, int *nRows);
     bool isValidSelection();
