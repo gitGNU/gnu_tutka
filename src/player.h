@@ -94,11 +94,6 @@ public:
     // Closes a player for a song
 //    void close();
 
-    // Starts the player thread
-    void start(Mode, int, int, int, bool);
-    // Kills the player thread
-    void stop();
-
     // Plays a note using given instrument on a given channel
     void playNote(unsigned int, unsigned char, unsigned char, unsigned char);
     // Stops notes playing on muted tracks
@@ -142,6 +137,15 @@ public:
     // Set the scheduler of a player
     void setScheduler(unsigned int);
 
+public slots:
+    void playSong();
+    void playBlock();
+    void continueSong();
+    void continueBlock();
+    // Kills the player thread
+    void stop();
+
+
 signals:
     void songChanged(Song *song);
     void blockChanged(Block *block);
@@ -162,6 +166,8 @@ private:
       SCHED_EXTERNAL_SYNC
     };
 
+    // Starts the player thread
+    void start(Mode, bool);
     // Refreshes playseq from section and block from position
     void refreshPlayseqAndBlock();
     // Advances in section and jumps to the beginning if necessary

@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <cstdio>
 #include <QKeyEvent>
 #include "player.h"
 #include "song.h"
@@ -34,9 +35,13 @@ GUI::GUI(Player *player, QWidget *parent) :
 {
     mainWindow->setupUi(this);
 
-    Tracker *tracker = mainWindow->trackerMain;
-    connect(player, SIGNAL(songChanged(Song *)), tracker, SLOT(setSong(Song *)));
-    connect(player, SIGNAL(blockChanged(Block *)), tracker, SLOT(setPattern(Block *)));
+    connect(player, SIGNAL(songChanged(Song *)), mainWindow->trackerMain, SLOT(setSong(Song *)));
+    connect(player, SIGNAL(blockChanged(Block *)), mainWindow->trackerMain, SLOT(setPattern(Block *)));
+    connect(mainWindow->buttonPlaySong, SIGNAL(clicked()), player, SLOT(playSong()));
+    connect(mainWindow->buttonPlayBlock, SIGNAL(clicked()), player, SLOT(playBlock()));
+    connect(mainWindow->buttonContinueSong, SIGNAL(clicked()), player, SLOT(continueSong()));
+    connect(mainWindow->buttonContinueBlock, SIGNAL(clicked()), player, SLOT(continueBlock()));
+    connect(mainWindow->buttonStop, SIGNAL(clicked()), player, SLOT(stop()));
 }
 
 GUI::~GUI()
@@ -423,12 +428,12 @@ void GUI::keyPressEvent(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_Shift:
             /* Right shift: Play block */
-            player->start(Player::PLAY_BLOCK, player->section(), player->position(), player->block(), 0);
+            player->playBlock();
             handled = true;
             break;
         case Qt::Key_Control:
             /* Right Control: Play song */
-            player->start(Player::PLAY_SONG, player->section(), player->position(), player->block(), 0);
+            player->playSong();
             handled = true;
             break;
         case Qt::Key_Space:

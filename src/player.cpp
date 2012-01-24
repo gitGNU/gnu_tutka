@@ -388,6 +388,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
 
 void Player::thread()
 {
+    printf("THREAD STARTING\n");
     struct timespec req, rem;
     struct timeval next, now;
     int prevsched = sched;
@@ -399,8 +400,7 @@ void Player::thread()
 
     while (true) {
         struct timeval tod;
-        Block *b;
-        int looped = 0;
+        bool looped = false;
 
         // Lock
         mutex.lock();
@@ -478,8 +478,9 @@ void Player::thread()
             midi->output(output)->setTick(ticksSoFar);
         }
 
-        this->song = song;
-        b = song->block(block_);
+        printf("TICKS: %d\n", ticksSoFar);
+
+        Block *block = song->block(block_);
 
         // Send MIDI sync if requested
         if (song->sendSync()) {
@@ -489,19 +490,19 @@ void Player::thread()
         }
 
         // The block may have changed, make sure the line won't overflow
-        if (line_ >= b->length()) {
-            line_ %= b->length();
+        if (line_ >= block->length()) {
+            line_ %= block->length();
         }
 
         // Stop notes if there are new notes about to be played
-        for (int track = 0; track < b->tracks(); track++) {
+        for (int track = 0; track < block->tracks(); track++) {
             QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
 
             // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
             if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
                 int delay = 0;
-                unsigned char basenote = b->note(line_, track);
-                unsigned char instrument = b->instrument(line_, track);
+                unsigned char basenote = block->note(line_, track);
+                unsigned char instrument = block->instrument(line_, track);
                 unsigned char note = basenote;
 
                 if (note != 0) {
@@ -524,9 +525,9 @@ void Player::thread()
                 }
 
                 if (note != 0) {
-                    for (int commandPage = 0; commandPage < b->commandPages(); commandPage++) {
-                        unsigned char command = b->command(line_, track, commandPage);
-                        unsigned char value = b->commandValue(line_, track, commandPage);
+                    for (int commandPage = 0; commandPage < block->commandPages(); commandPage++) {
+                        unsigned char command = block->command(line_, track, commandPage);
+                        unsigned char value = block->commandValue(line_, track, commandPage);
 
                         if (command != 0 || value != 0) {
                             // Check for previous command if any
@@ -561,15 +562,15 @@ void Player::thread()
         }
 
         // Play notes scheduled to be played
-        for (int track = 0; track < b->tracks(); track++) {
+        for (int track = 0; track < block->tracks(); track++) {
             QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
 
             // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
             if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
                 unsigned int volume = 127;
                 int delay = 0, hold = -1;
-                unsigned char basenote = b->note(line_, track);
-                unsigned char instrument = b->instrument(line_, track);
+                unsigned char basenote = block->note(line_, track);
+                unsigned char instrument = block->instrument(line_, track);
                 unsigned char note = basenote;
                 Block *arpeggio = NULL;
 
@@ -602,9 +603,9 @@ void Player::thread()
                 }
 
                 // Handle commands on all command pages
-                for (int commandPage = 0; commandPage < b->commandPages(); commandPage++) {
-                    unsigned char command = b->command(line_, track, commandPage);
-                    unsigned char value = b->commandValue(line_, track, commandPage);
+                for (int commandPage = 0; commandPage < block->commandPages(); commandPage++) {
+                    unsigned char command = block->command(line_, track, commandPage);
+                    unsigned char value = block->commandValue(line_, track, commandPage);
                     handleCommand(trackStatus, note, instrument, command, value, &volume, &delay, &hold);
                 }
 
@@ -840,7 +841,7 @@ void Player::midiExport(Song *song, MIDIInterface *midi)
 }
 #endif
 
-void Player::start(Mode mode, int section, int position, int block, bool cont)
+void Player::start(Mode mode, bool cont)
 {
     stop();
 
@@ -850,10 +851,7 @@ void Player::start(Mode mode, int section, int position, int block, bool cont)
 
     switch (mode) {
     case PLAY_SONG:
-        if (cont) {
-            section_ = section;
-            position_ = position;
-        } else {
+        if (!cont) {
             section_ = 0;
             position_ = 0;
             line_ = 0;
@@ -861,8 +859,6 @@ void Player::start(Mode mode, int section, int position, int block, bool cont)
         refreshPlayseqAndBlock();
         break;
     case PLAY_BLOCK:
-        block_ = block;
-        emit blockChanged(song->block(block_));
         if (!cont) {
             line_ = 0;
         }
@@ -878,10 +874,8 @@ void Player::start(Mode mode, int section, int position, int block, bool cont)
     if (thread_ == NULL) {
         thread_ = new QThread;
         // For some reason the priority setting crashes with realtime Jack
-        if (sched != SCHED_EXTERNAL_SYNC) {
-//            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
-            thread_->setPriority(QThread::TimeCriticalPriority);
-        }
+        //            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
+        thread_->start(sched != SCHED_EXTERNAL_SYNC ? QThread::TimeCriticalPriority : QThread::NormalPriority);
     }
 }
 
@@ -909,6 +903,26 @@ void Player::stop()
     } else {
         stopNotes();
     }
+}
+
+void Player::playSong()
+{
+    start(PLAY_SONG, false);
+}
+
+void Player::playBlock()
+{
+    start(PLAY_BLOCK, false);
+}
+
+void Player::continueSong()
+{
+    start(PLAY_SONG, true);
+}
+
+void Player::continueBlock()
+{
+    start(PLAY_BLOCK, true);
 }
 
 void Player::trackStatusCreate()
