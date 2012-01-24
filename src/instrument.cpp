@@ -111,3 +111,53 @@ Instrument *Instrument::parse(QDomElement element)
 
     return instrument;
 }
+
+QString Instrument::name() const
+{
+    return name_;
+}
+
+unsigned int Instrument::midiInterface() const
+{
+    return midiInterface_;
+}
+
+QString Instrument::midiInterfaceName() const
+{
+    return midiInterfaceName_;
+}
+
+unsigned short Instrument::midiPreset() const
+{
+    return midiPreset_;
+}
+
+unsigned char Instrument::midiChannel() const
+{
+    return midiChannel_;
+}
+
+unsigned char Instrument::defaultVelocity() const
+{
+    return defaultVelocity_;
+}
+
+char Instrument::transpose() const
+{
+    return transpose_;
+}
+
+unsigned char Instrument::hold() const
+{
+    return hold_;
+}
+
+Block *Instrument::arpeggio() const
+{
+    return arpeggio_;
+}
+
+unsigned char Instrument::basenote() const
+{
+    return basenote_;
+}

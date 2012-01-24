@@ -25,6 +25,7 @@
 
 #include <QObject>
 #include <QMutex>
+#include <QWaitCondition>
 
 class Song;
 class MIDI;
@@ -91,7 +92,7 @@ public:
 //    void close();
 
     /* Starts the player thread */
-    void start(unsigned int, int, int, int, int);
+    void start(Mode, int, int, int, int);
     /* Kills the player thread */
     void stop();
 
@@ -189,11 +190,11 @@ private:
     /* Mutex for the player thread */
     QMutex mutex;
     /* Cond for external sync */
-    QMutex externalSync_;
+    QWaitCondition externalSync_;
     /* External sync tick count */
     int externalSyncTicks;
     /* Kill player flag (the mutex must be used when accessing) */
-    unsigned int killThread;
+    bool killThread;
     /* MIDI subsystem */
     MIDI *midi;
     /* RTC device file descriptor */

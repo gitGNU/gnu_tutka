@@ -102,6 +102,11 @@ Message *Message::parse(QDomElement element)
     return message;
 }
 
+bool Message::isAutoSend() const
+{
+    return autoSend;
+}
+
 unsigned int Message::length() const
 {
     return data.length();

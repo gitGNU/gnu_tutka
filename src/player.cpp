@@ -20,9 +20,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <fcntl.h>
+#include <sys/ioctl.h>
 #include <sys/time.h>
+#include <QThread>
 #include "song.h"
 #include "instrument.h"
+#include "midi.h"
 #include "player.h"
 
 void Player::setSong(Song *song)
@@ -78,7 +82,7 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
 
         /* Stop currently playing note */
         if (trackStatus->note != -1) {
-            midi->outputs[trackStatus->midiInterface]->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+            midi->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
             trackStatus->note = -1;
         }
 
@@ -99,7 +103,7 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
             }
 
             /* Play note */
-            midi->outputs[instrument->midiInterface()]->noteOn(trackStatus->midiChannel, trackStatus->note, trackStatus->volume);
+            midi->output(instrument->midiInterface())->noteOn(trackStatus->midiChannel, trackStatus->note, trackStatus->volume);
         }
     }
 }
@@ -111,7 +115,7 @@ void Player::stopMuted()
         if (song->track(i)->isMuted() || (solo && !song->track(i)->isSolo())) {
             TrackStatus *trackStatus = this->trackStatus[i];
             if (trackStatus->note != -1) {
-                midi->outputs[trackStatus->midiInterface]->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+                midi->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                 trackStatus->note = -1;
             }
             trackStatus->baseNote = -1;
@@ -125,7 +129,7 @@ void Player::stopNotes()
     for (int i = 0; i < song->maxTracks(); i++) {
         TrackStatus *trackStatus = this->trackStatus[i];
         if (trackStatus->note != -1) {
-            midi->outputs[trackStatus->midiInterface]->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+            midi->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
 
             trackStatus->midiChannel = -1;
             trackStatus->note = -1;
@@ -141,8 +145,8 @@ void Player::stopAllNotes()
 {
     for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 128; j++) {
-            for (int k = 0; k < midi->numoutputs; k++) {
-                midi->outputs[k]->noteOff(i, j, 127);
+            for (int k = 0; k < midi->outputs(); k++) {
+                midi->output(k)->noteOff(i, j, 127);
             }
         }
     }
@@ -152,8 +156,8 @@ void Player::stopAllNotes()
 void Player::resetPitch()
 {
     for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < midi->numoutputs; j++) {
-            midi->outputs[j]->pitchWheel(i, 64);
+        for (int j = 0; j < midi->outputs(); j++) {
+            midi->output(j)->pitchWheel(i, 64);
         }
     }
 }
@@ -179,7 +183,7 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
         midiChannel = trackStatus->midiChannel;
     }
 
-    MIDIInterface *output = midi->outputs[midiInterface];
+    MIDIInterface *output = midi->output(midiInterface);
 
     /* Check for previous command if any */
     if (command == COMMAND_PREVIOUS_COMMAND_VALUE) {
@@ -196,16 +200,16 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
         if (midiChannel != -1) {
             if (value < 0x80) {
                 if (tick == 0) {
-                    midi->pitchWheel(midiChannel, value);
+                    output->pitchWheel(midiChannel, value);
                     midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL] = value;
                 }
             } else {
                 if (tick < song->ticksPerLine() - 1) {
                     int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL]) / ((int)song->ticksPerLine() - 1);
 
-                    midi->pitchWheel(midiChannel, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL] + tick * delta);
+                    output->pitchWheel(midiChannel, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL] + tick * delta);
                 } else {
-                    midi->pitchWheel(midiChannel, value - 0x80);
+                    output->pitchWheel(midiChannel, value - 0x80);
                     midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL] = value - 0x80;
                 }
             }
@@ -214,7 +218,7 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
     case COMMAND_PROGRAM_CHANGE:
         /* Pitch wheel can be set if the MIDI channel is known */
         if (midiChannel != -1 && tick == 0) {
-            midi->programChange(midiChannel, value & 0x7f);
+            output->programChange(midiChannel, value & 0x7f);
         }
         break;
     case COMMAND_END_BLOCK:
@@ -234,7 +238,7 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
     case COMMAND_SEND_MESSAGE:
         /* Only on first tick */
         if (tick == 0 && value < song->messages()) {
-            midi->writeRaw(song->message(value)->rawData(), song->message(value)->length());
+            output->writeRaw(song->message(value)->rawData(), song->message(value)->length());
         }
         break;
     case COMMAND_HOLD:
@@ -260,10 +264,10 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
                 if (value < 0x80) {
                     if (tick == 0) {
                         if (value > 0) {
-                            midi->aftertouch(midiChannel, trackStatus->note, value);
+                            output->aftertouch(midiChannel, trackStatus->note, value);
                             midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH] = value;
                         } else {
-                            midi->noteOff(midiChannel, trackStatus->note, 127);
+                            output->noteOff(midiChannel, trackStatus->note, 127);
                             trackStatus->note = -1;
                         }
                     }
@@ -271,9 +275,9 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
                     if (tick < song->ticksPerLine() - 1) {
                         int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH]) / ((int)song->ticksPerLine() - 1);
 
-                        midi->aftertouch(midiChannel, trackStatus->note, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH] + tick * delta);
+                        output->aftertouch(midiChannel, trackStatus->note, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH] + tick * delta);
                     } else {
-                        midi->aftertouch(midiChannel, trackStatus->note, value - 0x80);
+                        output->aftertouch(midiChannel, trackStatus->note, value - 0x80);
                         midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH] = value - 0x80;
                     }
                 }
@@ -285,16 +289,16 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
         if (midiChannel != -1) {
             if (value < 0x80) {
                 if (tick == 0) {
-                    midi->channelPressure(midiChannel, value);
+                    output->channelPressure(midiChannel, value);
                     midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE] = value;
                 }
             } else {
                 if (tick < song->ticksPerLine() - 1) {
                     int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE]) / ((int)song->ticksPerLine() - 1);
 
-                    midi->channelPressure(midiChannel, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE] + tick * delta);
+                    output->channelPressure(midiChannel, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE] + tick * delta);
                 } else {
-                    midi->channelPressure(midiChannel, value - 0x80);
+                    output->channelPressure(midiChannel, value - 0x80);
                     midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE] = value - 0x80;
                 }
             }
@@ -319,7 +323,7 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
             }
         } else {
             song->setTempo(value);
-            midi->tempo(value);
+            output->tempo(value);
             tempoChanged = 1;
         }
         break;
@@ -331,16 +335,16 @@ void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigne
         if (midiChannel != -1) {
             if (value < 0x80) {
                 if (tick == 0) {
-                    midi->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, value);
+                    output->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, value);
                     midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS] = value;
                 }
             } else {
                 if (tick < song->ticksPerLine() - 1) {
                     int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS]) / ((int)song->ticksPerLine() - 1);
 
-                    midi->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS] + tick * delta);
+                    output->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS] + tick * delta);
                 } else {
-                    midi->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, value - 0x80);
+                    output->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, value - 0x80);
                     midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS] = value - 0x80;
                 }
             }
@@ -404,7 +408,9 @@ void Player::thread()
             } else {
                 /* Make sure periodic interrupts are on */
                 if (!rtcPIE) {
+#ifdef __linux
                     ioctl(rtc, RTC_PIE_ON, 0);
+#endif
                     rtcPIE = true;
                 }
 
@@ -424,7 +430,7 @@ void Player::thread()
             prevsched = sched;
             if (externalSyncTicks == 0) {
                 /* Wait for a sync signal to come in */
-                g_cond_wait(externalSync_, mutex);
+                externalSync_.wait(&mutex);
             }
             if (externalSyncTicks > 0) {
                 externalSyncTicks--;
@@ -434,8 +440,8 @@ void Player::thread()
         }
 
         /* Handle this tick */
-        for (int i = 0; i < midi->numoutputs; i++) {
-            midi->outputs[i]->setTick(ticksSoFar);
+        for (int i = 0; i < midi->outputs(); i++) {
+            midi->output(i)->setTick(ticksSoFar);
         }
 
         this->song = song;
@@ -443,8 +449,8 @@ void Player::thread()
 
         /* Send MIDI sync if requested */
         if (song->sendSync()) {
-            for (int i = 0; i < midi->numoutputs; i++) {
-                midi->outputs[i]->clock();
+            for (int i = 0; i < midi->outputs(); i++) {
+                midi->output(i)->clock();
             }
         }
 
@@ -512,7 +518,7 @@ void Player::thread()
                     /* Stop currently playing note */
                     if ((delay >= 0 && tick == delay) || (delay < 0 && tick % (-delay) == 0)) {
                         if (trackStatus->note != -1) {
-                            midi->outputs[trackStatus->midiInterface]->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+                            midi->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                             trackStatus->note = -1;
                         }
                     }
@@ -621,7 +627,7 @@ void Player::thread()
             if (trackStatus->hold >= 0) {
                 trackStatus->hold--;
                 if (trackStatus->hold < 0 && trackStatus->note != -1) {
-                    midi->outputs[trackStatus->midiInterface]->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+                    midi->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                     trackStatus->note = -1;
                 }
             }
@@ -671,7 +677,7 @@ void Player::thread()
                 break;
             case COMMAND_TEMPO:
                 /* COMMAND_TPL and COMMAND_TEMPO can only mean "stop" as stop cmds */
-                killThread = 1;
+                killThread = true;
                 return;
                 break;
             default:
@@ -723,7 +729,9 @@ void Player::thread()
 
         /* Turn off periodic interrupts */
         if (sched == SCHED_RTC && rtcPIE) {
+#ifdef __linux
             ioctl(rtc, RTC_PIE_OFF, 0);
+#endif
             rtcPIE = false;
         }
 
@@ -755,8 +763,8 @@ void Player::midiExport(Song *song, MIDIInterface *midi)
 
     song = song;
     midi->outputs = (struct midi_interface **)calloc(midi->numoutputs, sizeof(struct midi_interface *));
-    for (i = 0; i < midi->numoutputs; i++)
-        midi->outputs[i] = midi;
+    for (i = 0; i < midi->outputs(); i++)
+        midi->output(i) = midi;
     sched = SCHED_NONE;
     mode = MODE_PLAY_SONG;
     Player::refresh_playseq_and_block(player);
@@ -802,26 +810,27 @@ void Player::midiExport(Song *song, MIDIInterface *midi)
 Player::Player(Song *song, MIDI *midi, QObject *parent) :
     QObject(parent),
     song(song),
-    midi(midi),
-    sched(SCHED_NANOSLEEP)
+    sched(SCHED_NANOSLEEP),
+    midi(midi)
 {
     /* Initialize track status array */
     trackStatusCreate(0);
 
     /* Create MIDI controller values array */
-    numMidiControllerValues = midi->numoutputs;
+    numMidiControllerValues = midi->outputs();
     midiControllerValues = (unsigned char **)calloc(numMidiControllerValues, sizeof(unsigned char *));
-    for (i = 0; i < numMidiControllerValues; i++)
+    for (int i = 0; i < numMidiControllerValues; i++) {
         midiControllerValues[i] = (unsigned char *)calloc(16 * VALUES, sizeof(unsigned char));
+    }
 
     /* Check solo status */
     checkSolo();
 
     /* Send messages to be autosent */
     for (int message = 0; message < song->messages(); message++) {
-        if (song->message(message)->autoSend) {
-            for (int j = 0; j < midi->numoutputs; j++) {
-                midi->outputs[j]->writeRaw(song->message(message)->rawData(), song->message(message)->length());
+        if (song->message(message)->isAutoSend()) {
+            for (int j = 0; j < midi->outputs(); j++) {
+                midi->output(j)->writeRaw(song->message(message)->rawData(), song->message(message)->length());
             }
         }
     }
@@ -835,14 +844,14 @@ Player::~Player()
 
     /* Free MIDI controller values array */
     if (midiControllerValues) {
-        for (i = 0; i < numMidiControllerValues; i++) {
+        for (int i = 0; i < numMidiControllerValues; i++) {
             free(midiControllerValues[i]);
         }
         free(midiControllerValues);
     }
 
     /* Free the track status array */
-    for (i = 0; i < song->maxTracks(); i++) {
+    for (int i = 0; i < song->maxTracks(); i++) {
         free(trackStatus[i]);
     }
 
@@ -853,7 +862,7 @@ Player::~Player()
 }
 
 /* Starts the player thread */
-void Player::start(unsigned int mode, int section, int position, int block, int cont)
+void Player::start(Mode mode, int section, int position, int block, int cont)
 {
     stop();
 
@@ -862,7 +871,7 @@ void Player::start(unsigned int mode, int section, int position, int block, int 
     ticksSoFar = 0;
 
     switch (mode) {
-    case MODE_PLAY_SONG:
+    case PLAY_SONG:
         if (cont) {
             section_ = section;
             position_ = position;
@@ -873,11 +882,13 @@ void Player::start(unsigned int mode, int section, int position, int block, int 
         }
         refreshPlayseqAndBlock();
         break;
-    case MODE_PLAY_BLOCK:
+    case PLAY_BLOCK:
         block_ = block;
         if (!cont) {
             line_ = 0;
         }
+        break;
+    default:
         break;
     }
 
@@ -885,12 +896,12 @@ void Player::start(unsigned int mode, int section, int position, int block, int 
     resetTime(!cont);
 
     /* Create a new thread only if there isn't one already */
-    if (thread == NULL) {
-        thread = g_thread_create((GThreadFunc) Player::thread, player, TRUE, NULL);
+    if (thread_ == NULL) {
+        thread_ = new QThread;
         /* For some reason the priority setting crashes with realtime Jack */
         if (sched != SCHED_EXTERNAL_SYNC) {
-            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
-                g_thread_set_priority(thread, G_THREAD_PRIORITY_URGENT);
+//            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
+            thread_->setPriority(QThread::TimeCriticalPriority);
         }
     }
 }
@@ -898,58 +909,48 @@ void Player::start(unsigned int mode, int section, int position, int block, int 
 /* Kills the player thread */
 void Player::stop()
 {
-    if (mode != MODE_IDLE) {
-        mode = MODE_IDLE;
+    if (mode_ != IDLE) {
+        mode_ = IDLE;
     }
 
-    if (thread != NULL) {
+    if (thread_ != NULL) {
         /* Mark the thread for killing */
         mutex.lock();
-        killthread = 1;
+        killThread = true;
         mutex.unlock();
 
         /* If external sync is used send sync to get out of the sync wait loop */
-        if (sched == SCHED_EXTERNAL_SYNC)
-            Player::external_sync(player, 0);
+        if (sched == SCHED_EXTERNAL_SYNC) {
+            externalSync(0);
+        }
 
         /* Wait until the thread is dead */
-        g_thread_join(thread);
+        thread_->wait();
 
-        thread = NULL;
-        killthread = 0;
-    } else
-        Player::stop_notes(player);
+        thread_ = NULL;
+        killThread = false;
+    } else {
+        stopNotes();
+    }
 }
 
 /* Reallocate track status array */
-void Player::trackstatusCreate(int oldmax)
+void Player::trackStatusCreate(int oldmax)
 {
     /* Free the extraneous status structures */
-    if (song->maxtracks < oldmax)
-        for (int i = song->maxtracks; i < oldmax; i++) {
-            for (int j = 0; j < trackstatus[i]->numinterfaces; j++) {
-                free(trackstatus[i]->interfaces[j]);
-            }
-            free(trackstatus[i]->interfaces);
-            free(trackstatus[i]);
-        }
-
-    trackstatus = (struct Player::track_status **)realloc(trackstatus, song->maxtracks * sizeof(struct Player::track_status *));
+    for (int i = song->maxTracks(); i < oldmax; i++) {
+        delete trackStatus.takeLast();
+    }
 
     /* Set new tracks to -1 */
-    for (int i = oldmax; i < song->maxtracks; i++) {
-        trackstatus[i] = (struct Player::track_status *)calloc(1, sizeof(struct Player::track_status));
-        trackstatus[i]->numinterfaces = midi->numoutputs;
-        trackstatus[i]->interfaces = (struct Player::interface_status **)calloc(midi->numoutputs, sizeof(struct Player::interface_status *));
-        trackstatus[i]->instrument = -1;
-        trackstatus[i]->previouscommand = 0;
-        for (int j = 0; j < trackstatus[i]->numinterfaces; j++) {
-            trackstatus[i]->interfaces[j] = (struct Player::interface_status *)calloc(1, sizeof(struct Player::interface_status));
-            trackstatus[i]->interfaces[j]->note = -1;
-            trackstatus[i]->interfaces[j]->midichannel = -1;
-            trackstatus[i]->interfaces[j]->volume = -1;
-            trackstatus[i]->interfaces[j]->hold = -1;
-        }
+    for (int i = oldmax; i < song->maxTracks(); i++) {
+        TrackStatus *status = new TrackStatus;
+        status->instrument = -1;
+        status->previousCommand = 0;
+        status->note = -1;
+        status->midiChannel = -1;
+        status->volume = -1;
+        status->hold = -1;
     }
 }
 
@@ -991,8 +992,8 @@ void Player::setPosition(int position)
     /* Bounds checking */
     if (position < 0) {
         position = 0;
-    } else if (position >= song->playseq(playseq)->length()) {
-        position = song->playseq(playseq)->length() - 1;
+    } else if (position >= song->playseq(playseq_)->length()) {
+        position = song->playseq(playseq_)->length() - 1;
     }
 
     position_ = position;
@@ -1006,8 +1007,8 @@ void Player::setBlock(int block)
     /* Bounds checking */
     if (block < 0) {
         block = 0;
-    } else if (block >= song->blocks) {
-        block = song->numblocks - 1;
+    } else if (block >= song->blocks()) {
+        block = song->blocks() - 1;
     }
 
     mutex.lock();
@@ -1022,10 +1023,10 @@ void Player::setLine(int line)
 
     /* Bounds checking */
     while (line < 0) {
-        line += song->blocks[block]->length;
+        line += song->block(block_)->length();
     }
-    while (line >= song->blocks[block]->length) {
-        line -= song->blocks[block]->length;
+    while (line >= song->block(block_)->length()) {
+        line -= song->block(block_)->length();
     }
 
     line_ = line;
@@ -1037,18 +1038,18 @@ void Player::setLine(int line)
 void Player::setTick(int tick)
 {
     mutex.lock();
-    tick_ = tick;
+    this->tick = tick;
     mutex.unlock();
 }
 
 /* Resets the player time */
 void Player::resetTime(bool resetSofar)
 {
-    gettimeofday(&playingstarted, NULL);
+    gettimeofday(&playingStarted, NULL);
 
-    if (reset_sofar) {
-        playedsofar.tv_sec = 0;
-        playedsofar.tv_usec = 0;
+    if (resetSofar) {
+        playedSoFar.tv_sec = 0;
+        playedSoFar.tv_usec = 0;
     }
 }
 
@@ -1063,8 +1064,8 @@ void Player::checkSolo()
 {
     int solo = 0;
 
-    for (int i = 0; i < song->maxtracks; i++) {
-        solo |= song->tracks[i]->solo;
+    for (int i = 0; i < song->maxTracks(); i++) {
+        solo |= song->track(i)->isSolo();
     }
 
     this->solo = solo;
@@ -1073,89 +1074,57 @@ void Player::checkSolo()
 /* Notifies the player that MIDI interfaces have changed */
 void Player::midiChanged()
 {
-    int i, j;
-
     /* Recreate the track status array */
-    if (trackstatus != NULL) {
-        for (i = 0; i < song->maxtracks; i++) {
-            /* Remove extraneous interfaces */
-            if (midi->numoutputs < trackstatus[i]->numinterfaces) {
-                for (j = midi->numoutputs; j < trackstatus[i]->numinterfaces; j++) {
-                    free(trackstatus[i]->interfaces[j]);
-                }
-            }
-
-            trackstatus[i]->interfaces = (struct Player::interface_status **)realloc(trackstatus[i]->interfaces, midi->numoutputs * sizeof(struct Player::interface_status *));
-
-            /* Create new interfaces */
-            for (j = trackstatus[i]->numinterfaces; j < midi->numoutputs; j++) {
-                trackstatus[i]->interfaces[j] = (struct Player::interface_status *)calloc(1, sizeof(struct Player::interface_status));
-                trackstatus[i]->interfaces[j]->note = -1;
-                trackstatus[i]->interfaces[j]->midichannel = -1;
-                trackstatus[i]->interfaces[j]->volume = -1;
-                trackstatus[i]->interfaces[j]->hold = -1;
-            }
-
-            trackstatus[i]->numinterfaces = midi->numoutputs;
-        }
+    while (!trackStatus.isEmpty()) {
+        delete trackStatus.takeLast();
     }
+
+    trackStatusCreate(0);
 
     /* Recreate MIDI controller values array */
     /* Remove extraneous controller values */
-    if (midi->numoutputs < nummidicontrollervalues) {
-        for (i = midi->numoutputs; i < nummidicontrollervalues; i++) {
-            free(midicontrollervalues[i]);
+    if (midi->outputs() < numMidiControllerValues) {
+        for (int i = midi->outputs(); i < numMidiControllerValues; i++) {
+            free(midiControllerValues[i]);
         }
     }
 
-    midicontrollervalues = (unsigned char **)realloc(midicontrollervalues, midi->numoutputs * sizeof(unsigned char *));
+    midiControllerValues = (unsigned char **)realloc(midiControllerValues, midi->outputs() * sizeof(unsigned char *));
 
     /* Create new controller values */
-    for (i = nummidicontrollervalues; i < midi->numoutputs; i++) {
-        midicontrollervalues[i] = (unsigned char *)calloc(16 * VALUES, sizeof(unsigned char));
+    for (int i = numMidiControllerValues; i < midi->outputs(); i++) {
+        midiControllerValues[i] = (unsigned char *)calloc(16 * VALUES, sizeof(unsigned char));
     }
-    nummidicontrollervalues = midi->numoutputs;
+    numMidiControllerValues = midi->outputs();
 }
 
 /* Lock the player */
 void Player::lock()
 {
-    if (mutex != NULL) {
-        mutex.lock();
-    }
+    mutex.lock();
 }
 
 /* Unlock the player */
 void Player::unlock()
 {
-    if (mutex != NULL) {
-        mutex.unlock();
-    }
+    mutex.unlock();
 }
 
 /* A method to notify the player about an incoming sync signal */
-void Player::external_sync(unsigned int ticks)
+void Player::externalSync(unsigned int ticks)
 {
-    nullcheck_void(player, Player::external_sync);
-
-    if (mutex != NULL) {
-        mutex.lock();
-        if (mode != MODE_IDLE) {
-            external_sync_ticks += ticks;
-        }
-        if (external_sync != NULL) {
-            g_cond_signal(external_sync);
-        }
-        mutex.unlock();
+    mutex.lock();
+    if (mode_ != IDLE) {
+        externalSyncTicks += ticks;
     }
+    externalSync_.wakeAll();
+    mutex.unlock();
 }
 
 /* Set the scheduler of a player */
 void Player::setScheduler(unsigned int scheduler)
 {
-    if (mutex != NULL) {
-        mutex.lock();
-    }
+    mutex.lock();
 
     sched = scheduler;
     if (sched == SCHED_RTC) {
@@ -1164,17 +1133,19 @@ void Player::setScheduler(unsigned int scheduler)
             sched = SCHED_NANOSLEEP;
         } else {
             bool success = false;
-            rtc_frequency = MAXIMUM_RTC_FREQ;
-            rtc_pie = 0;
+            rtcFrequency = MAXIMUM_RTC_FREQ;
+            rtcPIE = 0;
 
+#ifdef __linux
             /* RTC scheduling requested: try every 2^N value down from MAXIMUM_RTC_FREQ to MINIMUM_RTC_FREQ */
-            while (rtc_frequency >= MINIMUM_RTC_FREQ && !success) {
-                if (ioctl(rtc, RTC_UIE_OFF, 0) == -1 || ioctl(rtc, RTC_IRQP_SET, rtc_frequency) == -1) {
-                    rtc_frequency /= 2;
+            while (rtcFrequency >= MINIMUM_RTC_FREQ && !success) {
+                if (ioctl(rtc, RTC_UIE_OFF, 0) == -1 || ioctl(rtc, RTC_IRQP_SET, rtcFrequency) == -1) {
+                    rtcFrequency /= 2;
                 } else {
                     success = true;
                 }
             }
+#endif
 
             /* If all frequencies failed fall back to nanosleep() */
             if (!success) {
@@ -1190,7 +1161,30 @@ void Player::setScheduler(unsigned int scheduler)
         rtc = -1;
     }
 
-    if (mutex != NULL) {
-        mutex.unlock();
-    }
+    mutex.unlock();
+}
+
+int Player::line() const
+{
+    return line_;
+}
+
+int Player::position() const
+{
+    return position_;
+}
+
+int Player::section() const
+{
+    return section_;
+}
+
+int Player::block() const
+{
+    return block_;
+}
+
+Player::Mode Player::mode() const
+{
+    return mode_;
 }

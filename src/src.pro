@@ -9,7 +9,8 @@ SOURCES += main.cpp \
            song.cpp \
            tracker.cpp \
            player.cpp \
-           gui.cpp
+           gui.cpp \
+    midi.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -18,7 +19,8 @@ HEADERS += block.h \
            song.h \
            tracker.h \
            player.h \
-           gui.h
+           gui.h \
+    midi.h
 
 FORMS += tutka.ui
 
@@ -49,5 +51,7 @@ QMAKE_CLEAN += *.gcov \
     ./.obj/*.gcno
 
 INSTALLS += target schemas desktop icon
+
+
 
 
