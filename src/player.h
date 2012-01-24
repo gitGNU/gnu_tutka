@@ -20,12 +20,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef H_
-#define H_
+#ifndef PLAYER_H_
+#define PLAYER_H_
 
 #include <QObject>
 #include <QMutex>
 #include <QWaitCondition>
+#include <QVector>
+#include <QSharedPointer>
 
 class Song;
 class Block;
@@ -34,7 +36,7 @@ class MIDI;
 class Player : public QObject {
     Q_OBJECT
 
-    /* Track status values */
+    // Track status values
     class TrackStatus {
     private:
       char baseNote;
@@ -50,7 +52,7 @@ class Player : public QObject {
       friend class Player;
     };
 public:
-    /* Player mode */
+    // Player mode
     enum Mode {
       IDLE,
       PLAY_SONG,
@@ -85,36 +87,36 @@ public:
     int block() const;
     Mode mode() const;
 
-    /* Plays a song to a MIDI interface witout any scheduling (for export) */
+    // Plays a song to a MIDI interface witout any scheduling (for export)
 //    void midi_export(struct song *, struct midi_interface *);
-    /* Creates a player for a song */
+    // Creates a player for a song
 //    struct player *open(struct song *, struct editor *, struct midi *);
-    /* Closes a player for a song */
+    // Closes a player for a song
 //    void close();
 
-    /* Starts the player thread */
+    // Starts the player thread
     void start(Mode, int, int, int, bool);
-    /* Kills the player thread */
+    // Kills the player thread
     void stop();
 
-    /* Plays a note using given instrument on a given channel */
+    // Plays a note using given instrument on a given channel
     void playNote(unsigned int, unsigned char, unsigned char, unsigned char);
-    /* Stops notes playing on muted tracks */
+    // Stops notes playing on muted tracks
     void stopMuted();
-    /* Stops notes playing at the moment */
+    // Stops notes playing at the moment
     void stopNotes();
-    /* Stops all notes */
+    // Stops all notes
     void stopAllNotes();
-    /* Resets the pitch wheel on all channels */
+    // Resets the pitch wheel on all channels
     void resetPitch();
-    /* Handles a command */
-    void handleCommand(TrackStatus *, unsigned char, unsigned char, unsigned char, unsigned char, unsigned int *, int *, int *);
-    /* Reallocate track status array */
-    void trackStatusCreate(int);
-    /* Resets the player time */
+    // Handles a command
+    void handleCommand(QSharedPointer<TrackStatus>, unsigned char, unsigned char, unsigned char, unsigned char, unsigned int *, int *, int *);
+    // Reallocate track status array
+    void trackStatusCreate();
+    // Resets the player time
     void resetTime(bool);
 
-    /* Set player position */
+    // Set player position
     void setSection(int);
     void setPlayseq(int);
     void setPosition(int);
@@ -122,22 +124,22 @@ public:
     void setLine(int);
     void setTick(int);
 
-    /* Sets whether some tracks are considered soloed or not */
+    // Sets whether some tracks are considered soloed or not
     void setSolo(unsigned int);
-    /* Checks whether some tracks are soloed or not */
+    // Checks whether some tracks are soloed or not
     void checkSolo();
-    /* Notifies the player that MIDI interfaces have changed */
+    // Notifies the player that MIDI interfaces have changed
     void midiChanged();
 
-    /* Lock the player */
+    // Lock the player
     void lock();
-    /* Unlock the player */
+    // Unlock the player
     void unlock();
 
-    /* A method to notify the player about an incoming sync signal */
+    // A method to notify the player about an incoming sync signal
     void externalSync(unsigned int);
 
-    /* Set the scheduler of a player */
+    // Set the scheduler of a player
     void setScheduler(unsigned int);
 
 signals:
@@ -145,7 +147,7 @@ signals:
     void blockChanged(Block *block);
 
 private:
-    /* 128 MIDI controllers plus aftertouch, channel pressure and pitch wheel */
+    // 128 MIDI controllers plus aftertouch, channel pressure and pitch wheel
     enum Values {
       VALUES = (128 + 3),
       VALUES_AFTERTOUCH = 128,
@@ -160,57 +162,55 @@ private:
       SCHED_EXTERNAL_SYNC
     };
 
-    /* Refreshes playseq from section and block from position */
+    // Refreshes playseq from section and block from position
     void refreshPlayseqAndBlock();
-    /* Advances in section and jumps to the beginning if necessary */
+    // Advances in section and jumps to the beginning if necessary
     bool nextSection();
-    /* Advances in playing sequence and jumps to next section if necessary */
+    // Advances in playing sequence and jumps to next section if necessary
     bool nextPlayseq();
 
     void thread();
 
-    /* Current location in song */
+    // Current location in song
     unsigned int section_, playseq_, position_, block_, line_, tick;
-    /* The song currently being played */
+    // The song currently being played
     Song *song;
-    /* Player mode */
+    // Player mode
     Mode mode_;
-    /* Player scheduling mode */
+    // Player scheduling mode
     unsigned int sched;
-    /* Status of tracks; notes playing */
-    QList<TrackStatus *> trackStatus;
-    /* MIDI controller values; one for each controller on each channel */
-    unsigned char **midiControllerValues;
-    /* Number of entries in midicontrollervalues */
-    int numMidiControllerValues;
-    /* For measuring how long the song has been playing */
+    // Status of tracks; notes playing
+    QList<QSharedPointer<TrackStatus> > trackStatus;
+    // MIDI controller values; one for each controller on each channel
+    QList<QVector<unsigned char> > midiControllerValues;
+    // For measuring how long the song has been playing
     struct timeval playingStarted, playedSoFar;
-    /* Ticks passed after playing started */
+    // Ticks passed after playing started
     unsigned int ticksSoFar;
-    /* Player thread pointer */
+    // Player thread pointer
     QThread *thread_;
-    /* Mutex for the player thread */
+    // Mutex for the player thread
     QMutex mutex;
-    /* Cond for external sync */
+    // Cond for external sync
     QWaitCondition externalSync_;
-    /* External sync tick count */
+    // External sync tick count
     int externalSyncTicks;
-    /* Kill player flag (the mutex must be used when accessing) */
+    // Kill player flag (the mutex must be used when accessing)
     bool killThread;
-    /* MIDI subsystem */
+    // MIDI subsystem
     MIDI *midi;
-    /* RTC device file descriptor */
+    // RTC device file descriptor
     int rtc;
-    /* Obtained RTC frequency */
+    // Obtained RTC frequency
     int rtcFrequency;
-    /* RTC periodic interrupts enabled */
+    // RTC periodic interrupts enabled
     bool rtcPIE;
-    /* Indicates whether some tracks are soloed or not */
+    // Indicates whether some tracks are soloed or not
     unsigned int solo;
-    /* The command to be executed after the current line */
+    // The command to be executed after the current line
     unsigned char postCommand, postValue;
-    /* Indicates whether the tempo has changed */
+    // Indicates whether the tempo has changed
     bool tempoChanged;
 };
 
-#endif /* H_ */
+#endif // PLAYER_H_

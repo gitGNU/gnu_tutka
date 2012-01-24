@@ -112,13 +112,11 @@ void Tracker::redrawCurrentRow()
 
 void Tracker::setSong(Song *song)
 {
-    printf("SETSONG\n");
     song_ = song;
 }
 
 void Tracker::setPattern(Block *pattern)
 {
-    printf("SETPATTERN\n");
     if (curpattern != pattern) {
         curpattern = pattern;
         if (pattern != NULL) {

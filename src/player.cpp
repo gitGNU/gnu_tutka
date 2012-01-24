@@ -44,33 +44,16 @@ Player::Player(MIDI *midi, QObject *parent) :
     QObject(parent),
     song(NULL),
     sched(SCHED_NANOSLEEP),
-    midi(midi)
+    midi(midi),
+    rtc(-1)
 {
-    // Create MIDI controller values array
-    numMidiControllerValues = midi->outputs();
-    midiControllerValues = (unsigned char **)calloc(numMidiControllerValues, sizeof(unsigned char *));
-    for (int output = 0; output < numMidiControllerValues; output++) {
-        midiControllerValues[output] = (unsigned char *)calloc(16 * VALUES, sizeof(unsigned char));
-    }
+    midiChanged();
 }
 
 Player::~Player()
 {
     // Stop the player
     stop();
-
-    // Free MIDI controller values array
-    if (midiControllerValues) {
-        for (int output = 0; output < numMidiControllerValues; output++) {
-            free(midiControllerValues[output]);
-        }
-        free(midiControllerValues);
-    }
-
-    // Free the track status array
-    for (int track = 0; track < song->maxTracks(); track++) {
-        free(trackStatus[track]);
-    }
 
     // Close RTC
     if (rtc != -1) {
@@ -116,7 +99,7 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
 {
     // Notes are played if the track is not muted and no tracks are soloed or the current track is soloed
     if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
-        TrackStatus *trackStatus = this->trackStatus[track];
+        QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
 
         // Stop currently playing note
         if (trackStatus->note != -1) {
@@ -150,7 +133,7 @@ void Player::stopMuted()
 {
     for (int track = 0; track < song->maxTracks(); track++) {
         if (song->track(track)->isMuted() || (solo && !song->track(track)->isSolo())) {
-            TrackStatus *trackStatus = this->trackStatus[track];
+            QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
             if (trackStatus->note != -1) {
                 midi->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                 trackStatus->note = -1;
@@ -163,7 +146,7 @@ void Player::stopMuted()
 void Player::stopNotes()
 {
     for (int track = 0; track < song->maxTracks(); track++) {
-        TrackStatus *trackStatus = this->trackStatus[track];
+        QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
         if (trackStatus->note != -1) {
             midi->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
 
@@ -196,7 +179,7 @@ void Player::resetPitch()
     }
 }
 
-void Player::handleCommand(TrackStatus *trackStatus, unsigned char note, unsigned char instrument, unsigned char command, unsigned char value, unsigned int *volume, int *delay, int *hold)
+void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned char note, unsigned char instrument, unsigned char command, unsigned char value, unsigned int *volume, int *delay, int *hold)
 {
     if (command == 0 && value == 0) {
         return;
@@ -494,7 +477,7 @@ void Player::thread()
 
         // Stop notes if there are new notes about to be played
         for (int track = 0; track < b->tracks(); track++) {
-            TrackStatus *trackStatus = this->trackStatus[track];
+            QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
 
             // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
             if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
@@ -561,7 +544,7 @@ void Player::thread()
 
         // Play notes scheduled to be played
         for (int track = 0; track < b->tracks(); track++) {
-            TrackStatus *trackStatus = this->trackStatus[track];
+            QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
 
             // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
             if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
@@ -656,7 +639,7 @@ void Player::thread()
 
         // Decrement hold times of notes and stop notes that should be stopped
         for (int track = 0; track < song->maxTracks(); track++) {
-            TrackStatus *trackStatus = this->trackStatus[track];
+            QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
             if (trackStatus->hold >= 0) {
                 trackStatus->hold--;
                 if (trackStatus->hold < 0 && trackStatus->note != -1) {
@@ -679,7 +662,7 @@ void Player::thread()
 
             // Advance arpeggios
             for (int track = 0; track < song->maxTracks(); track++) {
-                TrackStatus *trackStatus = this->trackStatus[track];
+                QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
                 int arpeggioInstrument = trackStatus->instrument;
 
                 if (arpeggioInstrument >= 0 && trackStatus->baseNote >= 0) {
@@ -909,15 +892,17 @@ void Player::stop()
     }
 }
 
-void Player::trackStatusCreate(int oldmax)
+void Player::trackStatusCreate()
 {
+    int maxTracks = song != NULL ? song->maxTracks() : 0;
+
     // Free the extraneous status structures
-    for (int track = song->maxTracks(); track < oldmax; track++) {
-        delete trackStatus.takeLast();
+    while (trackStatus.count() > maxTracks) {
+        trackStatus.removeLast();
     }
 
     // Set new tracks to -1
-    for (int track = oldmax; track < song->maxTracks(); track++) {
+    while (trackStatus.count() < maxTracks) {
         TrackStatus *status = new TrackStatus;
         status->instrument = -1;
         status->previousCommand = 0;
@@ -925,7 +910,7 @@ void Player::trackStatusCreate(int oldmax)
         status->midiChannel = -1;
         status->volume = -1;
         status->hold = -1;
-        trackStatus.append(status);
+        trackStatus.append(QSharedPointer<TrackStatus>(status));
     }
 }
 
@@ -933,8 +918,8 @@ void Player::setSong(Song *song)
 {
     this->song = song;
 
-    // Initialize track status array
-    trackStatusCreate(0);
+    // Recreate the track status array
+    trackStatusCreate();
 
     // Check solo status
     checkSolo();
@@ -1071,27 +1056,17 @@ void Player::checkSolo()
 void Player::midiChanged()
 {
     // Recreate the track status array
-    while (!trackStatus.isEmpty()) {
-        delete trackStatus.takeLast();
-    }
+    trackStatusCreate();
 
-    trackStatusCreate(0);
-
-    // Recreate MIDI controller values array
     // Remove extraneous controller values
-    if (midi->outputs() < numMidiControllerValues) {
-        for (int output = midi->outputs(); output < numMidiControllerValues; output++) {
-            free(midiControllerValues[output]);
-        }
+    while (midi->outputs() < midiControllerValues.count()) {
+        midiControllerValues.removeLast();
     }
-
-    midiControllerValues = (unsigned char **)realloc(midiControllerValues, midi->outputs() * sizeof(unsigned char *));
 
     // Create new controller values
-    for (int output = numMidiControllerValues; output < midi->outputs(); output++) {
-        midiControllerValues[output] = (unsigned char *)calloc(16 * VALUES, sizeof(unsigned char));
+    for (int output = midiControllerValues.count(); output < midi->outputs(); output++) {
+        midiControllerValues.append(QVector<unsigned char>(16 * VALUES));
     }
-    numMidiControllerValues = midi->outputs();
 }
 
 void Player::lock()
