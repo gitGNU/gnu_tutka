@@ -42,10 +42,27 @@
 
 Player::Player(MIDI *midi, QObject *parent) :
     QObject(parent),
+    section_(0),
+    playseq_(0),
+    position_(0),
+    block_(0),
+    line_(0),
+    tick(0),
     song(NULL),
+    mode_(IDLE),
     sched(SCHED_NANOSLEEP),
+    ticksSoFar(0),
+    thread_(NULL),
+    externalSyncTicks(0),
+    killThread(false),
     midi(midi),
-    rtc(-1)
+    rtc(-1),
+    rtcFrequency(0),
+    rtcPIE(false),
+    solo(0),
+    postCommand(0),
+    postValue(0),
+    tempoChanged(false)
 {
     midiChanged();
 }
@@ -73,6 +90,7 @@ void Player::refreshPlayseqAndBlock()
     }
 
     block_ = song->playseq(playseq_)->at(position_);
+    emit blockChanged(song->block(block_));
 }
 
 bool Player::nextSection()
@@ -844,6 +862,7 @@ void Player::start(Mode mode, int section, int position, int block, bool cont)
         break;
     case PLAY_BLOCK:
         block_ = block;
+        emit blockChanged(song->block(block_));
         if (!cont) {
             line_ = 0;
         }
@@ -933,14 +952,13 @@ void Player::setSong(Song *song)
         }
     }
 
+    emit songChanged(song);
+
     // Reset to the beginning
     section_ = 0;
     position_ = 0;
     line_ = 0;
     refreshPlayseqAndBlock();
-
-    emit songChanged(song);
-    emit blockChanged(song->block(block_));
 }
 
 void Player::setSection(int section)
