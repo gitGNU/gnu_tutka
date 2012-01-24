@@ -60,13 +60,13 @@ private:
 
 class Song {
 public:
-    // Allocates a new song structure and initializes it to default values
-    Song(const QString &name = "Untitled");
+    // Loads a song from an XML file or creates a new song
+    Song(const QString &path = QString());
     // Frees a song structure and its contents
     virtual ~Song();
 
     // Inserts a new block in the block array in the given position
-    void insertBlock(unsigned int pos, int current);
+    void insertBlock(unsigned int pos, unsigned int current);
     // Deletes a block from the given position of the block array
     void deleteBlock(unsigned int pos);
     // Inserts a new playseq in the playseq array in the given position
@@ -91,10 +91,8 @@ public:
     bool checkMaxTracks();
     // Make sure the instrument exists; add instruments if necessary
     void checkInstrument(int instrument, unsigned short defaultMIDIInterface);
-    // Loads a song from an XML file
-    static Song *load(const QString &path);
     // Saves a song to an XML file
-    //void save(const QString &path);
+    void save(const QString &path);
     // Transposes all blocks in a song
     void transpose(int instrument, int halfNotes);
     // Expands/shrinks all blocks in a song
@@ -120,8 +118,10 @@ public:
     bool sendSync() const;
 
 private:
+    // Initializes an empty song
+    void init();
     // Parses a song element in an XML file
-    static Song *parse(QDomElement element);
+    bool parse(QDomElement element);
 
     // Name of the song
     QString name;

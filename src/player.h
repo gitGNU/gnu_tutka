@@ -28,6 +28,7 @@
 #include <QWaitCondition>
 
 class Song;
+class Block;
 class MIDI;
 
 class Player : public QObject {
@@ -74,7 +75,7 @@ public:
       COMMAND_MIDI_CONTROLLERS = 0x80
     };
 
-    Player(Song *song, MIDI *midi, QObject *parent = NULL);
+    Player(MIDI *midi, QObject *parent = NULL);
     virtual ~Player();
 
     void setSong(Song *song);
@@ -92,7 +93,7 @@ public:
 //    void close();
 
     /* Starts the player thread */
-    void start(Mode, int, int, int, int);
+    void start(Mode, int, int, int, bool);
     /* Kills the player thread */
     void stop();
 
@@ -141,6 +142,7 @@ public:
 
 signals:
     void songChanged(Song *song);
+    void blockChanged(Block *block);
 
 private:
     /* 128 MIDI controllers plus aftertouch, channel pressure and pitch wheel */

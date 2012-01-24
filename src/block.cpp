@@ -20,8 +20,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <QDomElement>
+#include <cstddef>
 #include <cstdlib>
+#include <QDomElement>
 #include "block.h"
 
 Block::Block(unsigned int tracks, unsigned int length, unsigned int commandPages) :
@@ -138,8 +139,8 @@ void Block::setLength(unsigned int length)
     // Copy the notes and the commands of the block to a new data array
     for (unsigned int line = 0; line < existingLength; line++) {
         for (unsigned int track = 0; track < oldTracks; track++) {
-            notes[(line * oldTracks + track) * 2] = notes[(line * oldTracks + track) * 2];
-            notes[(line * oldTracks + track) * 2 + 1] = notes[(line * oldTracks + track) * 2 + 1];
+            notes[(line * oldTracks + track) * 2] = this->notes_[(line * oldTracks + track) * 2];
+            notes[(line * oldTracks + track) * 2 + 1] = this->notes_[(line * oldTracks + track) * 2 + 1];
             for (unsigned int commandPage = 0; commandPage < commandPages_; commandPage++) {
                 commands[commandPage * 2 * oldTracks * length + (line * oldTracks + track) * 2] = commands[commandPage * 2 * oldTracks * oldLength + (line * oldTracks + track) * 2];
                 commands[commandPage * 2 * oldTracks * length + (line * oldTracks + track) * 2 + 1] = commands[commandPage * 2 * oldTracks * oldLength + (line * oldTracks + track) * 2 + 1];

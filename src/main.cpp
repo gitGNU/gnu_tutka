@@ -21,27 +21,28 @@
  */
 
 #include <QApplication>
-#include "gui.h"
-#include "player.h"
 #include "song.h"
+#include "midi.h"
+#include "player.h"
+#include "gui.h"
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    Song *song;
-    if (argc > 1) {
-        song = Song::load(argv[1]);
-    } else {
-        song = new Song;
-    }
 
-    Player *player = new Player(song, NULL);
+    MIDI *midi = new MIDI;
+    Player *player = new Player(midi);
     GUI *gui = new GUI(player);
+    Song *song = new Song(argc > 1 ? argv[1] : QString());
+    player->setSong(song);
     gui->show();
 
     int returnCode = app.exec();
 
     delete gui;
     delete player;
+    delete midi;
+    delete song;
+
     return returnCode;
 }
