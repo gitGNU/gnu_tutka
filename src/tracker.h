@@ -30,7 +30,6 @@ public:
     explicit Tracker(QWidget *parent = 0);
     void setNumChannels(int n);
     void setCommandPage(int cmdpage);
-    void setLine(int row);
     void redraw();
     void redrawRow(int row);
     void redrawCurrentRow();
@@ -53,6 +52,7 @@ public:
 public slots:
     void setSong(Song *song);
     void setPattern(Block *pattern);
+    void setLine(unsigned int row);
 
 signals:
     void patposChanged(int, int, int);

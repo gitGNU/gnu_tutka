@@ -13,7 +13,7 @@ Tracker::Tracker(QWidget *parent) :
     disp_startx(0),
     disp_chanwidth(0),
     disp_cursor(0),
-    fontdesc("Monospace", 8),
+    fontdesc("Monospace", 11),
     fontw(0),
     fonth(0),
     fontc(0),
@@ -40,6 +40,7 @@ Tracker::Tracker(QWidget *parent) :
     mouse_selecting(false),
     button(-1)
 {
+    fontdesc.setStyleHint(QFont::TypeWriter);
     calculateFontSize();
     initColors();
 
@@ -77,7 +78,7 @@ void Tracker::setCommandPage(int cmdpage)
     }
 }
 
-void Tracker::setLine(int row)
+void Tracker::setLine(unsigned int row)
 {
     if (!((curpattern == NULL && row == 0) || (row < curpattern->length()))) {
         return;
@@ -87,10 +88,7 @@ void Tracker::setLine(int row)
         patpos = row;
         emit patposChanged(row, curpattern->length(), disp_rows);
 
-        if (inSelMode) {
-            // Force re-draw of patterns in block selection mode
-            queueDraw();
-        }
+        queueDraw();
     }
 }
 

@@ -416,16 +416,13 @@ bool Song::parse(QDomElement element)
                             }
 
                             // Get playing sequence
-                            QDomElement temp2 = temp.firstChild().toElement();
-                            if (!temp2.isNull()) {
-                                while (sections_.count() < number) {
-                                    sections_.append(0);
-                                }
-                                if (sections_.count() == number) {
-                                    sections_.append(temp2.text().toInt());
-                                } else {
-                                    sections_.replace(number, temp2.text().toInt());
-                                }
+                            while (sections_.count() < number) {
+                                sections_.append(0);
+                            }
+                            if (sections_.count() == number) {
+                                sections_.append(temp.text().toInt());
+                            } else {
+                                sections_.replace(number, temp.text().toInt());
                             }
                         } else if (temp.nodeType() != QDomNode::CommentNode) {
                             qWarning("XML error: expected section, got %s\n", temp.tagName().toUtf8().constData());

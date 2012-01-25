@@ -20,17 +20,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include "midiinterface.h"
 #include "midi.h"
 
 MIDI::MIDI()
 {
+    outputs_.append(QSharedPointer<MIDIInterface>(new MIDIInterface));
 }
 
 MIDI::~MIDI()
 {
 }
 
-MIDIInterface *MIDI::output(unsigned int number) const
+QSharedPointer<MIDIInterface> MIDI::output(unsigned int number) const
 {
     return outputs_.at(number);
 }

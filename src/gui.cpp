@@ -37,6 +37,7 @@ GUI::GUI(Player *player, QWidget *parent) :
 
     connect(player, SIGNAL(songChanged(Song *)), mainWindow->trackerMain, SLOT(setSong(Song *)));
     connect(player, SIGNAL(blockChanged(Block *)), mainWindow->trackerMain, SLOT(setPattern(Block *)));
+    connect(player, SIGNAL(lineChanged(unsigned int)), mainWindow->trackerMain, SLOT(setLine(unsigned int)));
     connect(mainWindow->buttonPlaySong, SIGNAL(clicked()), player, SLOT(playSong()));
     connect(mainWindow->buttonPlayBlock, SIGNAL(clicked()), player, SLOT(playBlock()));
     connect(mainWindow->buttonContinueSong, SIGNAL(clicked()), player, SLOT(continueSong()));

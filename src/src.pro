@@ -10,7 +10,8 @@ SOURCES += main.cpp \
            tracker.cpp \
            player.cpp \
            gui.cpp \
-    midi.cpp
+    midi.cpp \
+    midiinterface.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -20,7 +21,8 @@ HEADERS += block.h \
            tracker.h \
            player.h \
            gui.h \
-    midi.h
+    midi.h \
+    midiinterface.h
 
 FORMS += tutka.ui
 
@@ -51,6 +53,8 @@ QMAKE_CLEAN += *.gcov \
     ./.obj/*.gcno
 
 INSTALLS += target schemas desktop icon
+
+
 
 
 

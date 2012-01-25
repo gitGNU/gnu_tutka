@@ -23,7 +23,7 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
-#include <QObject>
+#include <QThread>
 #include <QMutex>
 #include <QWaitCondition>
 #include <QVector>
@@ -33,7 +33,7 @@ class Song;
 class Block;
 class MIDI;
 
-class Player : public QObject {
+class Player : public QThread {
     Q_OBJECT
 
     // Track status values
@@ -149,6 +149,10 @@ public slots:
 signals:
     void songChanged(Song *song);
     void blockChanged(Block *block);
+    void lineChanged(unsigned int line);
+
+protected:
+    virtual void run();
 
 private:
     // 128 MIDI controllers plus aftertouch, channel pressure and pitch wheel
@@ -167,15 +171,13 @@ private:
     };
 
     // Starts the player thread
-    void start(Mode, bool);
+    void play(Mode, bool);
     // Refreshes playseq from section and block from position
     void refreshPlayseqAndBlock();
     // Advances in section and jumps to the beginning if necessary
     bool nextSection();
     // Advances in playing sequence and jumps to next section if necessary
     bool nextPlayseq();
-
-    void thread();
 
     // Current location in song
     unsigned int section_, playseq_, position_, block_, line_, tick;
@@ -193,8 +195,6 @@ private:
     struct timeval playingStarted, playedSoFar;
     // Ticks passed after playing started
     unsigned int ticksSoFar;
-    // Player thread pointer
-    QThread *thread_;
     // Mutex for the player thread
     QMutex mutex;
     // Cond for external sync

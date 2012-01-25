@@ -34,6 +34,7 @@
 #include <QThread>
 #include "song.h"
 #include "instrument.h"
+#include "midiinterface.h"
 #include "midi.h"
 #include "player.h"
 
@@ -41,7 +42,7 @@
 #define MINIMUM_RTC_FREQ 512
 
 Player::Player(MIDI *midi, QObject *parent) :
-    QObject(parent),
+    QThread(parent),
     section_(0),
     playseq_(0),
     position_(0),
@@ -52,7 +53,6 @@ Player::Player(MIDI *midi, QObject *parent) :
     mode_(IDLE),
     sched(SCHED_NANOSLEEP),
     ticksSoFar(0),
-    thread_(NULL),
     externalSyncTicks(0),
     killThread(false),
     midi(midi),
@@ -217,7 +217,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         midiChannel = trackStatus->midiChannel;
     }
 
-    MIDIInterface *output = midi->output(midiInterface);
+    QSharedPointer<MIDIInterface> output = midi->output(midiInterface);
 
     // Check for previous command if any
     if (command == COMMAND_PREVIOUS_COMMAND_VALUE) {
@@ -386,9 +386,8 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
     }
 }
 
-void Player::thread()
+void Player::run()
 {
-    printf("THREAD STARTING\n");
     struct timespec req, rem;
     struct timeval next, now;
     int prevsched = sched;
@@ -401,6 +400,7 @@ void Player::thread()
     while (true) {
         struct timeval tod;
         bool looped = false;
+        unsigned int oldLine = line_;
 
         // Lock
         mutex.lock();
@@ -477,8 +477,6 @@ void Player::thread()
         for (int output = 0; output < midi->outputs(); output++) {
             midi->output(output)->setTick(ticksSoFar);
         }
-
-        printf("TICKS: %d\n", ticksSoFar);
 
         Block *block = song->block(block_);
 
@@ -743,6 +741,10 @@ void Player::thread()
             break;
         }
         mutex.unlock();
+
+        if (line_ != oldLine) {
+            emit lineChanged(line_);
+        }
     }
 
     if (sched != SCHED_NONE) {
@@ -841,7 +843,7 @@ void Player::midiExport(Song *song, MIDIInterface *midi)
 }
 #endif
 
-void Player::start(Mode mode, bool cont)
+void Player::play(Mode mode, bool cont)
 {
     stop();
 
@@ -870,13 +872,9 @@ void Player::start(Mode mode, bool cont)
     // Get the starting time
     resetTime(!cont);
 
-    // Create a new thread only if there isn't one already
-    if (thread_ == NULL) {
-        thread_ = new QThread;
-        // For some reason the priority setting crashes with realtime Jack
-        //            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
-        thread_->start(sched != SCHED_EXTERNAL_SYNC ? QThread::TimeCriticalPriority : QThread::NormalPriority);
-    }
+    // For some reason the priority setting crashes with realtime Jack
+    //            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
+    start(sched != SCHED_EXTERNAL_SYNC ? QThread::TimeCriticalPriority : QThread::NormalPriority);
 }
 
 void Player::stop()
@@ -885,7 +883,7 @@ void Player::stop()
         mode_ = IDLE;
     }
 
-    if (thread_ != NULL) {
+    if (isRunning()) {
         // Mark the thread for killing
         mutex.lock();
         killThread = true;
@@ -897,8 +895,7 @@ void Player::stop()
         }
 
         // Wait until the thread is dead
-        thread_->wait();
-        thread_ = NULL;
+        wait();
         killThread = false;
     } else {
         stopNotes();
@@ -907,22 +904,22 @@ void Player::stop()
 
 void Player::playSong()
 {
-    start(PLAY_SONG, false);
+    play(PLAY_SONG, false);
 }
 
 void Player::playBlock()
 {
-    start(PLAY_BLOCK, false);
+    play(PLAY_BLOCK, false);
 }
 
 void Player::continueSong()
 {
-    start(PLAY_SONG, true);
+    play(PLAY_SONG, true);
 }
 
 void Player::continueBlock()
 {
-    start(PLAY_BLOCK, true);
+    play(PLAY_BLOCK, true);
 }
 
 void Player::trackStatusCreate()
