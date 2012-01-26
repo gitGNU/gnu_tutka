@@ -113,8 +113,10 @@ void Tracker::setSong(Song *song)
     song_ = song;
 }
 
-void Tracker::setPattern(Block *pattern)
+void Tracker::setBlock(unsigned int block)
 {
+    Block *pattern = song_ != NULL ? song_->block(block) : NULL;
+
     if (curpattern != pattern) {
         curpattern = pattern;
         if (pattern != NULL) {

@@ -51,7 +51,7 @@ public:
 
 public slots:
     void setSong(Song *song);
-    void setPattern(Block *pattern);
+    void setBlock(unsigned int block);
     void setLine(unsigned int row);
 
 signals:

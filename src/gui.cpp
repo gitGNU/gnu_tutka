@@ -22,7 +22,6 @@
 
 #include <cstdio>
 #include <QKeyEvent>
-#include "player.h"
 #include "song.h"
 #include "ui_tutka.h"
 #include "gui.h"
@@ -35,9 +34,15 @@ GUI::GUI(Player *player, QWidget *parent) :
 {
     mainWindow->setupUi(this);
 
+    connect(player, SIGNAL(songChanged(Song *)), this, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), mainWindow->trackerMain, SLOT(setSong(Song *)));
-    connect(player, SIGNAL(blockChanged(Block *)), mainWindow->trackerMain, SLOT(setPattern(Block *)));
+    connect(player, SIGNAL(sectionChanged(unsigned int)), this, SLOT(setSection(unsigned int)));
+    connect(player, SIGNAL(playseqChanged(unsigned int)), this, SLOT(setPlayseq(unsigned int)));
+    connect(player, SIGNAL(positionChanged(unsigned int)), this, SLOT(setPosition(unsigned int)));
+    connect(player, SIGNAL(blockChanged(unsigned int)), this, SLOT(setBlock(unsigned int)));
+    connect(player, SIGNAL(blockChanged(unsigned int)), mainWindow->trackerMain, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(lineChanged(unsigned int)), mainWindow->trackerMain, SLOT(setLine(unsigned int)));
+    connect(player, SIGNAL(modeChanged(Player::Mode)), this, SLOT(setMode(Player::Mode)));
     connect(mainWindow->buttonPlaySong, SIGNAL(clicked()), player, SLOT(playSong()));
     connect(mainWindow->buttonPlayBlock, SIGNAL(clicked()), player, SLOT(playBlock()));
     connect(mainWindow->buttonContinueSong, SIGNAL(clicked()), player, SLOT(continueSong()));
@@ -791,5 +796,58 @@ void GUI::keyReleaseEvent(QKeyEvent * event)
 
     if (handled) {
         event->accept();
+    }
+}
+
+void GUI::setSong(Song *song)
+{
+    this->song = song;
+
+    setSection(player->section());
+    setPlayseq(player->playseq());
+    setPosition(player->position());
+    setBlock(player->block());
+    setCommandPage(mainWindow->trackerMain->commandPage());
+    setMode(player->mode());
+    mainWindow->labelTimer->setText(QString("00:00"));
+}
+
+void GUI::setSection(unsigned int section)
+{
+    mainWindow->labelSection->setText(QString("Section %1/%2").arg(section + 1).arg(song->sections()));
+}
+
+void GUI::setPlayseq(unsigned int playseq)
+{
+    mainWindow->labelPlayingSequence->setText(QString("Playing Sequence %1/%2").arg(playseq + 1).arg(song->playseqs()));
+}
+
+void GUI::setPosition(unsigned int position)
+{
+    mainWindow->labelPosition->setText(QString("Position %1/%2").arg(position + 1).arg(song->playseq(player->playseq())->length()));
+}
+
+void GUI::setBlock(unsigned int block)
+{
+    mainWindow->labelBlock->setText(QString("Block %1/%2").arg(block + 1).arg(song->blocks()));
+}
+
+void GUI::setCommandPage(unsigned int commandPage)
+{
+    mainWindow->labelCommandPage->setText(QString("Command Page %1/%2").arg(commandPage + 1).arg(song->block(player->block())->commandPages()));
+}
+
+void GUI::setMode(Player::Mode mode)
+{
+    switch (mode) {
+    case Player::PLAY_SONG:
+        mainWindow->labelStatus->setText(QString("Playing song"));
+        break;
+    case Player::PLAY_BLOCK:
+        mainWindow->labelStatus->setText(QString("Playing block"));
+        break;
+    default:
+        mainWindow->labelStatus->setText(QString("Stopped"));
+        break;
     }
 }

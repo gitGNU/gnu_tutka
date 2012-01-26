@@ -61,8 +61,7 @@ Player::Player(MIDI *midi, QObject *parent) :
     rtcPIE(false),
     solo(0),
     postCommand(0),
-    postValue(0),
-    tempoChanged(false)
+    postValue(0)
 {
     midiChanged();
 }
@@ -80,6 +79,11 @@ Player::~Player()
 
 void Player::refreshPlayseqAndBlock()
 {
+    unsigned int oldSection = section_;
+    unsigned int oldPlayseq = playseq_;
+    unsigned int oldPosition = position_;
+    unsigned int oldBlock = block_;
+
     if (section_ >= song->sections()) {
         section_ = 0;
     }
@@ -90,27 +94,53 @@ void Player::refreshPlayseqAndBlock()
     }
 
     block_ = song->playseq(playseq_)->at(position_);
-    emit blockChanged(song->block(block_));
+
+    if (section_ != oldSection) {
+        emit sectionChanged(section_);
+    }
+    if (playseq_ != oldPlayseq) {
+        emit playseqChanged(playseq_);
+    }
+    if (position_ != oldPosition) {
+        emit positionChanged(position_);
+    }
+    if (block_ != oldBlock) {
+        emit blockChanged(block_);
+    }
 }
 
 bool Player::nextSection()
 {
+    unsigned int oldSection = section_;
     section_++;
-    if (section_ >= song->sections()) {
+
+    bool looped = section_ >= song->sections();
+    if (looped) {
         section_ = 0;
-        return true;
     }
-    return false;
+
+    if (section_ != oldSection) {
+        emit sectionChanged(section_);
+    }
+
+    return looped;
 }
 
-bool Player::nextPlayseq()
+bool Player::nextPosition()
 {
+    unsigned int oldPosition = position_;
     position_++;
-    if (position_ >= song->playseq(playseq_)->length()) {
+
+    bool looped = position_ >= song->playseq(playseq_)->length();
+    if (looped) {
         position_ = 0;
-        return nextSection();
     }
-    return false;
+
+    if (position_ != oldPosition) {
+        emit positionChanged(position_);
+    }
+
+    return looped ? nextSection() : false;
 }
 
 void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigned char volume, unsigned char track)
@@ -346,7 +376,6 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
             }
         } else {
             song->setTPL(value);
-            tempoChanged = 1;
         }
         break;
     case COMMAND_TEMPO:
@@ -358,7 +387,6 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         } else {
             song->setTempo(value);
             output->tempo(value);
-            tempoChanged = 1;
         }
         break;
     }
@@ -673,7 +701,7 @@ void Player::run()
 
         // Advance and handle post commands if ticksperline ticks have passed
         if (tick == 0) {
-            int changeblock = 0;
+            bool changeBlock = false;
 
             line_++;
 
@@ -695,8 +723,8 @@ void Player::run()
             case COMMAND_END_BLOCK:
                 line_ = postValue;
                 if (mode_ == PLAY_SONG) {
-                    looped = nextPlayseq();
-                    changeblock = 1;
+                    looped = nextPosition();
+                    changeBlock = true;
                 }
                 break;
             case COMMAND_PLAYSEQ_POSITION:
@@ -706,20 +734,20 @@ void Player::run()
                     position_ = 0;
                     looped = nextSection();
                 }
-                changeblock = 1;
+                changeBlock = true;
                 break;
             case COMMAND_TEMPO:
                 // COMMAND_TPL and COMMAND_TEMPO can only mean "stop" as stop cmds
                 killThread = true;
-                return;
+                return; // TODO ??
                 break;
             default:
                 // Advance in block
                 if (line_ >= song->block(block_)->length()) {
                     line_ = 0;
                     if (mode_ == PLAY_SONG) {
-                        looped = nextPlayseq();
-                        changeblock = 1;
+                        looped = nextPosition();
+                        changeBlock = true;
                     }
                 }
                 break;
@@ -727,7 +755,7 @@ void Player::run()
             postCommand = 0;
             postValue = 0;
 
-            if (changeblock == 1) {
+            if (changeBlock) {
                 refreshPlayseqAndBlock();
             }
 
@@ -745,6 +773,12 @@ void Player::run()
         if (line_ != oldLine) {
             emit lineChanged(line_);
         }
+
+        /*
+        if (time_ != oldTime) {
+            emit timeChanged(time_);
+        }
+        */
     }
 
     if (sched != SCHED_NONE) {
@@ -847,6 +881,7 @@ void Player::play(Mode mode, bool cont)
 {
     stop();
 
+    Mode oldMode = mode_;
     mode_ = mode;
     tick = 0;
     ticksSoFar = 0;
@@ -875,12 +910,17 @@ void Player::play(Mode mode, bool cont)
     // For some reason the priority setting crashes with realtime Jack
     //            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
     start(sched != SCHED_EXTERNAL_SYNC ? QThread::TimeCriticalPriority : QThread::NormalPriority);
+
+    if (mode_ != oldMode) {
+        emit modeChanged(mode_);
+    }
 }
 
 void Player::stop()
 {
     if (mode_ != IDLE) {
         mode_ = IDLE;
+        emit modeChanged(mode_);
     }
 
     if (isRunning()) {
@@ -966,6 +1006,7 @@ void Player::setSong(Song *song)
     emit songChanged(song);
 
     // Reset to the beginning
+    block_ = (unsigned int)-1;
     section_ = 0;
     position_ = 0;
     line_ = 0;
@@ -974,6 +1015,8 @@ void Player::setSong(Song *song)
 
 void Player::setSection(int section)
 {
+    unsigned int oldSection = section_;
+
     // Bounds checking
     if (section < 0) {
         section = 0;
@@ -984,10 +1027,16 @@ void Player::setSection(int section)
     mutex.lock();
     section_ = section;
     mutex.unlock();
+
+    if (section_ != oldSection) {
+        emit sectionChanged(section_);
+    }
 }
 
 void Player::setPlayseq(int playseq)
 {
+    unsigned int oldPlayseq = playseq_;
+
     // Bounds checking
     if (playseq < 0) {
         playseq = 0;
@@ -998,10 +1047,16 @@ void Player::setPlayseq(int playseq)
     mutex.lock();
     playseq_ = playseq;
     mutex.unlock();
+
+    if (playseq_ != oldPlayseq) {
+        emit playseqChanged(playseq_);
+    }
 }
 
 void Player::setPosition(int position)
 {
+    unsigned int oldPosition = position_;
+
     mutex.lock();
 
     // Bounds checking
@@ -1014,10 +1069,16 @@ void Player::setPosition(int position)
     position_ = position;
 
     mutex.unlock();
+
+    if (position_ != oldPosition) {
+        emit positionChanged(position_);
+    }
 }
 
 void Player::setBlock(int block)
 {
+    unsigned int oldBlock = block_;
+
     // Bounds checking
     if (block < 0) {
         block = 0;
@@ -1029,11 +1090,15 @@ void Player::setBlock(int block)
     block_ = block;
     mutex.unlock();
 
-    emit blockChanged(song->block(block_));
+    if (block_ != oldBlock) {
+        emit blockChanged(block_);
+    }
 }
 
 void Player::setLine(int line)
 {
+    unsigned int oldLine = line_;
+
     mutex.lock();
 
     // Bounds checking
@@ -1047,6 +1112,10 @@ void Player::setLine(int line)
     line_ = line;
 
     mutex.unlock();
+
+    if (line_ != oldLine) {
+        emit lineChanged(line_);
+    }
 }
 
 void Player::setTick(int tick)
@@ -1160,24 +1229,29 @@ void Player::setScheduler(unsigned int scheduler)
     mutex.unlock();
 }
 
-int Player::line() const
-{
-    return line_;
-}
-
-int Player::position() const
-{
-    return position_;
-}
-
-int Player::section() const
+unsigned int Player::section() const
 {
     return section_;
 }
 
-int Player::block() const
+unsigned int Player::playseq() const
+{
+    return playseq_;
+}
+
+unsigned int Player::position() const
+{
+    return position_;
+}
+
+unsigned int Player::block() const
 {
     return block_;
+}
+
+unsigned int Player::line() const
+{
+    return line_;
 }
 
 Player::Mode Player::mode() const

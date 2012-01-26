@@ -33,17 +33,17 @@ public:
     Playseq();
     virtual ~Playseq();
 
+    // Returns the length of the playing sequence
+    unsigned int length() const;
+    // Returns the block at the given position
+    unsigned int at(unsigned int pos) const;
+    // Sets the block at the given position
+    void set(unsigned int pos, unsigned int block);
     // Inserts a new block in the block array in the given position
     void insert(unsigned int pos);
-    // Deletes a section from the given position of the section array
+    // Deletes a block from the given position of the block array
     void remove(unsigned int pos);
-    void set(unsigned int, unsigned int);
     //void save(int, xmlNodePtr);
-
-    unsigned int at(unsigned int pos) const;
-
-    unsigned int length() const;
-
     // Parses a playingsequence element in an XML file
     static Playseq *parse(QDomElement element);
 

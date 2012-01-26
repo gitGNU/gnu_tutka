@@ -23,13 +23,14 @@
 #ifndef GUI_H_
 #define GUI_H_
 
+#include "player.h"
 #include <QMainWindow>
 
 namespace Ui {
     class MainWindow;
 }
 
-class Player;
+class Song;
 
 class GUI : public QMainWindow
 {
@@ -43,8 +44,18 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
 
+private slots:
+    void setSong(Song *song);
+    void setSection(unsigned int section);
+    void setPlayseq(unsigned int playseq);
+    void setPosition(unsigned int position);
+    void setBlock(unsigned int block);
+    void setCommandPage(unsigned int commandPage);
+    void setMode(Player::Mode mode);
+
 private:
     Player *player;
+    Song *song;
     Ui::MainWindow *mainWindow;
     QList<int> keyboardKeysDown;
     int chordStatus;

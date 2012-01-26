@@ -81,10 +81,11 @@ public:
     virtual ~Player();
 
     void setSong(Song *song);
-    int line() const;
-    int position() const;
-    int section() const;
-    int block() const;
+    unsigned int section() const;
+    unsigned int playseq() const;
+    unsigned int position() const;
+    unsigned int block() const;
+    unsigned int line() const;
     Mode mode() const;
 
     // Plays a song to a MIDI interface witout any scheduling (for export)
@@ -145,11 +146,14 @@ public slots:
     // Kills the player thread
     void stop();
 
-
 signals:
     void songChanged(Song *song);
-    void blockChanged(Block *block);
+    void sectionChanged(unsigned int section);
+    void playseqChanged(unsigned int playseq);
+    void positionChanged(unsigned int position);
+    void blockChanged(unsigned int block);
     void lineChanged(unsigned int line);
+    void modeChanged(Player::Mode mode);
 
 protected:
     virtual void run();
@@ -177,7 +181,7 @@ private:
     // Advances in section and jumps to the beginning if necessary
     bool nextSection();
     // Advances in playing sequence and jumps to next section if necessary
-    bool nextPlayseq();
+    bool nextPosition();
 
     // Current location in song
     unsigned int section_, playseq_, position_, block_, line_, tick;

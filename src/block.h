@@ -33,6 +33,12 @@ public:
     Block(unsigned int tracks = 4, unsigned int length = 64, unsigned int commandPages = 1);
     virtual ~Block();
 
+    // Returns the number of tracks in the block
+    unsigned int tracks() const;
+    // Returns the length of the block
+    unsigned int length() const;
+    // Returns the number of command pages in the block
+    unsigned int commandPages() const;
     // Gets a note from a block
     unsigned char note(unsigned int line, unsigned int track);
     // Sets a note in a block
@@ -71,18 +77,15 @@ public:
     void expandShrink(int factor, int startTrack, int startLine, int endTrack, int endLine);
     // Changes or swaps an instrument to another
     void changeInstrument(int from, int to, bool swap, int startTrack, int startLine, int endTrack, int endLine);
+    // Inserts a line to specific tracks in the block
     void insertLine(int line, int track = -1);
-    /* Deletes a line from all tracks in the current block */
+    // Deletes a line from specific tracks in the block
     void deleteLine(int line, int track = -1);
-
-    unsigned int tracks() const;
-    unsigned int length() const;
-    unsigned int commandPages() const;
-
     // Parses a block element in an XML file
     static Block *parse(QDomElement element);
 
 private:
+    // Makes sure the given area is inside the block
     void checkBounds(int &startTrack, int &startLine, int &endTrack, int &endLine);
 
     // Name

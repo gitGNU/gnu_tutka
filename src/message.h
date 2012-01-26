@@ -30,22 +30,24 @@ public:
     Message();
     virtual ~Message();
 
+    // Returns whether the message should be automatically sent after loading
+    bool isAutoSend() const;
+    // Returns the length of the message
+    unsigned int length() const;
+    // Returns a pointer to the raw data of the message
+    const char *rawData() const;
     // Sets the length of a MIDI message
     void setLength(unsigned int);
     // Sets the auto send flag of a MIDI message
     void setAutoSend(bool);
-    // Parses a element in an XML file
-    static Message *parse(QDomElement element);
-    // Saves a message to an XML file
-    //void save(int, xmlNodePtr);
     // Loads a message from a file
     void loadBinary(const QString &filename);
     // Saves a message to a file
     void saveBinary(const QString &filename);
-
-    bool isAutoSend() const;
-    unsigned int length() const;
-    const char *rawData() const;
+    // Parses a element in an XML file
+    static Message *parse(QDomElement element);
+    // Saves a message to an XML file
+    //void save(int, xmlNodePtr);
 
 private:
     // Name

@@ -33,6 +33,21 @@ Message::~Message()
 {
 }
 
+bool Message::isAutoSend() const
+{
+    return autoSend;
+}
+
+unsigned int Message::length() const
+{
+    return data.length();
+}
+
+const char *Message::rawData() const
+{
+    return data.constData();
+}
+
 void Message::setLength(unsigned int length)
 {
     data.resize(length);
@@ -68,8 +83,6 @@ Message *Message::parse(QDomElement element)
         QDomAttr prop;
         QDomElement temp = element.firstChild().toElement();
         char c[3];
-        int i;
-        unsigned int d;
 
         // Temporary string for hexadecimal parsing
         c[2] = 0;
@@ -89,7 +102,8 @@ Message *Message::parse(QDomElement element)
         if (!temp.isNull()) {
             int length = temp.text().length() / 2;
             message->data.resize(length);
-            for (i = 0; i < length; i++) {
+            unsigned int d;
+            for (int i = 0; i < length; i++) {
                 c[0] = temp.text().at(i * 2).toAscii();
                 c[1] = temp.text().at(i * 2 + 1).toAscii();
                 sscanf((char *)c, "%X", &d);
@@ -100,19 +114,4 @@ Message *Message::parse(QDomElement element)
         qWarning("XML error: expected message, got %s\n", element.tagName().toUtf8().constData());
     }
     return message;
-}
-
-bool Message::isAutoSend() const
-{
-    return autoSend;
-}
-
-unsigned int Message::length() const
-{
-    return data.length();
-}
-
-const char *Message::rawData() const
-{
-    return data.constData();
 }

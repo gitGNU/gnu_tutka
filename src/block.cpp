@@ -38,6 +38,21 @@ Block::~Block()
     free(commands_);
 }
 
+unsigned int Block::tracks() const
+{
+    return tracks_;
+}
+
+unsigned int Block::length() const
+{
+    return length_;
+}
+
+unsigned int Block::commandPages() const
+{
+    return commandPages_;
+}
+
 unsigned char Block::note(unsigned int line, unsigned int track)
 {
     return notes_[2 * (tracks_ * line + track)];
@@ -119,7 +134,6 @@ void Block::setTracks(unsigned int tracks)
     free(this->commands_);
 
     // Use new arrays
-    qWarning("XX SET TRAX");
     this->notes_ = notes;
     this->commands_ = commands;
     this->tracks_ = tracks;
@@ -153,7 +167,6 @@ void Block::setLength(unsigned int length)
     free(this->commands_);
 
     // Use new arrays
-    qWarning("XX SET LENGTH");
     this->notes_ = notes;
     this->commands_ = commands;
     this->length_ = length;
@@ -378,59 +391,43 @@ void Block::changeInstrument(int from, int to, bool swap, int startTrack, int st
     }
 }
 
-void Block::checkBounds(int &startTrack, int &startLine, int &endTrack, int &endLine)
-{
-    if (startTrack < 0) {
-        startTrack = 0;
-    }
-    if (startLine < 0) {
-        startLine = 0;
-    }
-    if (startTrack >= tracks_) {
-        startTrack = tracks_ - 1;
-    }
-    if (startLine >= length_) {
-        startLine = length_ - 1;
-    }
-    if (endTrack < 0) {
-        endTrack = 0;
-    }
-    if (endLine < 0) {
-        endLine = 0;
-    }
-    if (endTrack >= tracks_) {
-        endTrack = tracks_ - 1;
-    }
-    if (endLine >= length_) {
-        endLine = length_ - 1;
-    }
 
-    // Make sure start and end are the correct way around
-    if (startTrack > endTrack) {
-        int track = startTrack;
-        startTrack = endTrack;
-        endTrack = track;
+void Block::insertLine(int line, int track)
+{
+    int startTrack = track >= 0 ? track : 0;
+    int endTrack = track >= 0 ? (track + 1) : (tracks_ - 1);
+
+    // Move lines downwards
+    Block *block = copy(startTrack, line, endTrack, length_ - 1);
+    paste(block, startTrack, line + 1);
+
+    // Clear the inserted line
+    for (int j = startTrack; j < endTrack; j++) {
+        setNote(line, j, 0, 0, 0);
+        for (int i = 0; i < commandPages_; i++) {
+            setCommandFull(line, j, i, 0, 0);
+        }
     }
-    if (startLine > endLine) {
-        int line = startLine;
-        startLine = endLine;
-        endLine = line;
-    }
+    delete block;
 }
 
-unsigned int Block::tracks() const
+void Block::deleteLine(int line, int track)
 {
-    return tracks_;
-}
+    int startTrack = track >= 0 ? track : 0;
+    int endTrack = track >= 0 ? (track + 1) : (tracks_ - 1);
 
-unsigned int Block::length() const
-{
-    return length_;
-}
+    // Move lines upwards
+    Block *block = copy(startTrack, line + 1, endTrack, length_ - 1);
+    paste(block, startTrack, line);
 
-unsigned int Block::commandPages() const
-{
-    return commandPages_;
+    // Clear the last line
+    for (int track = startTrack; track < endTrack; track++) {
+        setNote(length_ - 1, track, 0, 0, 0);
+        for (int commandPage = 0; commandPage < commandPages_; commandPage++) {
+            setCommandFull(length_ - 1, track, commandPage, 0, 0);
+        }
+    }
+    delete block;
 }
 
 Block *Block::parse(QDomElement element)
@@ -533,40 +530,42 @@ Block *Block::parse(QDomElement element)
     return block;
 }
 
-void Block::insertLine(int line, int track)
+void Block::checkBounds(int &startTrack, int &startLine, int &endTrack, int &endLine)
 {
-    int startTrack = track >= 0 ? track : 0;
-    int endTrack = track >= 0 ? (track + 1) : (tracks_ - 1);
-
-    // Move lines downwards
-    Block *block = copy(startTrack, line, endTrack, length_ - 1);
-    paste(block, startTrack, line + 1);
-
-    // Clear the inserted line
-    for (int j = startTrack; j < endTrack; j++) {
-        setNote(line, j, 0, 0, 0);
-        for (int i = 0; i < commandPages_; i++) {
-            setCommandFull(line, j, i, 0, 0);
-        }
+    if (startTrack < 0) {
+        startTrack = 0;
     }
-    delete block;
-}
-
-void Block::deleteLine(int line, int track)
-{
-    int startTrack = track >= 0 ? track : 0;
-    int endTrack = track >= 0 ? (track + 1) : (tracks_ - 1);
-
-    // Move lines upwards
-    Block *block = copy(startTrack, line + 1, endTrack, length_ - 1);
-    paste(block, startTrack, line);
-
-    // Clear the last line
-    for (int j = startTrack; j < endTrack; j++) {
-        setNote(length_ - 1, j, 0, 0, 0);
-        for (int i = 0; i < commandPages_; i++) {
-            setCommandFull(length_ - 1, j, i, 0, 0);
-        }
+    if (startLine < 0) {
+        startLine = 0;
     }
-    delete block;
+    if (startTrack >= tracks_) {
+        startTrack = tracks_ - 1;
+    }
+    if (startLine >= length_) {
+        startLine = length_ - 1;
+    }
+    if (endTrack < 0) {
+        endTrack = 0;
+    }
+    if (endLine < 0) {
+        endLine = 0;
+    }
+    if (endTrack >= tracks_) {
+        endTrack = tracks_ - 1;
+    }
+    if (endLine >= length_) {
+        endLine = length_ - 1;
+    }
+
+    // Make sure start and end are the correct way around
+    if (startTrack > endTrack) {
+        int track = startTrack;
+        startTrack = endTrack;
+        endTrack = track;
+    }
+    if (startLine > endLine) {
+        int line = startLine;
+        startLine = endLine;
+        endLine = line;
+    }
 }

@@ -32,6 +32,21 @@ Playseq::~Playseq()
 {
 }
 
+unsigned int Playseq::length() const
+{
+    return blockNumbers.length();
+}
+
+unsigned int Playseq::at(unsigned int pos) const
+{
+    return blockNumbers[pos < blockNumbers.count() ? pos : (blockNumbers.count() - 1)];
+}
+
+void Playseq::set(unsigned int pos, unsigned int block)
+{
+    blockNumbers[pos < blockNumbers.count() ? pos : (blockNumbers.count() - 1)] = block;
+}
+
 void Playseq::insert(unsigned int pos)
 {
     // Do not allow inserting beyond the block array size
@@ -40,7 +55,7 @@ void Playseq::insert(unsigned int pos)
     }
 
     // Which block number to insert
-    blockNumbers.insert(pos, pos < blockNumbers.count() ? blockNumbers[pos] : blockNumbers[blockNumbers.count() - 1]);
+    blockNumbers.insert(pos, blockNumbers[pos < blockNumbers.count() ? pos : (blockNumbers.count() - 1)]);
 }
 
 void Playseq::remove(unsigned int pos)
@@ -51,31 +66,14 @@ void Playseq::remove(unsigned int pos)
     }
 }
 
-void Playseq::set(unsigned int pos, unsigned int block)
-{
-    blockNumbers[pos] = block;
-}
-
-unsigned int Playseq::at(unsigned int pos) const
-{
-    return blockNumbers[pos];
-}
-
-unsigned int Playseq::length() const
-{
-    return blockNumbers.length();
-}
-
 Playseq *Playseq::parse(QDomElement element)
 {
     Playseq *playseq = NULL;
 
     if (element.tagName() == "playingsequence") {
-        QDomAttr prop;
-
         // Allocate playseq
         playseq = new Playseq;
-        prop = element.attributeNode("name");
+        QDomAttr prop = element.attributeNode("name");
         if (!prop.isNull()) {
             playseq->name = prop.value();
         }
@@ -84,7 +82,7 @@ Playseq *Playseq::parse(QDomElement element)
         QDomElement cur = element.firstChild().toElement();
         while(!cur.isNull()) {
             if (cur.tagName() == "position") {
-                int block = 0, number = 0;
+                int number = 0;
 
                 // Get the position
                 prop = cur.attributeNode("number");
@@ -93,7 +91,7 @@ Playseq *Playseq::parse(QDomElement element)
                 }
 
                 // Get block number
-                block = cur.text().toInt();
+                int block = cur.text().toInt();
 
                 while (playseq->blockNumbers.count() < number) {
                     playseq->blockNumbers.append(0);
