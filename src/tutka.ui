@@ -16,9 +16,6 @@
   </property>
   <widget class="QWidget" name="widgetMain">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="spacing">
-     <number>6</number>
-    </property>
     <property name="margin">
      <number>0</number>
     </property>
@@ -117,7 +114,14 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QSpinBox" name="spinBoxInstrument"/>
+              <widget class="QSpinBox" name="spinBoxInstrument">
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>255</number>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QLineEdit" name="lineEditInstrument"/>
@@ -173,7 +177,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBoxSpace"/>
+              <widget class="QSpinBox" name="spinBoxSpace">
+               <property name="maximum">
+                <number>32</number>
+               </property>
+               <property name="value">
+                <number>1</number>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QLabel" name="labelKeyboardOctaves">
@@ -211,7 +222,7 @@
          <x>0</x>
          <y>0</y>
          <width>817</width>
-         <height>395</height>
+         <height>374</height>
         </rect>
        </property>
       </widget>

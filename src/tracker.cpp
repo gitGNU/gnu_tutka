@@ -179,8 +179,9 @@ void Tracker::stepCursorItem(int direction)
         cursor_item %= 7;
         stepCursorChannel(direction);
     } else if (cursor_item < 0) {
-        cursor_item += 7;
+        cursor_item = 0;
         stepCursorChannel(direction);
+        cursor_item = 6;
     } else {
         adjustXpanning();
         queueDraw();
@@ -209,11 +210,7 @@ void Tracker::stepCursorChannel(int direction)
     }
 
     adjustXpanning();
-
-    if (inSelMode) {
-        // Force re-draw of patterns in block selection mode
-        queueDraw();
-    }
+    queueDraw();
 }
 
 void Tracker::stepCursorRow(int direction)
@@ -648,7 +645,7 @@ void Tracker::initColors()
 void Tracker::calculateFontSize()
 {
     QFontMetrics metrics(fontdesc);
-    fontw = metrics.width('X');
+    fontw = metrics.width('0');
     fonth = metrics.ascent() + 1;
     fontc = metrics.ascent();
 }

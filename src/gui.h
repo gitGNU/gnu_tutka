@@ -25,6 +25,7 @@
 
 #include "player.h"
 #include <QMainWindow>
+#include <QHash>
 
 namespace Ui {
     class MainWindow;
@@ -40,9 +41,7 @@ public:
     explicit GUI(Player *player, QWidget *parent = 0);
     virtual ~GUI();
 
-protected:
-    virtual void keyPressEvent(QKeyEvent *event);
-    virtual void keyReleaseEvent(QKeyEvent *event);
+    virtual bool eventFilter(QObject *watched, QEvent *event);
 
 private slots:
     void setSong(Song *song);
@@ -55,11 +54,15 @@ private slots:
     void setTime(unsigned int time);
 
 private:
+    bool keyPress(QKeyEvent *event);
+    bool keyRelease(QKeyEvent *event);
+
     Player *player;
     Song *song;
     Ui::MainWindow *mainWindow;
     QList<int> keyboardKeysDown;
     int chordStatus;
+    QHash<int, char> keyToNote;
 };
 
 #endif /* GUI_H_ */

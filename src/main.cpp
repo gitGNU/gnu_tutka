@@ -36,6 +36,7 @@ int main(int argc, char **argv)
     Song *song = new Song(argc > 1 ? argv[1] : QString());
     player->setSong(song);
     gui->show();
+    gui->raise();
 
     int returnCode = app.exec();
 
