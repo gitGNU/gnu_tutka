@@ -52,6 +52,7 @@ GUI::GUI(Player *player, QWidget *parent) :
     connect(mainWindow->buttonContinueSong, SIGNAL(clicked()), player, SLOT(continueSong()));
     connect(mainWindow->buttonContinueBlock, SIGNAL(clicked()), player, SLOT(continueBlock()));
     connect(mainWindow->buttonStop, SIGNAL(clicked()), player, SLOT(stop()));
+    connect(mainWindow->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
     keyToNote.insert(Qt::Key_Z, 1);
     keyToNote.insert(Qt::Key_S, 2);
