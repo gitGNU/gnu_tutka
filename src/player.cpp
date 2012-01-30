@@ -419,6 +419,7 @@ void Player::run()
     struct timespec req, rem;
     struct timeval next, now;
     int prevsched = sched;
+    unsigned int oldTime = (unsigned int)-1;
 
     tick = 0;
     ticksSoFar = 0;
@@ -426,7 +427,6 @@ void Player::run()
     next.tv_usec = playingStarted.tv_usec;
 
     while (true) {
-        struct timeval tod;
         bool looped = false;
         unsigned int oldLine = line_;
 
@@ -758,10 +758,6 @@ void Player::run()
             if (changeBlock) {
                 refreshPlayseqAndBlock();
             }
-
-            if (sched != SCHED_NONE) {
-                gettimeofday(&tod, NULL);
-            }
         }
 
         // Check whether this thread should be killed
@@ -774,11 +770,16 @@ void Player::run()
             emit lineChanged(line_);
         }
 
-        /*
-        if (time_ != oldTime) {
-            emit timeChanged(time_);
+        if (sched != SCHED_NONE) {
+            gettimeofday(&now, NULL);
+
+            unsigned int time = (unsigned int)(playedSoFar.tv_sec * 1000 + playedSoFar.tv_usec / 1000 + (now.tv_sec * 1000 + now.tv_usec / 1000) - (playingStarted.tv_sec * 1000 + playingStarted.tv_usec / 1000)) / 1000;
+
+            if (time != oldTime) {
+                emit timeChanged(time);
+                oldTime = time;
+            }
         }
-        */
     }
 
     if (sched != SCHED_NONE) {

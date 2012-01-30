@@ -43,6 +43,7 @@ GUI::GUI(Player *player, QWidget *parent) :
     connect(player, SIGNAL(blockChanged(unsigned int)), mainWindow->trackerMain, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(lineChanged(unsigned int)), mainWindow->trackerMain, SLOT(setLine(unsigned int)));
     connect(player, SIGNAL(modeChanged(Player::Mode)), this, SLOT(setMode(Player::Mode)));
+    connect(player, SIGNAL(timeChanged(unsigned int)), this, SLOT(setTime(unsigned int)));
     connect(mainWindow->buttonPlaySong, SIGNAL(clicked()), player, SLOT(playSong()));
     connect(mainWindow->buttonPlayBlock, SIGNAL(clicked()), player, SLOT(playBlock()));
     connect(mainWindow->buttonContinueSong, SIGNAL(clicked()), player, SLOT(continueSong()));
@@ -850,4 +851,9 @@ void GUI::setMode(Player::Mode mode)
         mainWindow->labelStatus->setText(QString("Stopped"));
         break;
     }
+}
+
+void GUI::setTime(unsigned int time)
+{
+    mainWindow->labelTimer->setText(QString("%1:%2").arg(time / 60, 2, 10, QChar('0')).arg(time % 60, 2, 10, QChar('0')));
 }

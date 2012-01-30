@@ -52,6 +52,7 @@ private slots:
     void setBlock(unsigned int block);
     void setCommandPage(unsigned int commandPage);
     void setMode(Player::Mode mode);
+    void setTime(unsigned int time);
 
 private:
     Player *player;
