@@ -1,5 +1,5 @@
 /*
- * gui.cpp
+ * mainwindow.cpp
  *
  * Copyright 2002-2011 vesuri
  *
@@ -23,14 +23,40 @@
 #include <cstdio>
 #include <QApplication>
 #include <QKeyEvent>
+#include <QFileDialog>
+#include <QMessageBox>
+#include "preferencesdialog.h"
+#include "trackvolumesdialog.h"
+#include "transposedialog.h"
+#include "expandshrinkdialog.h"
+#include "changeinstrumentdialog.h"
+#include "sectionlistdialog.h"
+#include "songpropertiesdialog.h"
+#include "playingsequencedialog.h"
+#include "playingsequencelistdialog.h"
+#include "blocklistdialog.h"
+#include "messagelistdialog.h"
 #include "song.h"
-#include "ui_tutka.h"
-#include "gui.h"
+#include "ui_mainwindow.h"
+#include "mainwindow.h"
 
-GUI::GUI(Player *player, QWidget *parent) :
+MainWindow::MainWindow(Player *player, QWidget *parent) :
     QMainWindow(parent),
     player(player),
     mainWindow(new Ui::MainWindow),
+    openDialog(new QFileDialog),
+    saveDialog(new QFileDialog),
+    preferencesDialog(new PreferencesDialog),
+    trackVolumesDialog(new TrackVolumesDialog),
+    transposeDialog(new TransposeDialog),
+    expandShrinkDialog(new ExpandShrinkDialog),
+    changeInstrumentDialog(new ChangeInstrumentDialog),
+    sectionListDialog(new SectionListDialog),
+    songPropertiesDialog(new SongPropertiesDialog),
+    playingSequenceDialog(new PlayingSequenceDialog),
+    playingSequenceListDialog(new PlayingSequenceListDialog),
+    blockListDialog(new BlockListDialog),
+    messageListDialog(new MessageListDialog),
     chordStatus(0)
 {
     mainWindow->setupUi(this);
@@ -53,6 +79,27 @@ GUI::GUI(Player *player, QWidget *parent) :
     connect(mainWindow->buttonContinueBlock, SIGNAL(clicked()), player, SLOT(continueBlock()));
     connect(mainWindow->buttonStop, SIGNAL(clicked()), player, SLOT(stop()));
     connect(mainWindow->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(mainWindow->actionPreferences, SIGNAL(triggered()), preferencesDialog, SLOT(show()));
+    connect(mainWindow->actionTrack_Volumes, SIGNAL(triggered()), trackVolumesDialog, SLOT(show()));
+    connect(mainWindow->actionTranspose, SIGNAL(triggered()), transposeDialog, SLOT(show()));
+    connect(mainWindow->actionTranspose_2, SIGNAL(triggered()), transposeDialog, SLOT(show()));
+    connect(mainWindow->actionTranspose_3, SIGNAL(triggered()), transposeDialog, SLOT(show()));
+    connect(mainWindow->actionTranspose_4, SIGNAL(triggered()), transposeDialog, SLOT(show()));
+    connect(mainWindow->actionExpand_Shrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(show()));
+    connect(mainWindow->actionExpand_Shrink_2, SIGNAL(triggered()), expandShrinkDialog, SLOT(show()));
+    connect(mainWindow->actionExpand_Shrink_3, SIGNAL(triggered()), expandShrinkDialog, SLOT(show()));
+    connect(mainWindow->actionExpand_Shrink_4, SIGNAL(triggered()), expandShrinkDialog, SLOT(show()));
+    connect(mainWindow->actionChange_Instrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(show()));
+    connect(mainWindow->actionChange_Instrument_2, SIGNAL(triggered()), changeInstrumentDialog, SLOT(show()));
+    connect(mainWindow->actionChange_Instrument_3, SIGNAL(triggered()), changeInstrumentDialog, SLOT(show()));
+    connect(mainWindow->actionChange_Instrument_4, SIGNAL(triggered()), changeInstrumentDialog, SLOT(show()));
+    connect(mainWindow->actionProperties, SIGNAL(triggered()), songPropertiesDialog, SLOT(show()));
+    connect(mainWindow->actionSection_List, SIGNAL(triggered()), sectionListDialog, SLOT(show()));
+    connect(mainWindow->actionEdit_Current, SIGNAL(triggered()), playingSequenceDialog, SLOT(show()));
+    connect(mainWindow->actionList, SIGNAL(triggered()), playingSequenceListDialog, SLOT(show()));
+    connect(mainWindow->actionList_2, SIGNAL(triggered()), blockListDialog, SLOT(show()));
+    connect(mainWindow->actionMessage_List, SIGNAL(triggered()), messageListDialog, SLOT(show()));
+    connect(mainWindow->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
 
     keyToNote.insert(Qt::Key_Z, 1);
     keyToNote.insert(Qt::Key_S, 2);
@@ -93,25 +140,25 @@ GUI::GUI(Player *player, QWidget *parent) :
     keyToNote.insert(Qt::Key_Delete, 0);
 }
 
-GUI::~GUI()
+MainWindow::~MainWindow()
 {
     delete mainWindow;
 }
 
-bool GUI::eventFilter(QObject *watched, QEvent *event)
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     bool handled = false;
 
     if (event->type() == QEvent::KeyPress) {
         handled = keyPress(static_cast<QKeyEvent *>(event));
-    } else if (event->type() == QEvent::KeyPress) {
-        handled = keyPress(static_cast<QKeyEvent *>(event));
+    } else if (event->type() == QEvent::KeyRelease) {
+        handled = keyRelease(static_cast<QKeyEvent *>(event));
     }
 
     return handled ? true : QMainWindow::eventFilter(watched, event);
 }
 
-bool GUI::keyPress(QKeyEvent *event)
+bool MainWindow::keyPress(QKeyEvent *event)
 {
     if (dynamic_cast<QLineEdit *>(QApplication::focusWidget()) != NULL) {
         return false;
@@ -230,12 +277,12 @@ bool GUI::keyPress(QKeyEvent *event)
             break;
         case Qt::Key_Delete: {
             if (QApplication::activeWindow() == this) {
-                int i, n = block->commandPages();
+                int n = block->commandPages();
 
                 /* Delete note+command and refresh */
                 block->setNote(tracker->line(), tracker->cursorChannel(), 0, 0, 0);
-                for (i = 0; i < n; i++) {
-                    block->setCommandFull(tracker->line(), tracker->cursorChannel(), i, 0, 0);
+                for (int commandPage = 0; commandPage < n; commandPage++) {
+                    block->setCommandFull(tracker->line(), tracker->cursorChannel(), commandPage, 0, 0);
                 }
                 tracker->redrawRow(tracker->line());
 
@@ -284,8 +331,10 @@ bool GUI::keyPress(QKeyEvent *event)
         case '0': {
             /* Alt+0-9: Mute tracks */
             int channel = 9;
-            if (event->key() >= Qt::Key_1 && event->key() <= Qt::Key_9)
+            if (event->key() >= Qt::Key_1 && event->key() <= Qt::Key_9) {
                 channel = event->key() - Qt::Key_1;
+            }
+
             if (channel < song->maxTracks()) {
                 song->track(channel)->setMute(!song->track(channel)->isMuted());
             }
@@ -589,7 +638,7 @@ bool GUI::keyPress(QKeyEvent *event)
     return handled;
 }
 
-bool GUI::keyRelease(QKeyEvent * event)
+bool MainWindow::keyRelease(QKeyEvent * event)
 {
     Tracker *tracker = mainWindow->trackerMain;
     bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
@@ -599,43 +648,7 @@ bool GUI::keyRelease(QKeyEvent * event)
     /* Key has been released */
     if (!ctrl && !shift) {
         if (mainWindow->checkBoxChord->isChecked() && tracker->cursorItem() == 0) {
-            switch (event->key()) {
-            case Qt::Key_Z:
-            case Qt::Key_S:
-            case Qt::Key_X:
-            case Qt::Key_D:
-            case Qt::Key_C:
-            case Qt::Key_V:
-            case Qt::Key_G:
-            case Qt::Key_B:
-            case Qt::Key_H:
-            case Qt::Key_N:
-            case Qt::Key_J:
-            case Qt::Key_M:
-            case Qt::Key_Q:
-            case Qt::Key_Comma:
-            case Qt::Key_2:
-            case Qt::Key_L:
-            case Qt::Key_W:
-            case Qt::Key_Period:
-            case Qt::Key_3:
-            case Qt::Key_Odiaeresis:
-            case Qt::Key_E:
-            case Qt::Key_Minus:
-            case Qt::Key_R:
-            case Qt::Key_5:
-            case Qt::Key_T:
-            case Qt::Key_6:
-            case Qt::Key_Y:
-            case Qt::Key_7:
-            case Qt::Key_U:
-            case Qt::Key_I:
-            case Qt::Key_9:
-            case Qt::Key_O:
-            case Qt::Key_0:
-            case Qt::Key_P:
-            case Qt::Key_Aring:
-            case Qt::Key_acute:
+            if (event->key() != Qt::Key_Delete && keyToNote.contains(event->key())) {
                 /* Find the key from the keys down list and remove it */
                 keyboardKeysDown.removeAll(event->key());
 
@@ -648,7 +661,6 @@ bool GUI::keyRelease(QKeyEvent * event)
                     tracker->setLine(tracker->line() + mainWindow->spinBoxSpace->value());
                 }
                 handled = true;
-                break;
             }
         }
     }
@@ -656,7 +668,7 @@ bool GUI::keyRelease(QKeyEvent * event)
     return handled;
 }
 
-void GUI::setSong(Song *song)
+void MainWindow::setSong(Song *song)
 {
     this->song = song;
 
@@ -666,35 +678,35 @@ void GUI::setSong(Song *song)
     setBlock(player->block());
     setCommandPage(mainWindow->trackerMain->commandPage());
     setMode(player->mode());
-    mainWindow->labelTimer->setText(QString("00:00"));
+    setTime(0);
 }
 
-void GUI::setSection(unsigned int section)
+void MainWindow::setSection(unsigned int section)
 {
     mainWindow->labelSection->setText(QString("Section %1/%2").arg(section + 1).arg(song->sections()));
 }
 
-void GUI::setPlayseq(unsigned int playseq)
+void MainWindow::setPlayseq(unsigned int playseq)
 {
     mainWindow->labelPlayingSequence->setText(QString("Playing Sequence %1/%2").arg(playseq + 1).arg(song->playseqs()));
 }
 
-void GUI::setPosition(unsigned int position)
+void MainWindow::setPosition(unsigned int position)
 {
     mainWindow->labelPosition->setText(QString("Position %1/%2").arg(position + 1).arg(song->playseq(player->playseq())->length()));
 }
 
-void GUI::setBlock(unsigned int block)
+void MainWindow::setBlock(unsigned int block)
 {
     mainWindow->labelBlock->setText(QString("Block %1/%2").arg(block + 1).arg(song->blocks()));
 }
 
-void GUI::setCommandPage(unsigned int commandPage)
+void MainWindow::setCommandPage(unsigned int commandPage)
 {
     mainWindow->labelCommandPage->setText(QString("Command Page %1/%2").arg(commandPage + 1).arg(song->block(player->block())->commandPages()));
 }
 
-void GUI::setMode(Player::Mode mode)
+void MainWindow::setMode(Player::Mode mode)
 {
     switch (mode) {
     case Player::PLAY_SONG:
@@ -709,7 +721,12 @@ void GUI::setMode(Player::Mode mode)
     }
 }
 
-void GUI::setTime(unsigned int time)
+void MainWindow::setTime(unsigned int time)
 {
     mainWindow->labelTimer->setText(QString("%1:%2").arg(time / 60, 2, 10, QChar('0')).arg(time % 60, 2, 10, QChar('0')));
+}
+
+void MainWindow::showAbout()
+{
+    QMessageBox::about(this, "About Tutka", "Tutka 2.0 alpha (C) 2012 Vesa Halttunen <vesuri@jormas.com>");
 }

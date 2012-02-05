@@ -24,7 +24,7 @@
 #include "song.h"
 #include "midi.h"
 #include "player.h"
-#include "gui.h"
+#include "mainwindow.h"
 
 int main(int argc, char **argv)
 {
@@ -32,15 +32,15 @@ int main(int argc, char **argv)
 
     MIDI *midi = new MIDI;
     Player *player = new Player(midi);
-    GUI *gui = new GUI(player);
+    MainWindow *mainWindow = new MainWindow(player);
     Song *song = new Song(argc > 1 ? argv[1] : QString());
     player->setSong(song);
-    gui->show();
-    gui->raise();
+    mainWindow->show();
+    mainWindow->raise();
 
     int returnCode = app.exec();
 
-    delete gui;
+    delete mainWindow;
     delete player;
     delete midi;
     delete song;

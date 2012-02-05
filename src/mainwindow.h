@@ -1,5 +1,5 @@
 /*
- * gui.h
+ * mainwindow.h
  *
  * Copyright 2002-2011 vesuri
  *
@@ -20,8 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef GUI_H_
-#define GUI_H_
+#ifndef MAINWINDOW_H_
+#define MAINWINDOW_H_
 
 #include "player.h"
 #include <QMainWindow>
@@ -31,15 +31,27 @@ namespace Ui {
     class MainWindow;
 }
 
+class QFileDialog;
+class PreferencesDialog;
+class TrackVolumesDialog;
+class TransposeDialog;
+class ExpandShrinkDialog;
+class ChangeInstrumentDialog;
+class SectionListDialog;
+class SongPropertiesDialog;
+class PlayingSequenceDialog;
+class PlayingSequenceListDialog;
+class BlockListDialog;
+class MessageListDialog;
 class Song;
 
-class GUI : public QMainWindow
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit GUI(Player *player, QWidget *parent = 0);
-    virtual ~GUI();
+    explicit MainWindow(Player *player, QWidget *parent = 0);
+    virtual ~MainWindow();
 
     virtual bool eventFilter(QObject *watched, QEvent *event);
 
@@ -52,6 +64,7 @@ private slots:
     void setCommandPage(unsigned int commandPage);
     void setMode(Player::Mode mode);
     void setTime(unsigned int time);
+    void showAbout();
 
 private:
     bool keyPress(QKeyEvent *event);
@@ -60,9 +73,22 @@ private:
     Player *player;
     Song *song;
     Ui::MainWindow *mainWindow;
+    QFileDialog *openDialog;
+    QFileDialog *saveDialog;
+    PreferencesDialog *preferencesDialog;
+    TrackVolumesDialog *trackVolumesDialog;
+    TransposeDialog *transposeDialog;
+    ExpandShrinkDialog *expandShrinkDialog;
+    ChangeInstrumentDialog *changeInstrumentDialog;
+    SectionListDialog *sectionListDialog;
+    SongPropertiesDialog *songPropertiesDialog;
+    PlayingSequenceDialog *playingSequenceDialog;
+    PlayingSequenceListDialog *playingSequenceListDialog;
+    BlockListDialog *blockListDialog;
+    MessageListDialog *messageListDialog;
     QList<int> keyboardKeysDown;
     int chordStatus;
     QHash<int, char> keyToNote;
 };
 
-#endif /* GUI_H_ */
+#endif /* MAINWINDOW_H_ */

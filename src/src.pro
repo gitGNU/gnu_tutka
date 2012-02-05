@@ -9,9 +9,21 @@ SOURCES += main.cpp \
            song.cpp \
            tracker.cpp \
            player.cpp \
-           gui.cpp \
+           mainwindow.cpp \
     midi.cpp \
-    midiinterface.cpp
+    midiinterface.cpp \
+    preferencesdialog.cpp \
+    trackvolumesdialog.cpp \
+    songpropertiesdialog.cpp \
+    instrumentpropertiesdialog.cpp \
+    transposedialog.cpp \
+    expandshrinkdialog.cpp \
+    changeinstrumentdialog.cpp \
+    sectionlistdialog.cpp \
+    playingsequencedialog.cpp \
+    playingsequencelistdialog.cpp \
+    blocklistdialog.cpp \
+    messagelistdialog.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -20,11 +32,36 @@ HEADERS += block.h \
            song.h \
            tracker.h \
            player.h \
-           gui.h \
+           mainwindow.h \
     midi.h \
-    midiinterface.h
+    midiinterface.h \
+    preferencesdialog.h \
+    trackvolumesdialog.h \
+    songpropertiesdialog.h \
+    instrumentpropertiesdialog.h \
+    transposedialog.h \
+    expandshrinkdialog.h \
+    changeinstrumentdialog.h \
+    sectionlistdialog.h \
+    playingsequencedialog.h \
+    playingsequencelistdialog.h \
+    blocklistdialog.h \
+    messagelistdialog.h
 
-FORMS += tutka.ui
+FORMS += \
+    mainwindow.ui \
+    preferencesdialog.ui \
+    trackvolumesdialog.ui \
+    songpropertiesdialog.ui \
+    instrumentpropertiesdialog.ui \
+    transposedialog.ui \
+    expandshrinkdialog.ui \
+    changeinstrumentdialog.ui \
+    sectionlistdialog.ui \
+    playingsequencedialog.ui \
+    playingsequencelistdialog.ui \
+    blocklistdialog.ui \
+    messagelistdialog.ui
 
 TEMPLATE = app
 TARGET = tutka
@@ -53,6 +90,50 @@ QMAKE_CLEAN += *.gcov \
     ./.obj/*.gcno
 
 INSTALLS += target schemas desktop icon
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
