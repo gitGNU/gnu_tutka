@@ -726,6 +726,9 @@
    <property name="text">
     <string>Copy</string>
    </property>
+   <property name="shortcut">
+    <string>Shift+F4</string>
+   </property>
   </action>
   <action name="actionPaste_3">
    <property name="text">
@@ -786,11 +789,17 @@
    </property>
   </action>
   <action name="actionSend_MIDI_Sync">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Send MIDI Sync</string>
    </property>
   </action>
   <action name="actionRecord_Controllers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Record Controllers</string>
    </property>
@@ -806,11 +815,17 @@
    </property>
   </action>
   <action name="actionOff">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Off</string>
    </property>
   </action>
   <action name="actionMIDI">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>MIDI</string>
    </property>

@@ -64,7 +64,7 @@ FORMS += \
     messagelistdialog.ui
 
 TEMPLATE = app
-TARGET = tutka
+TARGET = Tutka
 QT += xml
 
 target.path = /usr/bin
