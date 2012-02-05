@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Instrument properties</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -27,10 +27,13 @@
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
+       <property name="buddy">
+        <cstring>lineEditName</cstring>
+       </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="lineEditName"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
@@ -40,10 +43,13 @@
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
+       <property name="buddy">
+        <cstring>comboBoxMidiInterface</cstring>
+       </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="comboBoxMidiInterface"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
@@ -53,10 +59,22 @@
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
+       <property name="buddy">
+        <cstring>horizontalSliderMidiChannel</cstring>
+       </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QSlider" name="horizontalSlider">
+      <widget class="QSlider" name="horizontalSliderMidiChannel">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>16</number>
+       </property>
+       <property name="pageStep">
+        <number>2</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -70,10 +88,19 @@
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
+       <property name="buddy">
+        <cstring>horizontalSliderVolume</cstring>
+       </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QSlider" name="horizontalSlider_2">
+      <widget class="QSlider" name="horizontalSliderVolume">
+       <property name="maximum">
+        <number>127</number>
+       </property>
+       <property name="pageStep">
+        <number>8</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -87,10 +114,22 @@
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
+       <property name="buddy">
+        <cstring>horizontalSliderTranspose</cstring>
+       </property>
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QSlider" name="horizontalSlider_3">
+      <widget class="QSlider" name="horizontalSliderTranspose">
+       <property name="minimum">
+        <number>-24</number>
+       </property>
+       <property name="maximum">
+        <number>24</number>
+       </property>
+       <property name="pageStep">
+        <number>2</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -104,10 +143,19 @@
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
+       <property name="buddy">
+        <cstring>horizontalSliderHold</cstring>
+       </property>
       </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QSlider" name="horizontalSlider_4">
+      <widget class="QSlider" name="horizontalSliderHold">
+       <property name="maximum">
+        <number>255</number>
+       </property>
+       <property name="pageStep">
+        <number>8</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>

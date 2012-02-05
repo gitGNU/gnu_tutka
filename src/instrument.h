@@ -35,6 +35,8 @@ public:
 
     // Returns the name of the instrument
     QString name() const;
+    // Sets the name of the instrument
+    void setName(const QString &name);
     // Returns the MIDI interface number of the instrument
     unsigned int midiInterface() const;
     // Returns the MIDI interface name of the instrument
@@ -43,12 +45,20 @@ public:
     unsigned short midiPreset() const;
     // Returns the MIDI channel of the instrument
     unsigned char midiChannel() const;
+    // Sets the MIDI channel of the instrument
+    void setMidiChannel(unsigned char midiChannel);
     // Returns the default velocity of the instrument
     unsigned char defaultVelocity() const;
+    // Sets the default velocity of the instrument
+    void setDefaultVelocity(unsigned char defaultVelocity);
     // Returns the transposition of the instrument
     char transpose() const;
+    // Sets the transposition of the instrument
+    void setTranspose(char transpose);
     // Returns the hold time of the instrument
     unsigned char hold() const;
+    // Sets the hold time of the instrument
+    void setHold(unsigned char hold);
     // Returns the arpeggio block of the instrument
     Block *arpeggio() const;
     // Returns the arpeggio base note of the instrument

@@ -31,6 +31,7 @@ namespace Ui {
     class MainWindow;
 }
 
+class InstrumentPropertiesDialog;
 class QFileDialog;
 class PreferencesDialog;
 class TrackVolumesDialog;
@@ -64,6 +65,7 @@ private slots:
     void setCommandPage(unsigned int commandPage);
     void setMode(Player::Mode mode);
     void setTime(unsigned int time);
+    void setInstrument(int instrument);
     void showAbout();
 
 private:
@@ -72,7 +74,8 @@ private:
 
     Player *player;
     Song *song;
-    Ui::MainWindow *mainWindow;
+    Ui::MainWindow *ui;
+    InstrumentPropertiesDialog *instrumentPropertiesDialog;
     QFileDialog *openDialog;
     QFileDialog *saveDialog;
     PreferencesDialog *preferencesDialog;

@@ -46,6 +46,11 @@ QString Instrument::name() const
     return name_;
 }
 
+void Instrument::setName(const QString &name)
+{
+    name_ = name;
+}
+
 unsigned int Instrument::midiInterface() const
 {
     return midiInterface_;
@@ -66,9 +71,19 @@ unsigned char Instrument::midiChannel() const
     return midiChannel_;
 }
 
+void Instrument::setMidiChannel(unsigned char midiChannel)
+{
+    midiChannel_ = midiChannel;
+}
+
 unsigned char Instrument::defaultVelocity() const
 {
     return defaultVelocity_;
+}
+
+void Instrument::setDefaultVelocity(unsigned char defaultVelocity)
+{
+    defaultVelocity_ = defaultVelocity;
 }
 
 char Instrument::transpose() const
@@ -76,9 +91,19 @@ char Instrument::transpose() const
     return transpose_;
 }
 
+void Instrument::setTranspose(char transpose)
+{
+    transpose_ = transpose;
+}
+
 unsigned char Instrument::hold() const
 {
     return hold_;
+}
+
+void Instrument::setHold(unsigned char hold)
+{
+    hold_ = hold;
 }
 
 Block *Instrument::arpeggio() const
