@@ -15,6 +15,12 @@ public:
     explicit ChangeInstrumentDialog(QWidget *parent = 0);
     ~ChangeInstrumentDialog();
 
+public slots:
+    void showSong();
+    void showBlock();
+    void showTrack();
+    void showSelection();
+
 private:
     Ui::ChangeInstrumentDialog *ui;
 };

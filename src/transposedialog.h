@@ -15,6 +15,12 @@ public:
     explicit TransposeDialog(QWidget *parent = 0);
     ~TransposeDialog();
 
+public slots:
+    void showSong();
+    void showBlock();
+    void showTrack();
+    void showSelection();
+
 private:
     Ui::TransposeDialog *ui;
 };

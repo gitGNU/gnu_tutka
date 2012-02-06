@@ -27,7 +27,7 @@
           <string>Area</string>
          </property>
          <property name="buddy">
-          <cstring>comboBox</cstring>
+          <cstring>comboBoxArea</cstring>
          </property>
         </widget>
        </item>
@@ -37,12 +37,12 @@
           <string>Factor</string>
          </property>
          <property name="buddy">
-          <cstring>spinBox</cstring>
+          <cstring>spinBoxFactor</cstring>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="comboBoxArea">
          <item>
           <property name="text">
            <string>Song</string>
@@ -66,7 +66,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QSpinBox" name="spinBox">
+        <widget class="QSpinBox" name="spinBoxFactor">
          <property name="minimum">
           <number>2</number>
          </property>
@@ -99,14 +99,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pushButtonShrink">
        <property name="text">
         <string>Shrink</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="pushButtonExpand">
        <property name="text">
         <string>Expand</string>
        </property>

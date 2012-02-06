@@ -425,9 +425,9 @@
     <addaction name="separator"/>
     <addaction name="actionClear"/>
     <addaction name="separator"/>
-    <addaction name="actionTranspose"/>
-    <addaction name="actionExpand_Shrink"/>
-    <addaction name="actionChange_Instrument"/>
+    <addaction name="actionTransposeSelection"/>
+    <addaction name="actionExpand_ShrinkSelection"/>
+    <addaction name="actionChange_InstrumentSelection"/>
    </widget>
    <widget class="QMenu" name="menuSong">
     <property name="title">
@@ -436,9 +436,9 @@
     <addaction name="actionSection_List"/>
     <addaction name="actionTrack_Volumes"/>
     <addaction name="separator"/>
-    <addaction name="actionTranspose_2"/>
-    <addaction name="actionExpand_Shrink_2"/>
-    <addaction name="actionChange_Instrument_2"/>
+    <addaction name="actionTransposeSong"/>
+    <addaction name="actionExpand_ShrinkSong"/>
+    <addaction name="actionChange_InstrumentSong"/>
     <addaction name="separator"/>
     <addaction name="actionProperties"/>
    </widget>
@@ -462,9 +462,9 @@
     <addaction name="separator"/>
     <addaction name="actionSelect_All"/>
     <addaction name="separator"/>
-    <addaction name="actionTranspose_3"/>
-    <addaction name="actionExpand_Shrink_3"/>
-    <addaction name="actionChange_Instrument_3"/>
+    <addaction name="actionTransposeBlock"/>
+    <addaction name="actionExpand_ShrinkBlock"/>
+    <addaction name="actionChange_InstrumentBlock"/>
     <addaction name="separator"/>
     <addaction name="actionList_2"/>
    </widget>
@@ -483,9 +483,9 @@
     <addaction name="actionInsert"/>
     <addaction name="actionDelete"/>
     <addaction name="separator"/>
-    <addaction name="actionTranspose_4"/>
-    <addaction name="actionExpand_Shrink_4"/>
-    <addaction name="actionChange_Instrument_4"/>
+    <addaction name="actionTransposeTrack"/>
+    <addaction name="actionExpand_ShrinkTrack"/>
+    <addaction name="actionChange_InstrumentTrack"/>
    </widget>
    <widget class="QMenu" name="menuMIDI">
     <property name="title">
@@ -605,17 +605,17 @@
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionTranspose">
+  <action name="actionTransposeSelection">
    <property name="text">
     <string>Transpose</string>
    </property>
   </action>
-  <action name="actionExpand_Shrink">
+  <action name="actionExpand_ShrinkSelection">
    <property name="text">
     <string>Expand/Shrink</string>
    </property>
   </action>
-  <action name="actionChange_Instrument">
+  <action name="actionChange_InstrumentSelection">
    <property name="text">
     <string>Change Instrument</string>
    </property>
@@ -630,17 +630,17 @@
     <string>Track Volumes</string>
    </property>
   </action>
-  <action name="actionTranspose_2">
+  <action name="actionTransposeSong">
    <property name="text">
     <string>Transpose</string>
    </property>
   </action>
-  <action name="actionExpand_Shrink_2">
+  <action name="actionExpand_ShrinkSong">
    <property name="text">
     <string>Expand/Shrink</string>
    </property>
   </action>
-  <action name="actionChange_Instrument_2">
+  <action name="actionChange_InstrumentSong">
    <property name="text">
     <string>Change Instrument</string>
    </property>
@@ -694,17 +694,17 @@
     <string>Select All</string>
    </property>
   </action>
-  <action name="actionTranspose_3">
+  <action name="actionTransposeBlock">
    <property name="text">
     <string>Transpose</string>
    </property>
   </action>
-  <action name="actionExpand_Shrink_3">
+  <action name="actionExpand_ShrinkBlock">
    <property name="text">
     <string>Expand/Shrink</string>
    </property>
   </action>
-  <action name="actionChange_Instrument_3">
+  <action name="actionChange_InstrumentBlock">
    <property name="text">
     <string>Change Instrument</string>
    </property>
@@ -758,17 +758,17 @@
     <string>Delete</string>
    </property>
   </action>
-  <action name="actionTranspose_4">
+  <action name="actionTransposeTrack">
    <property name="text">
     <string>Transpose</string>
    </property>
   </action>
-  <action name="actionExpand_Shrink_4">
+  <action name="actionExpand_ShrinkTrack">
    <property name="text">
     <string>Expand/Shrink</string>
    </property>
   </action>
-  <action name="actionChange_Instrument_4">
+  <action name="actionChange_InstrumentTrack">
    <property name="text">
     <string>Change Instrument</string>
    </property>

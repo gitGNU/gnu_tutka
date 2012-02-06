@@ -15,6 +15,12 @@ public:
     explicit ExpandShrinkDialog(QWidget *parent = 0);
     ~ExpandShrinkDialog();
 
+public slots:
+    void showSong();
+    void showBlock();
+    void showTrack();
+    void showSelection();
+
 private:
     Ui::ExpandShrinkDialog *ui;
 };
