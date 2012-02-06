@@ -24,46 +24,43 @@ void InstrumentPropertiesDialog::setSong(Song *song)
 void InstrumentPropertiesDialog::setInstrument(int number)
 {
     if (number > 0) {
+        // Disconnect the widgets from any previously selected instrument
+        Instrument *oldInstrument = song->instrument(this->instrument);
+        disconnect(oldInstrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
+        disconnect(ui->lineEditName, SIGNAL(textChanged(QString)), oldInstrument, SLOT(setName(QString)));
+        disconnect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setMidiChannel(int)));
+        disconnect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setDefaultVelocity(int)));
+        disconnect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setTranspose(int)));
+        disconnect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setHold(int)));
+
+        // Make sure the instrument exists
         this->instrument = number - 1;
         song->checkInstrument(this->instrument, 0);
 
+        // Connect the widgets for editing the instrument
         Instrument *instrument = song->instrument(this->instrument);
+        connect(instrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
+        connect(ui->lineEditName, SIGNAL(textChanged(QString)), instrument, SLOT(setName(QString)));
+        connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), instrument, SLOT(setMidiChannel(int)));
+        connect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), instrument, SLOT(setDefaultVelocity(int)));
+        connect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), instrument, SLOT(setTranspose(int)));
+        connect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), instrument, SLOT(setHold(int)));
 
+        // Show the instrument's properties in the UI
+        ui->lineEditName->blockSignals(true);
         ui->lineEditName->setText(instrument->name());
+        ui->lineEditName->blockSignals(false);
+        ui->horizontalSliderMidiChannel->blockSignals(true);
         ui->horizontalSliderMidiChannel->setValue(instrument->midiChannel() + 1);
+        ui->horizontalSliderMidiChannel->blockSignals(false);
+        ui->horizontalSliderVolume->blockSignals(true);
         ui->horizontalSliderVolume->setValue(instrument->defaultVelocity());
+        ui->horizontalSliderVolume->blockSignals(false);
+        ui->horizontalSliderTranspose->blockSignals(true);
         ui->horizontalSliderTranspose->setValue(instrument->transpose());
+        ui->horizontalSliderTranspose->blockSignals(false);
+        ui->horizontalSliderHold->blockSignals(true);
         ui->horizontalSliderHold->setValue(instrument->hold());
-
-        connect(ui->lineEditName, SIGNAL(textEdited(QString)), this, SLOT(setName(QString)));
-        connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), this, SLOT(setMidiChannel(int)));
-        connect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), this, SLOT(setVolume(int)));
-        connect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), this, SLOT(setTranspose(int)));
-        connect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), this, SLOT(setHold(int)));
+        ui->horizontalSliderHold->blockSignals(false);
     }
-}
-
-void InstrumentPropertiesDialog::setName(const QString &name)
-{
-    song->instrument(instrument)->setName(name);
-}
-
-void InstrumentPropertiesDialog::setMidiChannel(int midiChannel)
-{
-    song->instrument(instrument)->setMidiChannel(midiChannel);
-}
-
-void InstrumentPropertiesDialog::setVolume(int volume)
-{
-    song->instrument(instrument)->setDefaultVelocity(volume);
-}
-
-void InstrumentPropertiesDialog::setTranspose(int transpose)
-{
-    song->instrument(instrument)->setTranspose(transpose);
-}
-
-void InstrumentPropertiesDialog::setHold(int hold)
-{
-    song->instrument(instrument)->setHold(hold);
 }

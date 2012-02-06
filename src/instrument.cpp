@@ -24,7 +24,8 @@
 #include "block.h"
 #include "instrument.h"
 
-Instrument::Instrument(const QString &name, unsigned int midiInterface) :
+Instrument::Instrument(const QString &name, unsigned int midiInterface, QObject *parent) :
+    QObject(parent),
     name_(name),
     midiInterface_(midiInterface),
     midiPreset_(0),
@@ -49,6 +50,8 @@ QString Instrument::name() const
 void Instrument::setName(const QString &name)
 {
     name_ = name;
+
+    emit nameChanged(name_);
 }
 
 unsigned int Instrument::midiInterface() const
@@ -71,7 +74,7 @@ unsigned char Instrument::midiChannel() const
     return midiChannel_;
 }
 
-void Instrument::setMidiChannel(unsigned char midiChannel)
+void Instrument::setMidiChannel(int midiChannel)
 {
     midiChannel_ = midiChannel;
 }
@@ -81,7 +84,7 @@ unsigned char Instrument::defaultVelocity() const
     return defaultVelocity_;
 }
 
-void Instrument::setDefaultVelocity(unsigned char defaultVelocity)
+void Instrument::setDefaultVelocity(int defaultVelocity)
 {
     defaultVelocity_ = defaultVelocity;
 }
@@ -91,7 +94,7 @@ char Instrument::transpose() const
     return transpose_;
 }
 
-void Instrument::setTranspose(char transpose)
+void Instrument::setTranspose(int transpose)
 {
     transpose_ = transpose;
 }
@@ -101,7 +104,7 @@ unsigned char Instrument::hold() const
     return hold_;
 }
 
-void Instrument::setHold(unsigned char hold)
+void Instrument::setHold(int hold)
 {
     hold_ = hold;
 }

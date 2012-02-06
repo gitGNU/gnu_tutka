@@ -21,13 +21,6 @@ public slots:
     void setSong(Song *song);
     void setInstrument(int number);
 
-private slots:
-    void setName(const QString &name);
-    void setMidiChannel(int midiChannel);
-    void setVolume(int volume);
-    void setTranspose(int transpose);
-    void setHold(int hold);
-
 private:
     Ui::InstrumentPropertiesDialog *ui;
     Song *song;

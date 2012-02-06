@@ -23,20 +23,21 @@
 #ifndef INSTRUMENT_H_
 #define INSTRUMENT_H_
 
+#include <QObject>
 #include <QString>
 
 class Block;
 class QDomElement;
 
-class Instrument {
+class Instrument : public QObject {
+    Q_OBJECT
+
 public:
-    Instrument(const QString &name = "Unnamed", unsigned int midiInterface = 0);
+    Instrument(const QString &name = "Unnamed", unsigned int midiInterface = 0, QObject *parent = NULL);
     virtual ~Instrument();
 
     // Returns the name of the instrument
     QString name() const;
-    // Sets the name of the instrument
-    void setName(const QString &name);
     // Returns the MIDI interface number of the instrument
     unsigned int midiInterface() const;
     // Returns the MIDI interface name of the instrument
@@ -45,20 +46,12 @@ public:
     unsigned short midiPreset() const;
     // Returns the MIDI channel of the instrument
     unsigned char midiChannel() const;
-    // Sets the MIDI channel of the instrument
-    void setMidiChannel(unsigned char midiChannel);
     // Returns the default velocity of the instrument
     unsigned char defaultVelocity() const;
-    // Sets the default velocity of the instrument
-    void setDefaultVelocity(unsigned char defaultVelocity);
     // Returns the transposition of the instrument
     char transpose() const;
-    // Sets the transposition of the instrument
-    void setTranspose(char transpose);
     // Returns the hold time of the instrument
     unsigned char hold() const;
-    // Sets the hold time of the instrument
-    void setHold(unsigned char hold);
     // Returns the arpeggio block of the instrument
     Block *arpeggio() const;
     // Returns the arpeggio base note of the instrument
@@ -68,6 +61,21 @@ public:
     static Instrument *parse(QDomElement element);
     // Saves an instrument to an XML document
     //void instrument_save(struct instrument *, int, xmlNodePtr);
+
+public slots:
+    // Sets the name of the instrument
+    void setName(const QString &name);
+    // Sets the MIDI channel of the instrument
+    void setMidiChannel(int midiChannel);
+    // Sets the default velocity of the instrument
+    void setDefaultVelocity(int defaultVelocity);
+    // Sets the transposition of the instrument
+    void setTranspose(int transpose);
+    // Sets the hold time of the instrument
+    void setHold(int hold);
+
+signals:
+    void nameChanged(QString name);
 
 private:
     // Name

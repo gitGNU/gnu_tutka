@@ -80,9 +80,11 @@ void Tracker::setCommandPage(int cmdpage)
 
 void Tracker::setLine(unsigned int row)
 {
-    if (!((curpattern == NULL && row == 0) || (row < curpattern->length()))) {
+    if (curpattern == NULL) {
         return;
     }
+
+    row %= curpattern->length();
 
     if (patpos != row) {
         patpos = row;

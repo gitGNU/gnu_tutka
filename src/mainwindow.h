@@ -91,6 +91,7 @@ private:
     MessageListDialog *messageListDialog;
     QList<int> keyboardKeysDown;
     int chordStatus;
+    int instrument;
     QHash<int, char> keyToNote;
 };
 

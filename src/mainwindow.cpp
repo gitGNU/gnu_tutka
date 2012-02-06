@@ -59,7 +59,8 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     playingSequenceListDialog(new PlayingSequenceListDialog),
     blockListDialog(new BlockListDialog),
     messageListDialog(new MessageListDialog),
-    chordStatus(0)
+    chordStatus(0),
+    instrument(0)
 {
     ui->setupUi(this);
     qApp->installEventFilter(this);
@@ -740,9 +741,22 @@ void MainWindow::setTime(unsigned int time)
 void MainWindow::setInstrument(int instrument)
 {
     if (instrument > 0) {
-        instrument--;
-        song->checkInstrument(instrument, 0);
-        ui->lineEditInstrument->setText(song->instrument(instrument)->name());
+        Instrument *oldInstrument = song->instrument(this->instrument);
+        if (oldInstrument != NULL) {
+            disconnect(oldInstrument, SIGNAL(nameChanged(QString)), ui->lineEditInstrument, SLOT(setText(QString)));
+            disconnect(ui->lineEditInstrument, SIGNAL(textChanged(QString)), oldInstrument, SLOT(setName(QString)));
+        }
+
+        this->instrument = instrument - 1;
+        song->checkInstrument(this->instrument, 0);
+
+        Instrument *newInstrument = song->instrument(this->instrument);
+        connect(newInstrument, SIGNAL(nameChanged(QString)), ui->lineEditInstrument, SLOT(setText(QString)));
+        connect(ui->lineEditInstrument, SIGNAL(textChanged(QString)), newInstrument, SLOT(setName(QString)));
+
+        ui->lineEditInstrument->blockSignals(true);
+        ui->lineEditInstrument->setText(newInstrument->name());
+        ui->lineEditInstrument->blockSignals(false);
     }
 }
 
