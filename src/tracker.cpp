@@ -120,8 +120,12 @@ void Tracker::setBlock(unsigned int block)
     Block *pattern = song_ != NULL ? song_->block(block) : NULL;
 
     if (curpattern != pattern) {
+        disconnect(curpattern, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
+
         curpattern = pattern;
         if (pattern != NULL) {
+            connect(pattern, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
+
             setNumChannels(pattern->tracks());
 
             // Make sure the cursor is inside the tracker
@@ -213,6 +217,8 @@ void Tracker::stepCursorChannel(int direction)
 
     adjustXpanning();
     queueDraw();
+
+    emit cursorChannelChanged(cursor_ch);
 }
 
 void Tracker::stepCursorRow(int direction)
@@ -870,4 +876,14 @@ int Tracker::cursorChannel() const
 int Tracker::cursorItem() const
 {
     return cursor_item;
+}
+
+void Tracker::redrawArea(int startTrack, int startLine, int endTrack, int endLine)
+{
+    Q_UNUSED(startTrack)
+    Q_UNUSED(startLine)
+    Q_UNUSED(endTrack)
+    Q_UNUSED(endLine)
+
+    redraw();
 }

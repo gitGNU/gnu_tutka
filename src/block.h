@@ -23,14 +23,17 @@
 #ifndef BLOCK_H_
 #define BLOCK_H_
 
+#include <QObject>
 #include <QString>
 
 class QDomElement;
 
-class Block {
+class Block : public QObject {
+    Q_OBJECT
+
 public:
     // Allocates a block
-    Block(unsigned int tracks = 4, unsigned int length = 64, unsigned int commandPages = 1);
+    Block(unsigned int tracks = 4, unsigned int length = 64, unsigned int commandPages = 1, QObject *parent = NULL);
     virtual ~Block();
 
     // Returns the number of tracks in the block
@@ -83,6 +86,9 @@ public:
     void deleteLine(int line, int track = -1);
     // Parses a block element in an XML file
     static Block *parse(QDomElement element);
+
+signals:
+    void areaChanged(int startTrack, int startLine, int endTrack, int endLine);
 
 private:
     // Makes sure the given area is inside the block

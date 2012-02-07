@@ -26,6 +26,7 @@ enum {
 class Tracker : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit Tracker(QWidget *parent = 0);
     void setNumChannels(int n);
@@ -54,10 +55,14 @@ public slots:
     void setBlock(unsigned int block);
     void setLine(unsigned int row);
 
+private slots:
+    void redrawArea(int startTrack, int startLine, int endTrack, int endLine);
+
 signals:
     void patposChanged(int, int, int);
     void xpanningChanged(int, int, int);
     void blockmarkSet(int);
+    void cursorChannelChanged(int);
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);

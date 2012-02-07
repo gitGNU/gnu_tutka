@@ -25,8 +25,13 @@
 #include <QDomElement>
 #include "block.h"
 
-Block::Block(unsigned int tracks, unsigned int length, unsigned int commandPages) :
-    tracks_(tracks), length_(length), notes_(NULL), commandPages_(commandPages), commands_(NULL)
+Block::Block(unsigned int tracks, unsigned int length, unsigned int commandPages, QObject *parent) :
+    QObject(parent),
+    tracks_(tracks),
+    length_(length),
+    notes_(NULL),
+    commandPages_(commandPages),
+    commands_(NULL)
 {
     notes_ = (unsigned char *)calloc(2 * tracks * length, sizeof(unsigned char));
     commands_ = (unsigned char *)calloc(commandPages * 2 * tracks * length, sizeof(unsigned char));
@@ -67,6 +72,8 @@ void Block::setNote(unsigned int line, unsigned int track, unsigned char octave,
         notes_[2 * (tracks_ * line + track)] = 0;
         notes_[2 * (tracks_ * line + track) + 1] = 0;
     }
+
+    emit areaChanged(track, line, track, line);
 }
 
 unsigned char Block::instrument(unsigned int line, unsigned int track)
@@ -77,6 +84,8 @@ unsigned char Block::instrument(unsigned int line, unsigned int track)
 void Block::setInstrument(unsigned int line, unsigned int track, unsigned char instrument)
 {
     notes_[2 * (tracks_ * line + track) + 1] = instrument;
+
+    emit areaChanged(track, line, track, line);
 }
 
 unsigned char Block::command(unsigned int line, unsigned int track, unsigned int commandPage)
@@ -98,12 +107,16 @@ void Block::setCommand(unsigned int line, unsigned int track, unsigned int comma
         commands_[commandPage * 2 * tracks_ * length_ + 2 * (tracks_ * line + track) + slot / 2] &= 0x0f;
         commands_[commandPage * 2 * tracks_ * length_ + 2 * (tracks_ * line + track) + slot / 2] |= (data << 4);
     }
+
+    emit areaChanged(track, line, track, line);
 }
 
 void Block::setCommandFull(unsigned int line, unsigned int track, unsigned int commandPage, unsigned char command, unsigned char data)
 {
     commands_[commandPage * 2 * tracks_ * length_ + 2 * (tracks_ * line + track)] = command;
     commands_[commandPage * 2 * tracks_ * length_ + 2 * (tracks_ * line + track) + 1] = data;
+
+    emit areaChanged(track, line, track, line);
 }
 
 void Block::setTracks(unsigned int tracks)
@@ -111,20 +124,19 @@ void Block::setTracks(unsigned int tracks)
     // Allocate new arrays
     unsigned char *notes = (unsigned char *)calloc(2 * tracks * length_, sizeof(unsigned char));
     unsigned char *commands = (unsigned char *)calloc(commandPages_ * 2 * tracks * length_, sizeof(unsigned char));
-    unsigned int oldLength = length_;
     unsigned int oldTracks = this->tracks_;
 
     // How many tracks from the old block to use
     unsigned int existingTracks = tracks < oldTracks ? tracks : oldTracks;
 
     // Copy the notes and the commands of the block to a new data array
-    for (unsigned int line = 0; line < oldLength; line++) {
+    for (unsigned int line = 0; line < length_; line++) {
         for (unsigned int track = 0; track < existingTracks; track++) {
             notes[(line * tracks + track) * 2] = notes[(line * oldTracks + track) * 2];
             notes[(line * tracks + track) * 2 + 1] = notes[(line * oldTracks + track) * 2 + 1];
             for (unsigned int commandPage = 0; commandPage < commandPages_; commandPage++) {
-                commands[commandPage * 2 * tracks * oldLength + (line * tracks + track) * 2] = commands[commandPage * 2 * oldTracks * oldLength + (line * oldTracks + track) * 2];
-                commands[commandPage * 2 * tracks * oldLength + (line * tracks + track) * 2 + 1] = commands[commandPage * 2 * oldTracks * oldLength + (line * oldTracks + track) * 2 + 1];
+                commands[commandPage * 2 * tracks * length_ + (line * tracks + track) * 2] = commands[commandPage * 2 * oldTracks * length_ + (line * oldTracks + track) * 2];
+                commands[commandPage * 2 * tracks * length_ + (line * tracks + track) * 2 + 1] = commands[commandPage * 2 * oldTracks * length_ + (line * oldTracks + track) * 2 + 1];
             }
         }
     }
@@ -137,6 +149,8 @@ void Block::setTracks(unsigned int tracks)
     this->notes_ = notes;
     this->commands_ = commands;
     this->tracks_ = tracks;
+
+    emit areaChanged(tracks > oldTracks ? oldTracks : tracks, 0, (tracks > oldTracks ? tracks : oldTracks) - 1, length_ - 1);
 }
 
 void Block::setLength(unsigned int length)
@@ -145,19 +159,18 @@ void Block::setLength(unsigned int length)
     unsigned char *notes = (unsigned char *)calloc(2 * tracks_ * length, sizeof(unsigned char));
     unsigned char *commands = (unsigned char *)calloc(commandPages_ * 2 * tracks_ * length, sizeof(unsigned char));
     unsigned int oldLength = this->length_;
-    unsigned int oldTracks = tracks_;
 
     // How many lines from the old block to use
     unsigned int existingLength = length < oldLength ? length : oldLength;
 
     // Copy the notes and the commands of the block to a new data array
     for (unsigned int line = 0; line < existingLength; line++) {
-        for (unsigned int track = 0; track < oldTracks; track++) {
-            notes[(line * oldTracks + track) * 2] = this->notes_[(line * oldTracks + track) * 2];
-            notes[(line * oldTracks + track) * 2 + 1] = this->notes_[(line * oldTracks + track) * 2 + 1];
+        for (unsigned int track = 0; track < tracks_; track++) {
+            notes[(line * tracks_ + track) * 2] = this->notes_[(line * tracks_ + track) * 2];
+            notes[(line * tracks_ + track) * 2 + 1] = this->notes_[(line * tracks_ + track) * 2 + 1];
             for (unsigned int commandPage = 0; commandPage < commandPages_; commandPage++) {
-                commands[commandPage * 2 * oldTracks * length + (line * oldTracks + track) * 2] = commands[commandPage * 2 * oldTracks * oldLength + (line * oldTracks + track) * 2];
-                commands[commandPage * 2 * oldTracks * length + (line * oldTracks + track) * 2 + 1] = commands[commandPage * 2 * oldTracks * oldLength + (line * oldTracks + track) * 2 + 1];
+                commands[commandPage * 2 * tracks_ * length + (line * tracks_ + track) * 2] = commands[commandPage * 2 * tracks_ * oldLength + (line * tracks_ + track) * 2];
+                commands[commandPage * 2 * tracks_ * length + (line * tracks_ + track) * 2 + 1] = commands[commandPage * 2 * tracks_ * oldLength + (line * tracks_ + track) * 2 + 1];
             }
         }
     }
@@ -170,6 +183,8 @@ void Block::setLength(unsigned int length)
     this->notes_ = notes;
     this->commands_ = commands;
     this->length_ = length;
+
+    emit areaChanged(0, length > oldLength ? oldLength : length, tracks_ - 1, (length > oldLength ? length : oldLength) - 1);
 }
 
 void Block::setCommandPages(unsigned int commandPages)
@@ -189,6 +204,8 @@ void Block::setCommandPages(unsigned int commandPages)
     // Use new array
     this->commands_ = commands;
     this->commandPages_ = commandPages;
+
+    emit areaChanged(0, 0, tracks_ - 1, length_ - 1);
 }
 
 void Block::setName(const QString &name)
@@ -255,6 +272,8 @@ void Block::paste(Block *from, int track, int line)
             }
         }
     }
+
+    emit areaChanged(track, line, track + copyTracks - 1, line + copyLength - 1);
 }
 
 void Block::clear(int startTrack, int startLine, int endTrack, int endLine)
@@ -271,6 +290,8 @@ void Block::clear(int startTrack, int startLine, int endTrack, int endLine)
             }
         }
     }
+
+    emit areaChanged(startTrack, startLine, endTrack, endLine);
 }
 
 void Block::transpose(int instrument, int halfNotes, int startTrack, int startLine, int endTrack, int endLine)
@@ -307,6 +328,8 @@ void Block::transpose(int instrument, int halfNotes, int startTrack, int startLi
             }
         }
     }
+
+    emit areaChanged(startTrack, startLine, endTrack, endLine);
 }
 
 void Block::expandShrink(int factor, int startTrack, int startLine, int endTrack, int endLine)
@@ -364,6 +387,8 @@ void Block::expandShrink(int factor, int startTrack, int startLine, int endTrack
             }
         }
     }
+
+    emit areaChanged(startTrack, startLine, endTrack, endLine);
 }
 
 void Block::changeInstrument(int from, int to, bool swap, int startTrack, int startLine, int endTrack, int endLine)
@@ -389,8 +414,9 @@ void Block::changeInstrument(int from, int to, bool swap, int startTrack, int st
             }
         }
     }
-}
 
+    emit areaChanged(startTrack, startLine, endTrack, endLine);
+}
 
 void Block::insertLine(int line, int track)
 {
@@ -409,6 +435,8 @@ void Block::insertLine(int line, int track)
         }
     }
     delete block;
+
+    emit areaChanged(startTrack, line, endTrack, length_ - 1);
 }
 
 void Block::deleteLine(int line, int track)
@@ -428,6 +456,8 @@ void Block::deleteLine(int line, int track)
         }
     }
     delete block;
+
+    emit areaChanged(startTrack, line, endTrack, length_ - 1);
 }
 
 Block *Block::parse(QDomElement element)
