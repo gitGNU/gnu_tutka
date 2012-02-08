@@ -7,6 +7,8 @@ namespace Ui {
     class ExpandShrinkDialog;
 }
 
+class Song;
+
 class ExpandShrinkDialog : public QDialog
 {
     Q_OBJECT
@@ -20,9 +22,26 @@ public slots:
     void showBlock();
     void showTrack();
     void showSelection();
+    void setSong(Song *song);
+    void setBlock(unsigned int block);
+    void setTrack(int track);
+
+private slots:
+    void expand();
+    void shrink();
 
 private:
+    enum Area {
+      SONG,
+      BLOCK,
+      TRACK,
+      SELECTION
+    };
+
     Ui::ExpandShrinkDialog *ui;
+    Song *song;
+    unsigned int block;
+    unsigned int track;
 };
 
 #endif // EXPANDSHRINKDIALOG_H
