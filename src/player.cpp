@@ -163,6 +163,7 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
             // Update track status for the selected output
             trackStatus->note = note + instrument->transpose();
             trackStatus->midiChannel = instrument->midiChannel();
+            trackStatus->midiInterface = instrument->midiInterface();
             trackStatus->volume = instrument->defaultVelocity() * volume / 127 * song->track(track)->volume() / 127 * song->masterVolume() / 127;
             trackStatus->hold = instrument->hold() > 0 ? instrument->hold() : -1;
 
