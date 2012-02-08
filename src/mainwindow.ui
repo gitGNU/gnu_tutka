@@ -114,9 +114,9 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QSpinBox" name="spinBoxInstrument">
+              <widget class="InstrumentSpinBox" name="spinBoxInstrument">
                <property name="minimum">
-                <number>1</number>
+                <number>0</number>
                </property>
                <property name="maximum">
                 <number>255</number>
@@ -837,6 +837,11 @@
    <extends>QWidget</extends>
    <header>tracker.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>InstrumentSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>instrumentspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -92,6 +92,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->buttonStop, SIGNAL(clicked()), player, SLOT(stop()));
     connect(ui->buttonInstrumentProperties, SIGNAL(clicked()), instrumentPropertiesDialog, SLOT(show()));
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), instrumentPropertiesDialog, SLOT(setInstrument(int)));
+    connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), transposeDialog, SLOT(setInstrument(int)));
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), this, SLOT(setInstrument(int)));
     connect(ui->actionOpen, SIGNAL(triggered()), openDialog, SLOT(show()));
     connect(ui->actionSave_As, SIGNAL(triggered()), saveDialog, SLOT(show()));
@@ -203,21 +204,22 @@ bool MainWindow::keyPress(QKeyEvent *event)
             break;
         case Qt::Key_Left:
             /* CTRL-Left: Previous instrument */
-            if (ui->spinBoxInstrument->value() > 1) {
+            if (ui->spinBoxInstrument->value() > 0) {
                 ui->spinBoxInstrument->setValue(ui->spinBoxInstrument->value() - 1);
 
                 /* Make sure the instrument exists */
-                song->checkInstrument(ui->spinBoxInstrument->value() - 1, 0);
+                song->checkInstrument(ui->spinBoxInstrument->value(), 0);
             }
             handled = true;
             break;
         case Qt::Key_Right:
             /* CTRL-Right: Previous instrument */
-            ui->spinBoxInstrument->setValue(ui->spinBoxInstrument->value() + 1);
+            if (ui->spinBoxInstrument->value() < 255) {
+                ui->spinBoxInstrument->setValue(ui->spinBoxInstrument->value() + 1);
 
-            /* Make sure the instrument exists */
-            song->checkInstrument(ui->spinBoxInstrument->value() - 1, 0);
-
+                /* Make sure the instrument exists */
+                song->checkInstrument(ui->spinBoxInstrument->value(), 0);
+            }
             handled = true;
             break;
         case Qt::Key_Tab:
@@ -384,7 +386,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
                         if (ui->checkBoxEdit->isChecked()) {
                             /* Set note and refresh */
-                            block->setNote(tracker->line(), tracker->cursorChannel(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value());
+                            block->setNote(tracker->line(), tracker->cursorChannel(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
                         }
 
                         tracker->stepCursorChannel(1);
@@ -392,7 +394,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                     }
                 } else if (ui->checkBoxEdit->isChecked()) {
                     /* Set note and refresh */
-                    block->setNote(tracker->line(), tracker->cursorChannel(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value());
+                    block->setNote(tracker->line(), tracker->cursorChannel(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
                     tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
                 }
                 handled = true;
@@ -631,13 +633,13 @@ bool MainWindow::keyPress(QKeyEvent *event)
             ui->spinBoxInstrument->setValue(instrument);
 
             /* Make sure the instrument exists */
-            song->checkInstrument(ui->spinBoxInstrument->value() - 1, 0);
+            song->checkInstrument(ui->spinBoxInstrument->value(), 0);
             handled = true;
         }
 
         /* Play note if a key was pressed but not if cursor is in cmd pos */
         if (note >= 0 && tracker->cursorItem() == 0) {
-            player->playNote(ui->spinBoxInstrument->value() - 1, ui->comboBoxKeyboardOctaves->currentIndex() * 12 + note, 127, tracker->cursorChannel());
+            player->playNote(ui->spinBoxInstrument->value(), ui->comboBoxKeyboardOctaves->currentIndex() * 12 + note, 127, tracker->cursorChannel());
             handled = true;
         }
     }
@@ -739,14 +741,14 @@ void MainWindow::setTime(unsigned int time)
 
 void MainWindow::setInstrument(int instrument)
 {
-    if (instrument > 0) {
+    if (instrument >= 0) {
         Instrument *oldInstrument = song->instrument(this->instrument);
         if (oldInstrument != NULL) {
             disconnect(oldInstrument, SIGNAL(nameChanged(QString)), ui->lineEditInstrument, SLOT(setText(QString)));
             disconnect(ui->lineEditInstrument, SIGNAL(textChanged(QString)), oldInstrument, SLOT(setName(QString)));
         }
 
-        this->instrument = instrument - 1;
+        this->instrument = instrument;
         song->checkInstrument(this->instrument, 0);
 
         Instrument *newInstrument = song->instrument(this->instrument);

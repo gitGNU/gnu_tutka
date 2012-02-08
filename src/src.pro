@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     playingsequencedialog.cpp \
     playingsequencelistdialog.cpp \
     blocklistdialog.cpp \
-    messagelistdialog.cpp
+    messagelistdialog.cpp \
+    instrumentspinbox.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -46,7 +47,8 @@ HEADERS += block.h \
     playingsequencedialog.h \
     playingsequencelistdialog.h \
     blocklistdialog.h \
-    messagelistdialog.h
+    messagelistdialog.h \
+    instrumentspinbox.h
 
 FORMS += \
     mainwindow.ui \
@@ -90,6 +92,8 @@ QMAKE_CLEAN += *.gcov \
     ./.obj/*.gcno
 
 INSTALLS += target schemas desktop icon
+
+
 
 
 

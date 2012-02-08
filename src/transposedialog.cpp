@@ -7,7 +7,8 @@ TransposeDialog::TransposeDialog(QWidget *parent) :
     ui(new Ui::TransposeDialog),
     song(NULL),
     block(0),
-    track(0)
+    track(0),
+    instrument(0)
 {
     ui->setupUi(this);
 
@@ -58,6 +59,11 @@ void TransposeDialog::setTrack(int track)
     this->track = track;
 }
 
+void TransposeDialog::setInstrument(int instrument)
+{
+    this->instrument = instrument;
+}
+
 void TransposeDialog::transpose()
 {
     int halfNotes = 0;
@@ -79,7 +85,7 @@ void TransposeDialog::transpose()
         break;
     }
 
-    int instrument = ui->comboBoxInstruments->currentIndex() == 1 ? instrument : -1;
+    int instrument = ui->comboBoxInstruments->currentIndex() == 1 ? this->instrument : -1;
 
     switch (ui->comboBoxArea->currentIndex()) {
     case SONG:

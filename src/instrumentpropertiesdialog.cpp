@@ -34,7 +34,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         disconnect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setHold(int)));
 
         // Make sure the instrument exists
-        this->instrument = number - 1;
+        this->instrument = number;
         song->checkInstrument(this->instrument, 0);
 
         // Connect the widgets for editing the instrument
