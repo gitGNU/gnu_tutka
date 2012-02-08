@@ -34,9 +34,9 @@ int main(int argc, char **argv)
     Player *player = new Player(midi);
     MainWindow *mainWindow = new MainWindow(player);
     Song *song = new Song(argc > 1 ? argv[1] : QString());
-    player->setSong(song);
     mainWindow->show();
     mainWindow->raise();
+    player->setSong(song);
 
     int returnCode = app.exec();
 
