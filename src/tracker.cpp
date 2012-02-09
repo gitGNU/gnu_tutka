@@ -120,7 +120,9 @@ void Tracker::setBlock(unsigned int block)
     Block *pattern = song_ != NULL ? song_->block(block) : NULL;
 
     if (curpattern != pattern) {
-        disconnect(curpattern, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
+        if (curpattern != NULL) {
+            disconnect(curpattern, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
+        }
 
         curpattern = pattern;
         if (pattern != NULL) {
