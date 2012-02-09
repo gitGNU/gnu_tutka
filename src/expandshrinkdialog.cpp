@@ -59,12 +59,27 @@ void ExpandShrinkDialog::setTrack(int track)
     this->track = track;
 }
 
+
 void ExpandShrinkDialog::expand()
+{
+    expandShrink(false);
+}
+
+void ExpandShrinkDialog::shrink()
+{
+    expandShrink(true);
+}
+
+void ExpandShrinkDialog::expandShrink(bool shrink)
 {
     int factor = ui->spinBoxFactor->value();
 
     if (factor < 2) {
         return;
+    }
+
+    if (shrink) {
+        factor = -factor;
     }
 
     switch (ui->comboBoxArea->currentIndex()) {
@@ -84,37 +99,6 @@ void ExpandShrinkDialog::expand()
     case SELECTION:
 //        if (tracker->sel_start_ch >= 0 && tracker->sel_end_ch >= 0 && tracker->sel_start_row >= 0 && tracker->sel_end_row >= 0)
 //            editor_song_block_current_expandshrink(gui->editor, factor, tracker->sel_start_ch, tracker->sel_start_row, tracker->sel_end_ch, tracker->sel_end_row);
-        break;
-    default:
-        break;
-    }
-}
-
-void ExpandShrinkDialog::shrink()
-{
-    int factor = ui->spinBoxFactor->value();
-
-    if (factor < 2) {
-        return;
-    }
-
-    switch (ui->comboBoxArea->currentIndex()) {
-    case SONG:
-        song->expandShrink(-factor);
-        break;
-    case BLOCK: {
-        Block *block = song->block(this->block);
-        block->expandShrink(-factor, 0, 0, block->tracks() - 1, block->length() - 1);
-        break;
-    }
-    case TRACK: {
-        Block *block = song->block(this->block);
-        block->expandShrink(-factor, track, 0, track, block->length() - 1);
-        break;
-    }
-    case SELECTION:
-//        if (tracker->sel_start_ch >= 0 && tracker->sel_end_ch >= 0 && tracker->sel_start_row >= 0 && tracker->sel_end_row >= 0)
-//            editor_song_block_current_expandshrink(gui->editor, -factor, tracker->sel_start_ch, tracker->sel_start_row, tracker->sel_end_ch, tracker->sel_end_row);
         break;
     default:
         break;

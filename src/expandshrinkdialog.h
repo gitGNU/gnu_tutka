@@ -42,6 +42,8 @@ private:
     Song *song;
     unsigned int block;
     unsigned int track;
+
+    void expandShrink(bool shrink);
 };
 
 #endif // EXPANDSHRINKDIALOG_H

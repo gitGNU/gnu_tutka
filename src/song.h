@@ -23,6 +23,7 @@
 #ifndef SONG_H_
 #define SONG_H_
 
+#include <QObject>
 #include "playseq.h"
 #include "block.h"
 #include "instrument.h"
@@ -58,10 +59,12 @@ private:
     bool solo;
 };
 
-class Song {
+class Song : public QObject {
+    Q_OBJECT
+
 public:
     // Loads a song from an XML file or creates a new song
-    Song(const QString &path = QString());
+    Song(const QString &path = QString(), QObject *parent = NULL);
     // Frees a song structure and its contents
     virtual ~Song();
 
@@ -83,10 +86,6 @@ public:
     void deleteMessage(unsigned int pos);
     // Sets a section in the given position to point somewhere
     void setSection(unsigned int pos, unsigned int playseq);
-    // Sets the number of ticks per line for a song
-    void setTPL(unsigned int ticksPerLine);
-    // Sets the tempo of a song
-    void setTempo(unsigned int tempo);
     // If the maximum number of tracks has changed recreate the track volumes
     bool checkMaxTracks();
     // Make sure the instrument exists; add instruments if necessary
@@ -113,9 +112,18 @@ public:
     unsigned int messages() const;
     unsigned int section(unsigned int pos) const;
     unsigned int masterVolume() const;
+    QString name() const;
     unsigned int tempo() const;
     unsigned int ticksPerLine() const;
     bool sendSync() const;
+
+public slots:
+    // Sets the number of ticks per line for a song
+    void setTPL(int ticksPerLine);
+    // Sets the tempo of a song
+    void setTempo(int tempo);
+    void setName(const QString &name);
+    void setSendSync(bool sendSync);
 
 private:
     // Initializes an empty song
@@ -124,7 +132,7 @@ private:
     bool parse(QDomElement element);
 
     // Name of the song
-    QString name;
+    QString name_;
     // Tempo, ticks per line
     unsigned int tempo_, ticksPerLine_;
     // Section array

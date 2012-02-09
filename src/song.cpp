@@ -23,7 +23,6 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
-#include <QDebug>
 #include <cstdio>
 #include "song.h"
 
@@ -79,7 +78,8 @@ bool Track::isSolo() const
     return solo;
 }
 
-Song::Song(const QString &path)
+Song::Song(const QString &path, QObject *parent) :
+    QObject(parent)
 {
     bool initialized = false;
 
@@ -120,7 +120,7 @@ Song::~Song()
 
 void Song::init()
 {
-    name = "Untitled";
+    name_ = "Untitled";
     tempo_ = 120;
     ticksPerLine_ = 6;
     masterVolume_ = 127;
@@ -271,12 +271,12 @@ void Song::setSection(unsigned int pos, unsigned int playseq)
     }
 }
 
-void Song::setTPL(unsigned int ticksPerLine)
+void Song::setTPL(int ticksPerLine)
 {
     ticksPerLine_ = ticksPerLine;
 }
 
-void Song::setTempo(unsigned int tempo)
+void Song::setTempo(int tempo)
 {
     tempo_ = tempo;
 }
@@ -346,7 +346,7 @@ bool Song::parse(QDomElement element)
 
         prop = element.attributeNode("name");
         if (!prop.isNull()) {
-            name = prop.value();
+            name_ = prop.value();
         }
 
         prop = element.attributeNode("tempo");
@@ -681,4 +681,19 @@ unsigned int Song::ticksPerLine() const
 bool Song::sendSync() const
 {
     return sendSync_;
+}
+
+QString Song::name() const
+{
+    return name_;
+}
+
+void Song::setName(const QString &name)
+{
+    name_ = name;
+}
+
+void Song::setSendSync(bool sendSync)
+{
+    sendSync_ = sendSync;
 }
