@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Playing sequence 1/1</string>
+   <string>Playing Sequence 1/1</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
