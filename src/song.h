@@ -90,7 +90,7 @@ public:
     // If the maximum number of tracks has changed recreate the track volumes
     bool checkMaxTracks();
     // Make sure the instrument exists; add instruments if necessary
-    void checkInstrument(int instrument, unsigned short defaultMIDIInterface);
+    void checkInstrument(int instrument, unsigned short defaultMIDIInterface = 0);
     // Saves a song to an XML file
     void save(const QString &path);
     // Transposes all blocks in a song

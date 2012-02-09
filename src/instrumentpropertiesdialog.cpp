@@ -35,7 +35,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
 
         // Make sure the instrument exists
         this->instrument = number;
-        song->checkInstrument(this->instrument, 0);
+        song->checkInstrument(this->instrument);
 
         // Connect the widgets for editing the instrument
         Instrument *instrument = song->instrument(this->instrument);

@@ -61,7 +61,6 @@ void ExpandShrinkDialog::setTrack(int track)
 
 void ExpandShrinkDialog::expand()
 {
-    qWarning("XX AHA");
     int factor = ui->spinBoxFactor->value();
 
     if (factor < 2) {

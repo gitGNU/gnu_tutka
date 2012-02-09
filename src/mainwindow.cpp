@@ -208,7 +208,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 ui->spinBoxInstrument->setValue(ui->spinBoxInstrument->value() - 1);
 
                 /* Make sure the instrument exists */
-                song->checkInstrument(ui->spinBoxInstrument->value(), 0);
+                song->checkInstrument(ui->spinBoxInstrument->value());
             }
             handled = true;
             break;
@@ -218,7 +218,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 ui->spinBoxInstrument->setValue(ui->spinBoxInstrument->value() + 1);
 
                 /* Make sure the instrument exists */
-                song->checkInstrument(ui->spinBoxInstrument->value(), 0);
+                song->checkInstrument(ui->spinBoxInstrument->value());
             }
             handled = true;
             break;
@@ -633,7 +633,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
             ui->spinBoxInstrument->setValue(instrument);
 
             /* Make sure the instrument exists */
-            song->checkInstrument(ui->spinBoxInstrument->value(), 0);
+            song->checkInstrument(ui->spinBoxInstrument->value());
             handled = true;
         }
 
@@ -749,7 +749,7 @@ void MainWindow::setInstrument(int instrument)
         }
 
         this->instrument = instrument;
-        song->checkInstrument(this->instrument, 0);
+        song->checkInstrument(this->instrument);
 
         Instrument *newInstrument = song->instrument(this->instrument);
         connect(newInstrument, SIGNAL(nameChanged(QString)), ui->lineEditInstrument, SLOT(setText(QString)));
