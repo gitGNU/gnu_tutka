@@ -86,8 +86,6 @@ public:
     void deleteMessage(unsigned int pos);
     // Sets a section in the given position to point somewhere
     void setSection(unsigned int pos, unsigned int playseq);
-    // If the maximum number of tracks has changed recreate the track volumes
-    bool checkMaxTracks();
     // Make sure the instrument exists; add instruments if necessary
     void checkInstrument(int instrument, unsigned short defaultMIDIInterface = 0);
     // Saves a song to an XML file
@@ -124,6 +122,10 @@ public slots:
     void setTempo(int tempo);
     void setName(const QString &name);
     void setSendSync(bool sendSync);
+
+private slots:
+    // If the maximum number of tracks has changed recreate the track volumes
+    void checkMaxTracks();
 
 private:
     // Initializes an empty song

@@ -29,7 +29,6 @@ class Tracker : public QWidget
 
 public:
     explicit Tracker(QWidget *parent = 0);
-    void setNumChannels(int n);
     void setCommandPage(int cmdpage);
     void redraw();
     void redrawRow(int row);
@@ -57,6 +56,8 @@ public slots:
 
 private slots:
     void redrawArea(int startTrack, int startLine, int endTrack, int endLine);
+    void setNumChannels(int n);
+    void checkBounds();
 
 signals:
     void patposChanged(int, int, int);

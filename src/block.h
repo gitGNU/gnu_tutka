@@ -65,7 +65,8 @@ public:
     // Sets the number of command pages in a block
     void setCommandPages(unsigned int commandPages);
     // Sets the name of the block
-    void setName(const QString &name);
+    void setName(const QString &name_);
+    QString name() const;
     // Copies a part of a block to a new block
     Block *copy(int startTrack, int startLine, int endTrack, int endLine);
     // Pastes a block to another block in the given position
@@ -89,13 +90,16 @@ public:
 
 signals:
     void areaChanged(int startTrack, int startLine, int endTrack, int endLine);
+    void tracksChanged(int tracks);
+    void lengthChanged(int length);
+    void commandPagesChanged(int commandPages);
 
 private:
     // Makes sure the given area is inside the block
     void checkBounds(int &startTrack, int &startLine, int &endTrack, int &endLine);
 
     // Name
-    QString name;
+    QString name_;
     // Number of tracks
     unsigned int tracks_;
     // Number of lines

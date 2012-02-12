@@ -143,7 +143,9 @@ void Song::insertBlock(unsigned int pos, unsigned int current)
     }
 
     // Insert a new block similar to the current block
-    blocks_.insert(pos, new Block(blocks_[current]->tracks(), blocks_[current]->length(), blocks_[current]->commandPages()));
+    Block *block = new Block(blocks_[current]->tracks(), blocks_[current]->length(), blocks_[current]->commandPages());
+    connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+    blocks_.insert(pos, block);
 
     // Update playing sequences
     for (int i = 0; i < playseqs_.count(); i++) {
@@ -281,7 +283,7 @@ void Song::setTempo(int tempo)
     tempo_ = tempo;
 }
 
-bool Song::checkMaxTracks()
+void Song::checkMaxTracks()
 {
     int max = 0;
     int oldMax = tracks.count();
@@ -293,22 +295,17 @@ bool Song::checkMaxTracks()
         }
     }
 
-    if (oldMax == max) {
-        // Do nothing if the maximum number of tracks has not changed
-        return false;
-    } else if (oldMax < max) {
+    if (oldMax < max) {
         for (int track = oldMax; track < max; track++) {
             // Give a descriptive name for the new track
             tracks.append(new Track(QString("Track %1").arg(track + 1)));
         }
-    } else {
+    } else if (oldMax > max) {
         // Tracks removed: free track datas
         while (tracks.count() > max) {
             delete tracks.takeLast();
         }
      }
-
-    return true;
 }
 
 void Song::checkInstrument(int instrument, unsigned short defaultMIDIInterface)

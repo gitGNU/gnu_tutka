@@ -132,11 +132,11 @@ void Block::setTracks(unsigned int tracks)
     // Copy the notes and the commands of the block to a new data array
     for (unsigned int line = 0; line < length_; line++) {
         for (unsigned int track = 0; track < existingTracks; track++) {
-            notes[(line * tracks + track) * 2] = notes[(line * oldTracks + track) * 2];
-            notes[(line * tracks + track) * 2 + 1] = notes[(line * oldTracks + track) * 2 + 1];
+            notes[(line * tracks + track) * 2] = notes_[(line * oldTracks + track) * 2];
+            notes[(line * tracks + track) * 2 + 1] = notes_[(line * oldTracks + track) * 2 + 1];
             for (unsigned int commandPage = 0; commandPage < commandPages_; commandPage++) {
-                commands[commandPage * 2 * tracks * length_ + (line * tracks + track) * 2] = commands[commandPage * 2 * oldTracks * length_ + (line * oldTracks + track) * 2];
-                commands[commandPage * 2 * tracks * length_ + (line * tracks + track) * 2 + 1] = commands[commandPage * 2 * oldTracks * length_ + (line * oldTracks + track) * 2 + 1];
+                commands[commandPage * 2 * tracks * length_ + (line * tracks + track) * 2] = commands_[commandPage * 2 * oldTracks * length_ + (line * oldTracks + track) * 2];
+                commands[commandPage * 2 * tracks * length_ + (line * tracks + track) * 2 + 1] = commands_[commandPage * 2 * oldTracks * length_ + (line * oldTracks + track) * 2 + 1];
             }
         }
     }
@@ -150,6 +150,7 @@ void Block::setTracks(unsigned int tracks)
     this->commands_ = commands;
     this->tracks_ = tracks;
 
+    emit tracksChanged(tracks_);
     emit areaChanged(tracks > oldTracks ? oldTracks : tracks, 0, (tracks > oldTracks ? tracks : oldTracks) - 1, length_ - 1);
 }
 
@@ -184,6 +185,7 @@ void Block::setLength(unsigned int length)
     this->commands_ = commands;
     this->length_ = length;
 
+    emit lengthChanged(length_);
     emit areaChanged(0, length > oldLength ? oldLength : length, tracks_ - 1, (length > oldLength ? length : oldLength) - 1);
 }
 
@@ -205,12 +207,18 @@ void Block::setCommandPages(unsigned int commandPages)
     this->commands_ = commands;
     this->commandPages_ = commandPages;
 
+    emit commandPagesChanged(commandPages_);
     emit areaChanged(0, 0, tracks_ - 1, length_ - 1);
 }
 
 void Block::setName(const QString &name)
 {
-    this->name = name;
+    this->name_ = name;
+}
+
+QString Block::name() const
+{
+    return name_;
 }
 
 Block *Block::copy(int startTrack, int startLine, int endTrack, int endLine)
@@ -488,7 +496,7 @@ Block *Block::parse(QDomElement element)
         block = new Block(tracks, length, commandpages);
         prop = element.attributeNode("name");
         if (!prop.isNull()) {
-            block->name = prop.value();
+            block->name_ = prop.value();
         }
 
         // Get block contents

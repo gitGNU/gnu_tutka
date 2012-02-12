@@ -72,6 +72,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(songChanged(Song *)), expandShrinkDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), changeInstrumentDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), songPropertiesDialog, SLOT(setSong(Song *)));
+    connect(player, SIGNAL(songChanged(Song *)), blockListDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(sectionChanged(unsigned int)), this, SLOT(setSection(unsigned int)));
     connect(player, SIGNAL(playseqChanged(unsigned int)), this, SLOT(setPlayseq(unsigned int)));
     connect(player, SIGNAL(positionChanged(unsigned int)), this, SLOT(setPosition(unsigned int)));
@@ -80,6 +81,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(blockChanged(unsigned int)), transposeDialog, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), expandShrinkDialog, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), changeInstrumentDialog, SLOT(setBlock(unsigned int)));
+    connect(player, SIGNAL(blockChanged(unsigned int)), blockListDialog, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(lineChanged(unsigned int)), ui->trackerMain, SLOT(setLine(unsigned int)));
     connect(player, SIGNAL(modeChanged(Player::Mode)), this, SLOT(setMode(Player::Mode)));
     connect(player, SIGNAL(timeChanged(unsigned int)), this, SLOT(setTime(unsigned int)));
@@ -119,6 +121,12 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionList_2, SIGNAL(triggered()), blockListDialog, SLOT(show()));
     connect(ui->actionMessage_List, SIGNAL(triggered()), messageListDialog, SLOT(show()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+    /* TODO make clickable labels
+    connect(ui->labelSection, SIGNAL(clicked()), sectionListDialog, SLOT(show()));
+    connect(ui->labelPosition, SIGNAL(clicked()), playingSequenceDialog, SLOT(show()));
+    connect(ui->labelPlayingSequence, SIGNAL(clicked()), playingSequenceListDialog, SLOT(show()));
+    connect(ui->labelBlock, SIGNAL(clicked()), blockListDialog, SLOT(show()));
+    */
 
     keyToNote.insert(Qt::Key_Z, 1);
     keyToNote.insert(Qt::Key_S, 2);
@@ -168,10 +176,12 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     bool handled = false;
 
-    if (event->type() == QEvent::KeyPress) {
-        handled = keyPress(static_cast<QKeyEvent *>(event));
-    } else if (event->type() == QEvent::KeyRelease) {
-        handled = keyRelease(static_cast<QKeyEvent *>(event));
+    if (dynamic_cast<QLineEdit *>(QApplication::focusWidget()) == NULL && dynamic_cast<QSpinBox *>(QApplication::focusWidget()) == NULL) {
+        if (event->type() == QEvent::KeyPress) {
+            handled = keyPress(static_cast<QKeyEvent *>(event));
+        } else if (event->type() == QEvent::KeyRelease) {
+            handled = keyRelease(static_cast<QKeyEvent *>(event));
+        }
     }
 
     return handled ? true : QMainWindow::eventFilter(watched, event);
@@ -179,10 +189,6 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 
 bool MainWindow::keyPress(QKeyEvent *event)
 {
-    if (dynamic_cast<QLineEdit *>(QApplication::focusWidget()) != NULL) {
-        return false;
-    }
-
     Tracker *tracker = ui->trackerMain;
     Song *song = tracker->song();
     Block *block = tracker->block();

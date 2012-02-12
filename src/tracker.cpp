@@ -122,11 +122,17 @@ void Tracker::setBlock(unsigned int block)
     if (curpattern != pattern) {
         if (curpattern != NULL) {
             disconnect(curpattern, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
+            disconnect(curpattern, SIGNAL(tracksChanged(int)), this, SLOT(setNumChannels(int)));
+            disconnect(curpattern, SIGNAL(lengthChanged(int)), this, SLOT(checkBounds()));
+            disconnect(curpattern, SIGNAL(commandPagesChanged(int)), this, SLOT(checkBounds()));
         }
 
         curpattern = pattern;
         if (pattern != NULL) {
             connect(pattern, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
+            connect(pattern, SIGNAL(tracksChanged(int)), this, SLOT(setNumChannels(int)));
+            connect(pattern, SIGNAL(lengthChanged(int)), this, SLOT(checkBounds()));
+            connect(pattern, SIGNAL(commandPagesChanged(int)), this, SLOT(checkBounds()));
 
             setNumChannels(pattern->tracks());
 
@@ -888,4 +894,20 @@ void Tracker::redrawArea(int startTrack, int startLine, int endTrack, int endLin
     Q_UNUSED(endLine)
 
     redraw();
+}
+
+void Tracker::checkBounds()
+{
+    if (cursor_ch >= curpattern->tracks()) {
+        cursor_ch = curpattern->tracks() - 1;
+        queueDraw();
+    }
+
+    if (patpos >= curpattern->length()) {
+        setLine(curpattern->length() - 1);
+    }
+
+    if (cmdpage >= curpattern->commandPages()) {
+        setCommandPage(curpattern->commandPages() - 1);
+    }
 }
