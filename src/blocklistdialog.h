@@ -7,9 +7,9 @@ namespace Ui {
     class BlockListDialog;
 }
 
+class Song;
 class BlockListTableModel;
 class SpinBoxDelegate;
-class Song;
 
 class BlockListDialog : public QDialog
 {
@@ -23,8 +23,14 @@ public slots:
     void setSong(Song *song);
     void setBlock(unsigned int block);
 
+private slots:
+    void insertBlock();
+    void appendBlock();
+    void deleteBlock();
+
 private:
     Ui::BlockListDialog *ui;
+    Song *song;
     BlockListTableModel *blockListTableModel;
     SpinBoxDelegate *spinBoxDelegate;
 };

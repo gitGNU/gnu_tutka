@@ -127,6 +127,12 @@ private slots:
     // If the maximum number of tracks has changed recreate the track volumes
     void checkMaxTracks();
 
+signals:
+    void blocksChanged(unsigned int blocks);
+    void playseqsChanged(unsigned int playseqs);
+    void sectionsChanged(unsigned int sections);
+    void messagesChanged(unsigned int messages);
+
 private:
     // Initializes an empty song
     void init();

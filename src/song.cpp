@@ -155,6 +155,8 @@ void Song::insertBlock(unsigned int pos, unsigned int current)
             }
         }
     }
+
+    emit blocksChanged(blocks_.count());
 }
 
 void Song::deleteBlock(unsigned int pos)
@@ -177,6 +179,8 @@ void Song::deleteBlock(unsigned int pos)
             }
         }
     }
+
+    emit blocksChanged(blocks_.count());
 }
 
 // Inserts a new playseq in the playseq array in the given position
@@ -196,6 +200,8 @@ void Song::insertPlayseq(unsigned int pos)
             sections_[i]++;
         }
     }
+
+    emit playseqsChanged(playseqs_.count());
 }
 
 void Song::deletePlayseq(unsigned int pos)
@@ -216,6 +222,8 @@ void Song::deletePlayseq(unsigned int pos)
             }
         }
     }
+
+    emit playseqsChanged(playseqs_.count());
 }
 
 void Song::insertSection(unsigned int pos)
@@ -226,6 +234,8 @@ void Song::insertSection(unsigned int pos)
     }
 
     sections_.insert(pos, pos < sections_.count() ? sections_[pos] : sections_[sections_.count() - 1]);
+
+    emit sectionsChanged(sections_.count());
 }
 
 void Song::deleteSection(unsigned int pos)
@@ -239,6 +249,8 @@ void Song::deleteSection(unsigned int pos)
 
         sections_.removeAt(pos);
     }
+
+    emit sectionsChanged(sections_.count());
 }
 
 void Song::insertMessage(unsigned int pos)
@@ -250,6 +262,8 @@ void Song::insertMessage(unsigned int pos)
 
     // Insert a new message
     messages_.insert(pos, new Message());
+
+    emit messagesChanged(messages_.count());
 }
 
 void Song::deleteMessage(unsigned int pos)
@@ -264,6 +278,8 @@ void Song::deleteMessage(unsigned int pos)
         // Free the message in question
         messages_.removeAt(pos);
     }
+
+    emit messagesChanged(messages_.count());
 }
 
 void Song::setSection(unsigned int pos, unsigned int playseq)

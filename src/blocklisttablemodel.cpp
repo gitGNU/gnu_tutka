@@ -11,6 +11,7 @@ void BlockListTableModel::setSong(Song *song)
 {
     beginResetModel();
     this->song = song;
+    connect(this->song, SIGNAL(blocksChanged(uint)), this, SLOT(refresh()));
     endResetModel();
 }
 
@@ -119,4 +120,10 @@ bool BlockListTableModel::removeRows(int row, int count, const QModelIndex &pare
     Q_UNUSED(parent)
 
     return false;
+}
+
+void BlockListTableModel::refresh()
+{
+    beginResetModel();
+    endResetModel();
 }

@@ -67,6 +67,10 @@ private slots:
     void setTime(unsigned int time);
     void setInstrument(int instrument);
     void showAbout();
+    void cutSelection();
+    void copySelection();
+    void pasteSelection();
+    void clearSelection();
 
 private:
     bool keyPress(QKeyEvent *event);

@@ -97,30 +97,34 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), instrumentPropertiesDialog, SLOT(setInstrument(int)));
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), transposeDialog, SLOT(setInstrument(int)));
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), this, SLOT(setInstrument(int)));
-    connect(ui->actionOpen, SIGNAL(triggered()), openDialog, SLOT(show()));
-    connect(ui->actionSave_As, SIGNAL(triggered()), saveDialog, SLOT(show()));
-    connect(ui->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
-    connect(ui->actionPreferences, SIGNAL(triggered()), preferencesDialog, SLOT(show()));
-    connect(ui->actionTrack_Volumes, SIGNAL(triggered()), trackVolumesDialog, SLOT(show()));
-    connect(ui->actionTransposeSelection, SIGNAL(triggered()), transposeDialog, SLOT(showSelection()));
-    connect(ui->actionTransposeSong, SIGNAL(triggered()), transposeDialog, SLOT(showSong()));
-    connect(ui->actionTransposeBlock, SIGNAL(triggered()), transposeDialog, SLOT(showBlock()));
-    connect(ui->actionTransposeTrack, SIGNAL(triggered()), transposeDialog, SLOT(showTrack()));
-    connect(ui->actionExpand_ShrinkSelection, SIGNAL(triggered()), expandShrinkDialog, SLOT(showSelection()));
-    connect(ui->actionExpand_ShrinkSong, SIGNAL(triggered()), expandShrinkDialog, SLOT(showSong()));
-    connect(ui->actionExpand_ShrinkBlock, SIGNAL(triggered()), expandShrinkDialog, SLOT(showBlock()));
-    connect(ui->actionExpand_ShrinkTrack, SIGNAL(triggered()), expandShrinkDialog, SLOT(showTrack()));
-    connect(ui->actionChange_InstrumentSelection, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showSelection()));
-    connect(ui->actionChange_InstrumentSong, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showSong()));
-    connect(ui->actionChange_InstrumentBlock, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showBlock()));
-    connect(ui->actionChange_InstrumentTrack, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showTrack()));
-    connect(ui->actionProperties, SIGNAL(triggered()), songPropertiesDialog, SLOT(show()));
-    connect(ui->actionSection_List, SIGNAL(triggered()), sectionListDialog, SLOT(show()));
-    connect(ui->actionEdit_Current, SIGNAL(triggered()), playingSequenceDialog, SLOT(show()));
-    connect(ui->actionList, SIGNAL(triggered()), playingSequenceListDialog, SLOT(show()));
-    connect(ui->actionList_2, SIGNAL(triggered()), blockListDialog, SLOT(show()));
-    connect(ui->actionMessage_List, SIGNAL(triggered()), messageListDialog, SLOT(show()));
-    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+    connect(ui->actionFileOpen, SIGNAL(triggered()), openDialog, SLOT(show()));
+    connect(ui->actionFileSaveAs, SIGNAL(triggered()), saveDialog, SLOT(show()));
+    connect(ui->actionFileQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(ui->actionEditCut, SIGNAL(triggered()), this, SLOT(cutSelection()));
+    connect(ui->actionEditCopy, SIGNAL(triggered()), this, SLOT(copySelection()));
+    connect(ui->actionEditPaste, SIGNAL(triggered()), this, SLOT(pasteSelection()));
+    connect(ui->actionEditClear, SIGNAL(triggered()), this, SLOT(clearSelection()));
+    connect(ui->actionEditTranspose, SIGNAL(triggered()), transposeDialog, SLOT(showSelection()));
+    connect(ui->actionEditExpandShrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(showSelection()));
+    connect(ui->actionEditChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showSelection()));
+    connect(ui->actionSongTrackVolumes, SIGNAL(triggered()), trackVolumesDialog, SLOT(show()));
+    connect(ui->actionSongTranspose, SIGNAL(triggered()), transposeDialog, SLOT(showSong()));
+    connect(ui->actionSongExpandShrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(showSong()));
+    connect(ui->actionSongChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showSong()));
+    connect(ui->actionPlayingSequenceEditCurrent, SIGNAL(triggered()), playingSequenceDialog, SLOT(show()));
+    connect(ui->actionPlayingSequenceList, SIGNAL(triggered()), playingSequenceListDialog, SLOT(show()));
+    connect(ui->actionBlockList, SIGNAL(triggered()), blockListDialog, SLOT(show()));
+    connect(ui->actionBlockTranspose, SIGNAL(triggered()), transposeDialog, SLOT(showBlock()));
+    connect(ui->actionBlockExpandShrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(showBlock()));
+    connect(ui->actionBlockChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showBlock()));
+    connect(ui->actionTrackTranspose, SIGNAL(triggered()), transposeDialog, SLOT(showTrack()));
+    connect(ui->actionTrackExpandShrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(showTrack()));
+    connect(ui->actionTrackChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showTrack()));
+    connect(ui->actionSongProperties, SIGNAL(triggered()), songPropertiesDialog, SLOT(show()));
+    connect(ui->actionSongSectionList, SIGNAL(triggered()), sectionListDialog, SLOT(show()));
+    connect(ui->actionMidiMessageList, SIGNAL(triggered()), messageListDialog, SLOT(show()));
+    connect(ui->actionSettingsPreferences, SIGNAL(triggered()), preferencesDialog, SLOT(show()));
+    connect(ui->actionHelpAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
     /* TODO make clickable labels
     connect(ui->labelSection, SIGNAL(clicked()), sectionListDialog, SLOT(show()));
     connect(ui->labelPosition, SIGNAL(clicked()), playingSequenceDialog, SLOT(show()));
@@ -770,5 +774,21 @@ void MainWindow::setInstrument(int instrument)
 
 void MainWindow::showAbout()
 {
-    QMessageBox::about(this, "About Tutka", "Tutka 2.0 alpha (C) 2012 Vesa Halttunen <vesuri@jormas.com>");
+    QMessageBox::about(this, "About Tutka", "Tutka 0.99.0 (C) 2012 Vesa Halttunen <vesuri@jormas.com>");
+}
+
+void MainWindow::cutSelection()
+{
+}
+
+void MainWindow::copySelection()
+{
+}
+
+void MainWindow::pasteSelection()
+{
+}
+
+void MainWindow::clearSelection()
+{
 }

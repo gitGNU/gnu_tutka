@@ -21,6 +21,9 @@ public:
     virtual bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
     virtual bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
 
+private slots:
+    void refresh();
+
 private:
     Song *song;
 };
