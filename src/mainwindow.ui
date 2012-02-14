@@ -405,7 +405,7 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
@@ -417,7 +417,7 @@
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>&amp;Edit</string>
     </property>
     <addaction name="actionEditCut"/>
     <addaction name="actionEditCopy"/>
@@ -431,7 +431,7 @@
    </widget>
    <widget class="QMenu" name="menuSong">
     <property name="title">
-     <string>Song</string>
+     <string>S&amp;ong</string>
     </property>
     <addaction name="actionSongSectionList"/>
     <addaction name="actionSongTrackVolumes"/>
@@ -444,7 +444,7 @@
    </widget>
    <widget class="QMenu" name="menuPlayingSequence">
     <property name="title">
-     <string>Playing Sequence</string>
+     <string>&amp;Playing Sequence</string>
     </property>
     <addaction name="actionPlayingSequenceEditCurrent"/>
     <addaction name="separator"/>
@@ -452,7 +452,7 @@
    </widget>
    <widget class="QMenu" name="menuBlock">
     <property name="title">
-     <string>Block</string>
+     <string>&amp;Block</string>
     </property>
     <addaction name="actionBlockCut"/>
     <addaction name="actionBlockCopy"/>
@@ -470,7 +470,7 @@
    </widget>
    <widget class="QMenu" name="menuTrack">
     <property name="title">
-     <string>Track</string>
+     <string>&amp;Track</string>
     </property>
     <addaction name="actionTrackCut"/>
     <addaction name="actionTrackCopy"/>
@@ -489,7 +489,7 @@
    </widget>
    <widget class="QMenu" name="menuMidi">
     <property name="title">
-     <string>MIDI</string>
+     <string>&amp;MIDI</string>
     </property>
     <addaction name="actionMidiKillAllNotes"/>
     <addaction name="actionMidiResetPitch"/>
@@ -498,7 +498,7 @@
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
-     <string>Settings</string>
+     <string>&amp;Settings</string>
     </property>
     <widget class="QMenu" name="menuSettingsExternalSync">
      <property name="title">
@@ -516,7 +516,7 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="actionHelpAbout"/>
    </widget>
@@ -532,32 +532,44 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionFileNew">
+   <property name="icon">
+    <iconset theme="document-new"/>
+   </property>
    <property name="text">
-    <string>New</string>
+    <string>&amp;New</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionFileOpen">
+   <property name="icon">
+    <iconset theme="document-open"/>
+   </property>
    <property name="text">
-    <string>Open</string>
+    <string>&amp;Open</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionFileSave">
+   <property name="icon">
+    <iconset theme="document-save"/>
+   </property>
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionFileSaveAs">
+   <property name="icon">
+    <iconset theme="document-save-as"/>
+   </property>
    <property name="text">
-    <string>Save As</string>
+    <string>Save &amp;As</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -572,223 +584,277 @@
    </property>
   </action>
   <action name="actionFileQuit">
+   <property name="icon">
+    <iconset theme="application-exit"/>
+   </property>
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
    </property>
   </action>
   <action name="actionEditCut">
+   <property name="icon">
+    <iconset theme="edit-cut"/>
+   </property>
    <property name="text">
-    <string>Cut</string>
+    <string>C&amp;ut</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
    </property>
   </action>
   <action name="actionEditCopy">
+   <property name="icon">
+    <iconset theme="edit-copy"/>
+   </property>
    <property name="text">
-    <string>Copy</string>
+    <string>&amp;Copy</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
   </action>
   <action name="actionEditPaste">
+   <property name="icon">
+    <iconset theme="edit-paste"/>
+   </property>
    <property name="text">
-    <string>Paste</string>
+    <string>&amp;Paste</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
    </property>
   </action>
   <action name="actionEditClear">
+   <property name="icon">
+    <iconset theme="edit-clear"/>
+   </property>
    <property name="text">
-    <string>Clear</string>
+    <string>&amp;Clear</string>
    </property>
   </action>
   <action name="actionEditTranspose">
    <property name="text">
-    <string>Transpose</string>
+    <string>&amp;Transpose</string>
    </property>
   </action>
   <action name="actionEditExpandShrink">
    <property name="text">
-    <string>Expand/Shrink</string>
+    <string>&amp;Expand/Shrink</string>
    </property>
   </action>
   <action name="actionEditChangeInstrument">
    <property name="text">
-    <string>Change Instrument</string>
+    <string>Change &amp;Instrument</string>
    </property>
   </action>
   <action name="actionSongSectionList">
    <property name="text">
-    <string>Section List</string>
+    <string>&amp;Section List</string>
    </property>
   </action>
   <action name="actionSongTrackVolumes">
    <property name="text">
-    <string>Track Volumes</string>
+    <string>Track &amp;Volumes</string>
    </property>
   </action>
   <action name="actionSongTranspose">
    <property name="text">
-    <string>Transpose</string>
+    <string>&amp;Transpose</string>
    </property>
   </action>
   <action name="actionSongExpandShrink">
    <property name="text">
-    <string>Expand/Shrink</string>
+    <string>&amp;Expand/Shrink</string>
    </property>
   </action>
   <action name="actionSongChangeInstrument">
    <property name="text">
-    <string>Change Instrument</string>
+    <string>Change &amp;Instrument</string>
    </property>
   </action>
   <action name="actionSongProperties">
+   <property name="icon">
+    <iconset theme="document-properties"/>
+   </property>
    <property name="text">
-    <string>Properties</string>
+    <string>&amp;Properties</string>
    </property>
   </action>
   <action name="actionPlayingSequenceEditCurrent">
    <property name="text">
-    <string>Edit Current</string>
+    <string>&amp;Edit Current</string>
    </property>
   </action>
   <action name="actionPlayingSequenceList">
    <property name="text">
-    <string>List</string>
+    <string>&amp;List</string>
    </property>
   </action>
   <action name="actionBlockCut">
+   <property name="icon">
+    <iconset theme="edit-cut"/>
+   </property>
    <property name="text">
-    <string>Cut</string>
+    <string>C&amp;ut</string>
    </property>
    <property name="shortcut">
     <string>Alt+F3</string>
    </property>
   </action>
   <action name="actionBlockCopy">
+   <property name="icon">
+    <iconset theme="edit-copy"/>
+   </property>
    <property name="text">
-    <string>Copy</string>
+    <string>&amp;Copy</string>
    </property>
    <property name="shortcut">
     <string>Alt+F4</string>
    </property>
   </action>
   <action name="actionBlockPaste">
+   <property name="icon">
+    <iconset theme="edit-paste"/>
+   </property>
    <property name="text">
-    <string>Paste</string>
+    <string>&amp;Paste</string>
    </property>
    <property name="shortcut">
     <string>Alt+F5</string>
    </property>
   </action>
   <action name="actionBlockClear">
+   <property name="icon">
+    <iconset theme="edit-clear"/>
+   </property>
    <property name="text">
-    <string>Clear</string>
+    <string>&amp;Clear</string>
    </property>
   </action>
   <action name="actionBlockSelectAll">
+   <property name="icon">
+    <iconset theme="edit-select-all"/>
+   </property>
    <property name="text">
-    <string>Select All</string>
+    <string>&amp;Select All</string>
    </property>
   </action>
   <action name="actionBlockTranspose">
    <property name="text">
-    <string>Transpose</string>
+    <string>&amp;Transpose</string>
    </property>
   </action>
   <action name="actionBlockExpandShrink">
    <property name="text">
-    <string>Expand/Shrink</string>
+    <string>&amp;Expand/Shrink</string>
    </property>
   </action>
   <action name="actionBlockChangeInstrument">
    <property name="text">
-    <string>Change Instrument</string>
+    <string>Change &amp;Instrument</string>
    </property>
   </action>
   <action name="actionBlockList">
    <property name="text">
-    <string>List</string>
+    <string>&amp;List</string>
    </property>
   </action>
   <action name="actionTrackCut">
+   <property name="icon">
+    <iconset theme="edit-cut"/>
+   </property>
    <property name="text">
-    <string>Cut</string>
+    <string>C&amp;ut</string>
    </property>
    <property name="shortcut">
     <string>Shift+F3</string>
    </property>
   </action>
   <action name="actionTrackCopy">
+   <property name="icon">
+    <iconset theme="edit-copy"/>
+   </property>
    <property name="text">
-    <string>Copy</string>
+    <string>&amp;Copy</string>
    </property>
    <property name="shortcut">
     <string>Shift+F4</string>
    </property>
   </action>
   <action name="actionTrackPaste">
+   <property name="icon">
+    <iconset theme="edit-paste"/>
+   </property>
    <property name="text">
-    <string>Paste</string>
+    <string>&amp;Paste</string>
    </property>
    <property name="shortcut">
     <string>Shift+F5</string>
    </property>
   </action>
   <action name="actionTrackClear">
+   <property name="icon">
+    <iconset theme="edit-clear"/>
+   </property>
    <property name="text">
-    <string>Clear</string>
+    <string>&amp;Clear</string>
    </property>
   </action>
   <action name="actionTrackSelectAll">
+   <property name="icon">
+    <iconset theme="edit-select-all"/>
+   </property>
    <property name="text">
-    <string>Select All</string>
+    <string>&amp;Select All</string>
    </property>
   </action>
   <action name="actionTrackInsert">
+   <property name="icon">
+    <iconset theme="list-add"/>
+   </property>
    <property name="text">
-    <string>Insert</string>
+    <string>I&amp;nsert</string>
    </property>
   </action>
   <action name="actionTrackDelete">
+   <property name="icon">
+    <iconset theme="list-remove"/>
+   </property>
    <property name="text">
-    <string>Delete</string>
+    <string>&amp;Delete</string>
    </property>
   </action>
   <action name="actionTrackTranspose">
    <property name="text">
-    <string>Transpose</string>
+    <string>&amp;Transpose</string>
    </property>
   </action>
   <action name="actionTrackExpandShrink">
    <property name="text">
-    <string>Expand/Shrink</string>
+    <string>&amp;Expand/Shrink</string>
    </property>
   </action>
   <action name="actionTrackChangeInstrument">
    <property name="text">
-    <string>Change Instrument</string>
+    <string>Change &amp;Instrument</string>
    </property>
   </action>
   <action name="actionMidiKillAllNotes">
    <property name="text">
-    <string>Kill All Notes</string>
+    <string>&amp;Kill All Notes</string>
    </property>
   </action>
   <action name="actionMidiResetPitch">
    <property name="text">
-    <string>Reset Pitch</string>
+    <string>&amp;Reset Pitch</string>
    </property>
   </action>
   <action name="actionMidiMessageList">
    <property name="text">
-    <string>Message List</string>
+    <string>&amp;Message List</string>
    </property>
   </action>
   <action name="actionSettingsSendMidiSync">
@@ -809,12 +875,15 @@
   </action>
   <action name="actionSettingsPreferences">
    <property name="text">
-    <string>Preferences</string>
+    <string>&amp;Preferences</string>
    </property>
   </action>
   <action name="actionHelpAbout">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
   </action>
   <action name="actionExternalSyncOff">
