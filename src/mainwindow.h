@@ -45,6 +45,7 @@ class PlayingSequenceListDialog;
 class BlockListDialog;
 class MessageListDialog;
 class Song;
+class Block;
 
 class MainWindow : public QMainWindow
 {
@@ -66,6 +67,7 @@ private slots:
     void setMode(Player::Mode mode);
     void setTime(unsigned int time);
     void setInstrument(int instrument);
+    void setSelection(int startTrack, int startLine, int endTrack, int endLine);
     void showAbout();
     void cutSelection();
     void copySelection();
@@ -77,7 +79,6 @@ private:
     bool keyRelease(QKeyEvent *event);
 
     Player *player;
-    Song *song;
     Ui::MainWindow *ui;
     InstrumentPropertiesDialog *instrumentPropertiesDialog;
     QFileDialog *openDialog;
@@ -93,9 +94,16 @@ private:
     PlayingSequenceListDialog *playingSequenceListDialog;
     BlockListDialog *blockListDialog;
     MessageListDialog *messageListDialog;
+    Song *song;
+    Block *copyArea;
     QList<int> keyboardKeysDown;
     int chordStatus;
+    unsigned int block;
     int instrument;
+    int selectionStartTrack;
+    int selectionStartLine;
+    int selectionEndTrack;
+    int selectionEndLine;
     QHash<int, char> keyToNote;
 };
 

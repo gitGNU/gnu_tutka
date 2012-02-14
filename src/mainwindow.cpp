@@ -38,6 +38,7 @@
 #include "blocklistdialog.h"
 #include "messagelistdialog.h"
 #include "song.h"
+#include "block.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 
@@ -59,8 +60,15 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     playingSequenceListDialog(new PlayingSequenceListDialog),
     blockListDialog(new BlockListDialog),
     messageListDialog(new MessageListDialog),
+    song(NULL),
+    copyArea(NULL),
     chordStatus(0),
-    instrument(0)
+    block(0),
+    instrument(0),
+    selectionStartTrack(-1),
+    selectionStartLine(-1),
+    selectionEndTrack(-1),
+    selectionEndLine(-1)
 {
     ui->setupUi(this);
     qApp->installEventFilter(this);
@@ -88,6 +96,10 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->trackerMain, SIGNAL(cursorChannelChanged(int)), transposeDialog, SLOT(setTrack(int)));
     connect(ui->trackerMain, SIGNAL(cursorChannelChanged(int)), expandShrinkDialog, SLOT(setTrack(int)));
     connect(ui->trackerMain, SIGNAL(cursorChannelChanged(int)), changeInstrumentDialog, SLOT(setTrack(int)));
+    connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), this, SLOT(setSelection(int, int, int, int)));
+    connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), transposeDialog, SLOT(setSelection(int, int, int, int)));
+    connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), expandShrinkDialog, SLOT(setSelection(int, int, int, int)));
+    connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), changeInstrumentDialog, SLOT(setSelection(int, int, int, int)));
     connect(ui->buttonPlaySong, SIGNAL(clicked()), player, SLOT(playSong()));
     connect(ui->buttonPlayBlock, SIGNAL(clicked()), player, SLOT(playBlock()));
     connect(ui->buttonContinueSong, SIGNAL(clicked()), player, SLOT(continueSong()));
@@ -173,6 +185,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete copyArea;
     delete ui;
 }
 
@@ -722,6 +735,7 @@ void MainWindow::setPosition(unsigned int position)
 
 void MainWindow::setBlock(unsigned int block)
 {
+    this->block = block;
     ui->labelBlock->setText(QString("Block %1/%2").arg(block + 1).arg(song->blocks()));
 }
 
@@ -772,6 +786,14 @@ void MainWindow::setInstrument(int instrument)
     }
 }
 
+void MainWindow::setSelection(int startTrack, int startLine, int endTrack, int endLine)
+{
+    selectionStartTrack = startTrack;
+    selectionStartLine = startLine;
+    selectionEndTrack = endTrack;
+    selectionEndLine = endLine;
+}
+
 void MainWindow::showAbout()
 {
     QMessageBox::about(this, "About Tutka", "Tutka 0.99.0 (C) 2012 Vesa Halttunen <vesuri@jormas.com>");
@@ -779,16 +801,34 @@ void MainWindow::showAbout()
 
 void MainWindow::cutSelection()
 {
+    if (ui->trackerMain->isInSelectionMode()) {
+        ui->trackerMain->markSelection(false);
+    }
+
+    delete copyArea;
+    copyArea = song->block(block)->copy(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
+    song->block(block)->clear(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
+    ui->trackerMain->clearMarkSelection();
 }
 
 void MainWindow::copySelection()
 {
+    if (ui->trackerMain->isInSelectionMode()) {
+        ui->trackerMain->markSelection(false);
+    }
+
+    delete copyArea;
+    copyArea = song->block(block)->copy(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
 }
 
 void MainWindow::pasteSelection()
 {
+    if (copyArea != NULL) {
+        song->block(block)->paste(copyArea, ui->trackerMain->track(), ui->trackerMain->line());
+    }
 }
 
 void MainWindow::clearSelection()
 {
+    song->block(block)->clear(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
 }

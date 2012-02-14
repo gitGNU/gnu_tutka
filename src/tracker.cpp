@@ -270,46 +270,6 @@ bool Tracker::isInSelectionMode()
     return inSelMode;
 }
 
-void Tracker::getSelectionRect(int *chStart, int *rowStart, int *nChannel, int *nRows)
-{
-    if (!inSelMode) {
-        if (sel_start_ch <= sel_end_ch) {
-            *nChannel = sel_end_ch - sel_start_ch + 1;
-            *chStart = sel_start_ch;
-        } else {
-            *nChannel = sel_start_ch - sel_end_ch + 1;
-            *chStart = sel_end_ch;
-        }
-        if (sel_start_row <= sel_end_row) {
-            *nRows = sel_end_row - sel_start_row + 1;
-            *rowStart = sel_start_row;
-        } else {
-            *nRows = sel_start_row - sel_end_row + 1;
-            *rowStart = sel_end_row;
-        }
-    } else {
-        if (sel_start_ch <= cursor_ch) {
-            *nChannel = cursor_ch - sel_start_ch + 1;
-            *chStart = sel_start_ch;
-        } else {
-            *nChannel = sel_start_ch - cursor_ch + 1;
-            *chStart = cursor_ch;
-        }
-        if (sel_start_row <= patpos) {
-            *nRows = patpos - sel_start_row + 1;
-            *rowStart = sel_start_row;
-        } else {
-            *nRows = sel_start_row - patpos + 1;
-            *rowStart = patpos;
-        }
-    }
-}
-
-bool Tracker::isValidSelection()
-{
-    return (sel_start_ch >= 0 && sel_start_ch < curpattern->tracks() && sel_end_ch >= 0 && sel_end_ch < curpattern->tracks() && sel_start_row >= 0 && sel_start_row < curpattern->length() && sel_end_row >= 0 && sel_end_row < curpattern->length());
-}
-
 void Tracker::note2string(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf)
 {
     static const char *const notenames[128] = {
@@ -751,21 +711,21 @@ void Tracker::mousePressEvent(QMouseEvent *event)
         button = event->button();
         if (button == Qt::LeftButton) {
             // Start selecting block
-            emit blockmarkSet(1);
             inSelMode = false;
             mouseToCursorPos(x, y, &sel_start_ch, &cursor_item, &sel_start_row);
             sel_end_row = sel_start_row;
             sel_end_ch = sel_start_ch;
             mouse_selecting = true;
             redraw();
+            emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
         } else if (button == Qt::RightButton) {
             // Tracker cursor posititioning and clear block mark if any
             if (inSelMode || sel_start_ch != -1) {
-                emit blockmarkSet(0);
                 sel_start_ch = sel_end_ch = -1;
                 sel_start_row = sel_end_row = -1;
                 inSelMode = false;
                 redraw();
+                emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
             }
             mouseToCursorPos(x, y, &cursor_ch, &cursor_item, &patpos);
             if (cursor_ch != this->cursor_ch || cursor_item != this->cursor_item) {
@@ -810,6 +770,7 @@ void Tracker::mouseMoveEvent(QMouseEvent *event)
             setLine(patpos - 1);
         }
         redraw();
+        emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
     }
 
     event->accept();
@@ -819,7 +780,6 @@ void Tracker::mouseReleaseEvent(QMouseEvent *event)
 {
     if (mouse_selecting && event->button() == Qt::LeftButton) {
         mouse_selecting = false;
-        emit blockmarkSet(0);
     }
 
     event->accept();

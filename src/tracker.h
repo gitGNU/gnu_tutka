@@ -48,6 +48,7 @@ public:
     void stepCursorItem(int direction);
     void stepCursorRow(int direction);
     void setCursorItem(int cursorItem);
+    void clearMarkSelection();
 
 public slots:
     void setSong(Song *song);
@@ -62,8 +63,8 @@ private slots:
 signals:
     void patposChanged(int, int, int);
     void xpanningChanged(int, int, int);
-    void blockmarkSet(int);
     void cursorChannelChanged(int);
+    void selectionChanged(int startTrack, int startLine, int endTrack, int endLine);
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -75,9 +76,6 @@ protected:
 
 private:
     void adjustXpanning();
-    void clearMarkSelection();
-    void getSelectionRect(int *chStart, int *rowStart, int *nChannel, int *nRows);
-    bool isValidSelection();
     void note2string(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf);
     void clearNotesLine(int y, int pattern_row);
     void printNotesLine(int y, int ch, int numch, int row, int cursor);
