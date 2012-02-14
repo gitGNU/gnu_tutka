@@ -126,9 +126,11 @@ void Song::init()
     masterVolume_ = 127;
     sendSync_ = false;
 
+    Block *block = new Block;
+    connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
     sections_.append(0);
     playseqs_.append(new Playseq);
-    blocks_.append(new Block);
+    blocks_.append(block);
     checkMaxTracks();
 }
 
@@ -322,6 +324,10 @@ void Song::checkMaxTracks()
             delete tracks.takeLast();
         }
      }
+
+    if (max != oldMax) {
+        emit maxTracksChanged(max);
+    }
 }
 
 void Song::checkInstrument(int instrument, unsigned short defaultMIDIInterface)

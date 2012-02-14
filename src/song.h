@@ -132,6 +132,7 @@ signals:
     void playseqsChanged(unsigned int playseqs);
     void sectionsChanged(unsigned int sections);
     void messagesChanged(unsigned int messages);
+    void maxTracksChanged(unsigned int maxTracks);
 
 private:
     // Initializes an empty song

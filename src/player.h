@@ -107,8 +107,6 @@ public:
     void resetPitch();
     // Handles a command
     void handleCommand(QSharedPointer<TrackStatus>, unsigned char, unsigned char, unsigned char, unsigned char, unsigned int *, int *, int *);
-    // Reallocate track status array
-    void trackStatusCreate();
     // Resets the player time
     void resetTime(bool);
 
@@ -145,6 +143,10 @@ public slots:
     void continueBlock();
     // Kills the player thread
     void stop();
+
+private slots:
+    // Reallocate track status array
+    void trackStatusCreate();
 
 signals:
     void songChanged(Song *song);

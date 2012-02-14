@@ -988,10 +988,15 @@ void Player::trackStatusCreate()
 
 void Player::setSong(Song *song)
 {
+    if (this->song != NULL) {
+        disconnect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(trackStatusCreate()));
+    }
+
     this->song = song;
 
     // Recreate the track status array
     trackStatusCreate();
+    connect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(trackStatusCreate()));
 
     // Check solo status
     checkSolo();

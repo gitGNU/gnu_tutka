@@ -2,3 +2,4 @@ Makefile
 .moc
 .obj
 .DS_Store
+*.pro.user

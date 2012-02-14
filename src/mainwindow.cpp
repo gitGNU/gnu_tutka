@@ -79,6 +79,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(songChanged(Song *)), transposeDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), expandShrinkDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), changeInstrumentDialog, SLOT(setSong(Song *)));
+    connect(player, SIGNAL(songChanged(Song *)), trackVolumesDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), songPropertiesDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), blockListDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(sectionChanged(unsigned int)), this, SLOT(setSection(unsigned int)));
