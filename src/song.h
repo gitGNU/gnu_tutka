@@ -31,28 +31,29 @@
 
 class QDomElement;
 
-class Track {
+class Track : public QObject {
+    Q_OBJECT
+
 public:
-    Track(const QString &name = QString());
+    Track(const QString &name = QString(), QObject *parent = NULL);
     virtual ~Track();
 
     QString name() const;
-    void setName(const QString &name);
-
-    unsigned int volume() const;
-    void setVolume(unsigned int volume);
-
+    int volume() const;
     bool isMuted() const;
-    void setMute(bool mute);
-
     bool isSolo() const;
+
+public slots:
+    void setName(const QString &name);
+    void setVolume(int volume);
+    void setMute(bool mute);
     void setSolo(bool solo);
 
 private:
     // Name of the track
     QString name_;
     // Track volume
-    unsigned int volume_;
+    int volume_;
     // Mute toggle
     bool mute;
     // Solo toggle

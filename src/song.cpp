@@ -26,7 +26,8 @@
 #include <cstdio>
 #include "song.h"
 
-Track::Track(const QString &name) :
+Track::Track(const QString &name, QObject *parent) :
+    QObject(parent),
     name_(name),
     volume_(127),
     mute(false),
@@ -48,12 +49,12 @@ QString Track::name() const
     return name_;
 }
 
-void Track::setVolume(unsigned int volume)
+void Track::setVolume(int volume)
 {
     volume_ = volume;
 }
 
-unsigned int Track::volume() const
+int Track::volume() const
 {
     return volume_;
 }

@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     messagelistdialog.cpp \
     instrumentspinbox.cpp \
     blocklisttablemodel.cpp \
-    spinboxdelegate.cpp
+    spinboxdelegate.cpp \
+    trackvolumewidget.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -52,7 +53,8 @@ HEADERS += block.h \
     messagelistdialog.h \
     instrumentspinbox.h \
     blocklisttablemodel.h \
-    spinboxdelegate.h
+    spinboxdelegate.h \
+    trackvolumewidget.h
 
 FORMS += \
     mainwindow.ui \
@@ -96,6 +98,8 @@ QMAKE_CLEAN += *.gcov \
     ./.obj/*.gcno
 
 INSTALLS += target schemas desktop icon
+
+
 
 
 

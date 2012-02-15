@@ -1,5 +1,5 @@
-#include <QSlider>
 #include "song.h"
+#include "trackvolumewidget.h"
 #include "trackvolumesdialog.h"
 #include "ui_trackvolumesdialog.h"
 
@@ -36,7 +36,7 @@ void TrackVolumesDialog::setTracks(unsigned int tracks)
         delete item;
     }
 
-    for (int i = 0; i < tracks; i++) {
-        ui->scrollAreaWidgetContents->layout()->addWidget(new QSlider);
+    for (int track = 0; track < tracks; track++) {
+        ui->scrollAreaWidgetContents->layout()->addWidget(new TrackVolumeWidget(track + 1, song->track(track)));
     }
 }
