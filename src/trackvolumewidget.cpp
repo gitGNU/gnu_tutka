@@ -10,6 +10,7 @@ TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget 
     QWidget(parent),
     trackNumber(number),
     track(track),
+    volumeLabel(new QLabel),
     volumeSlider(new QSlider),
     muteCheckBox(new QCheckBox("Mute")),
     soloCheckBox(new QCheckBox("Solo")),
@@ -17,6 +18,7 @@ TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget 
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(QString("Track %1").arg(number)));
+    layout->addWidget(volumeLabel);
     layout->addWidget(volumeSlider);
     layout->addWidget(muteCheckBox);
     layout->addWidget(soloCheckBox);
@@ -25,12 +27,19 @@ TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget 
     volumeSlider->setMinimum(0);
     volumeSlider->setMaximum(127);
     volumeSlider->setValue(track->volume());
+    updateVolumeLabel(track->volume());
     muteCheckBox->setChecked(track->isMuted());
     soloCheckBox->setChecked(track->isSolo());
     nameLineEdit->setText(track->name());
 
     connect(volumeSlider, SIGNAL(valueChanged(int)), track, SLOT(setVolume(int)));
+    connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateVolumeLabel(int)));
     connect(muteCheckBox, SIGNAL(toggled(bool)), track, SLOT(setMute(bool)));
     connect(soloCheckBox, SIGNAL(toggled(bool)), track, SLOT(setSolo(bool)));
     connect(nameLineEdit, SIGNAL(textChanged(QString)), track, SLOT(setName(QString)));
+}
+
+void TrackVolumeWidget::updateVolumeLabel(int volume)
+{
+    volumeLabel->setText(QString("%1").arg(volume));
 }

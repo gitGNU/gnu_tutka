@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     blocklisttablemodel.cpp \
     spinboxdelegate.cpp \
     trackvolumewidget.cpp \
-    playingsequencetablemodel.cpp
+    playingsequencetablemodel.cpp \
+    sliderwithlabel.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -56,7 +57,8 @@ HEADERS += block.h \
     blocklisttablemodel.h \
     spinboxdelegate.h \
     trackvolumewidget.h \
-    playingsequencetablemodel.h
+    playingsequencetablemodel.h \
+    sliderwithlabel.h
 
 FORMS += \
     mainwindow.ui \
@@ -100,6 +102,12 @@ QMAKE_CLEAN += *.gcov \
     ./.obj/*.gcno
 
 INSTALLS += target schemas desktop icon
+
+
+
+
+
+
 
 
 

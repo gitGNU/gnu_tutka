@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class Track;
+class QLabel;
 class QSlider;
 class QCheckBox;
 class QLineEdit;
@@ -14,9 +15,13 @@ class TrackVolumeWidget : public QWidget
 public:
     explicit TrackVolumeWidget(unsigned int number, Track *track, QWidget *parent = 0);
 
+private slots:
+    void updateVolumeLabel(int volume);
+
 private:
     unsigned int trackNumber;
     Track *track;
+    QLabel *volumeLabel;
     QSlider *volumeSlider;
     QCheckBox *muteCheckBox;
     QCheckBox *soloCheckBox;
