@@ -73,6 +73,11 @@ private slots:
     void copySelection();
     void pasteSelection();
     void clearSelection();
+    void cutTrack();
+    void copyTrack();
+    void pasteTrack();
+    void clearTrack();
+    void selectAllTrack();
 
 private:
     bool keyPress(QKeyEvent *event);
@@ -95,7 +100,9 @@ private:
     BlockListDialog *blockListDialog;
     MessageListDialog *messageListDialog;
     Song *song;
-    Block *copyArea;
+    Block *copySelection_;
+    Block *copyBlock_;
+    Block *copyTrack_;
     QList<int> keyboardKeysDown;
     int chordStatus;
     unsigned int block;
