@@ -20,6 +20,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/*
+ * TODO
+ *
+ * File->New
+ * File->Open
+ * File->Save
+ * File->Save As
+ * Selections in Transpose/ExpandShrink/ChangeInstrumentDialog
+ * Section List
+ * Song Properties->Send MIDI Sync
+ * Playing Sequence List
+ * Block->Cut/Copy/Paste/Clear/Select All
+ * Track->Cut/Copy/Paste/Clear/Select All/Insert/Delete
+ * MIDI->Kill all notes/Reset Pitch
+ * MIDI Message List
+ * Settings->External Sync
+ * Settings->Send MIDI Sync
+ * Settings->Record Controllers
+ * Settings->Preferences
+ */
+
 #include <cstdio>
 #include <QApplication>
 #include <QKeyEvent>
