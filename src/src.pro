@@ -27,7 +27,8 @@ SOURCES += main.cpp \
     instrumentspinbox.cpp \
     blocklisttablemodel.cpp \
     spinboxdelegate.cpp \
-    trackvolumewidget.cpp
+    trackvolumewidget.cpp \
+    playingsequencetablemodel.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -54,7 +55,8 @@ HEADERS += block.h \
     instrumentspinbox.h \
     blocklisttablemodel.h \
     spinboxdelegate.h \
-    trackvolumewidget.h
+    trackvolumewidget.h \
+    playingsequencetablemodel.h
 
 FORMS += \
     mainwindow.ui \

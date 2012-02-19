@@ -82,9 +82,12 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(songChanged(Song *)), trackVolumesDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), songPropertiesDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), blockListDialog, SLOT(setSong(Song *)));
+    connect(player, SIGNAL(songChanged(Song *)), playingSequenceDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(sectionChanged(unsigned int)), this, SLOT(setSection(unsigned int)));
     connect(player, SIGNAL(playseqChanged(unsigned int)), this, SLOT(setPlayseq(unsigned int)));
+    connect(player, SIGNAL(playseqChanged(unsigned int)), playingSequenceDialog, SLOT(setPlayseq(unsigned int)));
     connect(player, SIGNAL(positionChanged(unsigned int)), this, SLOT(setPosition(unsigned int)));
+    connect(player, SIGNAL(positionChanged(unsigned int)), playingSequenceDialog, SLOT(setPosition(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), this, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), ui->trackerMain, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), transposeDialog, SLOT(setBlock(unsigned int)));

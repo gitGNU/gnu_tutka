@@ -27,7 +27,7 @@ int BlockListTableModel::columnCount(const QModelIndex &parent) const
 
 QVariant BlockListTableModel::data(const QModelIndex &index, int role) const
 {
-    if (index.row() < 0 || index.row() >= song->blocks() || index.column() < 0 || index.column() >= 4 || (role != Qt::DisplayRole && role != Qt::EditRole)) {
+    if (index.row() < 0 || index.row() >= song->blocks() || (role != Qt::DisplayRole && role != Qt::EditRole)) {
         return QVariant();
     } else {
         switch (index.column()) {
@@ -102,24 +102,6 @@ Qt::ItemFlags BlockListTableModel::flags(const QModelIndex &index) const
     Q_UNUSED(index)
 
     return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
-}
-
-bool BlockListTableModel::insertRows(int row, int count, const QModelIndex &parent)
-{
-    Q_UNUSED(row)
-    Q_UNUSED(count)
-    Q_UNUSED(parent)
-
-    return false;
-}
-
-bool BlockListTableModel::removeRows(int row, int count, const QModelIndex &parent)
-{
-    Q_UNUSED(row)
-    Q_UNUSED(count)
-    Q_UNUSED(parent)
-
-    return false;
 }
 
 void BlockListTableModel::refresh()

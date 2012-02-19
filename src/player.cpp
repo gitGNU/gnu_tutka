@@ -1014,9 +1014,10 @@ void Player::setSong(Song *song)
 
     // Reset to the beginning
     block_ = (unsigned int)-1;
-    section_ = 0;
-    position_ = 0;
-    line_ = 0;
+    section_ = (unsigned int)-1;
+    playseq_ = (unsigned int)-1;
+    position_ = (unsigned int)-1;
+    line_ = (unsigned int)-1;
     refreshPlayseqAndBlock();
 }
 

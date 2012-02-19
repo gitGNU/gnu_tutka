@@ -23,7 +23,7 @@
 #include <QDomElement>
 #include "playseq.h"
 
-Playseq::Playseq()
+Playseq::Playseq(QObject *parent) : QObject(parent)
 {
     blockNumbers.append(0);
 }
@@ -56,6 +56,8 @@ void Playseq::insert(unsigned int pos)
 
     // Which block number to insert
     blockNumbers.insert(pos, blockNumbers[pos < blockNumbers.count() ? pos : (blockNumbers.count() - 1)]);
+
+    emit playseqChanged();
 }
 
 void Playseq::remove(unsigned int pos)
@@ -64,6 +66,8 @@ void Playseq::remove(unsigned int pos)
     if (blockNumbers.count() > 1) {
         blockNumbers.removeAt(pos);
     }
+
+    emit playseqChanged();
 }
 
 Playseq *Playseq::parse(QDomElement element)

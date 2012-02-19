@@ -23,14 +23,17 @@
 #ifndef PLAYSEQ_H_
 #define PLAYSEQ_H_
 
+#include <QObject>
 #include <QString>
 #include <QList>
 
 class QDomElement;
 
-class Playseq {
+class Playseq : public QObject {
+    Q_OBJECT
+
 public:
-    Playseq();
+    Playseq(QObject *parent = NULL);
     virtual ~Playseq();
 
     // Returns the length of the playing sequence
@@ -46,6 +49,9 @@ public:
     //void save(int, xmlNodePtr);
     // Parses a playingsequence element in an XML file
     static Playseq *parse(QDomElement element);
+
+signals:
+    void playseqChanged();
 
 private:
     // Name
