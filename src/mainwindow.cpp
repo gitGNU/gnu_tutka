@@ -27,7 +27,6 @@
  * File->Open
  * File->Save
  * File->Save As
- * Selections in Transpose/ExpandShrink/ChangeInstrumentDialog
  * Section List
  * Song Properties->Send MIDI Sync
  * Playing Sequence List

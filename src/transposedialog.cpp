@@ -8,7 +8,11 @@ TransposeDialog::TransposeDialog(QWidget *parent) :
     song(NULL),
     block(0),
     track(0),
-    instrument(0)
+    instrument(0),
+    selectionStartTrack(-1),
+    selectionStartLine(-1),
+    selectionEndTrack(-1),
+    selectionEndLine(-1)
 {
     ui->setupUi(this);
 
@@ -64,6 +68,14 @@ void TransposeDialog::setInstrument(int instrument)
     this->instrument = instrument;
 }
 
+void TransposeDialog::setSelection(int startTrack, int startLine, int endTrack, int endLine)
+{
+    selectionStartTrack = startTrack;
+    selectionStartLine = startLine;
+    selectionEndTrack = endTrack;
+    selectionEndLine = endLine;
+}
+
 void TransposeDialog::transpose()
 {
     int halfNotes = 0;
@@ -102,9 +114,10 @@ void TransposeDialog::transpose()
         break;
     }
     case SELECTION:
-        // TODO
-//        if (tracker->sel_start_ch >= 0 && tracker->sel_end_ch >= 0 && tracker->sel_start_row >= 0 && tracker->sel_end_row >= 0)
-//            editor_song_block_current_transpose(instrument, halfNotes, tracker->sel_start_ch, tracker->sel_start_row, tracker->sel_end_ch, tracker->sel_end_row);
+        if (selectionStartTrack >= 0 && selectionStartLine >= 0 && selectionEndTrack >= 0 && selectionEndLine >= 0) {
+            Block *block = song->block(this->block);
+            block->transpose(instrument, halfNotes, selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
+        }
         break;
     default:
         break;

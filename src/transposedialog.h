@@ -26,6 +26,7 @@ public slots:
     void setBlock(unsigned int block);
     void setTrack(int track);
     void setInstrument(int instrument);
+    void setSelection(int startTrack, int startLine, int endTrack, int endLine);
 
 private slots:
     void transpose();
@@ -43,6 +44,10 @@ private:
     unsigned int block;
     unsigned int track;
     unsigned int instrument;
+    int selectionStartTrack;
+    int selectionStartLine;
+    int selectionEndTrack;
+    int selectionEndLine;
 };
 
 #endif // TRANSPOSEDIALOG_H

@@ -25,6 +25,7 @@ public slots:
     void setSong(Song *song);
     void setBlock(unsigned int block);
     void setTrack(int track);
+    void setSelection(int startTrack, int startLine, int endTrack, int endLine);
 
 private slots:
     void expand();
@@ -42,6 +43,10 @@ private:
     Song *song;
     unsigned int block;
     unsigned int track;
+    int selectionStartTrack;
+    int selectionStartLine;
+    int selectionEndTrack;
+    int selectionEndLine;
 
     void expandShrink(bool shrink);
 };

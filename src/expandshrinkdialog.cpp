@@ -7,7 +7,11 @@ ExpandShrinkDialog::ExpandShrinkDialog(QWidget *parent) :
     ui(new Ui::ExpandShrinkDialog),
     song(NULL),
     block(0),
-    track(0)
+    track(0),
+    selectionStartTrack(-1),
+    selectionStartLine(-1),
+    selectionEndTrack(-1),
+    selectionEndLine(-1)
 {
     ui->setupUi(this);
 
@@ -59,6 +63,13 @@ void ExpandShrinkDialog::setTrack(int track)
     this->track = track;
 }
 
+void ExpandShrinkDialog::setSelection(int startTrack, int startLine, int endTrack, int endLine)
+{
+    selectionStartTrack = startTrack;
+    selectionStartLine = startLine;
+    selectionEndTrack = endTrack;
+    selectionEndLine = endLine;
+}
 
 void ExpandShrinkDialog::expand()
 {
@@ -97,8 +108,10 @@ void ExpandShrinkDialog::expandShrink(bool shrink)
         break;
     }
     case SELECTION:
-//        if (tracker->sel_start_ch >= 0 && tracker->sel_end_ch >= 0 && tracker->sel_start_row >= 0 && tracker->sel_end_row >= 0)
-//            editor_song_block_current_expandshrink(gui->editor, factor, tracker->sel_start_ch, tracker->sel_start_row, tracker->sel_end_ch, tracker->sel_end_row);
+        if (selectionStartTrack >= 0 && selectionStartLine >= 0 && selectionEndTrack >= 0 && selectionEndLine >= 0) {
+            Block *block = song->block(this->block);
+            block->expandShrink(factor, selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
+        }
         break;
     default:
         break;
