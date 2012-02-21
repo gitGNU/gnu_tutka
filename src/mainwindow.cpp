@@ -38,6 +38,9 @@
  * Settings->Send MIDI Sync
  * Settings->Record Controllers
  * Settings->Preferences
+ * ALSA MIDI
+ * OS X MIDI
+ * Export MIDI
  */
 
 #include <cstdio>
