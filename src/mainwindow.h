@@ -73,6 +73,11 @@ private slots:
     void copySelection();
     void pasteSelection();
     void clearSelection();
+    void cutBlock();
+    void copyBlock();
+    void pasteBlock();
+    void clearBlock();
+    void selectAllBlock();
     void cutTrack();
     void copyTrack();
     void pasteTrack();

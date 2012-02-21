@@ -31,9 +31,6 @@ public:
     explicit Tracker(QWidget *parent = 0);
     void setCommandPage(int cmdpage);
     void redraw();
-    void redrawRow(int row);
-    void redrawCurrentRow();
-    void setXpanning(int left_channel);
     bool isInSelectionMode();
     void markSelection(bool enable);
     void stepCursorChannel(int direction);
@@ -49,6 +46,7 @@ public:
     void stepCursorRow(int direction);
     void setCursorItem(int cursorItem);
     void clearMarkSelection();
+    void setSelection(int startTrack, int startLine, int endTrack, int endLine);
 
 public slots:
     void setSong(Song *song);
@@ -75,6 +73,9 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
+    void redrawRow(int row);
+    void redrawCurrentRow();
+    void setXpanning(int left_channel);
     void adjustXpanning();
     void note2string(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf);
     void clearNotesLine(int y, int pattern_row);

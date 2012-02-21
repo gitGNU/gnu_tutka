@@ -871,3 +871,14 @@ void Tracker::checkBounds()
         setCommandPage(curpattern->commandPages() - 1);
     }
 }
+
+void Tracker::setSelection(int startTrack, int startLine, int endTrack, int endLine)
+{
+    sel_start_ch = startTrack;
+    sel_start_row = startLine;
+    sel_end_ch = endTrack;
+    sel_end_row = endLine;
+    inSelMode = false;
+    redraw();
+    emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
+}

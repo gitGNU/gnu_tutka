@@ -31,8 +31,7 @@
  * Section List
  * Song Properties->Send MIDI Sync
  * Playing Sequence List
- * Block->Cut/Copy/Paste/Clear/Select All
- * Track->Select All/Insert/Delete
+ * Track->Insert/Delete
  * MIDI->Kill all notes/Reset Pitch
  * MIDI Message List
  * Settings->External Sync
@@ -152,6 +151,11 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionSongChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showSong()));
     connect(ui->actionPlayingSequenceEditCurrent, SIGNAL(triggered()), playingSequenceDialog, SLOT(show()));
     connect(ui->actionPlayingSequenceList, SIGNAL(triggered()), playingSequenceListDialog, SLOT(show()));
+    connect(ui->actionBlockCut, SIGNAL(triggered()), this, SLOT(cutBlock()));
+    connect(ui->actionBlockCopy, SIGNAL(triggered()), this, SLOT(copyBlock()));
+    connect(ui->actionBlockPaste, SIGNAL(triggered()), this, SLOT(pasteBlock()));
+    connect(ui->actionBlockClear, SIGNAL(triggered()), this, SLOT(clearBlock()));
+    connect(ui->actionBlockSelectAll, SIGNAL(triggered()), this, SLOT(selectAllBlock()));
     connect(ui->actionBlockList, SIGNAL(triggered()), blockListDialog, SLOT(show()));
     connect(ui->actionBlockTranspose, SIGNAL(triggered()), transposeDialog, SLOT(showBlock()));
     connect(ui->actionBlockExpandShrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(showBlock()));
@@ -867,6 +871,36 @@ void MainWindow::clearSelection()
     song->block(block)->clear(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
 }
 
+void MainWindow::cutBlock()
+{
+    delete copyBlock_;
+    copyBlock_ = song->block(block)->copy(0, 0, song->block(block)->tracks() - 1, song->block(block)->length() - 1);
+    song->block(block)->clear(0, 0, song->block(block)->tracks() - 1, song->block(block)->length() - 1);
+}
+
+void MainWindow::copyBlock()
+{
+    delete copyBlock_;
+    copyBlock_ = song->block(block)->copy(0, 0, song->block(block)->tracks() - 1, song->block(block)->length() - 1);
+}
+
+void MainWindow::pasteBlock()
+{
+    if (copyBlock_ != NULL) {
+        song->block(block)->paste(copyBlock_, 0, 0);
+    }
+}
+
+void MainWindow::clearBlock()
+{
+    song->block(block)->clear(0, 0, song->block(block)->tracks() - 1, song->block(block)->length() - 1);
+}
+
+void MainWindow::selectAllBlock()
+{
+    ui->trackerMain->setSelection(0, 0, song->block(block)->tracks() - 1, song->block(block)->length() - 1);
+}
+
 void MainWindow::cutTrack()
 {
     delete copyTrack_;
@@ -894,12 +928,5 @@ void MainWindow::clearTrack()
 
 void MainWindow::selectAllTrack()
 {
-    /*
-    tracker->sel_start_ch = tracker->cursor_ch;
-    tracker->sel_start_row = 0;
-    tracker->sel_end_ch = tracker->cursor_ch;
-    tracker->sel_end_row = editor_song_block_current_length_get(gui->editor) - 1;
-    tracker->inSelMode = FALSE;
-    tracker_redraw(tracker);
-    */
+    ui->trackerMain->setSelection(ui->trackerMain->track(), 0, ui->trackerMain->track(), song->block(block)->length() - 1);
 }
