@@ -21,7 +21,6 @@
  */
 
 #include <QApplication>
-#include "song.h"
 #include "midi.h"
 #include "player.h"
 #include "mainwindow.h"
@@ -31,19 +30,16 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 
     MIDI *midi = new MIDI;
-    Player *player = new Player(midi);
+    Player *player = new Player(midi, argc > 1 ? argv[1] : QString());
     MainWindow *mainWindow = new MainWindow(player);
-    Song *song = new Song(argc > 1 ? argv[1] : QString());
     mainWindow->show();
     mainWindow->raise();
-    player->setSong(song);
 
     int returnCode = app.exec();
 
     delete mainWindow;
     delete player;
     delete midi;
-    delete song;
 
     return returnCode;
 }

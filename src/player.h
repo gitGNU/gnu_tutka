@@ -77,10 +77,9 @@ public:
       COMMAND_MIDI_CONTROLLERS = 0x80
     };
 
-    Player(MIDI *midi, QObject *parent = NULL);
+    Player(MIDI *midi, const QString &path = QString(), QObject *parent = NULL);
     virtual ~Player();
 
-    void setSong(Song *song);
     unsigned int section() const;
     unsigned int playseq() const;
     unsigned int position() const;
@@ -145,6 +144,7 @@ public slots:
     void stop();
 
 private slots:
+    void init();
     // Reallocate track status array
     void trackStatusCreate();
 

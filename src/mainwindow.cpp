@@ -28,7 +28,6 @@
  * File->Save
  * File->Save As
  * Section List
- * Song Properties->Send MIDI Sync
  * Playing Sequence List
  * MIDI->Kill all notes/Reset Pitch
  * MIDI Message List

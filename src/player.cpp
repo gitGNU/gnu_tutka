@@ -32,6 +32,7 @@
 #include <linux/rtc.h>
 #endif
 #include <QThread>
+#include <QTimer>
 #include "song.h"
 #include "instrument.h"
 #include "midiinterface.h"
@@ -41,7 +42,7 @@
 #define MAXIMUM_RTC_FREQ 2048
 #define MINIMUM_RTC_FREQ 512
 
-Player::Player(MIDI *midi, QObject *parent) :
+Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     QThread(parent),
     section_(0),
     playseq_(0),
@@ -49,7 +50,7 @@ Player::Player(MIDI *midi, QObject *parent) :
     block_(0),
     line_(0),
     tick(0),
-    song(NULL),
+    song(new Song(path)),
     mode_(IDLE),
     sched(SCHED_NANOSLEEP),
     ticksSoFar(0),
@@ -64,6 +65,8 @@ Player::Player(MIDI *midi, QObject *parent) :
     postValue(0)
 {
     midiChanged();
+
+    QTimer::singleShot(0, this, SLOT(init()));
 }
 
 Player::~Player()
@@ -986,14 +989,8 @@ void Player::trackStatusCreate()
     }
 }
 
-void Player::setSong(Song *song)
+void Player::init()
 {
-    if (this->song != NULL) {
-        disconnect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(trackStatusCreate()));
-    }
-
-    this->song = song;
-
     // Recreate the track status array
     trackStatusCreate();
     connect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(trackStatusCreate()));
