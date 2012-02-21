@@ -85,6 +85,10 @@ public:
     void insertLine(int line, int track = -1);
     // Deletes a line from specific tracks in the block
     void deleteLine(int line, int track = -1);
+    // Inserts a track in the block
+    void insertTrack(int track);
+    // Deletes a track from the block
+    void deleteTrack(int track);
     // Parses a block element in an XML file
     static Block *parse(QDomElement element);
 

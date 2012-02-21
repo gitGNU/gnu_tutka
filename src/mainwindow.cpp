@@ -30,7 +30,6 @@
  * Section List
  * Song Properties->Send MIDI Sync
  * Playing Sequence List
- * Track->Insert/Delete
  * MIDI->Kill all notes/Reset Pitch
  * MIDI Message List
  * Settings->External Sync
@@ -167,6 +166,8 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionTrackPaste, SIGNAL(triggered()), this, SLOT(pasteTrack()));
     connect(ui->actionTrackClear, SIGNAL(triggered()), this, SLOT(clearTrack()));
     connect(ui->actionTrackSelectAll, SIGNAL(triggered()), this, SLOT(selectAllTrack()));
+    connect(ui->actionTrackInsert, SIGNAL(triggered()), this, SLOT(insertTrack()));
+    connect(ui->actionTrackDelete, SIGNAL(triggered()), this, SLOT(deleteTrack()));
     connect(ui->actionTrackTranspose, SIGNAL(triggered()), transposeDialog, SLOT(showTrack()));
     connect(ui->actionTrackExpandShrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(showTrack()));
     connect(ui->actionTrackChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showTrack()));
@@ -931,4 +932,14 @@ void MainWindow::clearTrack()
 void MainWindow::selectAllTrack()
 {
     ui->trackerMain->setSelection(ui->trackerMain->track(), 0, ui->trackerMain->track(), song->block(block)->length() - 1);
+}
+
+void MainWindow::insertTrack()
+{
+    song->block(block)->insertTrack(ui->trackerMain->track());
+}
+
+void MainWindow::deleteTrack()
+{
+    song->block(block)->deleteTrack(ui->trackerMain->track());
 }

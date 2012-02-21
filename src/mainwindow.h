@@ -83,6 +83,8 @@ private slots:
     void pasteTrack();
     void clearTrack();
     void selectAllTrack();
+    void insertTrack();
+    void deleteTrack();
 
 private:
     bool keyPress(QKeyEvent *event);

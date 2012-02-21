@@ -429,20 +429,15 @@ void Block::changeInstrument(int from, int to, bool swap, int startTrack, int st
 void Block::insertLine(int line, int track)
 {
     int startTrack = track >= 0 ? track : 0;
-    int endTrack = track >= 0 ? (track + 1) : (tracks_ - 1);
+    int endTrack = track >= 0 ? track : (tracks_ - 1);
 
     // Move lines downwards
     Block *block = copy(startTrack, line, endTrack, length_ - 1);
     paste(block, startTrack, line + 1);
+    delete block;
 
     // Clear the inserted line
-    for (int j = startTrack; j < endTrack; j++) {
-        setNote(line, j, 0, 0, 0);
-        for (int i = 0; i < commandPages_; i++) {
-            setCommandFull(line, j, i, 0, 0);
-        }
-    }
-    delete block;
+    clear(startTrack, line, endTrack, line);
 
     emit areaChanged(startTrack, line, endTrack, length_ - 1);
 }
@@ -450,22 +445,46 @@ void Block::insertLine(int line, int track)
 void Block::deleteLine(int line, int track)
 {
     int startTrack = track >= 0 ? track : 0;
-    int endTrack = track >= 0 ? (track + 1) : (tracks_ - 1);
+    int endTrack = track >= 0 ? track : (tracks_ - 1);
 
     // Move lines upwards
     Block *block = copy(startTrack, line + 1, endTrack, length_ - 1);
     paste(block, startTrack, line);
-
-    // Clear the last line
-    for (int track = startTrack; track < endTrack; track++) {
-        setNote(length_ - 1, track, 0, 0, 0);
-        for (int commandPage = 0; commandPage < commandPages_; commandPage++) {
-            setCommandFull(length_ - 1, track, commandPage, 0, 0);
-        }
-    }
     delete block;
 
+    // Clear the last line
+    clear(startTrack, length_ - 1, endTrack, length_ - 1);
+
     emit areaChanged(startTrack, line, endTrack, length_ - 1);
+}
+
+void Block::insertTrack(int track)
+{
+    // Add a new track
+    setTracks(tracks_ + 1);
+
+    // Move tracks to the right
+    Block *block = copy(track, 0, tracks_ - 1, length_ - 1);
+    paste(block, track + 1, 0);
+    delete block;
+
+    // Clear the inserted track
+    clear(track, 0, track, length_ - 1);
+}
+
+void Block::deleteTrack(int track)
+{
+    if (tracks_ > 1 && track < tracks_) {
+        if (track < tracks_ - 1) {
+            // Move tracks to the left
+            Block *block = copy(track + 1, 0, tracks_ - 1, length_ - 1);
+            paste(block, track, 0);
+            delete block;
+        }
+
+        // Remove a track
+        setTracks(tracks_ - 1);
+    }
 }
 
 Block *Block::parse(QDomElement element)
