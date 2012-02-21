@@ -23,7 +23,6 @@
 /*
  * TODO
  *
- * File->New
  * File->Open
  * File->Save
  * File->Save As
@@ -135,6 +134,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), instrumentPropertiesDialog, SLOT(setInstrument(int)));
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), transposeDialog, SLOT(setInstrument(int)));
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), this, SLOT(setInstrument(int)));
+    connect(ui->actionFileNew, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(ui->actionFileOpen, SIGNAL(triggered()), openDialog, SLOT(show()));
     connect(ui->actionFileSaveAs, SIGNAL(triggered()), saveDialog, SLOT(show()));
     connect(ui->actionFileQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -832,6 +832,11 @@ void MainWindow::setSelection(int startTrack, int startLine, int endTrack, int e
     selectionStartLine = startLine;
     selectionEndTrack = endTrack;
     selectionEndLine = endLine;
+}
+
+void MainWindow::newFile()
+{
+    player->setSong();
 }
 
 void MainWindow::showAbout()

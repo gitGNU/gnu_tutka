@@ -68,6 +68,7 @@ private slots:
     void setTime(unsigned int time);
     void setInstrument(int instrument);
     void setSelection(int startTrack, int startLine, int endTrack, int endLine);
+    void newFile();
     void showAbout();
     void cutSelection();
     void copySelection();

@@ -989,6 +989,18 @@ void Player::trackStatusCreate()
     }
 }
 
+void Player::setSong(const QString &path)
+{
+    Song *oldSong = song;
+    song = new Song(path);
+
+    init();
+
+    if (oldSong != NULL) {
+        delete oldSong;
+    }
+}
+
 void Player::init()
 {
     // Recreate the track status array
