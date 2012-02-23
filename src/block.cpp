@@ -570,10 +570,7 @@ Block *Block::parse(QDomElement element)
                 }
 
                 // Get the command
-                QDomElement temp = cur.firstChild().toElement();
-                if (!temp.isNull()) {
-                    command = temp.text().toInt();
-                }
+                command = cur.text().toInt();
 
                 // Set the command
                 block->setCommandFull(line, track, commandpage, command, value);

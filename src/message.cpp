@@ -106,7 +106,6 @@ Message *Message::parse(QDomElement element)
             c[1] = element.text().at(i * 2 + 1).toAscii();
             sscanf((char *)c, "%X", &d);
             message->data[i] = d;
-            printf("WTF %x\n", d);
         }
     } else if (element.nodeType() != QDomNode::CommentNode) {
         qWarning("XML error: expected message, got %s\n", element.tagName().toUtf8().constData());
