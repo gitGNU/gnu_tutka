@@ -192,7 +192,30 @@ Instrument *Instrument::parse(QDomElement element)
 
 void Instrument::save(int number, QDomElement &parentElement, QDomDocument &document)
 {
-    Q_UNUSED(number)
-    Q_UNUSED(parentElement)
-    Q_UNUSED(document)
+    QDomElement instrumentElement = document.createElement("instrument");
+    parentElement.appendChild(instrumentElement);
+    instrumentElement.setAttribute("number", number);
+    instrumentElement.setAttribute("name", name_);
+
+    if (!midiInterfaceName().isEmpty()) {
+        instrumentElement.setAttribute("midiinterface", midiInterfaceName());
+    }
+    instrumentElement.setAttribute("midipreset", midiPreset_);
+    instrumentElement.setAttribute("midichannel", midiChannel_);
+    instrumentElement.setAttribute("defaultvelocity", defaultVelocity_);
+    instrumentElement.setAttribute("transpose", transpose_);
+    instrumentElement.setAttribute("hold", hold_);
+
+    // Add the arpeggio block if any
+    if (arpeggio_ != NULL) {
+        QDomElement arpeggioElement = document.createElement("arpeggio");
+        arpeggioElement.appendChild(document.createTextNode("\n"));
+        arpeggioElement.setAttribute("basenote", basenote_);
+        arpeggio_->save(0, arpeggioElement, document);
+
+        instrumentElement.appendChild(arpeggioElement);
+        instrumentElement.appendChild(document.createTextNode("\n"));
+    }
+
+    parentElement.appendChild(document.createTextNode("\n"));
 }

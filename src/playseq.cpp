@@ -131,6 +131,6 @@ void Playseq::save(int number, QDomElement &parentElement, QDomDocument &documen
         playingSequenceElement.appendChild(positionElement);
         playingSequenceElement.appendChild(document.createTextNode("\n"));
     }
-    parentElement.appendChild(playingSequenceElement);
+
     parentElement.appendChild(document.createTextNode("\n"));
 }
