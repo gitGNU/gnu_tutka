@@ -81,7 +81,6 @@ Message *Message::parse(QDomElement element)
 
     if (element.tagName() == "message") {
         QDomAttr prop;
-        QDomElement temp = element.firstChild().toElement();
         char c[3];
 
         // Temporary string for hexadecimal parsing
@@ -99,16 +98,15 @@ Message *Message::parse(QDomElement element)
             message->autoSend = prop.value().toInt() > 0;
         }
 
-        if (!temp.isNull()) {
-            int length = temp.text().length() / 2;
-            message->data.resize(length);
-            unsigned int d;
-            for (int i = 0; i < length; i++) {
-                c[0] = temp.text().at(i * 2).toAscii();
-                c[1] = temp.text().at(i * 2 + 1).toAscii();
-                sscanf((char *)c, "%X", &d);
-                message->data[i] = d;
-            }
+        int length = element.text().length() / 2;
+        message->data.resize(length);
+        unsigned int d;
+        for (int i = 0; i < length; i++) {
+            c[0] = element.text().at(i * 2).toAscii();
+            c[1] = element.text().at(i * 2 + 1).toAscii();
+            sscanf((char *)c, "%X", &d);
+            message->data[i] = d;
+            printf("WTF %x\n", d);
         }
     } else if (element.nodeType() != QDomNode::CommentNode) {
         qWarning("XML error: expected message, got %s\n", element.tagName().toUtf8().constData());
@@ -118,7 +116,16 @@ Message *Message::parse(QDomElement element)
 
 void Message::save(int number, QDomElement &parentElement, QDomDocument &document)
 {
-    Q_UNUSED(number)
-    Q_UNUSED(parentElement)
-    Q_UNUSED(document)
+    QString message;
+    for (int i = 0; i < data.length(); i++) {
+        message += QString("%1").arg(data.constData()[i] & 0xff, 2, 16, QChar('0'));
+    }
+
+    QDomElement messageElement = document.createElement("message");
+    parentElement.appendChild(messageElement);
+    messageElement.appendChild(document.createTextNode(message.toUpper()));
+    messageElement.setAttribute("number", number);
+    messageElement.setAttribute("name", name);
+    messageElement.setAttribute("autosend", autoSend ? 1 : 0);
+    parentElement.appendChild(document.createTextNode("\n"));
 }
