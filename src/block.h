@@ -27,6 +27,7 @@
 #include <QString>
 
 class QDomElement;
+class QDomDocument;
 
 class Block : public QObject {
     Q_OBJECT
@@ -74,7 +75,7 @@ public:
     // Clears a part of a block
     void clear(int startTrack, int startLine, int endTrack, int endLine);
     // Saves a block to an XML document
-    //void save(int, xmlNodePtr);
+    void save(int number, QDomElement &parentElement, QDomDocument &document);
     // Transposes a block or a part of it
     void transpose(int instrument, int halfNotes, int startTrack, int startLine, int endTrack, int endLine);
     // Expands/shrinks a block or a part of it

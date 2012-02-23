@@ -28,6 +28,7 @@
 
 class Block;
 class QDomElement;
+class QDomDocument;
 
 class Instrument : public QObject {
     Q_OBJECT
@@ -60,7 +61,7 @@ public:
     // Parses an instrument element in an XML file
     static Instrument *parse(QDomElement element);
     // Saves an instrument to an XML document
-    //void instrument_save(struct instrument *, int, xmlNodePtr);
+    void save(int number, QDomElement &parentElement, QDomDocument &document);
 
 public slots:
     // Sets the name of the instrument

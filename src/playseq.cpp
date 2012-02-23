@@ -114,3 +114,10 @@ Playseq *Playseq::parse(QDomElement element)
 
     return playseq;
 }
+
+void Playseq::save(int number, QDomElement &parentElement, QDomDocument &document)
+{
+    Q_UNUSED(number)
+    Q_UNUSED(parentElement)
+    Q_UNUSED(document)
+}

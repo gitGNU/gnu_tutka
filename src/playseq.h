@@ -28,6 +28,7 @@
 #include <QList>
 
 class QDomElement;
+class QDomDocument;
 
 class Playseq : public QObject {
     Q_OBJECT
@@ -46,7 +47,7 @@ public:
     void insert(unsigned int pos);
     // Deletes a block from the given position of the block array
     void remove(unsigned int pos);
-    //void save(int, xmlNodePtr);
+    void save(int number, QDomElement &parentElement, QDomDocument &document);
     // Parses a playingsequence element in an XML file
     static Playseq *parse(QDomElement element);
 

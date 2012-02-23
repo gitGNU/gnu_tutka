@@ -24,6 +24,7 @@
 #define MESSAGE_H_
 
 class QDomElement;
+class QDomDocument;
 
 class Message {
 public:
@@ -47,7 +48,7 @@ public:
     // Parses a element in an XML file
     static Message *parse(QDomElement element);
     // Saves a message to an XML file
-    //void save(int, xmlNodePtr);
+    void save(int number, QDomElement &parentElement, QDomDocument &document);
 
 private:
     // Name

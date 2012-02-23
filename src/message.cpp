@@ -115,3 +115,10 @@ Message *Message::parse(QDomElement element)
     }
     return message;
 }
+
+void Message::save(int number, QDomElement &parentElement, QDomDocument &document)
+{
+    Q_UNUSED(number)
+    Q_UNUSED(parentElement)
+    Q_UNUSED(document)
+}

@@ -189,3 +189,10 @@ Instrument *Instrument::parse(QDomElement element)
 
     return instrument;
 }
+
+void Instrument::save(int number, QDomElement &parentElement, QDomDocument &document)
+{
+    Q_UNUSED(number)
+    Q_UNUSED(parentElement)
+    Q_UNUSED(document)
+}

@@ -628,7 +628,87 @@ void Song::save(const QString &path)
 {
     path_ = path;
 
-    // TODO
+    QDomDocument document;
+    QDomElement songElement = document.createElement("song");
+    document.appendChild(songElement);
+
+    songElement.setAttribute("name", name_);
+    songElement.setAttribute("tempo", tempo_);
+    songElement.setAttribute("ticksperline", ticksPerLine_);
+    songElement.setAttribute("mastervolume", masterVolume_);
+    songElement.setAttribute("sendsync", sendSync_ ? 1 : 0);
+    songElement.appendChild(document.createTextNode("\n\n"));
+
+    QDomElement blocksElement = document.createElement("blocks");
+    songElement.appendChild(blocksElement);
+    blocksElement.appendChild(document.createTextNode("\n"));
+    // Add all blocks
+    for (int block = 0; block < blocks_.count(); block++) {
+        blocks_[block]->save(block, blocksElement, document);
+    }
+    songElement.appendChild(document.createTextNode("\n\n"));
+
+    QDomElement sectionsElement = document.createElement("sections");
+    songElement.appendChild(sectionsElement);
+    sectionsElement.appendChild(document.createTextNode("\n"));
+    // Add all sections
+    for (int section = 0; section < sections_.count(); section++) {
+        QDomElement sectionElement = document.createElement("section");
+        sectionElement.appendChild(document.createTextNode(QString("%1").arg(sections_[section])));
+        sectionElement.setAttribute("number", section);
+        sectionsElement.appendChild(sectionElement);
+        sectionsElement.appendChild(document.createTextNode("\n"));
+    }
+    songElement.appendChild(document.createTextNode("\n\n"));
+
+    QDomElement playingSequencesElement = document.createElement("playingsequences");
+    songElement.appendChild(playingSequencesElement);
+    playingSequencesElement.appendChild(document.createTextNode("\n"));
+    // Add all playing sequences
+    for (int playseq = 0; playseq < playseqs_.count(); playseq++) {
+        playseqs_[playseq]->save(playseq, playingSequencesElement, document);
+    }
+    songElement.appendChild(document.createTextNode("\n\n"));
+
+    QDomElement instrumentsElement = document.createElement("instruments");
+    songElement.appendChild(instrumentsElement);
+    instrumentsElement.appendChild(document.createTextNode("\n"));
+    // Add all instruments
+    for (int instrument = 0; instrument < instruments_.count(); instrument++) {
+        instruments_[instrument]->save(instrument, instrumentsElement, document);
+    }
+    songElement.appendChild(document.createTextNode("\n\n"));
+
+    QDomElement tracksElement = document.createElement("tracks");
+    songElement.appendChild(tracksElement);
+    tracksElement.appendChild(document.createTextNode("\n"));
+    // Add all tracks
+    for (int track = 0; track < tracks.count(); track++) {
+        QDomElement trackElement = document.createElement("track");
+        trackElement.appendChild(document.createTextNode(tracks[track]->name()));
+        trackElement.setAttribute("number", track);
+        trackElement.setAttribute("volume", tracks[track]->volume());
+        trackElement.setAttribute("mute", tracks[track]->isMuted() ? 1 : 0);
+        trackElement.setAttribute("solo", tracks[track]->isSolo() ? 1 : 0);
+        tracksElement.appendChild(trackElement);
+        tracksElement.appendChild(document.createTextNode("\n"));
+    }
+    songElement.appendChild(document.createTextNode("\n\n"));
+
+    QDomElement messagesElement = document.createElement("messages");
+    songElement.appendChild(messagesElement);
+    messagesElement.appendChild(document.createTextNode("\n"));
+    // Add all messages
+    for (int message = 0; message < messages_.count(); message++) {
+        messages_[message]->save(message, messagesElement, document);
+    }
+    songElement.appendChild(document.createTextNode("\n\n"));
+
+    QFile file(path_);
+    file.open(QIODevice::WriteOnly);
+    file.write("<?xml version=\"1.0\"?>\n");
+    file.write(document.toByteArray());
+    file.close();
 }
 
 Block *Song::block(unsigned int number) const

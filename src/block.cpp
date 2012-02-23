@@ -587,6 +587,13 @@ Block *Block::parse(QDomElement element)
     return block;
 }
 
+void Block::save(int number, QDomElement &parentElement, QDomDocument &document)
+{
+    Q_UNUSED(number)
+    Q_UNUSED(parentElement)
+    Q_UNUSED(document)
+}
+
 void Block::checkBounds(int &startTrack, int &startLine, int &endTrack, int &endLine)
 {
     if (startTrack < 0) {
