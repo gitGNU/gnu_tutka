@@ -589,9 +589,50 @@ Block *Block::parse(QDomElement element)
 
 void Block::save(int number, QDomElement &parentElement, QDomDocument &document)
 {
-    Q_UNUSED(number)
-    Q_UNUSED(parentElement)
-    Q_UNUSED(document)
+    // Set block properties
+    QDomElement blockElement = document.createElement("block");
+    parentElement.appendChild(blockElement);
+    blockElement.setAttribute("number", number);
+    blockElement.setAttribute("name", name_);
+    blockElement.setAttribute("tracks", tracks_);
+    blockElement.setAttribute("length", length_);
+    blockElement.setAttribute("commandpages", commandPages_);
+    blockElement.appendChild(document.createTextNode("\n"));
+
+    // Notation data
+    for (int track = 0; track < tracks_; track++) {
+        for (int line = 0; line < length_; line++) {
+            if (notes_[2 * (tracks_ * line + track)] != 0 || notes_[2 * (tracks_ * line + track) + 1] != 0) {
+                QDomElement noteElement = document.createElement("note");
+                noteElement.appendChild(document.createTextNode(QString("%1").arg(notes_[2 * (tracks_ * line + track)])));
+                noteElement.setAttribute("line", line);
+                noteElement.setAttribute("track", track);
+                noteElement.setAttribute("instrument", notes_[2 * (tracks_ * line + track) + 1]);
+                blockElement.appendChild(noteElement);
+                blockElement.appendChild(document.createTextNode("\n"));
+            }
+        }
+    }
+
+    // Command data
+    for (int track = 0; track < tracks_; track++) {
+        for (int line = 0; line < length_; line++) {
+            for (int commandPage = 0; commandPage < commandPages_; commandPage++) {
+                if (commands_[commandPage * 2 * tracks_ * length_ + 2 * (tracks_ * line + track)] != 0 || commands_[commandPage * 2 * tracks_ * length_ + 2 * (tracks_ * line + track) + 1] != 0) {
+                    QDomElement commandElement = document.createElement("command");
+                    commandElement.appendChild(document.createTextNode(QString("%1").arg(commands_[commandPage * 2 * tracks_ * length_ + 2 * (tracks_ * line + track)])));
+                    commandElement.setAttribute("line", line);
+                    commandElement.setAttribute("track", track);
+                    commandElement.setAttribute("commandpage", commandPage);
+                    commandElement.setAttribute("value", commands_[commandPage * 2 * tracks_ * length_ + 2 * (tracks_ * line + track) + 1]);
+                    blockElement.appendChild(commandElement);
+                    blockElement.appendChild(document.createTextNode("\n"));
+                }
+            }
+        }
+    }
+
+    parentElement.appendChild(document.createTextNode("\n"));
 }
 
 void Block::checkBounds(int &startTrack, int &startLine, int &endTrack, int &endLine)

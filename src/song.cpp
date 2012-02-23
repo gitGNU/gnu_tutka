@@ -685,7 +685,9 @@ void Song::save(const QString &path)
     // Add all tracks
     for (int track = 0; track < tracks.count(); track++) {
         QDomElement trackElement = document.createElement("track");
-        trackElement.appendChild(document.createTextNode(tracks[track]->name()));
+        if (!tracks[track]->name().isEmpty()) {
+            trackElement.appendChild(document.createTextNode(tracks[track]->name()));
+        }
         trackElement.setAttribute("number", track);
         trackElement.setAttribute("volume", tracks[track]->volume());
         trackElement.setAttribute("mute", tracks[track]->isMuted() ? 1 : 0);
