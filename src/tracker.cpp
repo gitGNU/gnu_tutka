@@ -253,6 +253,8 @@ void Tracker::markSelection(bool enable)
         inSelMode = true;
         redraw();
     }
+
+    emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
 }
 
 void Tracker::clearMarkSelection()
@@ -262,6 +264,8 @@ void Tracker::clearMarkSelection()
         sel_start_row = sel_end_row = -1;
         inSelMode = false;
         redraw();
+
+        emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
     }
 }
 
