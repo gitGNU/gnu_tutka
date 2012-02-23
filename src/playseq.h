@@ -50,13 +50,14 @@ public:
     void save(int number, QDomElement &parentElement, QDomDocument &document);
     // Parses a playingsequence element in an XML file
     static Playseq *parse(QDomElement element);
+    QString name() const;
 
 signals:
     void playseqChanged();
 
 private:
     // Name
-    QString name;
+    QString name_;
     // Block number array
     QList<unsigned int> blockNumbers;
 };

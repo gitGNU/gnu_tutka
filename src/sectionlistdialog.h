@@ -7,6 +7,10 @@ namespace Ui {
     class SectionListDialog;
 }
 
+class Song;
+class SectionTableModel;
+class SpinBoxDelegate;
+
 class SectionListDialog : public QDialog
 {
     Q_OBJECT
@@ -15,8 +19,20 @@ public:
     explicit SectionListDialog(QWidget *parent = 0);
     ~SectionListDialog();
 
+public slots:
+    void setSong(Song *song);
+    void setSection(unsigned int section);
+
+private slots:
+    void insertSection();
+    void appendSection();
+    void deleteSection();
+
 private:
     Ui::SectionListDialog *ui;
+    Song *song;
+    SectionTableModel *sectionTableModel;
+    SpinBoxDelegate *spinBoxDelegate;
 };
 
 #endif // SECTIONLISTDIALOG_H

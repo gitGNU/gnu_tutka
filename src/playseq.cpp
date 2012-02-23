@@ -79,7 +79,7 @@ Playseq *Playseq::parse(QDomElement element)
         playseq = new Playseq;
         QDomAttr prop = element.attributeNode("name");
         if (!prop.isNull()) {
-            playseq->name = prop.value();
+            playseq->name_ = prop.value();
         }
 
         // Get playseq contents
@@ -120,7 +120,7 @@ void Playseq::save(int number, QDomElement &parentElement, QDomDocument &documen
     QDomElement playingSequenceElement = document.createElement("playingsequence");
     parentElement.appendChild(playingSequenceElement);
     playingSequenceElement.setAttribute("number", number);
-    playingSequenceElement.setAttribute("name", name);
+    playingSequenceElement.setAttribute("name", name_);
     playingSequenceElement.appendChild(document.createTextNode("\n"));
 
     // Add all blocks
@@ -133,4 +133,9 @@ void Playseq::save(int number, QDomElement &parentElement, QDomDocument &documen
     }
 
     parentElement.appendChild(document.createTextNode("\n"));
+}
+
+QString Playseq::name() const
+{
+    return name_;
 }

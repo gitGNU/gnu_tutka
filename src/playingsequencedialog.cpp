@@ -16,7 +16,6 @@ PlayingSequenceDialog::PlayingSequenceDialog(QWidget *parent) :
     ui->setupUi(this);
 
     ui->tableView->setModel(playingSequenceTableModel);
-    ui->tableView->setColumnWidth(0, 90);
     ui->tableView->setItemDelegateForColumn(1, spinBoxDelegate);
     ui->tableView->setItemDelegateForColumn(2, spinBoxDelegate);
     ui->tableView->setItemDelegateForColumn(3, spinBoxDelegate);

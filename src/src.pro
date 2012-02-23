@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     spinboxdelegate.cpp \
     trackvolumewidget.cpp \
     playingsequencetablemodel.cpp \
-    sliderwithlabel.cpp
+    sliderwithlabel.cpp \
+    sectiontablemodel.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -58,7 +59,8 @@ HEADERS += block.h \
     spinboxdelegate.h \
     trackvolumewidget.h \
     playingsequencetablemodel.h \
-    sliderwithlabel.h
+    sliderwithlabel.h \
+    sectiontablemodel.h
 
 FORMS += \
     mainwindow.ui \
