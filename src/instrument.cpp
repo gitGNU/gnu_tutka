@@ -133,11 +133,41 @@ Instrument *Instrument::parse(QDomElement element)
             instrument->name_ = prop.value();
         }
 
+        prop = element.attributeNode("midiinterface");
+        if (!prop.isNull()) {
+            instrument->midiInterfaceName_ = prop.value();
+        }
+
+        prop = element.attributeNode("midipreset");
+        if (!prop.isNull()) {
+            instrument->midiPreset_ = prop.value().toInt();
+        }
+
+        prop = element.attributeNode("midichannel");
+        if (!prop.isNull()) {
+            instrument->midiChannel_ = prop.value().toInt();
+        }
+
+        prop = element.attributeNode("defaultvelocity");
+        if (!prop.isNull()) {
+            instrument->defaultVelocity_ = prop.value().toInt();
+        }
+
+        prop = element.attributeNode("transpose");
+        if (!prop.isNull()) {
+            instrument->transpose_ = prop.value().toInt();
+        }
+
+        prop = element.attributeNode("hold");
+        if (!prop.isNull()) {
+            instrument->hold_ = prop.value().toInt();
+        }
+
         // Get instrument contents
         QDomElement cur = element.firstChild().toElement();
         while(!cur.isNull()) {
             if (cur.tagName() == "output") {
-                // Get output properties
+                // Get output properties (tutka 0.12.x)
                 prop = cur.attributeNode("midiinterface");
                 if (!prop.isNull()) {
                     instrument->midiInterfaceName_ = prop.value();
