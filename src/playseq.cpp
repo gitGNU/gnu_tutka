@@ -117,7 +117,20 @@ Playseq *Playseq::parse(QDomElement element)
 
 void Playseq::save(int number, QDomElement &parentElement, QDomDocument &document)
 {
-    Q_UNUSED(number)
-    Q_UNUSED(parentElement)
-    Q_UNUSED(document)
+    QDomElement playingSequenceElement = document.createElement("playingsequence");
+    parentElement.appendChild(playingSequenceElement);
+    playingSequenceElement.setAttribute("number", number);
+    playingSequenceElement.setAttribute("name", name);
+    playingSequenceElement.appendChild(document.createTextNode("\n"));
+
+    // Add all blocks
+    for (int position = 0; position < blockNumbers.count(); position++) {
+        QDomElement positionElement = document.createElement("position");
+        positionElement.appendChild(document.createTextNode(QString("%1").arg(blockNumbers[position])));
+        positionElement.setAttribute("number", position);
+        playingSequenceElement.appendChild(positionElement);
+        playingSequenceElement.appendChild(document.createTextNode("\n"));
+    }
+    parentElement.appendChild(playingSequenceElement);
+    parentElement.appendChild(document.createTextNode("\n"));
 }
