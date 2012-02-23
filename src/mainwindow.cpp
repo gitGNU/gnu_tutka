@@ -36,6 +36,7 @@
  * ALSA MIDI
  * OS X MIDI
  * Export MIDI
+ * MIDI input
  */
 
 #include <cstdio>
@@ -171,6 +172,8 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionTrackChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showTrack()));
     connect(ui->actionSongProperties, SIGNAL(triggered()), songPropertiesDialog, SLOT(show()));
     connect(ui->actionSongSectionList, SIGNAL(triggered()), sectionListDialog, SLOT(show()));
+    connect(ui->actionExternalSyncOff, SIGNAL(triggered()), this, SLOT(setExternalSyncOff()));
+    connect(ui->actionExternalSyncMidi, SIGNAL(triggered()), this, SLOT(setExternalSyncMidi()));
     connect(ui->actionMidiMessageList, SIGNAL(triggered()), messageListDialog, SLOT(show()));
     connect(ui->actionMidiKillAllNotes, SIGNAL(triggered()), player, SLOT(stopAllNotes()));
     connect(ui->actionMidiResetPitch, SIGNAL(triggered()), player, SLOT(resetPitch()));
@@ -947,4 +950,14 @@ void MainWindow::insertTrack()
 void MainWindow::deleteTrack()
 {
     song->block(block)->deleteTrack(ui->trackerMain->track());
+}
+
+void MainWindow::setExternalSyncOff()
+{
+    //TODO
+}
+
+void MainWindow::setExternalSyncMidi()
+{
+    //TODO
 }

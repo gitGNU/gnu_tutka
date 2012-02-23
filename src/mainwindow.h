@@ -86,6 +86,8 @@ private slots:
     void selectAllTrack();
     void insertTrack();
     void deleteTrack();
+    void setExternalSyncOff();
+    void setExternalSyncMidi();
 
 private:
     bool keyPress(QKeyEvent *event);
