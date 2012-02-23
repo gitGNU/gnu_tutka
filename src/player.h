@@ -131,8 +131,6 @@ public:
     // Set the scheduler of a player
     void setScheduler(unsigned int);
 
-    void setSong(const QString &path = QString());
-
 public slots:
     void playSong();
     void playBlock();
@@ -144,6 +142,7 @@ public slots:
     void stopAllNotes();
     // Resets the pitch wheel on all channels
     void resetPitch();
+    void setSong(const QString &path = QString());
 
 private slots:
     void init();

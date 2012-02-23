@@ -23,7 +23,6 @@
 /*
  * TODO
  *
- * File->Open
  * File->Save
  * File->Save As
  * Section List
@@ -179,6 +178,8 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionMidiResetPitch, SIGNAL(triggered()), player, SLOT(resetPitch()));
     connect(ui->actionSettingsPreferences, SIGNAL(triggered()), preferencesDialog, SLOT(show()));
     connect(ui->actionHelpAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+    connect(openDialog, SIGNAL(fileSelected(QString)), player, SLOT(setSong(QString)));
+
     /* TODO make clickable labels
     connect(ui->labelSection, SIGNAL(clicked()), sectionListDialog, SLOT(show()));
     connect(ui->labelPosition, SIGNAL(clicked()), playingSequenceDialog, SLOT(show()));
