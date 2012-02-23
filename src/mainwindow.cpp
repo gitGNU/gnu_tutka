@@ -28,7 +28,6 @@
  * File->Save As
  * Section List
  * Playing Sequence List
- * MIDI->Kill all notes/Reset Pitch
  * MIDI Message List
  * Settings->External Sync
  * Settings->Send MIDI Sync
@@ -173,6 +172,8 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionSongProperties, SIGNAL(triggered()), songPropertiesDialog, SLOT(show()));
     connect(ui->actionSongSectionList, SIGNAL(triggered()), sectionListDialog, SLOT(show()));
     connect(ui->actionMidiMessageList, SIGNAL(triggered()), messageListDialog, SLOT(show()));
+    connect(ui->actionMidiKillAllNotes, SIGNAL(triggered()), player, SLOT(stopAllNotes()));
+    connect(ui->actionMidiResetPitch, SIGNAL(triggered()), player, SLOT(resetPitch()));
     connect(ui->actionSettingsPreferences, SIGNAL(triggered()), preferencesDialog, SLOT(show()));
     connect(ui->actionHelpAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
     /* TODO make clickable labels

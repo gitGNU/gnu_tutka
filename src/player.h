@@ -100,10 +100,6 @@ public:
     void stopMuted();
     // Stops notes playing at the moment
     void stopNotes();
-    // Stops all notes
-    void stopAllNotes();
-    // Resets the pitch wheel on all channels
-    void resetPitch();
     // Handles a command
     void handleCommand(QSharedPointer<TrackStatus>, unsigned char, unsigned char, unsigned char, unsigned char, unsigned int *, int *, int *);
     // Resets the player time
@@ -144,6 +140,10 @@ public slots:
     void continueBlock();
     // Kills the player thread
     void stop();
+    // Stops all notes
+    void stopAllNotes();
+    // Resets the pitch wheel on all channels
+    void resetPitch();
 
 private slots:
     void init();
