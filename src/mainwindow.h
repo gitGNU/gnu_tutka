@@ -68,7 +68,6 @@ private slots:
     void setTime(unsigned int time);
     void setInstrument(int instrument);
     void setSelection(int startTrack, int startLine, int endTrack, int endLine);
-    void newFile();
     void showAbout();
     void cutSelection();
     void copySelection();
@@ -88,6 +87,8 @@ private slots:
     void deleteTrack();
     void setExternalSyncOff();
     void setExternalSyncMidi();
+    void save();
+    void saveAs();
 
 private:
     bool keyPress(QKeyEvent *event);

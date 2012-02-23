@@ -115,6 +115,7 @@ public:
     unsigned int tempo() const;
     unsigned int ticksPerLine() const;
     bool sendSync() const;
+    QString path() const;
 
 public slots:
     // Sets the number of ticks per line for a song
@@ -161,6 +162,9 @@ private:
     QList<Message *> messages_;
     // Whether to send MIDI sync or not
     bool sendSync_;
+
+    // Path the song was last stored to
+    QString path_;
 };
 
 #endif // SONG_H_

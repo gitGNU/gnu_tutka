@@ -23,8 +23,7 @@
 /*
  * TODO
  *
- * File->Save
- * File->Save As
+ * Save song
  * Section List
  * Playing Sequence List
  * MIDI Message List
@@ -66,7 +65,6 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     ui(new Ui::MainWindow),
     instrumentPropertiesDialog(new InstrumentPropertiesDialog),
     openDialog(new QFileDialog),
-    saveDialog(new QFileDialog),
     preferencesDialog(new PreferencesDialog),
     trackVolumesDialog(new TrackVolumesDialog),
     transposeDialog(new TransposeDialog),
@@ -133,9 +131,11 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), instrumentPropertiesDialog, SLOT(setInstrument(int)));
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), transposeDialog, SLOT(setInstrument(int)));
     connect(ui->spinBoxInstrument, SIGNAL(valueChanged(int)), this, SLOT(setInstrument(int)));
-    connect(ui->actionFileNew, SIGNAL(triggered()), this, SLOT(newFile()));
+    connect(ui->actionFileNew, SIGNAL(triggered()), player, SLOT(setSong()));
     connect(ui->actionFileOpen, SIGNAL(triggered()), openDialog, SLOT(show()));
-    connect(ui->actionFileSaveAs, SIGNAL(triggered()), saveDialog, SLOT(show()));
+    connect(openDialog, SIGNAL(fileSelected(QString)), player, SLOT(setSong(QString)));
+    connect(ui->actionFileSave, SIGNAL(triggered()), this, SLOT(save()));
+    connect(ui->actionFileSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
     connect(ui->actionFileQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(ui->actionEditCut, SIGNAL(triggered()), this, SLOT(cutSelection()));
     connect(ui->actionEditCopy, SIGNAL(triggered()), this, SLOT(copySelection()));
@@ -178,7 +178,6 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionMidiResetPitch, SIGNAL(triggered()), player, SLOT(resetPitch()));
     connect(ui->actionSettingsPreferences, SIGNAL(triggered()), preferencesDialog, SLOT(show()));
     connect(ui->actionHelpAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
-    connect(openDialog, SIGNAL(fileSelected(QString)), player, SLOT(setSong(QString)));
 
     /* TODO make clickable labels
     connect(ui->labelSection, SIGNAL(clicked()), sectionListDialog, SLOT(show()));
@@ -839,11 +838,6 @@ void MainWindow::setSelection(int startTrack, int startLine, int endTrack, int e
     selectionEndLine = endLine;
 }
 
-void MainWindow::newFile()
-{
-    player->setSong();
-}
-
 void MainWindow::showAbout()
 {
     QMessageBox::about(this, "About Tutka", "Tutka 0.99.0 (C) 2012 Vesa Halttunen <vesuri@jormas.com>");
@@ -961,4 +955,24 @@ void MainWindow::setExternalSyncOff()
 void MainWindow::setExternalSyncMidi()
 {
     //TODO
+}
+
+void MainWindow::save()
+{
+    QString path = song->path();
+
+    if (path.isEmpty()) {
+        saveAs();
+    } else {
+        song->save(path);
+    }
+}
+
+void MainWindow::saveAs()
+{
+    QString path = QFileDialog::getSaveFileName();
+
+    if (!path.isEmpty()) {
+        song->save(path);
+    }
 }

@@ -80,7 +80,8 @@ bool Track::isSolo() const
 }
 
 Song::Song(const QString &path, QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    path_(path)
 {
     bool initialized = false;
 
@@ -623,6 +624,13 @@ bool Song::parse(QDomElement element)
     }
 }
 
+void Song::save(const QString &path)
+{
+    path_ = path;
+
+    // TODO
+}
+
 Block *Song::block(unsigned int number) const
 {
     return number < blocks_.count() ? blocks_[number] : NULL;
@@ -716,4 +724,9 @@ void Song::setName(const QString &name)
 void Song::setSendSync(bool sendSync)
 {
     sendSync_ = sendSync;
+}
+
+QString Song::path() const
+{
+    return path_;
 }
