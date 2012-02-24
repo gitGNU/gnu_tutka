@@ -19,6 +19,9 @@ void PlayingSequenceTableModel::setSong(Song *song)
 void PlayingSequenceTableModel::setPlayseq(Playseq *playseq)
 {
     beginResetModel();
+    if (this->playseq != NULL) {
+        disconnect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(refresh()));
+    }
     this->playseq = playseq;
     connect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(refresh()));
     endResetModel();

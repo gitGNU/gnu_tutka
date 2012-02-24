@@ -10,6 +10,9 @@ BlockListTableModel::BlockListTableModel(QObject *parent) :
 void BlockListTableModel::setSong(Song *song)
 {
     beginResetModel();
+    if (this->song != NULL) {
+        disconnect(this->song, SIGNAL(blocksChanged(uint)), this, SLOT(refresh()));
+    }
     this->song = song;
     connect(this->song, SIGNAL(blocksChanged(uint)), this, SLOT(refresh()));
     endResetModel();

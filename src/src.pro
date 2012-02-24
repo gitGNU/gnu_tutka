@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     trackvolumewidget.cpp \
     playingsequencetablemodel.cpp \
     sliderwithlabel.cpp \
-    sectiontablemodel.cpp
+    sectiontablemodel.cpp \
+    playingsequencelisttablemodel.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -60,7 +61,8 @@ HEADERS += block.h \
     trackvolumewidget.h \
     playingsequencetablemodel.h \
     sliderwithlabel.h \
-    sectiontablemodel.h
+    sectiontablemodel.h \
+    playingsequencelisttablemodel.h
 
 FORMS += \
     mainwindow.ui \

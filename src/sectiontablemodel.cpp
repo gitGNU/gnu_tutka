@@ -10,7 +10,9 @@ SectionTableModel::SectionTableModel(QObject *parent) :
 void SectionTableModel::setSong(Song *song)
 {
     beginResetModel();
-    disconnect(this->song, SIGNAL(sectionsChanged(uint)), this, SLOT(refresh()));
+    if (this->song != NULL) {
+        disconnect(this->song, SIGNAL(sectionsChanged(uint)), this, SLOT(refresh()));
+    }
     this->song = song;
     connect(this->song, SIGNAL(sectionsChanged(uint)), this, SLOT(refresh()));
     endResetModel();

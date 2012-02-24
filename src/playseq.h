@@ -51,6 +51,7 @@ public:
     // Parses a playingsequence element in an XML file
     static Playseq *parse(QDomElement element);
     QString name() const;
+    void setName(const QString &name);
 
 signals:
     void playseqChanged();

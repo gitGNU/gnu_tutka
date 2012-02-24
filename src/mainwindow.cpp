@@ -23,7 +23,6 @@
 /*
  * TODO
  *
- * Playing Sequence List
  * MIDI Message List
  * Settings->External Sync
  * Settings->Send MIDI Sync
@@ -100,6 +99,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(songChanged(Song *)), sectionListDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), blockListDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), playingSequenceDialog, SLOT(setSong(Song *)));
+    connect(player, SIGNAL(songChanged(Song *)), playingSequenceListDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(sectionChanged(unsigned int)), this, SLOT(setSection(unsigned int)));
     connect(player, SIGNAL(sectionChanged(unsigned int)), sectionListDialog, SLOT(setSection(unsigned int)));
     connect(player, SIGNAL(playseqChanged(unsigned int)), this, SLOT(setPlayseq(unsigned int)));
