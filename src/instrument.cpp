@@ -131,6 +131,8 @@ Instrument *Instrument::parse(QDomElement element)
         prop = element.attributeNode("name");
         if (!prop.isNull()) {
             instrument->name_ = prop.value();
+        } else {
+            instrument->name_ = element.text();
         }
 
         prop = element.attributeNode("midiinterface");

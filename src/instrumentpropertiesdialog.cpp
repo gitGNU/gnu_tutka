@@ -23,7 +23,7 @@ void InstrumentPropertiesDialog::setSong(Song *song)
 
 void InstrumentPropertiesDialog::setInstrument(int number)
 {
-    if (number > 0) {
+    if (number >= 0) {
         // Disconnect the widgets from any previously selected instrument
         Instrument *oldInstrument = song->instrument(this->instrument);
         disconnect(oldInstrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
@@ -37,30 +37,20 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         this->instrument = number;
         song->checkInstrument(this->instrument);
 
-        // Connect the widgets for editing the instrument
+        // Show the instrument's properties in the UI
         Instrument *instrument = song->instrument(this->instrument);
+        ui->lineEditName->setText(instrument->name());
+        ui->horizontalSliderMidiChannel->setValue(instrument->midiChannel() + 1);
+        ui->horizontalSliderVolume->setValue(instrument->defaultVelocity());
+        ui->horizontalSliderTranspose->setValue(instrument->transpose());
+        ui->horizontalSliderHold->setValue(instrument->hold());
+
+        // Connect the widgets for editing the instrument
         connect(instrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
         connect(ui->lineEditName, SIGNAL(textChanged(QString)), instrument, SLOT(setName(QString)));
         connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), instrument, SLOT(setMidiChannel(int)));
         connect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), instrument, SLOT(setDefaultVelocity(int)));
         connect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), instrument, SLOT(setTranspose(int)));
         connect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), instrument, SLOT(setHold(int)));
-
-        // Show the instrument's properties in the UI
-        ui->lineEditName->blockSignals(true);
-        ui->lineEditName->setText(instrument->name());
-        ui->lineEditName->blockSignals(false);
-        ui->horizontalSliderMidiChannel->blockSignals(true);
-        ui->horizontalSliderMidiChannel->setValue(instrument->midiChannel() + 1);
-        ui->horizontalSliderMidiChannel->blockSignals(false);
-        ui->horizontalSliderVolume->blockSignals(true);
-        ui->horizontalSliderVolume->setValue(instrument->defaultVelocity());
-        ui->horizontalSliderVolume->blockSignals(false);
-        ui->horizontalSliderTranspose->blockSignals(true);
-        ui->horizontalSliderTranspose->setValue(instrument->transpose());
-        ui->horizontalSliderTranspose->blockSignals(false);
-        ui->horizontalSliderHold->blockSignals(true);
-        ui->horizontalSliderHold->setValue(instrument->hold());
-        ui->horizontalSliderHold->blockSignals(false);
     }
 }
