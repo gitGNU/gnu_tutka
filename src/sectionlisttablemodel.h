@@ -1,15 +1,15 @@
-#ifndef SECTIONTABLEMODEL_H
-#define SECTIONTABLEMODEL_H
+#ifndef SECTIONLISTTABLEMODEL_H
+#define SECTIONLISTTABLEMODEL_H
 
 #include <QAbstractTableModel>
 
 class Song;
 
-class SectionTableModel : public QAbstractTableModel
+class SectionListTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    explicit SectionTableModel(QObject *parent = 0);
+    explicit SectionListTableModel(QObject *parent = 0);
 
     void setSong(Song *song);
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -26,4 +26,4 @@ private:
     Song *song;
 };
 
-#endif // SECTIONTABLEMODEL_H
+#endif // SECTIONLISTTABLEMODEL_H

@@ -1,6 +1,6 @@
 #include "song.h"
 #include "spinboxdelegate.h"
-#include "sectiontablemodel.h"
+#include "sectionlisttablemodel.h"
 #include "sectionlistdialog.h"
 #include "ui_sectionlistdialog.h"
 
@@ -8,7 +8,7 @@ SectionListDialog::SectionListDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SectionListDialog),
     song(NULL),
-    sectionTableModel(new SectionTableModel(this)),
+    sectionTableModel(new SectionListTableModel(this)),
     spinBoxDelegate(new SpinBoxDelegate(this))
 {
     ui->setupUi(this);

@@ -8,7 +8,7 @@ namespace Ui {
 }
 
 class Song;
-class SectionTableModel;
+class SectionListTableModel;
 class SpinBoxDelegate;
 
 class SectionListDialog : public QDialog
@@ -31,7 +31,7 @@ private slots:
 private:
     Ui::SectionListDialog *ui;
     Song *song;
-    SectionTableModel *sectionTableModel;
+    SectionListTableModel *sectionTableModel;
     SpinBoxDelegate *spinBoxDelegate;
 };
 

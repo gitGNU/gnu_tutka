@@ -1,13 +1,13 @@
 #include "song.h"
-#include "sectiontablemodel.h"
+#include "sectionlisttablemodel.h"
 
-SectionTableModel::SectionTableModel(QObject *parent) :
+SectionListTableModel::SectionListTableModel(QObject *parent) :
     QAbstractTableModel(parent),
     song(NULL)
 {
 }
 
-void SectionTableModel::setSong(Song *song)
+void SectionListTableModel::setSong(Song *song)
 {
     beginResetModel();
     if (this->song != NULL) {
@@ -18,17 +18,17 @@ void SectionTableModel::setSong(Song *song)
     endResetModel();
 }
 
-int SectionTableModel::rowCount(const QModelIndex &parent) const
+int SectionListTableModel::rowCount(const QModelIndex &parent) const
 {
     return (parent.isValid() || song == NULL) ? 0 : song->sections();
 }
 
-int SectionTableModel::columnCount(const QModelIndex &parent) const
+int SectionListTableModel::columnCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : 2;
 }
 
-QVariant SectionTableModel::data(const QModelIndex &index, int role) const
+QVariant SectionListTableModel::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= song->sections() || (role != Qt::DisplayRole && role != Qt::EditRole)) {
         return QVariant();
@@ -44,7 +44,7 @@ QVariant SectionTableModel::data(const QModelIndex &index, int role) const
     }
 }
 
-QVariant SectionTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant SectionListTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (role == Qt::DisplayRole) {
         if (orientation == Qt::Horizontal) {
@@ -63,7 +63,7 @@ QVariant SectionTableModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
-bool SectionTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool SectionListTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (role == Qt::EditRole && index.row() >= 0 && index.row() < song->sections()) {
         bool success = false;
@@ -83,12 +83,12 @@ bool SectionTableModel::setData(const QModelIndex &index, const QVariant &value,
     }
 }
 
-Qt::ItemFlags SectionTableModel::flags(const QModelIndex &index) const
+Qt::ItemFlags SectionListTableModel::flags(const QModelIndex &index) const
 {
     return index.column() < 1 ? (Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable) : (Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 }
 
-void SectionTableModel::refresh()
+void SectionListTableModel::refresh()
 {
     beginResetModel();
     endResetModel();
