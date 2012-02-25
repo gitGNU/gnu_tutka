@@ -1,3 +1,4 @@
+#include <QFileDialog>
 #include "song.h"
 #include "spinboxdelegate.h"
 #include "messagelisttablemodel.h"
@@ -71,8 +72,24 @@ void MessageListDialog::receiveMessage()
 
 void MessageListDialog::loadMessage()
 {
+    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
+    if (!indexes.isEmpty()) {
+        QString path = QFileDialog::getOpenFileName();
+
+        if (!path.isEmpty()) {
+            song->message(indexes.first().row())->loadBinary(path);
+        }
+    }
 }
 
 void MessageListDialog::saveMessage()
 {
+    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
+    if (!indexes.isEmpty()) {
+        QString path = QFileDialog::getSaveFileName();
+
+        if (!path.isEmpty()) {
+            song->message(indexes.first().row())->saveBinary(path);
+        }
+    }
 }

@@ -23,7 +23,7 @@
 /*
  * TODO
  *
- * MIDI Message List
+ * MIDI Message List Send/Receive
  * Settings->External Sync
  * Settings->Send MIDI Sync
  * Settings->Record Controllers
