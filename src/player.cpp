@@ -1186,6 +1186,7 @@ void Player::remapMidiOutputs()
     for (int instrument = 0; instrument < song->instruments(); instrument++) {
         int output = midi_->output(song->instrument(instrument)->midiInterfaceName());
         if (output >= 0) {
+            qWarning("XX SETTING %d to %d", instrument, output);
             song->instrument(instrument)->setMidiInterface(output);
         }
     }

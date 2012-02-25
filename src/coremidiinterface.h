@@ -9,6 +9,8 @@ class CoreMIDIInterface : public MIDIInterface
 public:
     CoreMIDIInterface(MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent = NULL);
 
+    virtual void write(const unsigned char *data, unsigned int length);
+
 private:
     static QString getMidiDeviceName(MIDIEndpointRef endpoint);
 };

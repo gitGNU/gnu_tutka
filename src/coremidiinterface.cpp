@@ -48,3 +48,7 @@ QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)
     return name;
 }
 
+void CoreMIDIInterface::write(const unsigned char *data, unsigned int length)
+{
+    qWarning("XX CORE MIDI %p %d", data, length);
+}

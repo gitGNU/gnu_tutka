@@ -43,9 +43,6 @@ public:
     // Returns the MIDI interface number of the instrument
     unsigned int midiInterface() const;
 
-    // Sets the midi interface of the instrument
-    void setMidiInterface(int interface);
-
     // Returns the MIDI interface name of the instrument
     QString midiInterfaceName() const;
 
@@ -91,6 +88,9 @@ public slots:
 
     // Sets the hold time of the instrument
     void setHold(int hold);
+
+    // Sets the midi interface of the instrument
+    void setMidiInterface(int interface);
 
     // Sets the midi interface name of the instrument
     void setMidiInterfaceName(const QString &midiInterfaceName);

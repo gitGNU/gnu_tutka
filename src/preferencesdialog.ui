@@ -61,6 +61,15 @@
      </item>
      <item row="0" column="1">
       <widget class="QTableView" name="tableViewOutputMidiInterfaces">
+       <property name="showDropIndicator" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <property name="cornerButtonEnabled">
+        <bool>false</bool>
+       </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>130</number>
        </attribute>
@@ -74,6 +83,15 @@
      </item>
      <item row="1" column="1">
       <widget class="QTableView" name="tableViewInputMidiInterfaces">
+       <property name="showDropIndicator" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <property name="cornerButtonEnabled">
+        <bool>false</bool>
+       </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>130</number>
        </attribute>

@@ -52,37 +52,40 @@ public:
     bool isEnabled() const;
 
     // Sets the current tick
-    virtual void setTick(unsigned int);
+    void setTick(unsigned int);
 
     // Stops a note playing on a MIDI channel using requested velocity
-    virtual void noteOff(unsigned char, unsigned char, unsigned char);
+    void noteOff(unsigned char, unsigned char, unsigned char);
 
     // Plays a note on a MIDI channel using requested velocity
-    virtual void noteOn(unsigned char, unsigned char, unsigned char);
+    void noteOn(unsigned char, unsigned char, unsigned char);
 
     // Sets the aftertouch pressure of a note playing on a MIDI channel
-    virtual void aftertouch(unsigned char, unsigned char, unsigned char);
+    void aftertouch(unsigned char, unsigned char, unsigned char);
 
     // Sets the MIDI controller value of a MIDI channel
-    virtual void controller(unsigned char, unsigned char, unsigned char);
+    void controller(unsigned char, unsigned char, unsigned char);
 
     // Send a program change on a MIDI channel
-    virtual void programChange(unsigned char, unsigned char);
+    void programChange(unsigned char, unsigned char);
 
     // Sets the channel pressure of a MIDI channel
-    virtual void channelPressure(unsigned char, unsigned char);
+    void channelPressure(unsigned char, unsigned char);
 
     // Sets the pitch wheel value of a MIDI channel
-    virtual void pitchWheel(unsigned char, unsigned short);
+    void pitchWheel(unsigned char, unsigned short);
 
     // Sends a MIDI message
-    virtual void writeRaw(const QByteArray &data);
+    void writeRaw(const QByteArray &data);
 
     // Send a clock message
-    virtual void clock();
+    void clock();
 
     // Set the tempo (used when exporting)
-    virtual void tempo(unsigned int);
+    void tempo(unsigned int);
+
+protected:
+    virtual void write(const unsigned char *data, unsigned int length);
 
 public slots:
     // Enables or disables the interface
@@ -96,6 +99,7 @@ protected:
     QString name_;
     DirectionFlags flags_;
     bool enabled;
+    unsigned int tick;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(MIDIInterface::DirectionFlags)
