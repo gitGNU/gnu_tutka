@@ -1,13 +1,16 @@
 #include <QFileDialog>
+#include "midi.h"
+#include "midiinterface.h"
 #include "song.h"
 #include "spinboxdelegate.h"
 #include "messagelisttablemodel.h"
 #include "messagelistdialog.h"
 #include "ui_messagelistdialog.h"
 
-MessageListDialog::MessageListDialog(QWidget *parent) :
+MessageListDialog::MessageListDialog(MIDI *midi, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MessageListDialog),
+    midi(midi),
     song(NULL),
     messageListTableModel(new MessageListTableModel(this)),
     spinBoxDelegate(new SpinBoxDelegate(this))
@@ -64,6 +67,13 @@ void MessageListDialog::deleteMessage()
 
 void MessageListDialog::sendMessage()
 {
+    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
+    if (!indexes.isEmpty()) {
+        Message *message = song->message(indexes.first().row());
+        for (int output = 0; output < midi->outputs(); output++) {
+            midi->output(output)->writeRaw(message->data());
+        }
+    }
 }
 
 void MessageListDialog::receiveMessage()

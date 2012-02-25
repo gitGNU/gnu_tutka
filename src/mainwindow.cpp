@@ -23,15 +23,16 @@
 /*
  * TODO
  *
- * MIDI Message List Send/Receive
  * Settings->External Sync
- * Settings->Send MIDI Sync
+ *
+ * MIDI input
+ * MIDI Message List Receive
  * Settings->Record Controllers
+ *
  * Settings->Preferences
  * ALSA MIDI
  * OS X MIDI
  * Export MIDI
- * MIDI input
  */
 
 #include <cstdio>
@@ -72,7 +73,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     playingSequenceDialog(new PlayingSequenceDialog),
     playingSequenceListDialog(new PlayingSequenceListDialog),
     blockListDialog(new BlockListDialog),
-    messageListDialog(new MessageListDialog),
+    messageListDialog(new MessageListDialog(player->midi())),
     song(NULL),
     copySelection_(NULL),
     copyBlock_(NULL),
@@ -748,6 +749,10 @@ bool MainWindow::keyRelease(QKeyEvent * event)
 
 void MainWindow::setSong(Song *song)
 {
+    if (this->song != NULL) {
+        disconnect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), this->song, SLOT(setSendSync(bool)));
+    }
+
     this->song = song;
 
     setSection(player->section());
@@ -761,6 +766,9 @@ void MainWindow::setSong(Song *song)
 
     instrumentPropertiesDialog->setSong(song);
     instrumentPropertiesDialog->setInstrument(ui->spinBoxInstrument->value());
+    ui->actionSettingsSendMidiSync->setChecked(song->sendSync());
+
+    connect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), song, SLOT(setSendSync(bool)));
 }
 
 void MainWindow::setSection(unsigned int section)

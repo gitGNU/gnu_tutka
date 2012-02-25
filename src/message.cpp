@@ -40,22 +40,22 @@ bool Message::isAutoSend() const
 
 unsigned int Message::length() const
 {
-    return data.length();
+    return data_.length();
 }
 
-const char *Message::rawData() const
+QByteArray Message::data() const
 {
-    return data.constData();
+    return data_;
 }
 
 void Message::setLength(unsigned int length)
 {
-    int oldLength = data.length();
+    int oldLength = data_.length();
 
-    data.resize(length);
+    data_.resize(length);
 
     for (int i = oldLength; i < length; i++) {
-        data[i] = 0;
+        data_[i] = 0;
     }
 }
 
@@ -68,8 +68,8 @@ void Message::loadBinary(const QString &filename)
 {
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
-        data.resize(file.size());
-        file.read(data.data(), file.size());
+        data_.resize(file.size());
+        file.read(data_.data(), file.size());
     }
 }
 
@@ -77,7 +77,7 @@ void Message::saveBinary(const QString &filename)
 {
     QFile file(filename);
     if (file.open(QIODevice::WriteOnly)) {
-        file.write(data);
+        file.write(data_);
     }
 }
 
@@ -105,13 +105,13 @@ Message *Message::parse(QDomElement element)
         }
 
         int length = element.text().length() / 2;
-        message->data.resize(length);
+        message->data_.resize(length);
         unsigned int d;
         for (int i = 0; i < length; i++) {
             c[0] = element.text().at(i * 2).toAscii();
             c[1] = element.text().at(i * 2 + 1).toAscii();
             sscanf((char *)c, "%X", &d);
-            message->data[i] = d;
+            message->data_[i] = d;
         }
     } else if (element.nodeType() != QDomNode::CommentNode) {
         qWarning("XML error: expected message, got %s\n", element.tagName().toUtf8().constData());
@@ -122,8 +122,8 @@ Message *Message::parse(QDomElement element)
 void Message::save(int number, QDomElement &parentElement, QDomDocument &document)
 {
     QString message;
-    for (int i = 0; i < data.length(); i++) {
-        message += QString("%1").arg(data.constData()[i] & 0xff, 2, 16, QChar('0'));
+    for (int i = 0; i < data_.length(); i++) {
+        message += QString("%1").arg(data_.constData()[i] & 0xff, 2, 16, QChar('0'));
     }
 
     QDomElement messageElement = document.createElement("message");

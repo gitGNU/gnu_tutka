@@ -1,3 +1,4 @@
+#include <QByteArray>
 #include <cstdio>
 #include "midiinterface.h"
 
@@ -49,9 +50,9 @@ void MIDIInterface::pitchWheel(unsigned char channel, unsigned short value)
     printf("Pitch wheel %d %d\n", channel, value);
 }
 
-void MIDIInterface::writeRaw(const char *message, unsigned short length)
+void MIDIInterface::writeRaw(const QByteArray &data)
 {
-    printf("Write raw %p %d\n", message, length);
+    printf("Write raw %p %d\n", data.constData(), data.length());
 }
 
 void MIDIInterface::clock()

@@ -1,6 +1,8 @@
 #ifndef MIDIINTERFACE_H
 #define MIDIINTERFACE_H
 
+class QByteArray;
+
 class MIDIInterface
 {
 public:
@@ -24,7 +26,7 @@ public:
     /* Sets the pitch wheel value of a MIDI channel */
     virtual void pitchWheel(unsigned char, unsigned short);
     /* Sends a MIDI message */
-    virtual void writeRaw(const char *, unsigned short);
+    virtual void writeRaw(const QByteArray &data);
     /* Send a clock message */
     virtual void clock();
     /* Set the tempo (used when exporting) */

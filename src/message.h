@@ -35,8 +35,8 @@ public:
     bool isAutoSend() const;
     // Returns the length of the message
     unsigned int length() const;
-    // Returns a pointer to the raw data of the message
-    const char *rawData() const;
+    // Returns a the data of the message
+    QByteArray data() const;
     // Sets the length of a MIDI message
     void setLength(unsigned int);
     // Sets the auto send flag of a MIDI message
@@ -56,7 +56,7 @@ private:
     // Name
     QString name_;
     // Dump data
-    QByteArray data;
+    QByteArray data_;
     // Automatically send after loading?
     bool autoSend;
 };

@@ -77,7 +77,9 @@ public:
       COMMAND_MIDI_CONTROLLERS = 0x80
     };
 
-    Player(MIDI *midi, const QString &path = QString(), QObject *parent = NULL);
+    // Creates a player for a song
+    Player(MIDI *midi_, const QString &path = QString(), QObject *parent = NULL);
+    // Closes a player for a song
     virtual ~Player();
 
     unsigned int section() const;
@@ -88,11 +90,7 @@ public:
     Mode mode() const;
 
     // Plays a song to a MIDI interface witout any scheduling (for export)
-//    void midi_export(struct song *, struct midi_interface *);
-    // Creates a player for a song
-//    struct player *open(struct song *, struct editor *, struct midi *);
-    // Closes a player for a song
-//    void close();
+//    void export(MIDIInterface *);
 
     // Plays a note using given instrument on a given channel
     void playNote(unsigned int, unsigned char, unsigned char, unsigned char);
@@ -130,6 +128,8 @@ public:
 
     // Set the scheduler of a player
     void setScheduler(unsigned int);
+
+    MIDI *midi() const;
 
 public slots:
     void playSong();
@@ -212,7 +212,7 @@ private:
     // Kill player flag (the mutex must be used when accessing)
     bool killThread;
     // MIDI subsystem
-    MIDI *midi;
+    MIDI *midi_;
     // RTC device file descriptor
     int rtc;
     // Obtained RTC frequency

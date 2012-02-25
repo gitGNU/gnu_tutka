@@ -26,22 +26,12 @@ void SongPropertiesDialog::setSong(Song *song)
 
         this->song = song;
 
+        ui->lineEditName->setText(song->name());
+        ui->horizontalSliderTempo->setValue(song->tempo());
+        ui->horizontalSliderTicksPerLine->setValue(song->ticksPerLine());
+
         connect(ui->lineEditName, SIGNAL(textChanged(QString)), song, SLOT(setName(QString)));
         connect(ui->horizontalSliderTempo, SIGNAL(valueChanged(int)), song, SLOT(setTempo(int)));
         connect(ui->horizontalSliderTicksPerLine, SIGNAL(valueChanged(int)), song, SLOT(setTPL(int)));
-        connect(ui->checkBoxSendMidiSync, SIGNAL(toggled(bool)), song, SLOT(setSendSync(bool)));
-
-        ui->lineEditName->blockSignals(true);
-        ui->lineEditName->setText(song->name());
-        ui->lineEditName->blockSignals(false);
-        ui->horizontalSliderTempo->blockSignals(true);
-        ui->horizontalSliderTempo->setValue(song->tempo());
-        ui->horizontalSliderTempo->blockSignals(false);
-        ui->horizontalSliderTicksPerLine->blockSignals(true);
-        ui->horizontalSliderTicksPerLine->setValue(song->ticksPerLine());
-        ui->horizontalSliderTicksPerLine->blockSignals(false);
-        ui->checkBoxSendMidiSync->blockSignals(true);
-        ui->checkBoxSendMidiSync->setChecked(song->sendSync());
-        ui->checkBoxSendMidiSync->blockSignals(false);
     }
 }
