@@ -121,9 +121,9 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(lineChanged(unsigned int)), ui->trackerMain, SLOT(setLine(unsigned int)));
     connect(player, SIGNAL(modeChanged(Player::Mode)), this, SLOT(setMode(Player::Mode)));
     connect(player, SIGNAL(timeChanged(unsigned int)), this, SLOT(setTime(unsigned int)));
-    connect(ui->trackerMain, SIGNAL(cursorChannelChanged(int)), transposeDialog, SLOT(setTrack(int)));
-    connect(ui->trackerMain, SIGNAL(cursorChannelChanged(int)), expandShrinkDialog, SLOT(setTrack(int)));
-    connect(ui->trackerMain, SIGNAL(cursorChannelChanged(int)), changeInstrumentDialog, SLOT(setTrack(int)));
+    connect(ui->trackerMain, SIGNAL(cursorTrackChanged(int)), transposeDialog, SLOT(setTrack(int)));
+    connect(ui->trackerMain, SIGNAL(cursorTrackChanged(int)), expandShrinkDialog, SLOT(setTrack(int)));
+    connect(ui->trackerMain, SIGNAL(cursorTrackChanged(int)), changeInstrumentDialog, SLOT(setTrack(int)));
     connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), this, SLOT(setSelection(int, int, int, int)));
     connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), transposeDialog, SLOT(setSelection(int, int, int, int)));
     connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), expandShrinkDialog, SLOT(setSelection(int, int, int, int)));
@@ -361,7 +361,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
         case Qt::Key_Backtab:
             /* Shift-Tab: Previous track - only in main window */
             if (QApplication::activeWindow() == this) {
-                tracker->stepCursorChannel(-1);
+                tracker->stepCursorTrack(-1);
                 handled = true;
             }
             break;
@@ -370,9 +370,9 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 int n = block->commandPages();
 
                 /* Delete note+command and refresh */
-                block->setNote(tracker->line(), tracker->cursorChannel(), 0, 0, 0);
+                block->setNote(tracker->line(), tracker->cursorTrack(), 0, 0, 0);
                 for (int commandPage = 0; commandPage < n; commandPage++) {
-                    block->setCommandFull(tracker->line(), tracker->cursorChannel(), commandPage, 0, 0);
+                    block->setCommandFull(tracker->line(), tracker->cursorTrack(), commandPage, 0, 0);
                 }
 
                 tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
@@ -385,7 +385,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
             /* Shift-Backspace: Insert row */
             if (QApplication::activeWindow() == this) {
                 if (ui->checkBoxEdit->isChecked()) {
-                    block->insertLine(tracker->line(), alt ? -1 : tracker->cursorChannel());
+                    block->insertLine(tracker->line(), alt ? -1 : tracker->cursorTrack());
                 }
                 handled = true;
             }
@@ -457,15 +457,15 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
                         if (ui->checkBoxEdit->isChecked()) {
                             /* Set note and refresh */
-                            block->setNote(tracker->line(), tracker->cursorChannel(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
+                            block->setNote(tracker->line(), tracker->cursorTrack(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
                         }
 
-                        tracker->stepCursorChannel(1);
+                        tracker->stepCursorTrack(1);
                         chordStatus++;
                     }
                 } else if (ui->checkBoxEdit->isChecked()) {
                     /* Set note and refresh */
-                    block->setNote(tracker->line(), tracker->cursorChannel(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
+                    block->setNote(tracker->line(), tracker->cursorTrack(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
                     tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
                 }
                 handled = true;
@@ -485,13 +485,13 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
                 if (data >= 0) {
                     /* Set instrument and refresh */
-                    int ins = block->instrument(tracker->line(), tracker->cursorChannel());
+                    int ins = block->instrument(tracker->line(), tracker->cursorTrack());
                     if (tracker->cursorItem() == 1) {
                         ins = (ins & 0x0f) | (data << 4);
                     } else {
                         ins = (ins & 0xf0) | data;
                     }
-                    block->setInstrument(tracker->line(), tracker->cursorChannel(), ins);
+                    block->setInstrument(tracker->line(), tracker->cursorTrack(), ins);
                     tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
                     handled = true;
                 }
@@ -511,7 +511,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
                 if (data >= 0) {
                     /* Set effect and refresh */
-                    block->setCommand(tracker->line(), tracker->cursorChannel(), tracker->commandPage(), tracker->cursorItem() - 3, data);
+                    block->setCommand(tracker->line(), tracker->cursorTrack(), tracker->commandPage(), tracker->cursorItem() - 3, data);
                     tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
                     handled = true;
                 }
@@ -658,7 +658,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
             /* Tab: Next track */
             if (QApplication::activeWindow() == this) {
                 tracker->setCursorItem(0);
-                tracker->stepCursorChannel(1);
+                tracker->stepCursorTrack(1);
                 handled = true;
             }
             break;
@@ -693,7 +693,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
         case Qt::Key_Backspace:
             /* Backspace: delete line */
             if (QApplication::activeWindow() == this) {
-                block->deleteLine(tracker->line(), tracker->cursorChannel());
+                block->deleteLine(tracker->line(), tracker->cursorTrack());
                 handled = true;
             }
             break;
@@ -710,7 +710,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
         /* Play note if a key was pressed but not if cursor is in cmd pos */
         if (note >= 0 && tracker->cursorItem() == 0) {
-            player->playNote(ui->spinBoxInstrument->value(), ui->comboBoxKeyboardOctaves->currentIndex() * 12 + note, 127, tracker->cursorChannel());
+            player->playNote(ui->spinBoxInstrument->value(), ui->comboBoxKeyboardOctaves->currentIndex() * 12 + note, 127, tracker->cursorTrack());
             handled = true;
         }
     }
@@ -733,7 +733,7 @@ bool MainWindow::keyRelease(QKeyEvent * event)
                 keyboardKeysDown.removeAll(event->key());
 
                 /* Go to the previous channel */
-                tracker->stepCursorChannel(-1);
+                tracker->stepCursorTrack(-1);
                 chordStatus--;
 
                 /* If all chord notes have been released go to the next line */

@@ -30,88 +30,87 @@
 
 Tracker::Tracker(QWidget *parent) :
     QWidget(parent),
-    disp_rows(0),
-    disp_starty(0),
-    disp_numchans(0),
-    disp_startx(0),
-    disp_chanwidth(0),
-    disp_cursor(0),
-    fontdesc("Monospace", 11),
-    fontw(0),
-    fonth(0),
-    fontc(0),
-    bg_gc(Qt::black),
-    bg_cursor_gc(Qt::yellow),
-    notes_gc(Qt::gray),
-    misc_gc(Qt::green),
+    visibleLines(0),
+    startY(0),
+    visibleTracks(0),
+    startX(0),
+    trackWidth(0),
+    cursorLine(0),
+    font("Monospace", 11),
+    fontWidth(0),
+    fontHeight(0),
+    fontAscent(0),
+    backgroundBrush(Qt::black),
+    backgroundCursorBrush(Qt::yellow),
+    notesBrush(Qt::gray),
+    miscellaneousBrush(Qt::green),
     pixmap(NULL),
-    idle_handler(0),
     song_(NULL),
-    curpattern(NULL),
-    cmdpage(0),
-    patpos(0),
-    oldpos(-1),
-    num_channels(0),
-    cursor_ch(0),
-    cursor_item(0),
-    leftchan(0),
-    inSelMode(false),
-    sel_start_ch(-1),
-    sel_start_row(-1),
-    sel_end_ch(-1),
-    sel_end_row(-1),
-    mouse_selecting(false),
-    button(-1)
+    block_(NULL),
+    commandPage_(0),
+    line_(0),
+    oldLine(-1),
+    tracks(0),
+    cursorTrack_(0),
+    cursorItem_(0),
+    leftmostTrack(0),
+    inSelectionMode(false),
+    selectionStartTrack(-1),
+    selectionStartLine(-1),
+    selectionEndTrack(-1),
+    selectionEndLine(-1),
+    mouseSelecting(false),
+    mouseButton(Qt::NoButton)
 {
-    fontdesc.setStyleHint(QFont::TypeWriter);
+    font.setStyleHint(QFont::TypeWriter);
     calculateFontSize();
     initColors();
 
-    bg_gc = colors[TRACKERCOL_BG];
-    bg_cursor_gc = colors[TRACKERCOL_BG_CURSOR];
-    notes_gc = colors[TRACKERCOL_NOTES];
-    misc_gc = colors[TRACKERCOL_BG_SELECTION];
+    backgroundBrush = colors[ColorBackground];
+    backgroundCursorBrush = colors[ColorBackgroundCursor];
+    notesBrush = colors[ColorNotes];
+    miscellaneousBrush = colors[ColorBackgroundSelection];
 
     initDisplay(geometry().width(), geometry().height());
 }
 
-void Tracker::setNumChannels(int n)
+void Tracker::setTracks(int tracks)
 {
-    if (num_channels != n) {
-        num_channels = n;
+    if (this->tracks != tracks) {
+        this->tracks = tracks;
 
         // Make sure the cursor is inside the tracker
-        if (cursor_ch >= num_channels) {
-            cursor_ch = num_channels - 1;
+        if (cursorTrack_ >= this->tracks) {
+            cursorTrack_ = this->tracks - 1;
         }
 
         initDisplay(geometry().width(), geometry().height());
         queueDraw();
 
-        emit xpanningChanged(leftchan, num_channels, disp_numchans);
+        emit xpanningChanged(leftmostTrack, this->tracks, visibleTracks);
     }
 }
 
-void Tracker::setCommandPage(int cmdpage)
+void Tracker::setCommandPage(int commandPage)
 {
-    if (this->cmdpage != cmdpage) {
-        this->cmdpage = cmdpage;
+    if (commandPage_ != commandPage) {
+        commandPage_ = commandPage;
 
         queueDraw();
     }
 }
 
-void Tracker::setLine(unsigned int row)
+void Tracker::setLine(unsigned int line)
 {
-    if (curpattern == NULL) {
+    if (block_ == NULL) {
         return;
     }
 
-    row %= curpattern->length();
+    line %= block_->length();
 
-    if (patpos != row) {
-        patpos = row;
-        emit patposChanged(row, curpattern->length(), disp_rows);
+    if (line_ != line) {
+        line_ = line;
+        emit patposChanged(line, block_->length(), visibleLines);
 
         queueDraw();
     }
@@ -130,7 +129,7 @@ void Tracker::redrawRow(int)
 
 void Tracker::redrawCurrentRow()
 {
-    redrawRow(patpos);
+    redrawRow(line_);
 }
 
 void Tracker::setSong(Song *song)
@@ -138,70 +137,70 @@ void Tracker::setSong(Song *song)
     song_ = song;
 }
 
-void Tracker::setBlock(unsigned int block)
+void Tracker::setBlock(unsigned int number)
 {
-    Block *pattern = song_ != NULL ? song_->block(block) : NULL;
+    Block *block = song_ != NULL ? song_->block(number) : NULL;
 
-    if (curpattern != pattern) {
-        if (curpattern != NULL) {
-            disconnect(curpattern, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
-            disconnect(curpattern, SIGNAL(tracksChanged(int)), this, SLOT(setNumChannels(int)));
-            disconnect(curpattern, SIGNAL(lengthChanged(int)), this, SLOT(checkBounds()));
-            disconnect(curpattern, SIGNAL(commandPagesChanged(int)), this, SLOT(checkBounds()));
+    if (block_ != block) {
+        if (block_ != NULL) {
+            disconnect(block_, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
+            disconnect(block_, SIGNAL(tracksChanged(int)), this, SLOT(setTracks(int)));
+            disconnect(block_, SIGNAL(lengthChanged(int)), this, SLOT(checkBounds()));
+            disconnect(block_, SIGNAL(commandPagesChanged(int)), this, SLOT(checkBounds()));
         }
 
-        curpattern = pattern;
-        if (pattern != NULL) {
-            connect(pattern, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
-            connect(pattern, SIGNAL(tracksChanged(int)), this, SLOT(setNumChannels(int)));
-            connect(pattern, SIGNAL(lengthChanged(int)), this, SLOT(checkBounds()));
-            connect(pattern, SIGNAL(commandPagesChanged(int)), this, SLOT(checkBounds()));
+        block_ = block;
+        if (block != NULL) {
+            connect(block, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));
+            connect(block, SIGNAL(tracksChanged(int)), this, SLOT(setTracks(int)));
+            connect(block, SIGNAL(lengthChanged(int)), this, SLOT(checkBounds()));
+            connect(block, SIGNAL(commandPagesChanged(int)), this, SLOT(checkBounds()));
 
-            setNumChannels(pattern->tracks());
+            setTracks(block->tracks());
 
             // Make sure the cursor is inside the tracker
-            if (patpos >= pattern->length()) {
-                patpos = pattern->length() - 1;
+            if (line_ >= block->length()) {
+                line_ = block->length() - 1;
             }
 
-            if (cursor_ch >= pattern->tracks()) {
-                cursor_ch = pattern->tracks() - 1;
+            if (cursorTrack_ >= block->tracks()) {
+                cursorTrack_ = block->tracks() - 1;
             }
 
-            emit patposChanged(patpos, pattern->length(), disp_rows);
+            emit patposChanged(line_, block->length(), visibleLines);
         }
         queueDraw();
     }
 }
 
-void Tracker::setXpanning(int left_channel)
+void Tracker::setLeftmostTrack(int leftmostTrack)
 {
-    if (leftchan != left_channel) {
-        if (!(left_channel + disp_numchans <= num_channels)) {
+    if (this->leftmostTrack != leftmostTrack) {
+        if (!(leftmostTrack + visibleTracks <= tracks)) {
             return;
         }
 
-        leftchan = left_channel;
+        this->leftmostTrack = leftmostTrack;
         queueDraw();
 
-        if (cursor_ch < leftchan) {
-            cursor_ch = leftchan;
-        } else if (cursor_ch >= leftchan + disp_numchans) {
-            cursor_ch = leftchan + disp_numchans - 1;
+        if (cursorTrack_ < this->leftmostTrack) {
+            cursorTrack_ = this->leftmostTrack;
+        } else if (cursorTrack_ >= this->leftmostTrack + visibleTracks) {
+            cursorTrack_ = this->leftmostTrack + visibleTracks - 1;
         }
 
-        emit xpanningChanged(leftchan, num_channels, disp_numchans);
+        emit xpanningChanged(this->leftmostTrack, tracks, visibleTracks);
     }
 }
 
-void Tracker::adjustXpanning()
+void Tracker::setVisibleArea()
 {
-    if (leftchan + disp_numchans > num_channels) {
-        setXpanning(num_channels - disp_numchans);
-    } else if (cursor_ch < leftchan) {
-        setXpanning(cursor_ch);
-    } else if (cursor_ch >= leftchan + disp_numchans) {
-        setXpanning(cursor_ch - disp_numchans + 1);
+    if (leftmostTrack + visibleTracks > tracks) {
+        setLeftmostTrack(tracks - visibleTracks);
+    } else if (cursorTrack_ < leftmostTrack) {
+        setLeftmostTrack(cursorTrack_);
+    } else if (cursorTrack_ >= leftmostTrack + visibleTracks) {
+        setLeftmostTrack(cursorTrack_ - visibleTracks + 1);
     }
 }
 
@@ -211,95 +210,95 @@ void Tracker::stepCursorItem(int direction)
         return;
     }
 
-    cursor_item += direction;
-    if (cursor_item > 6) {
-        cursor_item %= 7;
-        stepCursorChannel(direction);
-    } else if (cursor_item < 0) {
-        cursor_item = 0;
-        stepCursorChannel(direction);
-        cursor_item = 6;
+    cursorItem_ += direction;
+    if (cursorItem_ > 6) {
+        cursorItem_ %= 7;
+        stepCursorTrack(direction);
+    } else if (cursorItem_ < 0) {
+        cursorItem_ = 0;
+        stepCursorTrack(direction);
+        cursorItem_ = 6;
     } else {
-        adjustXpanning();
+        setVisibleArea();
         queueDraw();
     }
 }
 
 void Tracker::setCursorItem(int cursorItem)
 {
-    cursor_item = cursorItem % 7;
-    adjustXpanning();
+    cursorItem_ = cursorItem % 7;
+    setVisibleArea();
     queueDraw();
 }
 
-void Tracker::stepCursorChannel(int direction)
+void Tracker::stepCursorTrack(int direction)
 {
-    if (direction < 0 && cursor_item > 0) {
+    if (direction < 0 && cursorItem_ > 0) {
         direction = 0;
     }
-    cursor_item = 0;
-    cursor_ch += direction;
+    cursorItem_ = 0;
+    cursorTrack_ += direction;
 
-    if (cursor_ch < 0) {
-        cursor_ch = num_channels - 1;
-    } else if (cursor_ch >= num_channels) {
-        cursor_ch = 0;
+    if (cursorTrack_ < 0) {
+        cursorTrack_ = tracks - 1;
+    } else if (cursorTrack_ >= tracks) {
+        cursorTrack_ = 0;
     }
 
-    adjustXpanning();
+    setVisibleArea();
     queueDraw();
 
-    emit cursorChannelChanged(cursor_ch);
+    emit cursorTrackChanged(cursorTrack_);
 }
 
-void Tracker::stepCursorRow(int direction)
+void Tracker::stepCursorLine(int direction)
 {
-    int newpos = patpos + direction;
+    int line = line_ + direction;
 
-    while (newpos < 0) {
-        newpos += curpattern->length();
+    while (line < 0) {
+        line += block_->length();
     }
-    newpos %= curpattern->length();
+    line %= block_->length();
 
-    setLine(newpos);
+    setLine(line);
 }
 
 void Tracker::markSelection(bool enable)
 {
     if (!enable) {
-        sel_end_ch = cursor_ch;
-        sel_end_row = patpos;
-        inSelMode = false;
+        selectionEndTrack = cursorTrack_;
+        selectionEndLine = line_;
+        inSelectionMode = false;
     } else {
-        sel_start_ch = sel_end_ch = cursor_ch;
-        sel_start_row = sel_end_row = patpos;
-        inSelMode = true;
+        selectionStartTrack = selectionEndTrack = cursorTrack_;
+        selectionStartLine = selectionEndLine = line_;
+        inSelectionMode = true;
         redraw();
     }
 
-    emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
+    emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
 }
 
 void Tracker::clearMarkSelection()
 {
-    if (sel_start_ch != -1) {
-        sel_start_ch = sel_end_ch = -1;
-        sel_start_row = sel_end_row = -1;
-        inSelMode = false;
+    if (selectionStartTrack != -1) {
+        selectionStartTrack = selectionEndTrack = -1;
+        selectionStartLine = selectionEndLine = -1;
+        inSelectionMode = false;
         redraw();
 
-        emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
+        emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     }
 }
 
 bool Tracker::isInSelectionMode()
 {
-    return inSelMode;
+    return inSelectionMode;
 }
 
-void Tracker::note2string(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf)
+void Tracker::noteToString(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buffer)
 {
-    static const char *const notenames[128] = {
+    static const char *const noteNames[128] = {
       "---",
       "C-1", "C#1", "D-1", "D#1", "E-1", "F-1", "F#1", "G-1", "G#1", "A-1", "A#1", "B-1",
       "C-2", "C#2", "D-2", "D#2", "E-2", "F-2", "F#2", "G-2", "G#2", "A-2", "A#2", "B-2",
@@ -314,116 +313,116 @@ void Tracker::note2string(unsigned char note, unsigned char instrument, unsigned
       "C-B", "C#B", "D-B", "D#B", "E-B", "F-B", "F#B"
     };
 
-    static const char hexmap[] = {
+    static const char hexMap[] = {
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
         'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
         'W', 'X', 'Y', 'Z'
     };
 
-    buf[0] = notenames[note][0];
-    buf[1] = notenames[note][1];
-    buf[2] = notenames[note][2];
-    buf[3] = ' ';
-    buf[4] = hexmap[(instrument & 0xf0) >> 4];
-    buf[5] = hexmap[instrument & 0x0f];
-    buf[6] = ' ';
-    buf[7] = hexmap[(effect & 0xf0) >> 4];
-    buf[8] = hexmap[effect & 0x0f];
-    buf[9] = ' ';
-    buf[10] = hexmap[(value & 0xf0) >> 4];
-    buf[11] = hexmap[value & 0x0f];
-    buf[12] = ' ';
-    buf[13] = 0;
+    buffer[0] = noteNames[note][0];
+    buffer[1] = noteNames[note][1];
+    buffer[2] = noteNames[note][2];
+    buffer[3] = ' ';
+    buffer[4] = hexMap[(instrument & 0xf0) >> 4];
+    buffer[5] = hexMap[instrument & 0x0f];
+    buffer[6] = ' ';
+    buffer[7] = hexMap[(effect & 0xf0) >> 4];
+    buffer[8] = hexMap[effect & 0x0f];
+    buffer[9] = ' ';
+    buffer[10] = hexMap[(value & 0xf0) >> 4];
+    buffer[11] = hexMap[value & 0x0f];
+    buffer[12] = ' ';
+    buffer[13] = 0;
 }
 
-void Tracker::clearNotesLine(int y, int pattern_row)
+void Tracker::clearNotesLine(int y, int line)
 {
     // cursor line
-    QBrush gc = pattern_row == patpos ? bg_cursor_gc : bg_gc;
+    QBrush brush = line == line_ ? backgroundCursorBrush : backgroundBrush;
 
     QPainter painter(pixmap);
-    painter.fillRect(0, y, geometry().width(), fonth, gc);
+    painter.fillRect(0, y, geometry().width(), fontHeight, brush);
 }
 
-void Tracker::printNotesLine(int y, int ch, int numch, int row, int cursor)
+void Tracker::printNotesLine(int y, int track, int tracks, int line, int cursor)
 {
-    char buf[TRACKER_CHANNEL_WIDTH + 1];
+    char buf[TRACKER_TRACK_WIDTH + 1];
     int rbs, rbe, cbs, cbe;
 
-    if (!(ch + numch <= curpattern->tracks())) {
+    if (!(track + tracks <= block_->tracks())) {
         return;
     }
 
-    clearNotesLine(y, row);
+    clearNotesLine(y, line);
 
     // Figure out which rows/columns should be highlighted
-    if (inSelMode) {
-        rbs = sel_start_row;
-        rbe = patpos;
-        cbs = sel_start_ch;
-        cbe = cursor_ch;
+    if (inSelectionMode) {
+        rbs = selectionStartLine;
+        rbe = line_;
+        cbs = selectionStartTrack;
+        cbe = cursorTrack_;
     } else {
-        rbs = sel_start_row;
-        rbe = sel_end_row;
-        cbs = sel_start_ch;
-        cbe = sel_end_ch;
+        rbs = selectionStartLine;
+        rbe = selectionEndLine;
+        cbs = selectionStartTrack;
+        cbe = selectionEndTrack;
     }
 
     QPainter painter(pixmap);
-    int fontY = y + fontc;
+    int fontY = y + fontAscent;
 
     // The row number
-    sprintf(buf, "%03d", row);
-    painter.setPen(notes_gc.color());
-    painter.setBackground(cursor ? bg_cursor_gc : bg_gc);
-    painter.setFont(fontdesc);
+    sprintf(buf, "%03d", line);
+    painter.setPen(notesBrush.color());
+    painter.setBackground(cursor ? backgroundCursorBrush : backgroundBrush);
+    painter.setFont(font);
     painter.drawText(1, fontY, buf);
 
     // The notes
     int j = 0;
-    buf[TRACKER_CHANNEL_WIDTH] = 0;
-    for (numch += ch; ch < numch; ch++, j++) {
-        note2string(curpattern->note(row, ch), curpattern->instrument(row, ch), curpattern->command(row, ch, cmdpage), curpattern->commandValue(row, ch, cmdpage), buf);
+    buf[TRACKER_TRACK_WIDTH] = 0;
+    for (tracks += track; track < tracks; track++, j++) {
+        noteToString(block_->note(line, track), block_->instrument(line, track), block_->command(line, track, commandPage_), block_->commandValue(line, track, commandPage_), buf);
 
         QBrush brush;
         if (cursor) {
-            brush = bg_cursor_gc;
-        } else if (row >= rbs && row <= rbe && ch >= cbs && ch <= cbe) {
-            brush = misc_gc;
+            brush = backgroundCursorBrush;
+        } else if (line >= rbs && line <= rbe && track >= cbs && track <= cbe) {
+            brush = miscellaneousBrush;
         }
-        painter.fillRect(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, y, disp_chanwidth, fonth, brush);
-        painter.drawText(disp_startx + (j * TRACKER_CHANNEL_WIDTH) * fontw, fontY, buf);
+        painter.fillRect(startX + (j * TRACKER_TRACK_WIDTH) * fontWidth, y, trackWidth, fontHeight, brush);
+        painter.drawText(startX + (j * TRACKER_TRACK_WIDTH) * fontWidth, fontY, buf);
     }
 }
 
-void Tracker::printNotes(int x, int y, int w, int h, int cursor_row, bool enable_cursor)
+void Tracker::printNotes(int x, int y, int width, int height, int cursorLine, bool enableCursor)
 {
     Q_UNUSED(x)
-    Q_UNUSED(w)
+    Q_UNUSED(width)
 
     // Limit y and h to the actually used window portion
-    int my = y - disp_starty;
+    int my = y - startY;
     if (my < 0) {
-        h += my;
+        height += my;
         my = 0;
     }
-    if (my + h > fonth * disp_rows) {
-        h = fonth * disp_rows - my;
+    if (my + height > fontHeight * visibleLines) {
+        height = fontHeight * visibleLines - my;
     }
 
     // Calculate first and last line to be redrawn
-    int n1 = my / fonth;
-    int n2 = (my + h - 1) / fonth;
+    int firstLine = my / fontHeight;
+    int lastLine = (my + height - 1) / fontHeight;
 
     // Print the notes
-    int scry = disp_starty + n1 * fonth;
-    for (int i = n1; i <= n2; i++, scry += fonth) {
-        int n = i + cursor_row - disp_cursor;
-        if (curpattern != NULL && n >= 0 && n < curpattern->length()) {
-            printNotesLine(scry, leftchan, disp_numchans, n, (enable_cursor && n == cursor_row) ? 1 : 0);
+    int scry = startY + firstLine * fontHeight;
+    for (int line = firstLine; line <= lastLine; line++, scry += fontHeight) {
+        int actualLine = line + cursorLine - this->cursorLine;
+        if (block_ != NULL && actualLine >= 0 && actualLine < block_->length()) {
+            printNotesLine(scry, leftmostTrack, visibleTracks, actualLine, (enableCursor && actualLine == cursorLine) ? 1 : 0);
         } else {
             QPainter painter(pixmap);
-            painter.fillRect(0, scry, geometry().width(), fonth, bg_gc);
+            painter.fillRect(0, scry, geometry().width(), fontHeight, backgroundBrush);
         }
     }
 }
@@ -432,61 +431,61 @@ void Tracker::printBars()
 {
     // Draw the separation bars
     QPainter painter(pixmap);
-    painter.setPen(colors[TRACKERCOL_BARS]);
-    int x1 = disp_startx - 3;
-    for (int i = 0; i <= disp_numchans; i++, x1 += disp_chanwidth) {
+    painter.setPen(colors[ColorBars]);
+    int x1 = startX - 3;
+    for (int track = 0; track <= visibleTracks; track++, x1 += trackWidth) {
         painter.drawLine(x1, 0, x1, geometry().height() - 1);
     }
 }
 
-void Tracker::printChannelHeaders()
+void Tracker::printTrackHeaders()
 {
-    int x = disp_startx - 3;
+    int x = startX - 3;
 
     // Clear top and bottom
     QPainter painter(pixmap);
-    painter.fillRect(QRectF(0, 0, geometry().width(), disp_starty), bg_gc);
-    painter.fillRect(QRectF(0, disp_starty + disp_rows * fonth, geometry().width(), geometry().height() - (disp_starty + disp_rows * fonth)), bg_gc);
+    painter.fillRect(QRectF(0, 0, geometry().width(), startY), backgroundBrush);
+    painter.fillRect(QRectF(0, startY + visibleLines * fontHeight, geometry().width(), geometry().height() - (startY + visibleLines * fontHeight)), backgroundBrush);
 
     // Write channel names
     if (song_ != NULL) {
-        for (int i = 1; i <= disp_numchans; i++, x += disp_chanwidth) {
-            QString name = song_->track(i + leftchan - 1)->name();
-            QString buf = QString("%1: %2").arg(i + leftchan).arg(name);
+        for (int i = 1; i <= visibleTracks; i++, x += trackWidth) {
+            QString name = song_->track(i + leftmostTrack - 1)->name();
+            QString buf = QString("%1: %2").arg(i + leftmostTrack).arg(name);
             QColor color;
 
-            if (song_->track(i + leftchan - 1)->isMuted() && !song_->track(i + leftchan - 1)->isSolo()) {
-                color = colors[TRACKERCOL_CHANNEL_HEADER_MUTE];
-            } else if (!song_->track(i + leftchan - 1)->isMuted() && song_->track(i + leftchan - 1)->isSolo()) {
-                color = colors[TRACKERCOL_CHANNEL_HEADER_SOLO];
-            } else if (song_->track(i + leftchan - 1)->isMuted() && song_->track(i + leftchan - 1)->isSolo()) {
-                color = colors[TRACKERCOL_CHANNEL_HEADER_MUTE_SOLO];
+            if (song_->track(i + leftmostTrack - 1)->isMuted() && !song_->track(i + leftmostTrack - 1)->isSolo()) {
+                color = colors[ColorTrackHeaderMute];
+            } else if (!song_->track(i + leftmostTrack - 1)->isMuted() && song_->track(i + leftmostTrack - 1)->isSolo()) {
+                color = colors[ColorTrackHeaderSolo];
+            } else if (song_->track(i + leftmostTrack - 1)->isMuted() && song_->track(i + leftmostTrack - 1)->isSolo()) {
+                color = colors[ColorTrackHeaderMuteSolo];
             } else {
-                color = colors[TRACKERCOL_CHANNEL_HEADER];
+                color = colors[ColorTrackHeader];
             }
 
             painter.setPen(color);
-            painter.setFont(fontdesc);
-            painter.drawText(x + 2, fontc, buf);
+            painter.setFont(font);
+            painter.drawText(x + 2, fontAscent, buf);
         }
     }
 }
 
 void Tracker::printCursor()
 {
-    if (!(cursor_ch >= leftchan && cursor_ch < leftchan + disp_numchans)) {
+    if (!(cursorTrack_ >= leftmostTrack && cursorTrack_ < leftmostTrack + visibleTracks)) {
         return;
     }
 
-    if (!((unsigned int)cursor_item <= 6)) {
+    if (!((unsigned int)cursorItem_ <= 6)) {
         return;
     }
 
     int width = 1;
     int x = 0;
-    int y = disp_starty + disp_cursor * fonth;
+    int y = startY + cursorLine * fontHeight;
 
-    switch (cursor_item) {
+    switch (cursorItem_) {
     case 0:			/* note */
         width = 3;
         break;
@@ -512,57 +511,57 @@ void Tracker::printCursor()
         break;
     }
 
-    x = x * fontw + disp_startx + (cursor_ch - leftchan) * disp_chanwidth - 1;
+    x = x * fontWidth + startX + (cursorTrack_ - leftmostTrack) * trackWidth - 1;
 
     QPainter painter(pixmap);
-    painter.setPen(colors[TRACKERCOL_CURSOR]);
-    painter.drawRect(x, y, width * fontw, fonth - 1);
+    painter.setPen(colors[ColorCursor]);
+    painter.drawRect(x, y, width * fontWidth, fontHeight - 1);
 }
 
 void Tracker::drawClever(const QRect &area)
 {
-    if (!isVisible() || curpattern == NULL) {
+    if (!isVisible() || block_ == NULL) {
         return;
     }
 
-    int dist = patpos - oldpos;
+    int dist = line_ - oldLine;
     if (dist != 0) {
-        oldpos = patpos;
+        oldLine = line_;
         int absdist = abs(dist);
-        int redrawcnt = disp_rows;
-        int y = disp_starty;
+        int redrawcnt = visibleLines;
+        int y = startY;
 
         // Scrolling less than half the tracker area so that the cursor is still visible after scrolling?
-        if (absdist <= disp_cursor) {
+        if (absdist <= cursorLine) {
             // Remove the cursor row before scrolling
-            printNotes(0, (disp_cursor) * fonth + disp_starty, geometry().width(), fonth, oldpos - dist, false);
+            printNotes(0, (cursorLine) * fontHeight + startY, geometry().width(), fontHeight, oldLine - dist, false);
         }
 
         // Scroll the stuff already drawn on the screen
-        if (absdist < disp_rows) {
+        if (absdist < visibleLines) {
             QPainter painter(pixmap);
             if (dist > 0) {
                 // go down in pattern -- scroll up
                 redrawcnt = absdist;
-                painter.drawPixmap(0, y, *pixmap, 0, y + (absdist * fonth), geometry().width(), (disp_rows - absdist) * fonth);
-                y += (disp_rows - absdist) * fonth;
+                painter.drawPixmap(0, y, *pixmap, 0, y + (absdist * fontHeight), geometry().width(), (visibleLines - absdist) * fontHeight);
+                y += (visibleLines - absdist) * fontHeight;
             } else if (dist < 0) {
                 // go up in pattern -- scroll down
                 redrawcnt = absdist;
-                painter.drawPixmap(0, y + (absdist * fonth), *pixmap, 0, y, geometry().width(), (disp_rows - absdist) * fonth);
+                painter.drawPixmap(0, y + (absdist * fontHeight), *pixmap, 0, y, geometry().width(), (visibleLines - absdist) * fontHeight);
             }
         }
 
         // Print the new rows that are now visible
-        printNotes(0, y, geometry().width(), redrawcnt * fonth, oldpos, true);
+        printNotes(0, y, geometry().width(), redrawcnt * fontHeight, oldLine, true);
     }
 
     // Redraw the cursor row to include the cursor
-    printNotes(0, (disp_cursor) * fonth + disp_starty, geometry().width(), fonth, patpos, true);
+    printNotes(0, (cursorLine) * fontHeight + startY, geometry().width(), fontHeight, line_, true);
     printCursor();
 
     // Print the channel headers and separator bars
-    printChannelHeaders();
+    printTrackHeaders();
     printBars();
 
     QPainter painter(this);
@@ -571,36 +570,36 @@ void Tracker::drawClever(const QRect &area)
 
 void Tracker::drawStupid(const QRect &area)
 {
-    oldpos = -2 * disp_rows;
+    oldLine = -2 * visibleLines;
     update(area);
 }
 
 void Tracker::initDisplay(int width, int height)
 {
-    int line_numbers_space = 3 * fontw;
+    int lineNumbersSpace = 3 * fontWidth;
 
-    height -= fonth;
-    disp_rows = height / fonth;
-    if (!(disp_rows % 2)) {
-        disp_rows--;
+    height -= fontHeight;
+    visibleLines = height / fontHeight;
+    if (!(visibleLines % 2)) {
+        visibleLines--;
     }
-    disp_cursor = disp_rows / 2;
-    disp_starty = (height - fonth * disp_rows) / 2 + fonth;
+    cursorLine = visibleLines / 2;
+    startY = (height - fontHeight * visibleLines) / 2 + fontHeight;
 
-    disp_chanwidth = TRACKER_CHANNEL_WIDTH * fontw;
-    int u = width - line_numbers_space - 10;
-    disp_numchans = u / disp_chanwidth;
+    trackWidth = TRACKER_TRACK_WIDTH * fontWidth;
+    int u = width - lineNumbersSpace - 10;
+    visibleTracks = u / trackWidth;
 
-    if (disp_numchans > num_channels) {
-        disp_numchans = num_channels;
+    if (visibleTracks > tracks) {
+        visibleTracks = tracks;
     }
 
-    disp_startx = (u - disp_numchans * disp_chanwidth) / 2 + line_numbers_space + 5;
-    adjustXpanning();
+    startX = (u - visibleTracks * trackWidth) / 2 + lineNumbersSpace + 5;
+    setVisibleArea();
 
-    if (curpattern) {
-        emit patposChanged(patpos, curpattern->length(), disp_rows);
-        emit xpanningChanged(leftchan, num_channels, disp_numchans);
+    if (block_) {
+        emit patposChanged(line_, block_->length(), visibleLines);
+        emit xpanningChanged(leftmostTrack, tracks, visibleTracks);
     }
 
     delete pixmap;
@@ -610,13 +609,13 @@ void Tracker::initDisplay(int width, int height)
 
 void Tracker::reset()
 {
-    patpos = 0;
-    cursor_ch = 0;
-    cursor_item = 0;
-    leftchan = 0;
-    curpattern = NULL;
+    line_ = 0;
+    cursorTrack_ = 0;
+    cursorItem_ = 0;
+    leftmostTrack = 0;
+    block_ = NULL;
     initDisplay(geometry().width(), geometry().height());
-    adjustXpanning();
+    setVisibleArea();
     queueDraw();
 }
 
@@ -638,7 +637,7 @@ void Tracker::initColors()
     const int *p = default_colors;
     QColor *c = colors;
 
-    for (int n = 0; n < TRACKERCOL_LAST; n++, c++) {
+    for (int n = 0; n < ColorLast; n++, c++) {
         c->setRed(*p++);
         c->setGreen(*p++);
         c->setBlue(*p++);
@@ -647,15 +646,15 @@ void Tracker::initColors()
 
 void Tracker::calculateFontSize()
 {
-    QFontMetrics metrics(fontdesc);
-    fontw = metrics.width('0');
-    fonth = metrics.ascent() + 1;
-    fontc = metrics.ascent();
+    QFontMetrics metrics(font);
+    fontWidth = metrics.width('0');
+    fontHeight = metrics.ascent() + 1;
+    fontAscent = metrics.ascent();
 }
 
 bool Tracker::setFont(const QString &fontname)
 {
-    fontdesc.setFamily(fontname);
+    font.setFamily(fontname);
 
     calculateFontSize();
     reset();
@@ -663,105 +662,105 @@ bool Tracker::setFont(const QString &fontname)
     return true;
 }
 
-void Tracker::mouseToCursorPos(int x, int y, int *cursor_ch, int *cursor_item, int *patpos)
+void Tracker::mouseToCursorPos(int x, int y, int *cursorTrack, int *cursorItem, int *line)
 {
     int HPatHalf;
 
     // Calc the column (channel and pos in channel)
-    if (x < disp_startx) {
-        if (leftchan) {
-            *cursor_ch = leftchan - 1;
+    if (x < startX) {
+        if (leftmostTrack) {
+            *cursorTrack = leftmostTrack - 1;
         } else {
-            *cursor_ch = leftchan;
+            *cursorTrack = leftmostTrack;
         }
-        *cursor_item = 0;
-    } else if (x > disp_startx + disp_numchans * disp_chanwidth) {
-        if (leftchan + disp_numchans < num_channels) {
-            *cursor_ch = leftchan + disp_numchans;
-            *cursor_item = 0;
+        *cursorItem = 0;
+    } else if (x > startX + visibleTracks * trackWidth) {
+        if (leftmostTrack + visibleTracks < tracks) {
+            *cursorTrack = leftmostTrack + visibleTracks;
+            *cursorItem = 0;
         } else {
-            *cursor_ch = num_channels - 1;
-            *cursor_item = 6;
+            *cursorTrack = tracks - 1;
+            *cursorItem = 6;
         }
     } else {
         /* WTF */
-        *cursor_ch = leftchan + ((x - disp_startx) / disp_chanwidth);
-        *cursor_item = (x - (disp_startx + (*cursor_ch - leftchan) * disp_chanwidth)) / fontw;
-        if (*cursor_item < 4) {
-            *cursor_item = 0;
-        } else if (*cursor_item == 4) {
-            *cursor_item = 1;
-        } else if (*cursor_item == 5 || *cursor_item == 6) {
-            *cursor_item = 2;
-        } else if (*cursor_item == 7) {
-            *cursor_item = 3;
-        } else if (*cursor_item == 8 || *cursor_item == 9) {
-            *cursor_item = 4;
-        } else if (*cursor_item == 10) {
-            *cursor_item = 5;
-        } else if (*cursor_item >= 11) {
-            *cursor_item = 6;
+        *cursorTrack = leftmostTrack + ((x - startX) / trackWidth);
+        *cursorItem = (x - (startX + (*cursorTrack - leftmostTrack) * trackWidth)) / fontWidth;
+        if (*cursorItem < 4) {
+            *cursorItem = 0;
+        } else if (*cursorItem == 4) {
+            *cursorItem = 1;
+        } else if (*cursorItem == 5 || *cursorItem == 6) {
+            *cursorItem = 2;
+        } else if (*cursorItem == 7) {
+            *cursorItem = 3;
+        } else if (*cursorItem == 8 || *cursorItem == 9) {
+            *cursorItem = 4;
+        } else if (*cursorItem == 10) {
+            *cursorItem = 5;
+        } else if (*cursorItem >= 11) {
+            *cursorItem = 6;
         }
     }
 
     // Calc the row
-    HPatHalf = disp_rows / 2;
-    if (y < disp_starty) {
-        *patpos = this->patpos - HPatHalf - 1;
-    } else if (y > disp_rows * fonth) {
-        *patpos = this->patpos + HPatHalf + 1;
+    HPatHalf = visibleLines / 2;
+    if (y < startY) {
+        *line = this->line_ - HPatHalf - 1;
+    } else if (y > visibleLines * fontHeight) {
+        *line = this->line_ + HPatHalf + 1;
     } else {
-        *patpos = (y - disp_starty) / fonth;
-        if (this->patpos <= *patpos) {
-            *patpos = this->patpos + *patpos - HPatHalf;
+        *line = (y - startY) / fontHeight;
+        if (this->line_ <= *line) {
+            *line = this->line_ + *line - HPatHalf;
         } else {
-            *patpos = this->patpos - (HPatHalf - *patpos);
+            *line = this->line_ - (HPatHalf - *line);
         }
     }
-    if (*patpos < 0) {
-        *patpos = 0;
-    } else if (*patpos >= curpattern->length()) {
-        *patpos = curpattern->length() - 1;
+    if (*line < 0) {
+        *line = 0;
+    } else if (*line >= block_->length()) {
+        *line = block_->length() - 1;
     }
 }
 
 void Tracker::mousePressEvent(QMouseEvent *event)
 {
-    int x, y, cursor_ch, cursor_item, patpos;
+    int x, y, cursorTrack, cursorItem, line;
 
     x = event->x();
     y = event->y();
 
-    if (mouse_selecting && event->button() != Qt::LeftButton) {
-        mouse_selecting = false;
-    } else if (!mouse_selecting) {
-        button = event->button();
-        if (button == Qt::LeftButton) {
+    if (mouseSelecting && event->button() != Qt::LeftButton) {
+        mouseSelecting = false;
+    } else if (!mouseSelecting) {
+        mouseButton = event->button();
+        if (mouseButton == Qt::LeftButton) {
             // Start selecting block
-            inSelMode = false;
-            mouseToCursorPos(x, y, &sel_start_ch, &cursor_item, &sel_start_row);
-            sel_end_row = sel_start_row;
-            sel_end_ch = sel_start_ch;
-            mouse_selecting = true;
+            inSelectionMode = false;
+            mouseToCursorPos(x, y, &selectionStartTrack, &cursorItem, &selectionStartLine);
+            selectionEndLine = selectionStartLine;
+            selectionEndTrack = selectionStartTrack;
+            mouseSelecting = true;
             redraw();
-            emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
-        } else if (button == Qt::RightButton) {
+            emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
+        } else if (mouseButton == Qt::RightButton) {
             // Tracker cursor posititioning and clear block mark if any
-            if (inSelMode || sel_start_ch != -1) {
-                sel_start_ch = sel_end_ch = -1;
-                sel_start_row = sel_end_row = -1;
-                inSelMode = false;
+            if (inSelectionMode || selectionStartTrack != -1) {
+                selectionStartTrack = selectionEndTrack = -1;
+                selectionStartLine = selectionEndLine = -1;
+                inSelectionMode = false;
                 redraw();
-                emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
+                emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
             }
-            mouseToCursorPos(x, y, &cursor_ch, &cursor_item, &patpos);
-            if (cursor_ch != this->cursor_ch || cursor_item != this->cursor_item) {
-                this->cursor_ch = cursor_ch;
-                this->cursor_item = cursor_item;
-                adjustXpanning();
+            mouseToCursorPos(x, y, &cursorTrack, &cursorItem, &line);
+            if (cursorTrack != this->cursorTrack_ || cursorItem != this->cursorItem_) {
+                this->cursorTrack_ = cursorTrack;
+                this->cursorItem_ = cursorItem;
+                setVisibleArea();
             }
-            if (patpos != this->patpos) {
-                setLine(patpos);
+            if (line != this->line_) {
+                setLine(line);
             }
             queueDraw();
         }
@@ -772,32 +771,32 @@ void Tracker::mousePressEvent(QMouseEvent *event)
 
 void Tracker::mouseMoveEvent(QMouseEvent *event)
 {
-    int x, y, cursor_item;
+    int x, y, cursorItem;
 
-    if (!mouse_selecting) {
+    if (!mouseSelecting) {
         return;
     }
 
     x = event->x();
     y = event->y();
 
-    if (event->buttons() &= Qt::LeftButton && mouse_selecting) {
-        mouseToCursorPos(x, y, &sel_end_ch, &cursor_item, &sel_end_row);
+    if (event->buttons() &= Qt::LeftButton && mouseSelecting) {
+        mouseToCursorPos(x, y, &selectionEndTrack, &cursorItem, &selectionEndLine);
 
-        if (x > disp_startx + disp_numchans * disp_chanwidth && leftchan + disp_numchans < num_channels) {
-            sel_end_ch++;
-            setXpanning(leftchan + 1);
-        } else if (x < disp_startx && leftchan > 0) {
-            sel_end_ch--;
-            setXpanning(leftchan - 1);
+        if (x > startX + visibleTracks * trackWidth && leftmostTrack + visibleTracks < tracks) {
+            selectionEndTrack++;
+            setLeftmostTrack(leftmostTrack + 1);
+        } else if (x < startX && leftmostTrack > 0) {
+            selectionEndTrack--;
+            setLeftmostTrack(leftmostTrack - 1);
         }
-        if ((sel_end_row > patpos + (disp_rows / 2)) || (y > geometry().height() && patpos < sel_end_row)) {
-            setLine(patpos + 1);
-        } else if ((sel_end_row < patpos - (disp_rows / 2)) || (y <= 0 && patpos > sel_end_row)) {
-            setLine(patpos - 1);
+        if ((selectionEndLine > line_ + (visibleLines / 2)) || (y > geometry().height() && line_ < selectionEndLine)) {
+            setLine(line_ + 1);
+        } else if ((selectionEndLine < line_ - (visibleLines / 2)) || (y <= 0 && line_ > selectionEndLine)) {
+            setLine(line_ - 1);
         }
         redraw();
-        emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
+        emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     }
 
     event->accept();
@@ -805,8 +804,8 @@ void Tracker::mouseMoveEvent(QMouseEvent *event)
 
 void Tracker::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (mouse_selecting && event->button() == Qt::LeftButton) {
-        mouse_selecting = false;
+    if (mouseSelecting && event->button() == Qt::LeftButton) {
+        mouseSelecting = false;
     }
 
     event->accept();
@@ -834,7 +833,7 @@ void Tracker::resizeEvent(QResizeEvent *event)
 
 void Tracker::queueDraw()
 {
-    oldpos = -2 * disp_rows;
+    oldLine = -2 * visibleLines;
     update();
 }
 
@@ -845,32 +844,32 @@ Song *Tracker::song() const
 
 Block *Tracker::block() const
 {
-    return curpattern;
+    return block_;
 }
 
 int Tracker::track() const
 {
-    return cursor_ch;
+    return cursorTrack_;
 }
 
 int Tracker::line() const
 {
-    return patpos;
+    return line_;
 }
 
 int Tracker::commandPage() const
 {
-    return cmdpage;
+    return commandPage_;
 }
 
-int Tracker::cursorChannel() const
+int Tracker::cursorTrack() const
 {
-    return cursor_ch;
+    return cursorTrack_;
 }
 
 int Tracker::cursorItem() const
 {
-    return cursor_item;
+    return cursorItem_;
 }
 
 void Tracker::redrawArea(int startTrack, int startLine, int endTrack, int endLine)
@@ -885,27 +884,27 @@ void Tracker::redrawArea(int startTrack, int startLine, int endTrack, int endLin
 
 void Tracker::checkBounds()
 {
-    if (cursor_ch >= curpattern->tracks()) {
-        cursor_ch = curpattern->tracks() - 1;
+    if (cursorTrack_ >= block_->tracks()) {
+        cursorTrack_ = block_->tracks() - 1;
         queueDraw();
     }
 
-    if (patpos >= curpattern->length()) {
-        setLine(curpattern->length() - 1);
+    if (line_ >= block_->length()) {
+        setLine(block_->length() - 1);
     }
 
-    if (cmdpage >= curpattern->commandPages()) {
-        setCommandPage(curpattern->commandPages() - 1);
+    if (commandPage_ >= block_->commandPages()) {
+        setCommandPage(block_->commandPages() - 1);
     }
 }
 
 void Tracker::setSelection(int startTrack, int startLine, int endTrack, int endLine)
 {
-    sel_start_ch = startTrack;
-    sel_start_row = startLine;
-    sel_end_ch = endTrack;
-    sel_end_row = endLine;
-    inSelMode = false;
+    selectionStartTrack = startTrack;
+    selectionStartLine = startLine;
+    selectionEndTrack = endTrack;
+    selectionEndLine = endLine;
+    inSelectionMode = false;
     redraw();
-    emit selectionChanged(sel_start_ch, sel_start_row, sel_end_ch, sel_end_row);
+    emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
 }

@@ -29,21 +29,7 @@
 class Song;
 class Block;
 
-#define TRACKER_CHANNEL_WIDTH 13
-
-enum {
-  TRACKERCOL_BG,
-  TRACKERCOL_BG_CURSOR,
-  TRACKERCOL_BG_SELECTION,
-  TRACKERCOL_NOTES,
-  TRACKERCOL_BARS,
-  TRACKERCOL_CHANNEL_HEADER,
-  TRACKERCOL_CHANNEL_HEADER_MUTE,
-  TRACKERCOL_CHANNEL_HEADER_SOLO,
-  TRACKERCOL_CHANNEL_HEADER_MUTE_SOLO,
-  TRACKERCOL_CURSOR,
-  TRACKERCOL_LAST
-};
+#define TRACKER_TRACK_WIDTH 13
 
 class Tracker : public QWidget
 {
@@ -51,21 +37,21 @@ class Tracker : public QWidget
 
 public:
     explicit Tracker(QWidget *parent = 0);
-    void setCommandPage(int cmdpage);
+    void setCommandPage(int commandPage);
     void redraw();
     bool isInSelectionMode();
     void markSelection(bool enable);
-    void stepCursorChannel(int direction);
+    void stepCursorTrack(int direction);
     void reset();
     Song *song() const;
     Block *block() const;
     int track() const;
     int line() const;
     int commandPage() const;
-    int cursorChannel() const;
+    int cursorTrack() const;
     int cursorItem() const;
     void stepCursorItem(int direction);
-    void stepCursorRow(int direction);
+    void stepCursorLine(int direction);
     void setCursorItem(int cursorItem);
     void clearMarkSelection();
     void setSelection(int startTrack, int startLine, int endTrack, int endLine);
@@ -73,17 +59,17 @@ public:
 public slots:
     void setSong(Song *song);
     void setBlock(unsigned int block);
-    void setLine(unsigned int row);
+    void setLine(unsigned int line);
 
 private slots:
     void redrawArea(int startTrack, int startLine, int endTrack, int endLine);
-    void setNumChannels(int n);
+    void setTracks(int tracks);
     void checkBounds();
 
 signals:
     void patposChanged(int, int, int);
     void xpanningChanged(int, int, int);
-    void cursorChannelChanged(int);
+    void cursorTrackChanged(int);
     void selectionChanged(int startTrack, int startLine, int endTrack, int endLine);
 
 protected:
@@ -95,16 +81,30 @@ protected:
     virtual void showEvent(QShowEvent *event);
 
 private:
+    enum Color {
+        ColorBackground,
+        ColorBackgroundCursor,
+        ColorBackgroundSelection,
+        ColorNotes,
+        ColorBars,
+        ColorTrackHeader,
+        ColorTrackHeaderMute,
+        ColorTrackHeaderSolo,
+        ColorTrackHeaderMuteSolo,
+        ColorCursor,
+        ColorLast
+    };
+
     void redrawRow(int row);
     void redrawCurrentRow();
-    void setXpanning(int left_channel);
-    void adjustXpanning();
-    void note2string(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf);
-    void clearNotesLine(int y, int pattern_row);
-    void printNotesLine(int y, int ch, int numch, int row, int cursor);
-    void printNotes(int x, int y, int w, int h, int cursor_row, bool enable_cursor);
+    void setLeftmostTrack(int leftmostTrack);
+    void setVisibleArea();
+    void noteToString(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf);
+    void clearNotesLine(int y, int line);
+    void printNotesLine(int y, int track, int tracks, int line, int cursor);
+    void printNotes(int x, int y, int width, int height, int cursorLine, bool enableCursor);
     void printBars();
-    void printChannelHeaders();
+    void printTrackHeaders();
     void printCursor();
     void drawClever(const QRect &area);
     void drawStupid(const QRect &area);
@@ -113,40 +113,48 @@ private:
     void calculateFontSize();
     bool setFont(const QString &fontname);
     // If selecting, mouse is used to select in pattern
-    void mouseToCursorPos(int x, int y, int *cursor_ch, int *cursor_item, int *patpos);
+    void mouseToCursorPos(int x, int y, int *cursorTrack, int *cursorItem, int *line);
     void queueDraw();
 
-    int disp_rows;
-    int disp_starty;
-    int disp_numchans;
-    int disp_startx;
-    int disp_chanwidth;
-    int disp_cursor;
+    int visibleLines;
+    int startY;
+    int visibleTracks;
+    int startX;
+    int trackWidth;
+    int cursorLine;
 
-    QFont fontdesc;
-    int fontw, fonth, fontc;
+    QFont font;
+    int fontWidth;
+    int fontHeight;
+    int fontAscent;
 
-    QBrush bg_gc, bg_cursor_gc, notes_gc, misc_gc;
-    QColor colors[TRACKERCOL_LAST];
+    QBrush backgroundBrush;
+    QBrush backgroundCursorBrush;
+    QBrush notesBrush;
+    QBrush miscellaneousBrush;
+    QColor colors[ColorLast];
     QPixmap *pixmap;
-    uint idle_handler;
 
     Song *song_;
-    Block *curpattern;
-    int cmdpage;
-    int patpos, oldpos;
-    int num_channels;
+    Block *block_;
+    int commandPage_;
+    int line_;
+    int oldLine;
+    int tracks;
 
-    int cursor_ch, cursor_item;
-    int leftchan;
+    int cursorTrack_;
+    int cursorItem_;
+    int leftmostTrack;
 
-    /* Block selection stuff */
-    bool inSelMode;
-    int sel_start_ch, sel_start_row;
-    int sel_end_ch, sel_end_row;
+    // Block selection stuff
+    bool inSelectionMode;
+    int selectionStartTrack;
+    int selectionStartLine;
+    int selectionEndTrack;
+    int selectionEndLine;
 
-    bool mouse_selecting;
-    int button;
+    bool mouseSelecting;
+    Qt::MouseButton mouseButton;
 };
 
 #endif // TRACKER_H
