@@ -533,7 +533,9 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionFileNew">
    <property name="icon">
-    <iconset theme="document-new"/>
+    <iconset theme="document-new">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -544,7 +546,9 @@
   </action>
   <action name="actionFileOpen">
    <property name="icon">
-    <iconset theme="document-open"/>
+    <iconset theme="document-open">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Open</string>
@@ -555,7 +559,9 @@
   </action>
   <action name="actionFileSave">
    <property name="icon">
-    <iconset theme="document-save"/>
+    <iconset theme="document-save">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -566,7 +572,9 @@
   </action>
   <action name="actionFileSaveAs">
    <property name="icon">
-    <iconset theme="document-save-as"/>
+    <iconset theme="document-save-as">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Save &amp;As</string>
@@ -585,7 +593,9 @@
   </action>
   <action name="actionFileQuit">
    <property name="icon">
-    <iconset theme="application-exit"/>
+    <iconset theme="application-exit">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -596,7 +606,9 @@
   </action>
   <action name="actionEditCut">
    <property name="icon">
-    <iconset theme="edit-cut"/>
+    <iconset theme="edit-cut">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>C&amp;ut</string>
@@ -607,7 +619,9 @@
   </action>
   <action name="actionEditCopy">
    <property name="icon">
-    <iconset theme="edit-copy"/>
+    <iconset theme="edit-copy">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -618,7 +632,9 @@
   </action>
   <action name="actionEditPaste">
    <property name="icon">
-    <iconset theme="edit-paste"/>
+    <iconset theme="edit-paste">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -629,7 +645,9 @@
   </action>
   <action name="actionEditClear">
    <property name="icon">
-    <iconset theme="edit-clear"/>
+    <iconset theme="edit-clear">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Clear</string>
@@ -677,7 +695,9 @@
   </action>
   <action name="actionSongProperties">
    <property name="icon">
-    <iconset theme="document-properties"/>
+    <iconset theme="document-properties">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Properties</string>
@@ -695,7 +715,9 @@
   </action>
   <action name="actionBlockCut">
    <property name="icon">
-    <iconset theme="edit-cut"/>
+    <iconset theme="edit-cut">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>C&amp;ut</string>
@@ -706,7 +728,9 @@
   </action>
   <action name="actionBlockCopy">
    <property name="icon">
-    <iconset theme="edit-copy"/>
+    <iconset theme="edit-copy">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -717,7 +741,9 @@
   </action>
   <action name="actionBlockPaste">
    <property name="icon">
-    <iconset theme="edit-paste"/>
+    <iconset theme="edit-paste">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -728,7 +754,9 @@
   </action>
   <action name="actionBlockClear">
    <property name="icon">
-    <iconset theme="edit-clear"/>
+    <iconset theme="edit-clear">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Clear</string>
@@ -736,7 +764,9 @@
   </action>
   <action name="actionBlockSelectAll">
    <property name="icon">
-    <iconset theme="edit-select-all"/>
+    <iconset theme="edit-select-all">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Select All</string>
@@ -764,7 +794,9 @@
   </action>
   <action name="actionTrackCut">
    <property name="icon">
-    <iconset theme="edit-cut"/>
+    <iconset theme="edit-cut">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>C&amp;ut</string>
@@ -775,7 +807,9 @@
   </action>
   <action name="actionTrackCopy">
    <property name="icon">
-    <iconset theme="edit-copy"/>
+    <iconset theme="edit-copy">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -786,7 +820,9 @@
   </action>
   <action name="actionTrackPaste">
    <property name="icon">
-    <iconset theme="edit-paste"/>
+    <iconset theme="edit-paste">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -797,7 +833,9 @@
   </action>
   <action name="actionTrackClear">
    <property name="icon">
-    <iconset theme="edit-clear"/>
+    <iconset theme="edit-clear">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Clear</string>
@@ -805,7 +843,9 @@
   </action>
   <action name="actionTrackSelectAll">
    <property name="icon">
-    <iconset theme="edit-select-all"/>
+    <iconset theme="edit-select-all">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Select All</string>
@@ -813,7 +853,9 @@
   </action>
   <action name="actionTrackInsert">
    <property name="icon">
-    <iconset theme="list-add"/>
+    <iconset theme="list-add">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>I&amp;nsert</string>
@@ -821,7 +863,9 @@
   </action>
   <action name="actionTrackDelete">
    <property name="icon">
-    <iconset theme="list-remove"/>
+    <iconset theme="list-remove">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;Delete</string>
@@ -880,7 +924,9 @@
   </action>
   <action name="actionHelpAbout">
    <property name="icon">
-    <iconset theme="help-about"/>
+    <iconset theme="help-about">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>&amp;About</string>
@@ -888,6 +934,9 @@
   </action>
   <action name="actionExternalSyncOff">
    <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
     <bool>true</bool>
    </property>
    <property name="text">
