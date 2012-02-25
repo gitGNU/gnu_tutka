@@ -424,7 +424,6 @@ void Player::run()
 {
     struct timespec req, rem;
     struct timeval next, now;
-    Scheduling prevsched = sched;
     ExternalSync prevsyncMode = syncMode;
     unsigned int oldTime = (unsigned int)-1;
 
@@ -441,7 +440,6 @@ void Player::run()
         mutex.lock();
 
         if (syncMode != Off) {
-            prevsched = sched;
             if (externalSyncTicks == 0) {
                 // Wait for a sync signal to come in
                 externalSync_.wait(&mutex);
@@ -455,7 +453,6 @@ void Player::run()
                 if (prevsyncMode != Off) {
                     gettimeofday(&next, NULL);
                 }
-                prevsched = sched;
                 prevsyncMode = syncMode;
 
                 // Calculate time of next tick (tick every 1000000/((BPM/60)*24) usecs)
@@ -506,8 +503,6 @@ void Player::run()
                     }
                     mutex.lock();
                 }
-            } else {
-                prevsched = sched;
             }
         }
 
