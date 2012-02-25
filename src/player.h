@@ -39,42 +39,53 @@ class Player : public QThread {
     // Track status values
     class TrackStatus {
     private:
-      char baseNote;
-      char instrument;
-      char line;
-      char previousCommand;
-      char midiInterface;
-      char midiChannel;
-      char volume;
-      char note;
-      char hold;
+        char baseNote;
+        char instrument;
+        char line;
+        char previousCommand;
+        char midiInterface;
+        char midiChannel;
+        char volume;
+        char note;
+        char hold;
 
-      friend class Player;
+        friend class Player;
     };
 public:
     // Player mode
     enum Mode {
-      IDLE,
-      PLAY_SONG,
-      PLAY_BLOCK
+        IDLE,
+        PLAY_SONG,
+        PLAY_BLOCK
     };
 
     enum Command {
-      COMMAND_PREVIOUS_COMMAND_VALUE = 0x00,
-      COMMAND_PITCH_WHEEL = 0x01,
-      COMMAND_END_BLOCK = 0x02,
-      COMMAND_PLAYSEQ_POSITION = 0x03,
-      COMMAND_PROGRAM_CHANGE = 0x07,
-      COMMAND_SEND_MESSAGE = 0x08,
-      COMMAND_HOLD = 0x09,
-      COMMAND_RETRIGGER = 0x0a,
-      COMMAND_DELAY = 0x0b,
-      COMMAND_VELOCITY = 0x0c,
-      COMMAND_CHANNEL_PRESSURE = 0x0d,
-      COMMAND_TPL = 0x0e,
-      COMMAND_TEMPO = 0x0f,
-      COMMAND_NOT_DEFINED = 0x10,
-      COMMAND_MIDI_CONTROLLERS = 0x80
+        COMMAND_PREVIOUS_COMMAND_VALUE = 0x00,
+        COMMAND_PITCH_WHEEL = 0x01,
+        COMMAND_END_BLOCK = 0x02,
+        COMMAND_PLAYSEQ_POSITION = 0x03,
+        COMMAND_PROGRAM_CHANGE = 0x07,
+        COMMAND_SEND_MESSAGE = 0x08,
+        COMMAND_HOLD = 0x09,
+        COMMAND_RETRIGGER = 0x0a,
+        COMMAND_DELAY = 0x0b,
+        COMMAND_VELOCITY = 0x0c,
+        COMMAND_CHANNEL_PRESSURE = 0x0d,
+        COMMAND_TPL = 0x0e,
+        COMMAND_TEMPO = 0x0f,
+        COMMAND_NOT_DEFINED = 0x10,
+        COMMAND_MIDI_CONTROLLERS = 0x80
+    };
+
+    enum Scheduling {
+        SCHED_NONE,
+        SCHED_RTC,
+        SCHED_NANOSLEEP
+    };
+
+    enum ExternalSync {
+        Off,
+        Midi
     };
 
     // Creates a player for a song
@@ -127,7 +138,8 @@ public:
     void externalSync(unsigned int);
 
     // Set the scheduler of a player
-    void setScheduler(unsigned int);
+    void setExternalSync(ExternalSync externalSync);
+    void setScheduler(Scheduling);
 
     MIDI *midi() const;
 
@@ -171,13 +183,6 @@ private:
       VALUES_PITCH_WHEEL = 130
     };
 
-    enum Scheduling {
-      SCHED_NONE,
-      SCHED_RTC,
-      SCHED_NANOSLEEP,
-      SCHED_EXTERNAL_SYNC
-    };
-
     // Starts the player thread
     void play(Mode, bool);
     // Refreshes playseq from section and block from position
@@ -194,7 +199,8 @@ private:
     // Player mode
     Mode mode_;
     // Player scheduling mode
-    unsigned int sched;
+    Scheduling sched;
+    ExternalSync syncMode;
     // Status of tracks; notes playing
     QList<QSharedPointer<TrackStatus> > trackStatus;
     // MIDI controller values; one for each controller on each channel

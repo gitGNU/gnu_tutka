@@ -44,6 +44,7 @@ class PlayingSequenceDialog;
 class PlayingSequenceListDialog;
 class BlockListDialog;
 class MessageListDialog;
+class QActionGroup;
 class Song;
 class Block;
 
@@ -85,8 +86,7 @@ private slots:
     void selectAllTrack();
     void insertTrack();
     void deleteTrack();
-    void setExternalSyncOff();
-    void setExternalSyncMidi();
+    void setExternalSync();
     void save();
     void saveAs();
 
@@ -110,6 +110,7 @@ private:
     PlayingSequenceListDialog *playingSequenceListDialog;
     BlockListDialog *blockListDialog;
     MessageListDialog *messageListDialog;
+    QActionGroup *externalSyncActionGroup;
     Song *song;
     Block *copySelection_;
     Block *copyBlock_;

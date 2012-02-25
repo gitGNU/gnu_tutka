@@ -53,6 +53,7 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     song(new Song(path)),
     mode_(IDLE),
     sched(SCHED_NANOSLEEP),
+    syncMode(Off),
     ticksSoFar(0),
     externalSyncTicks(0),
     killThread(false),
@@ -422,7 +423,8 @@ void Player::run()
 {
     struct timespec req, rem;
     struct timeval next, now;
-    int prevsched = sched;
+    Scheduling prevsched = sched;
+    ExternalSync prevsyncMode = syncMode;
     unsigned int oldTime = (unsigned int)-1;
 
     tick = 0;
@@ -437,62 +439,7 @@ void Player::run()
         // Lock
         mutex.lock();
 
-        if (sched == SCHED_RTC || sched == SCHED_NANOSLEEP) {
-            // If the scheduler has changed from external sync reset the timing
-            if (prevsched == SCHED_EXTERNAL_SYNC) {
-                gettimeofday(&next, NULL);
-            }
-            prevsched = sched;
-
-            // Calculate time of next tick (tick every 1000000/((BPM/60)*24) usecs)
-            next.tv_sec += (25 / song->tempo()) / 10;
-            next.tv_usec += ((2500000 / song->tempo()) % 1000000);
-            while (next.tv_usec > 1000000) {
-                next.tv_sec++;
-                next.tv_usec -= 1000000;
-            }
-
-            gettimeofday(&now, NULL);
-
-            // Select scheduling type
-            if (sched == SCHED_NANOSLEEP) {
-                // Nanosleep: calculate difference between now and the next tick
-                req.tv_sec = next.tv_sec - now.tv_sec;
-                req.tv_nsec = (next.tv_usec - now.tv_usec) * 1000;
-                while (req.tv_nsec < 0) {
-                    req.tv_sec--;
-                    req.tv_nsec += 1000000000;
-                }
-
-                // Sleep until the next tick if necessary
-                mutex.unlock();
-                if (req.tv_sec >= 0) {
-                    while (nanosleep(&req, &rem) == -1) { };
-                }
-                mutex.lock();
-            } else {
-                // Make sure periodic interrupts are on
-                if (!rtcPIE) {
-#ifdef __linux
-                    ioctl(rtc, RTC_PIE_ON, 0);
-#endif
-                    rtcPIE = true;
-                }
-
-                // Rtc: read RTC interrupts until it's time to play again
-                mutex.unlock();
-                while ((next.tv_sec - now.tv_sec) > 0 || ((next.tv_sec - now.tv_sec) == 0 && (next.tv_usec - now.tv_usec) > 1000000 / rtcFrequency)) {
-                    unsigned long l;
-                    ssize_t n = read(rtc, &l, sizeof(unsigned long));
-                    Q_UNUSED(n)
-                    gettimeofday(&now, NULL);
-                }
-                while ((next.tv_sec - now.tv_sec) > 0 || ((next.tv_sec - now.tv_sec) == 0 && (next.tv_usec - now.tv_usec) > 0)) {
-                    gettimeofday(&now, NULL);
-                }
-                mutex.lock();
-            }
-        } else if (sched == SCHED_EXTERNAL_SYNC) {
+        if (syncMode != Off) {
             prevsched = sched;
             if (externalSyncTicks == 0) {
                 // Wait for a sync signal to come in
@@ -502,7 +449,65 @@ void Player::run()
                 externalSyncTicks--;
             }
         } else {
-            prevsched = sched;
+            if (sched == SCHED_RTC || sched == SCHED_NANOSLEEP) {
+                // If the scheduler has changed from external sync reset the timing
+                if (prevsyncMode != Off) {
+                    gettimeofday(&next, NULL);
+                }
+                prevsched = sched;
+                prevsyncMode = syncMode;
+
+                // Calculate time of next tick (tick every 1000000/((BPM/60)*24) usecs)
+                next.tv_sec += (25 / song->tempo()) / 10;
+                next.tv_usec += ((2500000 / song->tempo()) % 1000000);
+                while (next.tv_usec > 1000000) {
+                    next.tv_sec++;
+                    next.tv_usec -= 1000000;
+                }
+
+                gettimeofday(&now, NULL);
+
+                // Select scheduling type
+                if (sched == SCHED_NANOSLEEP) {
+                    // Nanosleep: calculate difference between now and the next tick
+                    req.tv_sec = next.tv_sec - now.tv_sec;
+                    req.tv_nsec = (next.tv_usec - now.tv_usec) * 1000;
+                    while (req.tv_nsec < 0) {
+                        req.tv_sec--;
+                        req.tv_nsec += 1000000000;
+                    }
+
+                    // Sleep until the next tick if necessary
+                    mutex.unlock();
+                    if (req.tv_sec >= 0) {
+                        while (nanosleep(&req, &rem) == -1) { };
+                    }
+                    mutex.lock();
+                } else {
+                    // Make sure periodic interrupts are on
+                    if (!rtcPIE) {
+    #ifdef __linux
+                        ioctl(rtc, RTC_PIE_ON, 0);
+    #endif
+                        rtcPIE = true;
+                    }
+
+                    // Rtc: read RTC interrupts until it's time to play again
+                    mutex.unlock();
+                    while ((next.tv_sec - now.tv_sec) > 0 || ((next.tv_sec - now.tv_sec) == 0 && (next.tv_usec - now.tv_usec) > 1000000 / rtcFrequency)) {
+                        unsigned long l;
+                        ssize_t n = read(rtc, &l, sizeof(unsigned long));
+                        Q_UNUSED(n)
+                        gettimeofday(&now, NULL);
+                    }
+                    while ((next.tv_sec - now.tv_sec) > 0 || ((next.tv_sec - now.tv_sec) == 0 && (next.tv_usec - now.tv_usec) > 0)) {
+                        gettimeofday(&now, NULL);
+                    }
+                    mutex.lock();
+                }
+            } else {
+                prevsched = sched;
+            }
         }
 
         // Handle this tick
@@ -914,7 +919,7 @@ void Player::play(Mode mode, bool cont)
 
     // For some reason the priority setting crashes with realtime Jack
     //            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
-    start(sched != SCHED_EXTERNAL_SYNC ? QThread::TimeCriticalPriority : QThread::NormalPriority);
+    start(syncMode == Off ? QThread::TimeCriticalPriority : QThread::NormalPriority);
 
     if (mode_ != oldMode) {
         emit modeChanged(mode_);
@@ -935,7 +940,7 @@ void Player::stop()
         mutex.unlock();
 
         // If external sync is used send sync to get out of the sync wait loop
-        if (sched == SCHED_EXTERNAL_SYNC) {
+        if (syncMode != Off) {
             externalSync(0);
         }
 
@@ -1204,7 +1209,18 @@ void Player::externalSync(unsigned int ticks)
     mutex.unlock();
 }
 
-void Player::setScheduler(unsigned int scheduler)
+void Player::setExternalSync(ExternalSync externalSync)
+{
+    ExternalSync prevsyncMode = syncMode;
+
+    syncMode = externalSync;
+
+    if (syncMode == Off && prevsyncMode != Off) {
+        this->externalSync(0);
+    }
+}
+
+void Player::setScheduler(Scheduling scheduler)
 {
     mutex.lock();
 

@@ -23,8 +23,6 @@
 /*
  * TODO
  *
- * Settings->External Sync
- *
  * MIDI input
  * MIDI Message List Receive
  * Settings->Record Controllers
@@ -74,6 +72,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     playingSequenceListDialog(new PlayingSequenceListDialog),
     blockListDialog(new BlockListDialog),
     messageListDialog(new MessageListDialog(player->midi())),
+    externalSyncActionGroup(new QActionGroup(this)),
     song(NULL),
     copySelection_(NULL),
     copyBlock_(NULL),
@@ -89,6 +88,10 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     ui->setupUi(this);
     qApp->installEventFilter(this);
     setFocus(Qt::ActiveWindowFocusReason);
+
+    externalSyncActionGroup->addAction(ui->actionExternalSyncOff);
+    externalSyncActionGroup->addAction(ui->actionExternalSyncMidi);
+    externalSyncActionGroup->setExclusive(true);
 
     connect(player, SIGNAL(songChanged(Song *)), this, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), ui->trackerMain, SLOT(setSong(Song *)));
@@ -173,8 +176,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionTrackChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showTrack()));
     connect(ui->actionSongProperties, SIGNAL(triggered()), songPropertiesDialog, SLOT(show()));
     connect(ui->actionSongSectionList, SIGNAL(triggered()), sectionListDialog, SLOT(show()));
-    connect(ui->actionExternalSyncOff, SIGNAL(triggered()), this, SLOT(setExternalSyncOff()));
-    connect(ui->actionExternalSyncMidi, SIGNAL(triggered()), this, SLOT(setExternalSyncMidi()));
+    connect(externalSyncActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(setExternalSync()));
     connect(ui->actionMidiMessageList, SIGNAL(triggered()), messageListDialog, SLOT(show()));
     connect(ui->actionMidiKillAllNotes, SIGNAL(triggered()), player, SLOT(stopAllNotes()));
     connect(ui->actionMidiResetPitch, SIGNAL(triggered()), player, SLOT(resetPitch()));
@@ -394,14 +396,12 @@ bool MainWindow::keyPress(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_Left:
             /* Alt-Left: Previous block */
-            //TODO
-            //editor->setBlock(editor->block - 1);
+            player->setBlock(player->block() - 1);
             handled = true;
             break;
         case Qt::Key_Right:
             /* Alt-Right: Next block */
-            //TODO
-            //editor->setBlock(editor->block + 1);
+            player->setBlock(player->block() + 1);
             handled = true;
             break;
         case Qt::Key_1:
@@ -956,14 +956,9 @@ void MainWindow::deleteTrack()
     song->block(block)->deleteTrack(ui->trackerMain->track());
 }
 
-void MainWindow::setExternalSyncOff()
+void MainWindow::setExternalSync()
 {
-    //TODO
-}
-
-void MainWindow::setExternalSyncMidi()
-{
-    //TODO
+    player->setExternalSync(externalSyncActionGroup->checkedAction() == ui->actionExternalSyncOff ? Player::Off : Player::Midi);
 }
 
 void MainWindow::save()
