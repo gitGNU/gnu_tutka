@@ -8,12 +8,12 @@ SectionListDialog::SectionListDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SectionListDialog),
     song(NULL),
-    sectionTableModel(new SectionListTableModel(this)),
+    sectionListTableModel(new SectionListTableModel(this)),
     spinBoxDelegate(new SpinBoxDelegate(this))
 {
     ui->setupUi(this);
 
-    ui->tableView->setModel(sectionTableModel);
+    ui->tableView->setModel(sectionListTableModel);
     ui->tableView->setItemDelegateForColumn(1, spinBoxDelegate);
     ui->tableView->setItemDelegateForColumn(2, spinBoxDelegate);
     ui->tableView->setItemDelegateForColumn(3, spinBoxDelegate);
@@ -31,7 +31,7 @@ SectionListDialog::~SectionListDialog()
 void SectionListDialog::setSong(Song *song)
 {
     this->song = song;
-    sectionTableModel->setSong(song);
+    sectionListTableModel->setSong(song);
 }
 
 void SectionListDialog::setSection(unsigned int section)

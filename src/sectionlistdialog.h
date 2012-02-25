@@ -31,7 +31,7 @@ private slots:
 private:
     Ui::SectionListDialog *ui;
     Song *song;
-    SectionListTableModel *sectionTableModel;
+    SectionListTableModel *sectionListTableModel;
     SpinBoxDelegate *spinBoxDelegate;
 };
 

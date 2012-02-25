@@ -90,7 +90,7 @@ Message *Message::parse(QDomElement element)
         message = new Message;
         prop = element.attributeNode("name");
         if (!prop.isNull()) {
-            message->name = prop.value();
+            message->name_ = prop.value();
         }
 
         prop = element.attributeNode("autosend");
@@ -124,7 +124,17 @@ void Message::save(int number, QDomElement &parentElement, QDomDocument &documen
     parentElement.appendChild(messageElement);
     messageElement.appendChild(document.createTextNode(message.toUpper()));
     messageElement.setAttribute("number", number);
-    messageElement.setAttribute("name", name);
+    messageElement.setAttribute("name", name_);
     messageElement.setAttribute("autosend", autoSend ? 1 : 0);
     parentElement.appendChild(document.createTextNode("\n"));
+}
+
+QString Message::name() const
+{
+    return name_;
+}
+
+void Message::setName(const QString &name)
+{
+    name_ = name;
 }

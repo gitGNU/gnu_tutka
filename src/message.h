@@ -49,10 +49,12 @@ public:
     static Message *parse(QDomElement element);
     // Saves a message to an XML file
     void save(int number, QDomElement &parentElement, QDomDocument &document);
+    QString name() const;
+    void setName(const QString &name);
 
 private:
     // Name
-    QString name;
+    QString name_;
     // Dump data
     QByteArray data;
     // Automatically send after loading?

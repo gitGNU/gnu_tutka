@@ -79,8 +79,7 @@ bool PlayingSequenceTableModel::setData(const QModelIndex &index, const QVariant
 
         switch(index.column()) {
         case 0:
-            playseq->set(index.row(), value.toInt());
-            success = true;
+            playseq->set(index.row(), value.toInt(&success));
             break;
         default:
             break;

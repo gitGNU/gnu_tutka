@@ -70,8 +70,7 @@ bool SectionListTableModel::setData(const QModelIndex &index, const QVariant &va
 
         switch(index.column()) {
         case 0:
-            song->setSection(index.row(), value.toInt());
-            success = true;
+            song->setSection(index.row(), value.toInt(&success));
             break;
         default:
             break;
