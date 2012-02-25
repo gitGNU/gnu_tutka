@@ -182,13 +182,10 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionMidiResetPitch, SIGNAL(triggered()), player, SLOT(resetPitch()));
     connect(ui->actionSettingsPreferences, SIGNAL(triggered()), preferencesDialog, SLOT(show()));
     connect(ui->actionHelpAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
-
-    /* TODO make clickable labels
     connect(ui->labelSection, SIGNAL(clicked()), sectionListDialog, SLOT(show()));
     connect(ui->labelPosition, SIGNAL(clicked()), playingSequenceDialog, SLOT(show()));
     connect(ui->labelPlayingSequence, SIGNAL(clicked()), playingSequenceListDialog, SLOT(show()));
     connect(ui->labelBlock, SIGNAL(clicked()), blockListDialog, SLOT(show()));
-    */
 
     keyToNote.insert(Qt::Key_Z, 1);
     keyToNote.insert(Qt::Key_S, 2);

@@ -296,28 +296,28 @@
            <number>6</number>
           </property>
           <item>
-           <widget class="QLabel" name="labelSection">
+           <widget class="ClickableLabel" name="labelSection">
             <property name="text">
              <string>Section 1/1</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="labelPlayingSequence">
+           <widget class="ClickableLabel" name="labelPlayingSequence">
             <property name="text">
              <string>Playing Sequence 1/1</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="labelPosition">
+           <widget class="ClickableLabel" name="labelPosition">
             <property name="text">
              <string>Position 1/1</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="labelBlock">
+           <widget class="ClickableLabel" name="labelBlock">
             <property name="text">
              <string>Block 1/1</string>
             </property>
@@ -963,6 +963,11 @@
    <class>InstrumentSpinBox</class>
    <extends>QSpinBox</extends>
    <header>instrumentspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>clickablelabel.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
