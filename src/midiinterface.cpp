@@ -23,12 +23,36 @@
 #include <QByteArray>
 #include "midiinterface.h"
 
-MIDIInterface::MIDIInterface()
+MIDIInterface::MIDIInterface(DirectionFlags flags, QObject *parent) :
+    QObject(parent),
+    name_("Null output"),
+    flags_(flags),
+    enabled(false)
 {
 }
 
 MIDIInterface::~MIDIInterface()
 {
+}
+
+QString MIDIInterface::name() const
+{
+    return name_;
+}
+
+MIDIInterface::DirectionFlags MIDIInterface::flags() const
+{
+    return flags_;
+}
+
+bool MIDIInterface::isEnabled() const
+{
+    return enabled;
+}
+
+void MIDIInterface::setEnabled(bool enabled)
+{
+    this->enabled = enabled;
 }
 
 void MIDIInterface::setTick(unsigned int tick)

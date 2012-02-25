@@ -25,6 +25,7 @@
 
 #include <QDialog>
 
+class MIDI;
 class Song;
 
 namespace Ui {
@@ -36,15 +37,19 @@ class InstrumentPropertiesDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit InstrumentPropertiesDialog(QWidget *parent = NULL);
+    explicit InstrumentPropertiesDialog(MIDI *midi, QWidget *parent = NULL);
     ~InstrumentPropertiesDialog();
 
 public slots:
     void setSong(Song *song);
     void setInstrument(int number);
 
+private slots:
+    void updateMidiInterfaceComboBox();
+
 private:
     Ui::InstrumentPropertiesDialog *ui;
+    MIDI *midi;
     Song *song;
     int instrument;
 };

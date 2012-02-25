@@ -92,8 +92,8 @@ void MessageListDialog::sendMessage()
     QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
     if (!indexes.isEmpty()) {
         Message *message = song->message(indexes.first().row());
-        for (int output = 0; output < midi->outputs(); output++) {
-            midi->output(output)->writeRaw(message->data());
+        for (int output = 0; output < midi->interfaces(); output++) {
+            midi->interface(output)->writeRaw(message->data());
         }
     }
 }

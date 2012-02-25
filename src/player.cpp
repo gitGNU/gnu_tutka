@@ -155,7 +155,7 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
 
         // Stop currently playing note
         if (trackStatus->note != -1) {
-            midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+            midi_->interface(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
             trackStatus->note = -1;
         }
 
@@ -177,7 +177,7 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
             }
 
             // Play note
-            midi_->output(instrument->midiInterface())->noteOn(trackStatus->midiChannel, trackStatus->note, trackStatus->volume);
+            midi_->interface(instrument->midiInterface())->noteOn(trackStatus->midiChannel, trackStatus->note, trackStatus->volume);
         }
     }
 }
@@ -188,7 +188,7 @@ void Player::stopMuted()
         if (song->track(track)->isMuted() || (solo && !song->track(track)->isSolo())) {
             QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
             if (trackStatus->note != -1) {
-                midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+                midi_->interface(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                 trackStatus->note = -1;
             }
             trackStatus->baseNote = -1;
@@ -201,7 +201,7 @@ void Player::stopNotes()
     for (int track = 0; track < song->maxTracks(); track++) {
         QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
         if (trackStatus->note != -1) {
-            midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+            midi_->interface(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
 
             trackStatus->midiChannel = -1;
             trackStatus->note = -1;
@@ -216,8 +216,8 @@ void Player::stopAllNotes()
 {
     for (int midiChannel = 0; midiChannel < 16; midiChannel++) {
         for (int note = 0; note < 128; note++) {
-            for (int output = 0; output < midi_->outputs(); output++) {
-                midi_->output(output)->noteOff(midiChannel, note, 127);
+            for (int output = 0; output < midi_->interfaces(); output++) {
+                midi_->interface(output)->noteOff(midiChannel, note, 127);
             }
         }
     }
@@ -226,8 +226,8 @@ void Player::stopAllNotes()
 void Player::resetPitch()
 {
     for (int midiChannel = 0; midiChannel < 16; midiChannel++) {
-        for (int output = 0; output < midi_->outputs(); output++) {
-            midi_->output(output)->pitchWheel(midiChannel, 64);
+        for (int output = 0; output < midi_->interfaces(); output++) {
+            midi_->interface(output)->pitchWheel(midiChannel, 64);
         }
     }
 }
@@ -252,7 +252,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         midiChannel = trackStatus->midiChannel;
     }
 
-    QSharedPointer<MIDIInterface> output = midi_->output(midiInterface);
+    QSharedPointer<MIDIInterface> output = midi_->interface(midiInterface);
 
     // Check for previous command if any
     if (command == CommandPreviousCommandValue) {
@@ -511,16 +511,16 @@ void Player::run()
         }
 
         // Handle this tick
-        for (int output = 0; output < midi_->outputs(); output++) {
-            midi_->output(output)->setTick(ticksSoFar);
+        for (int output = 0; output < midi_->interfaces(); output++) {
+            midi_->interface(output)->setTick(ticksSoFar);
         }
 
         Block *block = song->block(block_);
 
         // Send MIDI sync if requested
         if (song->sendSync()) {
-            for (int output = 0; output < midi_->outputs(); output++) {
-                midi_->output(output)->clock();
+            for (int output = 0; output < midi_->interfaces(); output++) {
+                midi_->interface(output)->clock();
             }
         }
 
@@ -588,7 +588,7 @@ void Player::run()
                     // Stop currently playing note
                     if ((delay >= 0 && tick == delay) || (delay < 0 && tick % (-delay) == 0)) {
                         if (trackStatus->note != -1) {
-                            midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+                            midi_->interface(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                             trackStatus->note = -1;
                         }
                     }
@@ -697,7 +697,7 @@ void Player::run()
             if (trackStatus->hold >= 0) {
                 trackStatus->hold--;
                 if (trackStatus->hold < 0 && trackStatus->note != -1) {
-                    midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
+                    midi_->interface(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                     trackStatus->note = -1;
                 }
             }
@@ -1024,8 +1024,8 @@ void Player::init()
     // Send messages to be autosent
     for (int message = 0; message < song->messages(); message++) {
         if (song->message(message)->isAutoSend()) {
-            for (int output = 0; output < midi_->outputs(); output++) {
-                midi_->output(output)->writeRaw(song->message(message)->data());
+            for (int output = 0; output < midi_->interfaces(); output++) {
+                midi_->interface(output)->writeRaw(song->message(message)->data());
             }
         }
     }
@@ -1185,12 +1185,12 @@ void Player::midiChanged()
     trackStatusCreate();
 
     // Remove extraneous controller values
-    while (midi_->outputs() < midiControllerValues.count()) {
+    while (midi_->interfaces() < midiControllerValues.count()) {
         midiControllerValues.removeLast();
     }
 
     // Create new controller values
-    for (int output = midiControllerValues.count(); output < midi_->outputs(); output++) {
+    for (int output = midiControllerValues.count(); output < midi_->interfaces(); output++) {
         midiControllerValues.append(QVector<unsigned char>(16 * VALUES));
     }
 }

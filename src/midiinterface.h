@@ -23,13 +23,33 @@
 #ifndef MIDIINTERFACE_H
 #define MIDIINTERFACE_H
 
+#include <QObject>
+#include <QString>
+
 class QByteArray;
 
-class MIDIInterface
+class MIDIInterface : public QObject
 {
+    Q_OBJECT
+
 public:
-    MIDIInterface();
+    enum DirectionFlag {
+        Input = 0x1,
+        Output = 0x2
+    };
+    Q_DECLARE_FLAGS(DirectionFlags, DirectionFlag)
+
+    MIDIInterface(DirectionFlags flags, QObject *parent = NULL);
     virtual ~MIDIInterface();
+
+    // Returns the name of the interface
+    QString name() const;
+
+    // Returns the flags for the interface
+    DirectionFlags flags() const;
+
+    // Whether the interface is enabled or not
+    bool isEnabled() const;
 
     // Sets the current tick
     virtual void setTick(unsigned int);
@@ -63,6 +83,17 @@ public:
 
     // Set the tempo (used when exporting)
     virtual void tempo(unsigned int);
+
+public slots:
+    // Enables or disables the interface
+    void setEnabled(bool enabled);
+
+protected:
+    QString name_;
+    DirectionFlags flags_;
+    bool enabled;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(MIDIInterface::DirectionFlags)
 
 #endif // MIDIINTERFACE_H

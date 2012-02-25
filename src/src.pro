@@ -34,7 +34,9 @@ SOURCES += main.cpp \
     playingsequencelisttablemodel.cpp \
     messagelisttablemodel.cpp \
     track.cpp \
-    clickablelabel.cpp
+    clickablelabel.cpp \
+    coremidi.cpp \
+    coremidiinterface.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -68,7 +70,9 @@ HEADERS += block.h \
     playingsequencelisttablemodel.h \
     messagelisttablemodel.h \
     track.h \
-    clickablelabel.h
+    clickablelabel.h \
+    coremidi.h \
+    coremidiinterface.h
 
 FORMS += \
     mainwindow.ui \
@@ -88,6 +92,8 @@ FORMS += \
 TEMPLATE = app
 TARGET = Tutka
 QT += xml
+macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
+macx:INCLUDEPATH += /System/Library/Frameworks/CoreMIDI.framework/Versions/A/Headers
 
 target.path = /usr/bin
 

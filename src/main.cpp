@@ -21,7 +21,11 @@
  */
 
 #include <QApplication>
+#ifdef __APPLE__
+#include "coremidi.h"
+#else
 #include "midi.h"
+#endif
 #include "player.h"
 #include "mainwindow.h"
 
@@ -29,7 +33,11 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
+#ifdef __APPLE__
+    CoreMIDI *midi = new CoreMIDI;
+#else
     MIDI *midi = new MIDI;
+#endif
     Player *player = new Player(midi, argc > 1 ? argv[1] : QString());
     MainWindow *mainWindow = new MainWindow(player);
     mainWindow->show();

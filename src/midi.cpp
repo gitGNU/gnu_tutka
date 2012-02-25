@@ -25,19 +25,25 @@
 
 MIDI::MIDI()
 {
-    outputs_.append(QSharedPointer<MIDIInterface>(new MIDIInterface));
+    updateInterfaces();
 }
 
 MIDI::~MIDI()
 {
 }
 
-QSharedPointer<MIDIInterface> MIDI::output(unsigned int number) const
+QSharedPointer<MIDIInterface> MIDI::interface(unsigned int number) const
 {
-    return outputs_.at(number);
+    return interfaces_.at(number);
 }
 
-unsigned int MIDI::outputs() const
+unsigned int MIDI::interfaces() const
 {
-    return outputs_.count();
+    return interfaces_.count();
+}
+
+void MIDI::updateInterfaces()
+{
+    interfaces_.clear();
+    interfaces_.append(QSharedPointer<MIDIInterface>(new MIDIInterface(MIDIInterface::Input | MIDIInterface::Output)));
 }

@@ -36,44 +36,13 @@ public:
     MIDI();
     virtual ~MIDI();
 
-    QSharedPointer<MIDIInterface> output(unsigned int) const;
-    unsigned int outputs() const;
+    QSharedPointer<MIDIInterface> interface(unsigned int) const;
+    unsigned int interfaces() const;
 
-    // Get MIDI interface from available interfaces by name
-    QSharedPointer<MIDIInterface> midiInterface(char *, unsigned int);
+protected:
+    virtual void updateInterfaces();
 
-    // Gets an MIDI interface number by name from the available interfaces
-    int midiInterfaceNumber(char *, unsigned int);
-
-    // Gets an MIDI interface name by number from the available interfaces
-    char *midiInterfaceName(unsigned int, unsigned int);
-
-    // Opens the MIDI interfaces
-    void subscribeAll();
-
-    // Unsubscribe all MIDI interfaces and free data
-    void unsubscribeAll();
-
-    // Gets the list of available interfaces
-    void interfaces(unsigned int);
-
-    // Refreshes the list of available interfaces
-    void refreshInterfaces();
-
-    // Receives a MIDI message
-    unsigned char *readRaw();
-
-    // Receives a MIDI message
-    int readSystemExclusive(Message *, unsigned int, int);
-
-    // Returns the data written to the MIDI buffer
-    unsigned char *buffer() const;
-
-    // Returns the length of data written to the MIDI buffer
-    int bufferLength() const;
-
-private:
-    QList<QSharedPointer<MIDIInterface> > outputs_;
+    QList<QSharedPointer<MIDIInterface> > interfaces_;
 };
 
 #endif // _MIDI_H
