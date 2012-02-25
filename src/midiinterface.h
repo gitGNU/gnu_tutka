@@ -88,6 +88,10 @@ public slots:
     // Enables or disables the interface
     void setEnabled(bool enabled);
 
+signals:
+    // Emitted when the interface is enabled or disabled
+    void enabledChanged(bool);
+
 protected:
     QString name_;
     DirectionFlags flags_;

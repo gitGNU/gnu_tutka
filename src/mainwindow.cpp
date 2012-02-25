@@ -68,7 +68,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     ui(new Ui::MainWindow),
     instrumentPropertiesDialog(new InstrumentPropertiesDialog(player->midi())),
     openDialog(new QFileDialog),
-    preferencesDialog(new PreferencesDialog),
+    preferencesDialog(new PreferencesDialog(player->midi())),
     trackVolumesDialog(new TrackVolumesDialog),
     transposeDialog(new TransposeDialog),
     expandShrinkDialog(new ExpandShrinkDialog),

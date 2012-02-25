@@ -25,9 +25,9 @@
 
 MIDIInterface::MIDIInterface(DirectionFlags flags, QObject *parent) :
     QObject(parent),
-    name_("Null output"),
+    name_("No output"),
     flags_(flags),
-    enabled(false)
+    enabled(true)
 {
 }
 
@@ -53,6 +53,8 @@ bool MIDIInterface::isEnabled() const
 void MIDIInterface::setEnabled(bool enabled)
 {
     this->enabled = enabled;
+
+    emit enabledChanged(enabled);
 }
 
 void MIDIInterface::setTick(unsigned int tick)

@@ -20,14 +20,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include "midi.h"
+#include "outputmidiinterfacestablemodel.h"
+#include "inputmidiinterfacestablemodel.h"
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
-PreferencesDialog::PreferencesDialog(QWidget *parent) :
+PreferencesDialog::PreferencesDialog(MIDI *midi, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::PreferencesDialog)
+    ui(new Ui::PreferencesDialog),
+    outputMidiInterfacesTableModel(new OutputMidiInterfacesTableModel(midi)),
+    inputMidiInterfacesTableModel(new InputMidiInterfacesTableModel(midi))
 {
     ui->setupUi(this);
+
+    ui->tableViewOutputMidiInterfaces->setModel(outputMidiInterfacesTableModel);
+    ui->tableViewInputMidiInterfaces->setModel(inputMidiInterfacesTableModel);
 }
 
 PreferencesDialog::~PreferencesDialog()

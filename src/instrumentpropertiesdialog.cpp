@@ -35,6 +35,7 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
 {
     ui->setupUi(this);
 
+    connect(midi, SIGNAL(outputsChanged()), this, SLOT(updateMidiInterfaceComboBox()));
     updateMidiInterfaceComboBox();
 }
 
@@ -59,6 +60,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         disconnect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setDefaultVelocity(int)));
         disconnect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setTranspose(int)));
         disconnect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setHold(int)));
+        disconnect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), oldInstrument, SLOT(setMidiInterfaceName(QString)));
 
         // Make sure the instrument exists
         this->instrument = number;
@@ -80,6 +82,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         connect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), instrument, SLOT(setDefaultVelocity(int)));
         connect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), instrument, SLOT(setTranspose(int)));
         connect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), instrument, SLOT(setHold(int)));
+        connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), instrument, SLOT(setMidiInterfaceName(QString)));
     }
 }
 
@@ -87,11 +90,11 @@ void InstrumentPropertiesDialog::updateMidiInterfaceComboBox()
 {
     ui->comboBoxMidiInterface->clear();
 
-    for (int number = 0; number < midi->interfaces(); number++) {
-        QSharedPointer<MIDIInterface> interface = midi->interface(number);
-        if (interface->isEnabled() && (interface->flags() & MIDIInterface::Output) != 0) {
-            ui->comboBoxMidiInterface->addItem(midi->interface(number)->name());
-            if (song != NULL && midi->interface(number)->name() == song->instrument(this->instrument)->name()) {
+    for (int number = 0; number < midi->outputs(); number++) {
+        QSharedPointer<MIDIInterface> interface = midi->output(number);
+        if (interface->isEnabled()) {
+            ui->comboBoxMidiInterface->addItem(midi->output(number)->name());
+            if (song != NULL && midi->output(number)->name() == song->instrument(this->instrument)->name()) {
                 ui->comboBoxMidiInterface->setCurrentIndex(number);
             }
         }

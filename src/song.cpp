@@ -407,10 +407,10 @@ void Song::checkMaxTracks()
     }
 }
 
-void Song::checkInstrument(int instrument, unsigned short defaultMIDIInterface)
+void Song::checkInstrument(int instrument)
 {
     while (instrument >= instruments_.count()) {
-        instruments_.append(new Instrument("Unnamed", defaultMIDIInterface));
+        instruments_.append(new Instrument("Unnamed"));
     }
 }
 

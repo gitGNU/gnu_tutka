@@ -125,7 +125,7 @@ public:
     void setSection(unsigned int pos, unsigned int playseq);
 
     // Make sure the instrument exists; add instruments if necessary
-    void checkInstrument(int instrument, unsigned short defaultMIDIInterface = 0);
+    void checkInstrument(int instrument);
 
     // Transposes all blocks in a song
     void transpose(int instrument, int halfNotes);

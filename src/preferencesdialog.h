@@ -29,16 +29,22 @@ namespace Ui {
     class PreferencesDialog;
 }
 
+class MIDI;
+class OutputMidiInterfacesTableModel;
+class InputMidiInterfacesTableModel;
+
 class PreferencesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit PreferencesDialog(QWidget *parent = 0);
+    explicit PreferencesDialog(MIDI *midi, QWidget *parent = 0);
     ~PreferencesDialog();
 
 private:
     Ui::PreferencesDialog *ui;
+    OutputMidiInterfacesTableModel *outputMidiInterfacesTableModel;
+    InputMidiInterfacesTableModel *inputMidiInterfacesTableModel;
 };
 
 #endif // PREFERENCESDIALOG_H

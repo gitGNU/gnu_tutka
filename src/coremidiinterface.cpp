@@ -4,6 +4,7 @@ CoreMIDIInterface::CoreMIDIInterface(MIDIEndpointRef endpoint, DirectionFlags fl
     MIDIInterface(flags, parent)
 {
     name_ = getMidiDeviceName(endpoint);
+    setEnabled(false);
 }
 
 QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)

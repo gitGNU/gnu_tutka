@@ -23,26 +23,39 @@
 #ifndef _MIDI_H
 #define _MIDI_H
 
+#include <QObject>
 #include <QSharedPointer>
 #include <QList>
 
 class MIDIInterface;
 class Message;
 
-class MIDI
+class MIDI : public QObject
 {
+    Q_OBJECT
+
 public:
     // Open the MIDI subsystem
-    MIDI();
+    MIDI(QObject *parent = NULL);
     virtual ~MIDI();
 
-    QSharedPointer<MIDIInterface> interface(unsigned int) const;
-    unsigned int interfaces() const;
+    QSharedPointer<MIDIInterface> output(unsigned int) const;
+    int output(const QString &name) const;
+    unsigned int outputs() const;
+
+    QSharedPointer<MIDIInterface> input(unsigned int) const;
+    int input(const QString &name) const;
+    unsigned int inputs() const;
+
+signals:
+    void outputsChanged();
+    void inputsChanged();
 
 protected:
     virtual void updateInterfaces();
 
-    QList<QSharedPointer<MIDIInterface> > interfaces_;
+    QList<QSharedPointer<MIDIInterface> > outputs_;
+    QList<QSharedPointer<MIDIInterface> > inputs_;
 };
 
 #endif // _MIDI_H

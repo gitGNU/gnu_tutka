@@ -59,9 +59,19 @@ unsigned int Instrument::midiInterface() const
     return midiInterface_;
 }
 
+void Instrument::setMidiInterface(int interface)
+{
+    midiInterface_ = interface;
+}
+
 QString Instrument::midiInterfaceName() const
 {
     return midiInterfaceName_;
+}
+
+void Instrument::setMidiInterfaceName(const QString &midiInterfaceName)
+{
+    midiInterfaceName_ = midiInterfaceName;
 }
 
 unsigned short Instrument::midiPreset() const

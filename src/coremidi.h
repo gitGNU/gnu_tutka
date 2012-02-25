@@ -6,7 +6,7 @@
 class CoreMIDI : public MIDI
 {
 public:
-    CoreMIDI();
+    CoreMIDI(QObject *parent = NULL);
 
 protected:
     virtual void updateInterfaces();

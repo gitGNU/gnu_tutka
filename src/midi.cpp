@@ -23,7 +23,8 @@
 #include "midiinterface.h"
 #include "midi.h"
 
-MIDI::MIDI()
+MIDI::MIDI(QObject *parent) :
+    QObject(parent)
 {
     updateInterfaces();
 }
@@ -32,18 +33,52 @@ MIDI::~MIDI()
 {
 }
 
-QSharedPointer<MIDIInterface> MIDI::interface(unsigned int number) const
+QSharedPointer<MIDIInterface> MIDI::output(unsigned int number) const
 {
-    return interfaces_.at(number);
+    return outputs_.at(number);
 }
 
-unsigned int MIDI::interfaces() const
+int MIDI::output(const QString &name) const
 {
-    return interfaces_.count();
+    for (int output = 0; output < outputs_.count(); output++) {
+        if (outputs_[output]->name() == name) {
+            return output;
+        }
+    }
+
+    return -1;
+}
+
+unsigned int MIDI::outputs() const
+{
+    return outputs_.count();
+}
+
+QSharedPointer<MIDIInterface> MIDI::input(unsigned int number) const
+{
+    return inputs_.at(number);
+}
+
+int MIDI::input(const QString &name) const
+{
+    for (int input = 0; input < inputs_.count(); input++) {
+        if (inputs_[input]->name() == name) {
+            return input;
+        }
+    }
+
+    return -1;
+}
+
+unsigned int MIDI::inputs() const
+{
+    return inputs_.count();
 }
 
 void MIDI::updateInterfaces()
 {
-    interfaces_.clear();
-    interfaces_.append(QSharedPointer<MIDIInterface>(new MIDIInterface(MIDIInterface::Input | MIDIInterface::Output)));
+    outputs_.clear();
+    outputs_.append(QSharedPointer<MIDIInterface>(new MIDIInterface(MIDIInterface::Output)));
+    inputs_.clear();
+    inputs_.append(QSharedPointer<MIDIInterface>(new MIDIInterface(MIDIInterface::Input)));
 }

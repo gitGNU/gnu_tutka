@@ -108,8 +108,6 @@ public:
     void setSolo(unsigned int);
     // Checks whether some tracks are soloed or not
     void checkSolo();
-    // Notifies the player that MIDI interfaces have changed
-    void midiChanged();
 
     // Lock the player
     void lock();
@@ -147,6 +145,9 @@ private slots:
 
     // Refreshes playseq from section and block from position
     void refreshPlayseqAndBlock();
+
+    // Notifies the player that MIDI interfaces have changed
+    void remapMidiOutputs();
 
 signals:
     void songChanged(Song *song);
