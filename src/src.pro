@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     sliderwithlabel.cpp \
     sectionlisttablemodel.cpp \
     playingsequencelisttablemodel.cpp \
-    messagelisttablemodel.cpp
+    messagelisttablemodel.cpp \
+    track.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -64,7 +65,8 @@ HEADERS += block.h \
     sliderwithlabel.h \
     sectionlisttablemodel.h \
     playingsequencelisttablemodel.h \
-    messagelisttablemodel.h
+    messagelisttablemodel.h \
+    track.h
 
 FORMS += \
     mainwindow.ui \

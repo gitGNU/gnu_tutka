@@ -33,19 +33,19 @@ Message::~Message()
 {
 }
 
-bool Message::isAutoSend() const
+QString Message::name() const
 {
-    return autoSend;
+    return name_;
+}
+
+void Message::setName(const QString &name)
+{
+    name_ = name;
 }
 
 unsigned int Message::length() const
 {
     return data_.length();
-}
-
-QByteArray Message::data() const
-{
-    return data_;
 }
 
 void Message::setLength(unsigned int length)
@@ -59,9 +59,19 @@ void Message::setLength(unsigned int length)
     }
 }
 
+bool Message::isAutoSend() const
+{
+    return autoSend;
+}
+
 void Message::setAutoSend(bool autoSend)
 {
     this->autoSend = autoSend;
+}
+
+QByteArray Message::data() const
+{
+    return data_;
 }
 
 void Message::loadBinary(const QString &filename)
@@ -133,14 +143,4 @@ void Message::save(int number, QDomElement &parentElement, QDomDocument &documen
     messageElement.setAttribute("name", name_);
     messageElement.setAttribute("autosend", autoSend ? 1 : 0);
     parentElement.appendChild(document.createTextNode("\n"));
-}
-
-QString Message::name() const
-{
-    return name_;
-}
-
-void Message::setName(const QString &name)
-{
-    name_ = name;
 }

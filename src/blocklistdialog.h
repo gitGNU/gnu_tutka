@@ -38,7 +38,7 @@ class BlockListDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit BlockListDialog(QWidget *parent = 0);
+    explicit BlockListDialog(QWidget *parent = NULL);
     ~BlockListDialog();
 
 public slots:

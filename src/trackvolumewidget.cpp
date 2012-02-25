@@ -25,7 +25,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QLineEdit>
-#include "song.h"
+#include "track.h"
 #include "trackvolumewidget.h"
 
 TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget *parent) :

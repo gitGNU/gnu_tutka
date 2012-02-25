@@ -54,33 +54,33 @@ class Player : public QThread {
 public:
     // Player mode
     enum Mode {
-        IDLE,
-        PLAY_SONG,
-        PLAY_BLOCK
+        ModeIdle,
+        ModePlaySong,
+        ModePlayBlock
     };
 
     enum Command {
-        COMMAND_PREVIOUS_COMMAND_VALUE = 0x00,
-        COMMAND_PITCH_WHEEL = 0x01,
-        COMMAND_END_BLOCK = 0x02,
-        COMMAND_PLAYSEQ_POSITION = 0x03,
-        COMMAND_PROGRAM_CHANGE = 0x07,
-        COMMAND_SEND_MESSAGE = 0x08,
-        COMMAND_HOLD = 0x09,
-        COMMAND_RETRIGGER = 0x0a,
-        COMMAND_DELAY = 0x0b,
-        COMMAND_VELOCITY = 0x0c,
-        COMMAND_CHANNEL_PRESSURE = 0x0d,
-        COMMAND_TPL = 0x0e,
-        COMMAND_TEMPO = 0x0f,
-        COMMAND_NOT_DEFINED = 0x10,
-        COMMAND_MIDI_CONTROLLERS = 0x80
+        CommandPreviousCommandValue = 0x00,
+        CommandPitchWheel = 0x01,
+        CommandEndBlock = 0x02,
+        CommandPlayseqPosition = 0x03,
+        CommandProgramChange = 0x07,
+        CommandSendMessage = 0x08,
+        CommandHold = 0x09,
+        CommandRetrigger = 0x0a,
+        CommandDelay = 0x0b,
+        CommandVelocity = 0x0c,
+        CommandChannelPressure = 0x0d,
+        CommandTicksPerLine = 0x0e,
+        CommandTempo = 0x0f,
+        CommandNotDefined = 0x10,
+        CommandMidiControllers = 0x80
     };
 
     enum Scheduling {
-        SCHED_NONE,
-        SCHED_RTC,
-        SCHED_NANOSLEEP
+        SchedulingNone,
+        SchedulingRTC,
+        SchedulingNanoSleep
     };
 
     enum ExternalSync {

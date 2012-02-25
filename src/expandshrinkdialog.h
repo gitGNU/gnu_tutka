@@ -36,7 +36,7 @@ class ExpandShrinkDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ExpandShrinkDialog(QWidget *parent = 0);
+    explicit ExpandShrinkDialog(QWidget *parent = NULL);
     ~ExpandShrinkDialog();
 
 public slots:
@@ -55,10 +55,10 @@ private slots:
 
 private:
     enum Area {
-      SONG,
-      BLOCK,
-      TRACK,
-      SELECTION
+        AreaSong,
+        AreaBlock,
+        AreaTrack,
+        AreaSelection
     };
 
     Ui::ExpandShrinkDialog *ui;

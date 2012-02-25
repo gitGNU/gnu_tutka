@@ -31,26 +31,38 @@ public:
     Message();
     virtual ~Message();
 
-    // Returns whether the message should be automatically sent after loading
-    bool isAutoSend() const;
+    // Returns the name of the message
+    QString name() const;
+
+    // Sets the name of the message
+    void setName(const QString &name);
+
     // Returns the length of the message
     unsigned int length() const;
-    // Returns a the data of the message
-    QByteArray data() const;
+
     // Sets the length of a MIDI message
     void setLength(unsigned int);
+
+    // Returns whether the message should be automatically sent after loading
+    bool isAutoSend() const;
+
     // Sets the auto send flag of a MIDI message
     void setAutoSend(bool);
+
+    // Returns a the data of the message
+    QByteArray data() const;
+
     // Loads a message from a file
     void loadBinary(const QString &filename);
+
     // Saves a message to a file
     void saveBinary(const QString &filename);
+
     // Parses a element in an XML file
     static Message *parse(QDomElement element);
+
     // Saves a message to an XML file
     void save(int number, QDomElement &parentElement, QDomDocument &document);
-    QString name() const;
-    void setName(const QString &name);
 
 private:
     // Name

@@ -24,6 +24,7 @@
 #include <QPaintEvent>
 #include <cstdio>
 #include "song.h"
+#include "track.h"
 #include "block.h"
 #include "tracker.h"
 

@@ -116,20 +116,20 @@ void ExpandShrinkDialog::expandShrink(bool shrink)
     }
 
     switch (ui->comboBoxArea->currentIndex()) {
-    case SONG:
+    case AreaSong:
         song->expandShrink(factor);
         break;
-    case BLOCK: {
+    case AreaBlock: {
         Block *block = song->block(this->block);
         block->expandShrink(factor, 0, 0, block->tracks() - 1, block->length() - 1);
         break;
     }
-    case TRACK: {
+    case AreaTrack: {
         Block *block = song->block(this->block);
         block->expandShrink(factor, track, 0, track, block->length() - 1);
         break;
     }
-    case SELECTION:
+    case AreaSelection:
         if (selectionStartTrack >= 0 && selectionStartLine >= 0 && selectionEndTrack >= 0 && selectionEndLine >= 0) {
             Block *block = song->block(this->block);
             block->expandShrink(factor, selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);

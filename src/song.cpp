@@ -23,61 +23,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
-#include <cstdio>
+#include "track.h"
 #include "song.h"
-
-Track::Track(const QString &name, QObject *parent) :
-    QObject(parent),
-    name_(name),
-    volume_(127),
-    mute(false),
-    solo(false)
-{
-}
-
-Track::~Track()
-{
-}
-
-void Track::setName(const QString &name)
-{
-    name_ = name;
-}
-
-QString Track::name() const
-{
-    return name_;
-}
-
-void Track::setVolume(int volume)
-{
-    volume_ = volume;
-}
-
-int Track::volume() const
-{
-    return volume_;
-}
-
-void Track::setMute(bool mute)
-{
-    this->mute = mute;
-}
-
-bool Track::isMuted() const
-{
-    return mute;
-}
-
-void Track::setSolo(bool solo)
-{
-    this->solo = solo;
-}
-
-bool Track::isSolo() const
-{
-    return solo;
-}
 
 Song::Song(const QString &path, QObject *parent) :
     QObject(parent),
@@ -134,6 +81,106 @@ void Song::init()
     playseqs_.append(new Playseq);
     blocks_.append(block);
     checkMaxTracks();
+}
+
+QString Song::name() const
+{
+    return name_;
+}
+
+void Song::setName(const QString &name)
+{
+    name_ = name;
+}
+
+unsigned int Song::tempo() const
+{
+    return tempo_;
+}
+
+unsigned int Song::ticksPerLine() const
+{
+    return ticksPerLine_;
+}
+
+bool Song::sendSync() const
+{
+    return sendSync_;
+}
+
+void Song::setSendSync(bool sendSync)
+{
+    sendSync_ = sendSync;
+}
+
+unsigned int Song::masterVolume() const
+{
+    return masterVolume_;
+}
+
+QString Song::path() const
+{
+    return path_;
+}
+
+unsigned int Song::blocks() const
+{
+    return blocks_.count();
+}
+
+unsigned int Song::playseqs() const
+{
+    return playseqs_.count();
+}
+
+unsigned int Song::sections() const
+{
+    return sections_.count();
+}
+
+unsigned int Song::instruments() const
+{
+    return instruments_.count();
+}
+
+unsigned int Song::messages() const
+{
+    return messages_.count();
+}
+
+unsigned int Song::maxTracks() const
+{
+    return tracks.count();
+}
+
+Block *Song::block(unsigned int number) const
+{
+    return number < blocks_.count() ? blocks_[number] : NULL;
+}
+
+Track *Song::track(unsigned int number) const
+{
+    return number < tracks.count() ? tracks[number] : NULL;
+}
+
+Playseq *Song::playseq(unsigned int number) const
+{
+    return number < playseqs_.count() ? playseqs_[number] : NULL;
+}
+
+unsigned int Song::section(unsigned int pos) const
+{
+    return sections_[pos];
+}
+
+Instrument *Song::instrument(unsigned int number) const
+{
+    return number < instruments_.count() ? instruments_[number] : NULL;
+}
+
+Message *Song::message(unsigned int number) const
+{
+    return number < messages_.count() ? messages_[number] : NULL;
 }
 
 void Song::insertBlock(unsigned int pos, unsigned int current)
@@ -711,104 +758,4 @@ void Song::save(const QString &path)
     file.write("<?xml version=\"1.0\"?>\n");
     file.write(document.toByteArray());
     file.close();
-}
-
-Block *Song::block(unsigned int number) const
-{
-    return number < blocks_.count() ? blocks_[number] : NULL;
-}
-
-Track *Song::track(unsigned int number) const
-{
-    return number < tracks.count() ? tracks[number] : NULL;
-}
-
-Playseq *Song::playseq(unsigned int number) const
-{
-    return number < playseqs_.count() ? playseqs_[number] : NULL;
-}
-
-Instrument *Song::instrument(unsigned int number) const
-{
-    return number < instruments_.count() ? instruments_[number] : NULL;
-}
-
-Message *Song::message(unsigned int number) const
-{
-    return number < messages_.count() ? messages_[number] : NULL;
-}
-
-unsigned int Song::maxTracks() const
-{
-    return tracks.count();
-}
-
-unsigned int Song::blocks() const
-{
-    return blocks_.count();
-}
-
-unsigned int Song::playseqs() const
-{
-    return playseqs_.count();
-}
-
-unsigned int Song::sections() const
-{
-    return sections_.count();
-}
-
-unsigned int Song::instruments() const
-{
-    return instruments_.count();
-}
-
-unsigned int Song::messages() const
-{
-    return messages_.count();
-}
-
-unsigned int Song::section(unsigned int pos) const
-{
-    return sections_[pos];
-}
-
-unsigned int Song::masterVolume() const
-{
-    return masterVolume_;
-}
-
-unsigned int Song::tempo() const
-{
-    return tempo_;
-}
-
-unsigned int Song::ticksPerLine() const
-{
-    return ticksPerLine_;
-}
-
-bool Song::sendSync() const
-{
-    return sendSync_;
-}
-
-QString Song::name() const
-{
-    return name_;
-}
-
-void Song::setName(const QString &name)
-{
-    name_ = name;
-}
-
-void Song::setSendSync(bool sendSync)
-{
-    sendSync_ = sendSync;
-}
-
-QString Song::path() const
-{
-    return path_;
 }

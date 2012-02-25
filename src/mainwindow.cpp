@@ -51,6 +51,7 @@
 #include "blocklistdialog.h"
 #include "messagelistdialog.h"
 #include "song.h"
+#include "track.h"
 #include "block.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
@@ -532,7 +533,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
             break;
         case Qt::Key_Space:
             /* If the song is playing, stop */
-            if (player->mode() != Player::IDLE) {
+            if (player->mode() != Player::ModeIdle) {
                 player->stop();
             } else {
                 /* Otherwise toggle edit mode */
@@ -800,10 +801,10 @@ void MainWindow::setCommandPage(unsigned int commandPage)
 void MainWindow::setMode(Player::Mode mode)
 {
     switch (mode) {
-    case Player::PLAY_SONG:
+    case Player::ModePlaySong:
         ui->labelStatus->setText(QString("Playing song"));
         break;
-    case Player::PLAY_BLOCK:
+    case Player::ModePlayBlock:
         ui->labelStatus->setText(QString("Playing block"));
         break;
     default:

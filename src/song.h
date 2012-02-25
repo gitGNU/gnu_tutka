@@ -30,35 +30,7 @@
 #include "message.h"
 
 class QDomElement;
-
-class Track : public QObject {
-    Q_OBJECT
-
-public:
-    Track(const QString &name = QString(), QObject *parent = NULL);
-    virtual ~Track();
-
-    QString name() const;
-    int volume() const;
-    bool isMuted() const;
-    bool isSolo() const;
-
-public slots:
-    void setName(const QString &name);
-    void setVolume(int volume);
-    void setMute(bool mute);
-    void setSolo(bool solo);
-
-private:
-    // Name of the track
-    QString name_;
-    // Track volume
-    int volume_;
-    // Mute toggle
-    bool mute;
-    // Solo toggle
-    bool solo;
-};
+class Track;
 
 class Song : public QObject {
     Q_OBJECT
@@ -66,63 +38,117 @@ class Song : public QObject {
 public:
     // Loads a song from an XML file or creates a new song
     Song(const QString &path = QString(), QObject *parent = NULL);
+
     // Frees a song structure and its contents
     virtual ~Song();
 
+    // Returns the name of the song
+    QString name() const;
+
+    // Returns the tempo of the song
+    unsigned int tempo() const;
+
+    // Returns the number of ticks per line in the song
+    unsigned int ticksPerLine() const;
+
+    // Returns whether MIDI sync should be sent
+    bool sendSync() const;
+
+    // Returns the master volume
+    unsigned int masterVolume() const;
+
+    // Returns the path the song was last stored to
+    QString path() const;
+
+    // Returns the number of blocks
+    unsigned int blocks() const;
+
+    // Returns the number of playing sequences
+    unsigned int playseqs() const;
+
+    // Returns the number of sections
+    unsigned int sections() const;
+
+    // Returns the number of instruments
+    unsigned int instruments() const;
+
+    // Returns the number of messages
+    unsigned int messages() const;
+
+    // Returns the maximum number of tracks
+    unsigned int maxTracks() const;
+
+    // Returns the given block
+    Block *block(unsigned int number) const;
+
+    // Returns the given track
+    Track *track(unsigned int number) const;
+
+    // Returns the given playing sequence
+    Playseq *playseq(unsigned int number) const;
+
+    // Returns the given section
+    unsigned int section(unsigned int pos) const;
+
+    // Returns the given instrument
+    Instrument *instrument(unsigned int number) const;
+
+    // Returns the given message
+    Message *message(unsigned int number) const;
+
     // Inserts a new block in the block array in the given position
     void insertBlock(unsigned int pos, unsigned int current);
+
     // Deletes a block from the given position of the block array
     void deleteBlock(unsigned int pos);
+
     // Inserts a new playseq in the playseq array in the given position
     void insertPlayseq(unsigned int pos);
+
     // Deletes a playseq from the given position of the playseq array
     void deletePlayseq(unsigned int pos);
+
     // Inserts a new section in the section array in the given position
     void insertSection(unsigned int pos);
+
     // Deletes a section from the given position of the section array
     void deleteSection(unsigned int pos);
+
     // Inserts a new Message in the Message array in the given position
     void insertMessage(unsigned int pos);
+
     // Deletes a Message from the given position of the Message array
     void deleteMessage(unsigned int pos);
+
     // Sets a section in the given position to point somewhere
     void setSection(unsigned int pos, unsigned int playseq);
+
     // Make sure the instrument exists; add instruments if necessary
     void checkInstrument(int instrument, unsigned short defaultMIDIInterface = 0);
-    // Saves a song to an XML file
-    void save(const QString &path);
+
     // Transposes all blocks in a song
     void transpose(int instrument, int halfNotes);
+
     // Expands/shrinks all blocks in a song
     void expandShrink(int factor);
+
     // Changes or swaps an instrument with another in all blocks of a song
     void changeInstrument(int from, int to, bool swap);
 
-    Block *block(unsigned int number) const;
-    Track *track(unsigned int number) const;
-    Playseq *playseq(unsigned int number) const;
-    Instrument *instrument(unsigned int number) const;
-    Message *message(unsigned int number) const;
-    unsigned int maxTracks() const;
-    unsigned int blocks() const;
-    unsigned int playseqs() const;
-    unsigned int sections() const;
-    unsigned int instruments() const;
-    unsigned int messages() const;
-    unsigned int section(unsigned int pos) const;
-    unsigned int masterVolume() const;
-    QString name() const;
-    unsigned int tempo() const;
-    unsigned int ticksPerLine() const;
-    bool sendSync() const;
-    QString path() const;
+    // Saves a song to an XML file
+    void save(const QString &path);
 
 public slots:
-    // Sets the number of ticks per line for a song
+    // Sets the number of ticks per line for the song
     void setTPL(int ticksPerLine);
-    // Sets the tempo of a song
+
+    // Sets the tempo of the song
     void setTempo(int tempo);
+
+    // Sets the name of the song
     void setName(const QString &name);
+
+    // Sets whether to send sync
     void setSendSync(bool sendSync);
 
 private slots:
@@ -130,15 +156,25 @@ private slots:
     void checkMaxTracks();
 
 signals:
+    // Emitted when the number of blocks has changed
     void blocksChanged(unsigned int blocks);
+
+    // Emitted when the number of playing sequences has changed
     void playseqsChanged(unsigned int playseqs);
+
+    // Emitted when the number of sections has changed
     void sectionsChanged(unsigned int sections);
+
+    // Emitted when the number of messages has changed
     void messagesChanged(unsigned int messages);
+
+    // Emitted when the maximum number of tracks has changed
     void maxTracksChanged(unsigned int maxTracks);
 
 private:
     // Initializes an empty song
     void init();
+
     // Parses a song element in an XML file
     bool parse(QDomElement element);
 
@@ -162,7 +198,6 @@ private:
     QList<Message *> messages_;
     // Whether to send MIDI sync or not
     bool sendSync_;
-
     // Path the song was last stored to
     QString path_;
 };

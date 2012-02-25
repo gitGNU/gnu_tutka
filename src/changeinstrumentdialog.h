@@ -36,7 +36,7 @@ class ChangeInstrumentDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ChangeInstrumentDialog(QWidget *parent = 0);
+    explicit ChangeInstrumentDialog(QWidget *parent = NULL);
     ~ChangeInstrumentDialog();
 
 public slots:
@@ -55,10 +55,10 @@ private slots:
 
 private:
     enum Area {
-      SONG,
-      BLOCK,
-      TRACK,
-      SELECTION
+        AreaSong,
+        AreaBlock,
+        AreaTrack,
+        AreaSelection
     };
 
     Ui::ChangeInstrumentDialog *ui;

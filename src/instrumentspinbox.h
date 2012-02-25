@@ -28,8 +28,9 @@
 class InstrumentSpinBox : public QSpinBox
 {
     Q_OBJECT
+
 public:
-    explicit InstrumentSpinBox(QWidget *parent = 0);
+    explicit InstrumentSpinBox(QWidget *parent = NULL);
 
 protected:
     virtual QString textFromValue(int value) const;

@@ -37,21 +37,32 @@ public:
     Playseq(QObject *parent = NULL);
     virtual ~Playseq();
 
+    // Returns the name of the playing sequence
+    QString name() const;
+
+    // Sets the name of the playing sequence
+    void setName(const QString &name);
+
     // Returns the length of the playing sequence
     unsigned int length() const;
+
     // Returns the block at the given position
     unsigned int at(unsigned int pos) const;
+
     // Sets the block at the given position
     void set(unsigned int pos, unsigned int block);
+
     // Inserts a new block in the block array in the given position
     void insert(unsigned int pos);
+
     // Deletes a block from the given position of the block array
     void remove(unsigned int pos);
-    void save(int number, QDomElement &parentElement, QDomDocument &document);
+
     // Parses a playingsequence element in an XML file
     static Playseq *parse(QDomElement element);
-    QString name() const;
-    void setName(const QString &name);
+
+    // Saves the playing sequence to an XML document
+    void save(int number, QDomElement &parentElement, QDomDocument &document);
 
 signals:
     void playseqChanged();

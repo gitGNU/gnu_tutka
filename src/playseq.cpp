@@ -32,6 +32,18 @@ Playseq::~Playseq()
 {
 }
 
+QString Playseq::name() const
+{
+    return name_;
+}
+
+void Playseq::setName(const QString &name)
+{
+    name_ = name;
+
+    emit playseqChanged();
+}
+
 unsigned int Playseq::length() const
 {
     return blockNumbers.length();
@@ -133,16 +145,4 @@ void Playseq::save(int number, QDomElement &parentElement, QDomDocument &documen
     }
 
     parentElement.appendChild(document.createTextNode("\n"));
-}
-
-QString Playseq::name() const
-{
-    return name_;
-}
-
-void Playseq::setName(const QString &name)
-{
-    name_ = name;
-
-    emit playseqChanged();
 }

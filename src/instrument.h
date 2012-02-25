@@ -39,43 +39,58 @@ public:
 
     // Returns the name of the instrument
     QString name() const;
+
     // Returns the MIDI interface number of the instrument
     unsigned int midiInterface() const;
+
     // Returns the MIDI interface name of the instrument
     QString midiInterfaceName() const;
+
     // Returns the MIDI preset of the instrument
     unsigned short midiPreset() const;
+
     // Returns the MIDI channel of the instrument
     unsigned char midiChannel() const;
+
     // Returns the default velocity of the instrument
     unsigned char defaultVelocity() const;
+
     // Returns the transposition of the instrument
     char transpose() const;
+
     // Returns the hold time of the instrument
     unsigned char hold() const;
+
     // Returns the arpeggio block of the instrument
     Block *arpeggio() const;
+
     // Returns the arpeggio base note of the instrument
     unsigned char basenote() const;
 
     // Parses an instrument element in an XML file
     static Instrument *parse(QDomElement element);
+
     // Saves an instrument to an XML document
     void save(int number, QDomElement &parentElement, QDomDocument &document);
 
 public slots:
     // Sets the name of the instrument
     void setName(const QString &name);
+
     // Sets the MIDI channel of the instrument
     void setMidiChannel(int midiChannel);
+
     // Sets the default velocity of the instrument
     void setDefaultVelocity(int defaultVelocity);
+
     // Sets the transposition of the instrument
     void setTranspose(int transpose);
+
     // Sets the hold time of the instrument
     void setHold(int hold);
 
 signals:
+    // Emitted when the name has changed
     void nameChanged(QString name);
 
 private:

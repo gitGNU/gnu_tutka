@@ -30,8 +30,9 @@ class Song;
 class BlockListTableModel : public QAbstractTableModel
 {
     Q_OBJECT
+
 public:
-    explicit BlockListTableModel(QObject *parent = 0);
+    explicit BlockListTableModel(QObject *parent = NULL);
 
     void setSong(Song *song);
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;

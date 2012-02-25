@@ -1,5 +1,5 @@
 /*
- * instrumentpropertiesdialog.h
+ * track.h
  *
  * Copyright 2002-2012 Vesa Halttunen
  *
@@ -20,33 +20,38 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef INSTRUMENTPROPERTIESDIALOG_H
-#define INSTRUMENTPROPERTIESDIALOG_H
+#ifndef TRACK_H
+#define TRACK_H
 
-#include <QDialog>
+#include <QObject>
 
-class Song;
-
-namespace Ui {
-    class InstrumentPropertiesDialog;
-}
-
-class InstrumentPropertiesDialog : public QDialog
-{
+class Track : public QObject {
     Q_OBJECT
 
 public:
-    explicit InstrumentPropertiesDialog(QWidget *parent = NULL);
-    ~InstrumentPropertiesDialog();
+    Track(const QString &name = QString(), QObject *parent = NULL);
+    virtual ~Track();
+
+    QString name() const;
+    int volume() const;
+    bool isMuted() const;
+    bool isSolo() const;
 
 public slots:
-    void setSong(Song *song);
-    void setInstrument(int number);
+    void setName(const QString &name);
+    void setVolume(int volume);
+    void setMute(bool mute);
+    void setSolo(bool solo);
 
 private:
-    Ui::InstrumentPropertiesDialog *ui;
-    Song *song;
-    int instrument;
+    // Name of the track
+    QString name_;
+    // Track volume
+    int volume_;
+    // Mute toggle
+    bool mute;
+    // Solo toggle
+    bool solo;
 };
 
-#endif // INSTRUMENTPROPERTIESDIALOG_H
+#endif // TRACK_H

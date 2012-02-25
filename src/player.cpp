@@ -34,6 +34,7 @@
 #include <QThread>
 #include <QTimer>
 #include "song.h"
+#include "track.h"
 #include "instrument.h"
 #include "midiinterface.h"
 #include "midi.h"
@@ -51,8 +52,8 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     line_(0),
     tick(0),
     song(new Song(path)),
-    mode_(IDLE),
-    sched(SCHED_NANOSLEEP),
+    mode_(ModeIdle),
+    sched(SchedulingNanoSleep),
     syncMode(Off),
     ticksSoFar(0),
     externalSyncTicks(0),
@@ -255,7 +256,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
     QSharedPointer<MIDIInterface> output = midi_->output(midiInterface);
 
     // Check for previous command if any
-    if (command == COMMAND_PREVIOUS_COMMAND_VALUE) {
+    if (command == CommandPreviousCommandValue) {
         if (value != 0) {
             command = trackStatus->previousCommand;
         }
@@ -264,7 +265,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
     }
 
     switch (command) {
-    case COMMAND_PITCH_WHEEL:
+    case CommandPitchWheel:
         // Program change can be sent if the MIDI channel is known
         if (midiChannel != -1) {
             if (value < 0x80) {
@@ -284,42 +285,42 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
             }
         }
         break;
-    case COMMAND_PROGRAM_CHANGE:
+    case CommandProgramChange:
         // Pitch wheel can be set if the MIDI channel is known
         if (midiChannel != -1 && tick == 0) {
             output->programChange(midiChannel, value & 0x7f);
         }
         break;
-    case COMMAND_END_BLOCK:
+    case CommandEndBlock:
         // Only on last tick
         if (tick == song->ticksPerLine() - 1) {
-            postCommand = COMMAND_END_BLOCK;
+            postCommand = CommandEndBlock;
             postValue = value;
         }
         break;
-    case COMMAND_PLAYSEQ_POSITION:
+    case CommandPlayseqPosition:
         // Only on last tick
         if (tick == song->ticksPerLine() - 1) {
-            postCommand = COMMAND_PLAYSEQ_POSITION;
+            postCommand = CommandPlayseqPosition;
             postValue = value;
         }
         break;
-    case COMMAND_SEND_MESSAGE:
+    case CommandSendMessage:
         // Only on first tick
         if (tick == 0 && value < song->messages()) {
             output->writeRaw(song->message(value)->data());
         }
         break;
-    case COMMAND_HOLD:
+    case CommandHold:
         *hold = value;
         break;
-    case COMMAND_RETRIGGER:
+    case CommandRetrigger:
         *delay = -value;
         break;
-    case COMMAND_DELAY:
+    case CommandDelay:
         *delay = value;
         break;
-    case COMMAND_VELOCITY:
+    case CommandVelocity:
         if (note != 0) {
             *volume = value;
             if (midiChannel != -1) {
@@ -353,7 +354,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
             }
         }
         break;
-    case COMMAND_CHANNEL_PRESSURE:
+    case CommandChannelPressure:
         // Channel pressure can be set if the MIDI channel is known
         if (midiChannel != -1) {
             if (value < 0x80) {
@@ -373,21 +374,21 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
             }
         }
         break;
-    case COMMAND_TPL:
+    case CommandTicksPerLine:
         if (value == 0) {
             // Only on last tick
             if (tick == song->ticksPerLine() - 1) {
-                postCommand = COMMAND_TPL;
+                postCommand = CommandTicksPerLine;
             }
         } else {
             song->setTPL(value);
         }
         break;
-    case COMMAND_TEMPO:
+    case CommandTempo:
         if (value == 0) {
             // Only on last tick
             if (tick == song->ticksPerLine() - 1) {
-                postCommand = COMMAND_TEMPO;
+                postCommand = CommandTempo;
             }
         } else {
             song->setTempo(value);
@@ -397,22 +398,22 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
     }
 
     // Handle MIDI controllers
-    if (command >= COMMAND_MIDI_CONTROLLERS) {
+    if (command >= CommandMidiControllers) {
         // MIDI controllers can be set if the MIDI channel is known
         if (midiChannel != -1) {
             if (value < 0x80) {
                 if (tick == 0) {
-                    output->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, value);
-                    midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS] = value;
+                    output->controller(midiChannel, command - CommandMidiControllers, value);
+                    midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers] = value;
                 }
             } else {
                 if (tick < song->ticksPerLine() - 1) {
-                    int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS]) / ((int)song->ticksPerLine() - 1);
+                    int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers]) / ((int)song->ticksPerLine() - 1);
 
-                    output->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS] + tick * delta);
+                    output->controller(midiChannel, command - CommandMidiControllers, midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers] + tick * delta);
                 } else {
-                    output->controller(midiChannel, command - COMMAND_MIDI_CONTROLLERS, value - 0x80);
-                    midiControllerValues[midiInterface][midiChannel * VALUES + command - COMMAND_MIDI_CONTROLLERS] = value - 0x80;
+                    output->controller(midiChannel, command - CommandMidiControllers, value - 0x80);
+                    midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers] = value - 0x80;
                 }
             }
         }
@@ -449,7 +450,7 @@ void Player::run()
                 externalSyncTicks--;
             }
         } else {
-            if (sched == SCHED_RTC || sched == SCHED_NANOSLEEP) {
+            if (sched == SchedulingRTC || sched == SchedulingNanoSleep) {
                 // If the scheduler has changed from external sync reset the timing
                 if (prevsyncMode != Off) {
                     gettimeofday(&next, NULL);
@@ -468,7 +469,7 @@ void Player::run()
                 gettimeofday(&now, NULL);
 
                 // Select scheduling type
-                if (sched == SCHED_NANOSLEEP) {
+                if (sched == SchedulingNanoSleep) {
                     // Nanosleep: calculate difference between now and the next tick
                     req.tv_sec = next.tv_sec - now.tv_sec;
                     req.tv_nsec = (next.tv_usec - now.tv_usec) * 1000;
@@ -566,7 +567,7 @@ void Player::run()
 
                         if (command != 0 || value != 0) {
                             // Check for previous command if any
-                            if (command == COMMAND_PREVIOUS_COMMAND_VALUE) {
+                            if (command == CommandPreviousCommandValue) {
                                 if (value != 0) {
                                     command = trackStatus->previousCommand;
                                 }
@@ -575,10 +576,10 @@ void Player::run()
                             }
 
                             switch (command) {
-                            case COMMAND_RETRIGGER:
+                            case CommandRetrigger:
                                 delay = -value;
                                 break;
-                            case COMMAND_DELAY:
+                            case CommandDelay:
                                 delay = value;
                                 break;
                             }
@@ -729,14 +730,14 @@ void Player::run()
             }
 
             switch (postCommand) {
-            case COMMAND_END_BLOCK:
+            case CommandEndBlock:
                 line_ = postValue;
-                if (mode_ == PLAY_SONG) {
+                if (mode_ == ModePlaySong) {
                     looped = nextPosition();
                     changeBlock = true;
                 }
                 break;
-            case COMMAND_PLAYSEQ_POSITION:
+            case CommandPlayseqPosition:
                 line_ = 0;
                 position_ = postValue;
                 if (position_ >= song->playseq(playseq_)->length()) {
@@ -745,7 +746,7 @@ void Player::run()
                 }
                 changeBlock = true;
                 break;
-            case COMMAND_TEMPO:
+            case CommandTempo:
                 // COMMAND_TPL and COMMAND_TEMPO can only mean "stop" as stop cmds
                 killThread = true;
                 return; // TODO ??
@@ -754,7 +755,7 @@ void Player::run()
                 // Advance in block
                 if (line_ >= song->block(block_)->length()) {
                     line_ = 0;
-                    if (mode_ == PLAY_SONG) {
+                    if (mode_ == ModePlaySong) {
                         looped = nextPosition();
                         changeBlock = true;
                     }
@@ -770,7 +771,7 @@ void Player::run()
         }
 
         // Check whether this thread should be killed
-        if (killThread || (sched == SCHED_NONE && looped)) {
+        if (killThread || (sched == SchedulingNone && looped)) {
             break;
         }
         mutex.unlock();
@@ -779,7 +780,7 @@ void Player::run()
             emit lineChanged(line_);
         }
 
-        if (sched != SCHED_NONE) {
+        if (sched != SchedulingNone) {
             gettimeofday(&now, NULL);
 
             unsigned int time = (unsigned int)(playedSoFar.tv_sec * 1000 + playedSoFar.tv_usec / 1000 + (now.tv_sec * 1000 + now.tv_usec / 1000) - (playingStarted.tv_sec * 1000 + playingStarted.tv_usec / 1000)) / 1000;
@@ -791,7 +792,7 @@ void Player::run()
         }
     }
 
-    if (sched != SCHED_NONE) {
+    if (sched != SchedulingNone) {
         // Calculate how long the song has been playing
         gettimeofday(&now, NULL);
         now.tv_sec -= playingStarted.tv_sec;
@@ -809,7 +810,7 @@ void Player::run()
         }
 
         // Turn off periodic interrupts
-        if (sched == SCHED_RTC && rtcPIE) {
+        if (sched == SchedulingRTC && rtcPIE) {
 #ifdef __linux
             ioctl(rtc, RTC_PIE_OFF, 0);
 #endif
@@ -897,7 +898,7 @@ void Player::play(Mode mode, bool cont)
     ticksSoFar = 0;
 
     switch (mode) {
-    case PLAY_SONG:
+    case ModePlaySong:
         if (!cont) {
             section_ = 0;
             position_ = 0;
@@ -905,7 +906,7 @@ void Player::play(Mode mode, bool cont)
         }
         refreshPlayseqAndBlock();
         break;
-    case PLAY_BLOCK:
+    case ModePlayBlock:
         if (!cont) {
             line_ = 0;
         }
@@ -928,8 +929,8 @@ void Player::play(Mode mode, bool cont)
 
 void Player::stop()
 {
-    if (mode_ != IDLE) {
-        mode_ = IDLE;
+    if (mode_ != ModeIdle) {
+        mode_ = ModeIdle;
         emit modeChanged(mode_);
     }
 
@@ -954,22 +955,22 @@ void Player::stop()
 
 void Player::playSong()
 {
-    play(PLAY_SONG, false);
+    play(ModePlaySong, false);
 }
 
 void Player::playBlock()
 {
-    play(PLAY_BLOCK, false);
+    play(ModePlayBlock, false);
 }
 
 void Player::continueSong()
 {
-    play(PLAY_SONG, true);
+    play(ModePlaySong, true);
 }
 
 void Player::continueBlock()
 {
-    play(PLAY_BLOCK, true);
+    play(ModePlayBlock, true);
 }
 
 void Player::trackStatusCreate()
@@ -1202,7 +1203,7 @@ void Player::unlock()
 void Player::externalSync(unsigned int ticks)
 {
     mutex.lock();
-    if (mode_ != IDLE) {
+    if (mode_ != ModeIdle) {
         externalSyncTicks += ticks;
     }
     externalSync_.wakeAll();
@@ -1225,10 +1226,10 @@ void Player::setScheduler(Scheduling scheduler)
     mutex.lock();
 
     sched = scheduler;
-    if (sched == SCHED_RTC) {
+    if (sched == SchedulingRTC) {
         rtc = open("/dev/rtc", O_RDONLY);
         if (rtc == -1) {
-            sched = SCHED_NANOSLEEP;
+            sched = SchedulingNanoSleep;
         } else {
             bool success = false;
             rtcFrequency = MAXIMUM_RTC_FREQ;
@@ -1249,7 +1250,7 @@ void Player::setScheduler(Scheduling scheduler)
             if (!success) {
                 close(rtc);
                 rtc = -1;
-                sched = SCHED_NANOSLEEP;
+                sched = SchedulingNanoSleep;
             }
         }
     } else {

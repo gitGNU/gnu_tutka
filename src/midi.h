@@ -32,33 +32,44 @@ class Message;
 class MIDI
 {
 public:
-    /* Open the MIDI subsystem */
+    // Open the MIDI subsystem
     MIDI();
     virtual ~MIDI();
 
     QSharedPointer<MIDIInterface> output(unsigned int) const;
     unsigned int outputs() const;
-    /* Get MIDI interface from available interfaces by name */
+
+    // Get MIDI interface from available interfaces by name
     QSharedPointer<MIDIInterface> midiInterface(char *, unsigned int);
-    /* Gets an MIDI interface number by name from the available interfaces */
+
+    // Gets an MIDI interface number by name from the available interfaces
     int midiInterfaceNumber(char *, unsigned int);
-    /* Gets an MIDI interface name by number from the available interfaces */
+
+    // Gets an MIDI interface name by number from the available interfaces
     char *midiInterfaceName(unsigned int, unsigned int);
-    /* Opens the MIDI interfaces */
+
+    // Opens the MIDI interfaces
     void subscribeAll();
-    /* Unsubscribe all MIDI interfaces and free data */
+
+    // Unsubscribe all MIDI interfaces and free data
     void unsubscribeAll();
-    /* Gets the list of available interfaces */
+
+    // Gets the list of available interfaces
     void interfaces(unsigned int);
-    /* Refreshes the list of available interfaces */
+
+    // Refreshes the list of available interfaces
     void refreshInterfaces();
-    /* Receives a MIDI message */
+
+    // Receives a MIDI message
     unsigned char *readRaw();
-    /* Receives a MIDI message */
+
+    // Receives a MIDI message
     int readSystemExclusive(Message *, unsigned int, int);
-    /* Returns the data written to the MIDI buffer */
+
+    // Returns the data written to the MIDI buffer
     unsigned char *buffer() const;
-    /* Returns the length of data written to the MIDI buffer */
+
+    // Returns the length of data written to the MIDI buffer
     int bufferLength() const;
 
 private:
