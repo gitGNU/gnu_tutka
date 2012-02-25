@@ -50,7 +50,13 @@ const char *Message::rawData() const
 
 void Message::setLength(unsigned int length)
 {
+    int oldLength = data.length();
+
     data.resize(length);
+
+    for (int i = oldLength; i < length; i++) {
+        data[i] = 0;
+    }
 }
 
 void Message::setAutoSend(bool autoSend)

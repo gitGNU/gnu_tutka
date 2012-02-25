@@ -10,7 +10,6 @@ namespace Ui {
 class Song;
 class MessageListTableModel;
 class SpinBoxDelegate;
-class CheckBoxDelegate;
 
 class MessageListDialog : public QDialog
 {
@@ -33,7 +32,6 @@ private:
     Song *song;
     MessageListTableModel *messageListTableModel;
     SpinBoxDelegate *spinBoxDelegate;
-    CheckBoxDelegate *checkBoxDelegate;
 };
 
 #endif // MESSAGELISTDIALOG_H

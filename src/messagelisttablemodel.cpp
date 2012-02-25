@@ -71,30 +71,28 @@ QVariant MessageListTableModel::headerData(int section, Qt::Orientation orientat
 
 bool MessageListTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role == Qt::EditRole && index.row() >= 0 && index.row() < song->sections()) {
-        bool success = false;
+    bool success = false;
 
-        switch(index.column()) {
-        case 0:
-            song->message(index.row())->setName(value.toString());
-            success = true;
-            break;
-        case 1:
-            song->message(index.row())->setLength(value.toUInt(&success));
-            break;
-        case 2:
-            qWarning("XX MULATTI");
+    if (index.row() >= 0 && index.row() < song->sections()) {
+        if (role == Qt::EditRole) {
+            switch(index.column()) {
+            case 0:
+                song->message(index.row())->setName(value.toString());
+                success = true;
+                break;
+            case 1:
+                song->message(index.row())->setLength(value.toUInt(&success));
+                break;
+            default:
+                break;
+            }
+        } else if (role == Qt::CheckStateRole && index.column() == 2) {
             song->message(index.row())->setAutoSend(value == QVariant(Qt::Checked));
             success = true;
-            break;
-        default:
-            break;
         }
-
-        return success;
-    } else {
-        return false;
     }
+
+    return success;
 }
 
 Qt::ItemFlags MessageListTableModel::flags(const QModelIndex &index) const

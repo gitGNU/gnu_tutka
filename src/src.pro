@@ -32,8 +32,7 @@ SOURCES += main.cpp \
     sliderwithlabel.cpp \
     sectionlisttablemodel.cpp \
     playingsequencelisttablemodel.cpp \
-    messagelisttablemodel.cpp \
-    checkboxdelegate.cpp
+    messagelisttablemodel.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -65,8 +64,7 @@ HEADERS += block.h \
     sliderwithlabel.h \
     sectionlisttablemodel.h \
     playingsequencelisttablemodel.h \
-    messagelisttablemodel.h \
-    checkboxdelegate.h
+    messagelisttablemodel.h
 
 FORMS += \
     mainwindow.ui \

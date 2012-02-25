@@ -1,6 +1,5 @@
 #include "song.h"
 #include "spinboxdelegate.h"
-#include "checkboxdelegate.h"
 #include "messagelisttablemodel.h"
 #include "messagelistdialog.h"
 #include "ui_messagelistdialog.h"
@@ -10,14 +9,13 @@ MessageListDialog::MessageListDialog(QWidget *parent) :
     ui(new Ui::MessageListDialog),
     song(NULL),
     messageListTableModel(new MessageListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(this)),
-    checkBoxDelegate(new CheckBoxDelegate(this))
+    spinBoxDelegate(new SpinBoxDelegate(this))
 {
     ui->setupUi(this);
 
     ui->tableView->setModel(messageListTableModel);
+    ui->tableView->setColumnWidth(0, 200);
     ui->tableView->setItemDelegateForColumn(1, spinBoxDelegate);
-//    ui->tableView->setItemDelegateForColumn(2, checkBoxDelegate);
 
     connect(ui->pushButtonInsertNew, SIGNAL(clicked()), this, SLOT(insertMessage()));
     connect(ui->pushButtonAppendNew, SIGNAL(clicked()), this, SLOT(appendMessage()));
