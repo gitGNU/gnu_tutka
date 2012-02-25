@@ -79,14 +79,14 @@ void Tracker::setTracks(int tracks)
         this->tracks = tracks;
 
         // Make sure the cursor is inside the tracker
-        if (cursorTrack_ >= this->tracks) {
-            cursorTrack_ = this->tracks - 1;
+        if (cursorTrack_ >= tracks) {
+            cursorTrack_ = tracks - 1;
         }
 
         initDisplay(geometry().width(), geometry().height());
         queueDraw();
 
-        emit xpanningChanged(leftmostTrack, this->tracks, visibleTracks);
+        emit xpanningChanged(leftmostTrack, tracks, visibleTracks);
     }
 }
 
@@ -182,13 +182,13 @@ void Tracker::setLeftmostTrack(int leftmostTrack)
         this->leftmostTrack = leftmostTrack;
         queueDraw();
 
-        if (cursorTrack_ < this->leftmostTrack) {
-            cursorTrack_ = this->leftmostTrack;
-        } else if (cursorTrack_ >= this->leftmostTrack + visibleTracks) {
-            cursorTrack_ = this->leftmostTrack + visibleTracks - 1;
+        if (cursorTrack_ < leftmostTrack) {
+            cursorTrack_ = leftmostTrack;
+        } else if (cursorTrack_ >= leftmostTrack + visibleTracks) {
+            cursorTrack_ = leftmostTrack + visibleTracks - 1;
         }
 
-        emit xpanningChanged(this->leftmostTrack, tracks, visibleTracks);
+        emit xpanningChanged(leftmostTrack, tracks, visibleTracks);
     }
 }
 
@@ -705,15 +705,15 @@ void Tracker::mouseToCursorPos(int x, int y, int *cursorTrack, int *cursorItem, 
     // Calc the row
     HPatHalf = visibleLines / 2;
     if (y < startY) {
-        *line = this->line_ - HPatHalf - 1;
+        *line = line_ - HPatHalf - 1;
     } else if (y > visibleLines * fontHeight) {
-        *line = this->line_ + HPatHalf + 1;
+        *line = line_ + HPatHalf + 1;
     } else {
         *line = (y - startY) / fontHeight;
-        if (this->line_ <= *line) {
-            *line = this->line_ + *line - HPatHalf;
+        if (line_ <= *line) {
+            *line = line_ + *line - HPatHalf;
         } else {
-            *line = this->line_ - (HPatHalf - *line);
+            *line = line_ - (HPatHalf - *line);
         }
     }
     if (*line < 0) {
@@ -753,12 +753,12 @@ void Tracker::mousePressEvent(QMouseEvent *event)
                 emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
             }
             mouseToCursorPos(x, y, &cursorTrack, &cursorItem, &line);
-            if (cursorTrack != this->cursorTrack_ || cursorItem != this->cursorItem_) {
-                this->cursorTrack_ = cursorTrack;
-                this->cursorItem_ = cursorItem;
+            if (cursorTrack != cursorTrack_ || cursorItem != cursorItem_) {
+                cursorTrack_ = cursorTrack;
+                cursorItem_ = cursorItem;
                 setVisibleArea();
             }
-            if (line != this->line_) {
+            if (line != line_) {
                 setLine(line);
             }
             queueDraw();

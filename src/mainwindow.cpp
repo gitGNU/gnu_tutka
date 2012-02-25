@@ -86,6 +86,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     copyTrack_(NULL),
     chordStatus(0),
     block(0),
+    playseq(0),
     instrument(0),
     selectionStartTrack(-1),
     selectionStartLine(-1),
@@ -755,6 +756,9 @@ void MainWindow::setSong(Song *song)
 {
     if (this->song != NULL) {
         disconnect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), this->song, SLOT(setSendSync(bool)));
+        disconnect(this->song, SIGNAL(sectionsChanged(uint)), this, SLOT(setSection()));
+        disconnect(this->song, SIGNAL(playseqsChanged(uint)), this, SLOT(setPlayseq()));
+        disconnect(this->song, SIGNAL(blocksChanged(uint)), this, SLOT(setBlock()));
     }
 
     this->song = song;
@@ -773,6 +777,9 @@ void MainWindow::setSong(Song *song)
     ui->actionSettingsSendMidiSync->setChecked(song->sendSync());
 
     connect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), song, SLOT(setSendSync(bool)));
+    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(setSection()));
+    connect(song, SIGNAL(playseqsChanged(uint)), this, SLOT(setPlayseq()));
+    connect(song, SIGNAL(blocksChanged(uint)), this, SLOT(setBlock()));
 }
 
 void MainWindow::setSection(unsigned int section)
@@ -782,7 +789,18 @@ void MainWindow::setSection(unsigned int section)
 
 void MainWindow::setPlayseq(unsigned int playseq)
 {
-    ui->labelPlayingSequence->setText(QString("Playing Sequence %1/%2").arg(playseq + 1).arg(song->playseqs()));
+    disconnect(song->playseq(this->playseq), SIGNAL(nameChanged(QString)), this, SLOT(setPlayseq()));
+
+    this->playseq = playseq;
+
+    connect(song->playseq(playseq), SIGNAL(nameChanged(QString)), this, SLOT(setPlayseq()));
+
+    QString name = song->playseq(playseq)->name();
+    if (name.isEmpty()) {
+        ui->labelPlayingSequence->setText(QString("Playing Sequence %1/%2").arg(playseq + 1).arg(song->playseqs()));
+    } else {
+        ui->labelPlayingSequence->setText(QString("Playing Sequence %1/%2: %3").arg(playseq + 1).arg(song->playseqs()).arg(name));
+    }
 }
 
 void MainWindow::setPosition(unsigned int position)
@@ -792,8 +810,21 @@ void MainWindow::setPosition(unsigned int position)
 
 void MainWindow::setBlock(unsigned int block)
 {
+    disconnect(song->block(this->block), SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
+    disconnect(song->block(this->block), SIGNAL(commandPagesChanged(int)), this, SLOT(setCommandPage()));
+
     this->block = block;
-    ui->labelBlock->setText(QString("Block %1/%2").arg(block + 1).arg(song->blocks()));
+
+    connect(song->block(block), SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
+    connect(song->block(block), SIGNAL(commandPagesChanged(int)), this, SLOT(setCommandPage()));
+
+    QString name = song->block(block)->name();
+    if (name.isEmpty()) {
+        ui->labelBlock->setText(QString("Block %1/%2").arg(block + 1).arg(song->blocks()));
+    } else {
+        ui->labelBlock->setText(QString("Block %1/%2: %3").arg(block + 1).arg(song->blocks()).arg(name));
+    }
+    setCommandPage(ui->trackerMain->commandPage());
 }
 
 void MainWindow::setCommandPage(unsigned int commandPage)
@@ -983,4 +1014,24 @@ void MainWindow::saveAs()
     if (!path.isEmpty()) {
         song->save(path);
     }
+}
+
+void MainWindow::setSection()
+{
+    setSection(player->section());
+}
+
+void MainWindow::setPlayseq()
+{
+    setPlayseq(player->playseq());
+}
+
+void MainWindow::setBlock()
+{
+    setBlock(player->block());
+}
+
+void MainWindow::setCommandPage()
+{
+    setCommandPage(ui->trackerMain->commandPage());
 }

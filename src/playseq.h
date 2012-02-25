@@ -65,7 +65,11 @@ public:
     void save(int number, QDomElement &parentElement, QDomDocument &document);
 
 signals:
+    // Emitted when the playing sequence contents change
     void playseqChanged();
+
+    // Emitted when the playing sequence name changes
+    void nameChanged(QString);
 
 private:
     // Name

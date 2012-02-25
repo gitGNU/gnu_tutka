@@ -50,7 +50,9 @@ QString Block::name() const
 
 void Block::setName(const QString &name)
 {
-    this->name_ = name;
+    name_ = name;
+
+    emit nameChanged(name_);
 }
 
 unsigned int Block::tracks() const
@@ -63,7 +65,7 @@ void Block::setTracks(unsigned int tracks)
     // Allocate new arrays
     unsigned char *notes = (unsigned char *)calloc(2 * tracks * length_, sizeof(unsigned char));
     unsigned char *commands = (unsigned char *)calloc(commandPages_ * 2 * tracks * length_, sizeof(unsigned char));
-    unsigned int oldTracks = this->tracks_;
+    unsigned int oldTracks = tracks_;
 
     // How many tracks from the old block to use
     unsigned int existingTracks = tracks < oldTracks ? tracks : oldTracks;
@@ -81,13 +83,13 @@ void Block::setTracks(unsigned int tracks)
     }
 
     // Free old arrays
-    free(this->notes_);
-    free(this->commands_);
+    free(notes_);
+    free(commands_);
 
     // Use new arrays
-    this->notes_ = notes;
-    this->commands_ = commands;
-    this->tracks_ = tracks;
+    notes_ = notes;
+    commands_ = commands;
+    tracks_ = tracks;
 
     emit tracksChanged(tracks_);
     emit areaChanged(tracks > oldTracks ? oldTracks : tracks, 0, (tracks > oldTracks ? tracks : oldTracks) - 1, length_ - 1);
@@ -103,7 +105,7 @@ void Block::setLength(unsigned int length)
     // Allocate new arrays
     unsigned char *notes = (unsigned char *)calloc(2 * tracks_ * length, sizeof(unsigned char));
     unsigned char *commands = (unsigned char *)calloc(commandPages_ * 2 * tracks_ * length, sizeof(unsigned char));
-    unsigned int oldLength = this->length_;
+    unsigned int oldLength = length_;
 
     // How many lines from the old block to use
     unsigned int existingLength = length < oldLength ? length : oldLength;
@@ -111,8 +113,8 @@ void Block::setLength(unsigned int length)
     // Copy the notes and the commands of the block to a new data array
     for (unsigned int line = 0; line < existingLength; line++) {
         for (unsigned int track = 0; track < tracks_; track++) {
-            notes[(line * tracks_ + track) * 2] = this->notes_[(line * tracks_ + track) * 2];
-            notes[(line * tracks_ + track) * 2 + 1] = this->notes_[(line * tracks_ + track) * 2 + 1];
+            notes[(line * tracks_ + track) * 2] = notes_[(line * tracks_ + track) * 2];
+            notes[(line * tracks_ + track) * 2 + 1] = notes_[(line * tracks_ + track) * 2 + 1];
             for (unsigned int commandPage = 0; commandPage < commandPages_; commandPage++) {
                 commands[commandPage * 2 * tracks_ * length + (line * tracks_ + track) * 2] = commands[commandPage * 2 * tracks_ * oldLength + (line * tracks_ + track) * 2];
                 commands[commandPage * 2 * tracks_ * length + (line * tracks_ + track) * 2 + 1] = commands[commandPage * 2 * tracks_ * oldLength + (line * tracks_ + track) * 2 + 1];
@@ -121,13 +123,13 @@ void Block::setLength(unsigned int length)
     }
 
     // Free old arrays
-    free(this->notes_);
-    free(this->commands_);
+    free(notes_);
+    free(commands_);
 
     // Use new arrays
-    this->notes_ = notes;
-    this->commands_ = commands;
-    this->length_ = length;
+    notes_ = notes;
+    commands_ = commands;
+    length_ = length;
 
     emit lengthChanged(length_);
     emit areaChanged(0, length > oldLength ? oldLength : length, tracks_ - 1, (length > oldLength ? length : oldLength) - 1);
@@ -144,17 +146,17 @@ void Block::setCommandPages(unsigned int commandPages)
     unsigned char *commands = (unsigned char *)calloc(commandPages * 2 * tracks_ * length_, sizeof(unsigned char));
 
     // How many command pages from the old block to use
-    unsigned int existingCommandPages = commandPages < this->commandPages_ ? commandPages : this->commandPages_;
+    unsigned int existingCommandPages = commandPages < commandPages_ ? commandPages : commandPages_;
 
     // Copy the command pages to a new data array
-    memcpy(commands, this->commands_, existingCommandPages * 2 * tracks_ * length_);
+    memcpy(commands, commands_, existingCommandPages * 2 * tracks_ * length_);
 
     // Free old array
-    free(this->commands_);
+    free(commands_);
 
     // Use new array
-    this->commands_ = commands;
-    this->commandPages_ = commandPages;
+    commands_ = commands;
+    commandPages_ = commandPages;
 
     emit commandPagesChanged(commandPages_);
     emit areaChanged(0, 0, tracks_ - 1, length_ - 1);

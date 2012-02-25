@@ -134,6 +134,9 @@ signals:
     // Emitted when the number of command pages changes
     void commandPagesChanged(int commandPages);
 
+    // Emitted when the name of the block changes
+    void nameChanged(QString name);
+
 private:
     // Makes sure the given area is inside the block
     void checkBounds(int &startTrack, int &startLine, int &endTrack, int &endLine);

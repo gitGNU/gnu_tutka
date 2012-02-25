@@ -89,6 +89,10 @@ private slots:
     void setExternalSync();
     void save();
     void saveAs();
+    void setSection();
+    void setPlayseq();
+    void setBlock();
+    void setCommandPage();
 
 private:
     bool keyPress(QKeyEvent *event);
@@ -118,6 +122,7 @@ private:
     QList<int> keyboardKeysDown;
     int chordStatus;
     unsigned int block;
+    unsigned int playseq;
     int instrument;
     int selectionStartTrack;
     int selectionStartLine;

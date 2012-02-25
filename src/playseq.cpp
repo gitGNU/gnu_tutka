@@ -41,7 +41,7 @@ void Playseq::setName(const QString &name)
 {
     name_ = name;
 
-    emit playseqChanged();
+    emit nameChanged(name);
 }
 
 unsigned int Playseq::length() const
