@@ -23,14 +23,21 @@
 /*
  * TODO
  *
+ * Tracker scrollbars
+ * Tracker mousewheel
+ * Block/playing sequence names in main window
+ * File types in file dialogs
+ * Localization
+ * 
  * MIDI input
  * MIDI Message List Receive
  * Settings->Record Controllers
  *
- * Settings->Preferences
+ * Settings->Preferences (Output MIDI interfaces, Input MIDI interfaces, Name/Enabled/Client/Port, no divider)
  * ALSA MIDI
  * OS X MIDI
  * Export MIDI
+ * MMD import/export
  */
 
 #include <QApplication>
