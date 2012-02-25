@@ -24,6 +24,7 @@
 #define SONG_H_
 
 #include <QObject>
+#include <QMutex>
 #include "playseq.h"
 #include "block.h"
 #include "instrument.h"
@@ -138,6 +139,12 @@ public:
     // Saves a song to an XML file
     void save(const QString &path);
 
+    // Locks the song
+    void lock();
+
+    // Unlocks the song
+    void unlock();
+
 public slots:
     // Sets the number of ticks per line for the song
     void setTPL(int ticksPerLine);
@@ -200,6 +207,8 @@ private:
     bool sendSync_;
     // Path the song was last stored to
     QString path_;
+    // Mutex for locking the song
+    QMutex mutex;
 };
 
 #endif // SONG_H_

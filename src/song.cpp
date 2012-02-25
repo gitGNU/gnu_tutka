@@ -185,6 +185,8 @@ Message *Song::message(unsigned int number) const
 
 void Song::insertBlock(unsigned int pos, unsigned int current)
 {
+    mutex.lock();
+
     // Check block existence
     if (pos > blocks_.count()) {
         pos = blocks_.count();
@@ -207,6 +209,8 @@ void Song::insertBlock(unsigned int pos, unsigned int current)
         }
     }
 
+    mutex.unlock();
+
     emit blocksChanged(blocks_.count());
 }
 
@@ -214,6 +218,8 @@ void Song::deleteBlock(unsigned int pos)
 {
     // Don't delete the last block
     if (blocks_.count() > 1) {
+        mutex.lock();
+
         // Check block existence
         if (pos >= blocks_.count()) {
             pos = blocks_.count() - 1;
@@ -229,6 +235,8 @@ void Song::deleteBlock(unsigned int pos)
                 }
             }
         }
+
+        mutex.unlock();
     }
 
     emit blocksChanged(blocks_.count());
@@ -237,6 +245,8 @@ void Song::deleteBlock(unsigned int pos)
 // Inserts a new playseq in the playseq array in the given position
 void Song::insertPlayseq(unsigned int pos)
 {
+    mutex.lock();
+
     // Check playseq existence
     if (pos > playseqs_.count()) {
         pos = playseqs_.count();
@@ -252,6 +262,8 @@ void Song::insertPlayseq(unsigned int pos)
         }
     }
 
+    mutex.unlock();
+
     emit playseqsChanged(playseqs_.count());
 }
 
@@ -259,6 +271,8 @@ void Song::deletePlayseq(unsigned int pos)
 {
     // Don't delete the last playseq
     if (playseqs_.count() > 1) {
+        mutex.lock();
+
         // Check playseq existence
         if (pos >= playseqs_.count()) {
             pos = playseqs_.count() - 1;
@@ -272,6 +286,8 @@ void Song::deletePlayseq(unsigned int pos)
                 sections_[i]--;
             }
         }
+
+        mutex.unlock();
     }
 
     emit playseqsChanged(playseqs_.count());
@@ -279,12 +295,16 @@ void Song::deletePlayseq(unsigned int pos)
 
 void Song::insertSection(unsigned int pos)
 {
+    mutex.lock();
+
     // Check that the value is possible
     if (pos > sections_.count()) {
         pos = sections_.count();
     }
 
     sections_.insert(pos, pos < sections_.count() ? sections_[pos] : sections_[sections_.count() - 1]);
+
+    mutex.unlock();
 
     emit sectionsChanged(sections_.count());
 }
@@ -293,12 +313,16 @@ void Song::deleteSection(unsigned int pos)
 {
     // Don't delete the last section
     if (sections_.count() > 1) {
+        mutex.lock();
+
         // Check section existence
         if (pos >= sections_.count()) {
             pos = sections_.count() - 1;
         }
 
         sections_.removeAt(pos);
+
+        mutex.unlock();
     }
 
     emit sectionsChanged(sections_.count());
@@ -336,7 +360,11 @@ void Song::deleteMessage(unsigned int pos)
 void Song::setSection(unsigned int pos, unsigned int playseq)
 {
     if (pos < sections_.count() && playseq < playseqs_.count()) {
+        mutex.lock();
+
         sections_[pos] = playseq;
+
+        mutex.unlock();
     }
 }
 
@@ -758,4 +786,14 @@ void Song::save(const QString &path)
     file.write("<?xml version=\"1.0\"?>\n");
     file.write(document.toByteArray());
     file.close();
+}
+
+void Song::lock()
+{
+    mutex.lock();
+}
+
+void Song::unlock()
+{
+    mutex.unlock();
 }

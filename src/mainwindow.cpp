@@ -33,7 +33,6 @@
  * Export MIDI
  */
 
-#include <cstdio>
 #include <QApplication>
 #include <QKeyEvent>
 #include <QFileDialog>

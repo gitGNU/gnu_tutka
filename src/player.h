@@ -59,24 +59,6 @@ public:
         ModePlayBlock
     };
 
-    enum Command {
-        CommandPreviousCommandValue = 0x00,
-        CommandPitchWheel = 0x01,
-        CommandEndBlock = 0x02,
-        CommandPlayseqPosition = 0x03,
-        CommandProgramChange = 0x07,
-        CommandSendMessage = 0x08,
-        CommandHold = 0x09,
-        CommandRetrigger = 0x0a,
-        CommandDelay = 0x0b,
-        CommandVelocity = 0x0c,
-        CommandChannelPressure = 0x0d,
-        CommandTicksPerLine = 0x0e,
-        CommandTempo = 0x0f,
-        CommandNotDefined = 0x10,
-        CommandMidiControllers = 0x80
-    };
-
     enum Scheduling {
         SchedulingNone,
         SchedulingRTC,
@@ -157,9 +139,14 @@ public slots:
     void setSong(const QString &path = QString());
 
 private slots:
+    // Initializes the player
     void init();
+
     // Reallocate track status array
     void trackStatusCreate();
+
+    // Refreshes playseq from section and block from position
+    void refreshPlayseqAndBlock();
 
 signals:
     void songChanged(Song *song);
@@ -183,12 +170,30 @@ private:
       VALUES_PITCH_WHEEL = 130
     };
 
+    enum Command {
+        CommandPreviousCommandValue = 0x00,
+        CommandPitchWheel = 0x01,
+        CommandEndBlock = 0x02,
+        CommandPlayseqPosition = 0x03,
+        CommandProgramChange = 0x07,
+        CommandSendMessage = 0x08,
+        CommandHold = 0x09,
+        CommandRetrigger = 0x0a,
+        CommandDelay = 0x0b,
+        CommandVelocity = 0x0c,
+        CommandChannelPressure = 0x0d,
+        CommandTicksPerLine = 0x0e,
+        CommandTempo = 0x0f,
+        CommandNotDefined = 0x10,
+        CommandMidiControllers = 0x80
+    };
+
     // Starts the player thread
     void play(Mode, bool);
-    // Refreshes playseq from section and block from position
-    void refreshPlayseqAndBlock();
+
     // Advances in section and jumps to the beginning if necessary
     bool nextSection();
+
     // Advances in playing sequence and jumps to next section if necessary
     bool nextPosition();
 

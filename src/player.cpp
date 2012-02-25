@@ -22,7 +22,6 @@
 
 #include <cstddef>
 #include <cstdlib>
-#include <cstdio>
 #include <fcntl.h>
 #include <time.h>
 #include <unistd.h>
@@ -438,6 +437,7 @@ void Player::run()
 
         // Lock
         mutex.lock();
+        song->lock();
 
         if (syncMode != Off) {
             if (externalSyncTicks == 0) {
@@ -476,11 +476,13 @@ void Player::run()
                     }
 
                     // Sleep until the next tick if necessary
+                    song->unlock();
                     mutex.unlock();
                     if (req.tv_sec >= 0) {
                         while (nanosleep(&req, &rem) == -1) { };
                     }
                     mutex.lock();
+                    song->lock();
                 } else {
                     // Make sure periodic interrupts are on
                     if (!rtcPIE) {
@@ -491,6 +493,7 @@ void Player::run()
                     }
 
                     // Rtc: read RTC interrupts until it's time to play again
+                    song->unlock();
                     mutex.unlock();
                     while ((next.tv_sec - now.tv_sec) > 0 || ((next.tv_sec - now.tv_sec) == 0 && (next.tv_usec - now.tv_usec) > 1000000 / rtcFrequency)) {
                         unsigned long l;
@@ -502,6 +505,7 @@ void Player::run()
                         gettimeofday(&now, NULL);
                     }
                     mutex.lock();
+                    song->lock();
                 }
             }
         }
@@ -769,6 +773,7 @@ void Player::run()
         if (killThread || (sched == SchedulingNone && looped)) {
             break;
         }
+        song->unlock();
         mutex.unlock();
 
         if (line_ != oldLine) {
@@ -817,6 +822,7 @@ void Player::run()
     }
 
     // The mutex is locked if the thread was killed and loop broken
+    song->unlock();
     mutex.unlock();
 }
 
@@ -996,6 +1002,10 @@ void Player::setSong(const QString &path)
     song = new Song(path);
 
     init();
+
+    connect(song, SIGNAL(blocksChanged(uint)), this, SLOT(refreshPlayseqAndBlock()));
+    connect(song, SIGNAL(playseqsChanged(uint)), this, SLOT(refreshPlayseqAndBlock()));
+    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(refreshPlayseqAndBlock()));
 
     if (oldSong != NULL) {
         delete oldSong;
