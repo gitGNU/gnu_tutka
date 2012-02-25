@@ -26,6 +26,10 @@ private slots:
     void insertMessage();
     void appendMessage();
     void deleteMessage();
+    void sendMessage();
+    void receiveMessage();
+    void loadMessage();
+    void saveMessage();
 
 private:
     Ui::MessageListDialog *ui;

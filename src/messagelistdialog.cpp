@@ -20,6 +20,10 @@ MessageListDialog::MessageListDialog(QWidget *parent) :
     connect(ui->pushButtonInsertNew, SIGNAL(clicked()), this, SLOT(insertMessage()));
     connect(ui->pushButtonAppendNew, SIGNAL(clicked()), this, SLOT(appendMessage()));
     connect(ui->pushButtonDelete, SIGNAL(clicked()), this, SLOT(deleteMessage()));
+    connect(ui->pushButtonSend, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    connect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(receiveMessage()));
+    connect(ui->pushButtonLoad, SIGNAL(clicked()), this, SLOT(loadMessage()));
+    connect(ui->pushButtonSave, SIGNAL(clicked()), this, SLOT(saveMessage()));
 }
 
 MessageListDialog::~MessageListDialog()
@@ -55,4 +59,20 @@ void MessageListDialog::deleteMessage()
     if (!indexes.isEmpty()) {
         song->deleteMessage(indexes.first().row());
     }
+}
+
+void MessageListDialog::sendMessage()
+{
+}
+
+void MessageListDialog::receiveMessage()
+{
+}
+
+void MessageListDialog::loadMessage()
+{
+}
+
+void MessageListDialog::saveMessage()
+{
 }
