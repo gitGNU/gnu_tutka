@@ -16,7 +16,7 @@ CoreMIDIInterface::CoreMIDIInterface(MIDIClientRef client, MIDIEndpointRef endpo
     if ((flags & Input) != 0) {
 //        MIDIInputPortCreate(client, CFSTR("Tutka Input"), &inputPort);
     }
-    setEnabled(false);
+//    setEnabled(false);
 }
 
 QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)

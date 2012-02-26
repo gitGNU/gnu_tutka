@@ -67,8 +67,6 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
 {
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(remapMidiOutputs()));
 
-    remapMidiOutputs();
-
     QTimer::singleShot(0, this, SLOT(init()));
 }
 
@@ -1016,6 +1014,8 @@ void Player::setSong(const QString &path)
 
 void Player::init()
 {
+    remapMidiOutputs();
+
     // Recreate the track status array
     trackStatusCreate();
     connect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(trackStatusCreate()));
