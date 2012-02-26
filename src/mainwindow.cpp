@@ -33,9 +33,8 @@
  * MIDI Message List Receive
  * Settings->Record Controllers
  *
- * Settings->Preferences (Output MIDI interfaces, Input MIDI interfaces, Name/Enabled/Client/Port, no divider)
+ * Settings->Preferences->Scheduling mode
  * ALSA MIDI
- * OS X MIDI
  * Export MIDI
  * MMD import/export
  */

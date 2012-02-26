@@ -35,8 +35,6 @@ SOURCES += main.cpp \
     messagelisttablemodel.cpp \
     track.cpp \
     clickablelabel.cpp \
-    coremidi.cpp \
-    coremidiinterface.cpp \
     inputmidiinterfacestablemodel.cpp \
     outputmidiinterfacestablemodel.cpp
 
@@ -73,8 +71,6 @@ HEADERS += block.h \
     messagelisttablemodel.h \
     track.h \
     clickablelabel.h \
-    coremidi.h \
-    coremidiinterface.h \
     inputmidiinterfacestablemodel.h \
     outputmidiinterfacestablemodel.h
 
@@ -96,6 +92,9 @@ FORMS += \
 TEMPLATE = app
 TARGET = Tutka
 QT += xml
+
+macx:SOURCES += coremidi.cpp coremidiinterface.cpp
+macx:HEADERS += coremidi.h coremidiinterface.h
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 macx:INCLUDEPATH += /System/Library/Frameworks/CoreMIDI.framework/Versions/A/Headers
 
