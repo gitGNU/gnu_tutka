@@ -34,7 +34,6 @@
  * Settings->Record Controllers
  *
  * Settings->Preferences->Scheduling mode
- * ALSA MIDI
  * Export MIDI
  * MMD import/export
  */

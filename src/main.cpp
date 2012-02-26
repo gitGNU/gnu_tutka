@@ -23,6 +23,8 @@
 #include <QApplication>
 #ifdef __APPLE__
 #include "coremidi.h"
+#elif __linux
+#include "alsamidi.h"
 #else
 #include "midi.h"
 #endif
@@ -34,7 +36,9 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 
 #ifdef __APPLE__
-    CoreMIDI *midi = new CoreMIDI;
+    MIDI *midi = new CoreMIDI;
+#elif __linux
+    MIDI *midi = new AlsaMIDI;
 #else
     MIDI *midi = new MIDI;
 #endif

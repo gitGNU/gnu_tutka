@@ -72,7 +72,9 @@ HEADERS += block.h \
     track.h \
     clickablelabel.h \
     inputmidiinterfacestablemodel.h \
-    outputmidiinterfacestablemodel.h
+    outputmidiinterfacestablemodel.h \
+    alsamidi.h \
+    alsamidiinterface.h
 
 FORMS += \
     mainwindow.ui \
@@ -93,6 +95,10 @@ TEMPLATE = app
 TARGET = Tutka
 QT += xml
 
+unix:!macx:SOURCES += alsamidi.cpp alsamidiinterface.cpp
+unix:!macx:HEADERS += alsamidi.h alsamidiinterface.h
+unix:!macx:LIBS += -lasound
+
 macx:SOURCES += coremidi.cpp coremidiinterface.cpp
 macx:HEADERS += coremidi.h coremidiinterface.h
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
@@ -106,7 +112,7 @@ schemas.files = tutka.schemas
 desktop.path = /usr/share/applications
 desktop.files = tutka.desktop
 
-icon.path = /usr/share/icons/blanco/80x80/apps
+icon.path = /usr/share/icons/hicolor/64x64/apps
 icon.files = tutka.png
 
 QMAKE_CFLAGS += -std=gnu99
@@ -121,6 +127,8 @@ QMAKE_CLEAN += *.gcov \
     ./.obj/*.gcno
 
 INSTALLS += target schemas desktop icon
+
+
 
 
 

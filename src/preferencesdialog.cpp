@@ -35,7 +35,9 @@ PreferencesDialog::PreferencesDialog(MIDI *midi, QWidget *parent) :
     ui->setupUi(this);
 
     ui->tableViewOutputMidiInterfaces->setModel(outputMidiInterfacesTableModel);
+    ui->tableViewOutputMidiInterfaces->setColumnWidth(0, 300);
     ui->tableViewInputMidiInterfaces->setModel(inputMidiInterfacesTableModel);
+    ui->tableViewInputMidiInterfaces->setColumnWidth(0, 300);
 }
 
 PreferencesDialog::~PreferencesDialog()
