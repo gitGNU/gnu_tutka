@@ -1,9 +1,21 @@
 #include "coremidiinterface.h"
 
-CoreMIDIInterface::CoreMIDIInterface(MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent) :
-    MIDIInterface(flags, parent)
+CoreMIDIInterface::CoreMIDIInterface(MIDIClientRef client, MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent) :
+    MIDIInterface(flags, parent),
+    client(client),
+    endpoint(endpoint),
+    outputPort(NULL),
+    inputPort(NULL)
 {
     name_ = getMidiDeviceName(endpoint);
+
+    if ((flags & Output) != 0) {
+        MIDIOutputPortCreate(client, CFSTR("Tutka Output"), &outputPort);
+    }
+
+    if ((flags & Input) != 0) {
+//        MIDIInputPortCreate(client, CFSTR("Tutka Input"), &inputPort);
+    }
     setEnabled(false);
 }
 
@@ -50,5 +62,11 @@ QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)
 
 void CoreMIDIInterface::write(const unsigned char *data, unsigned int length)
 {
-    qWarning("XX CORE MIDI %p %d", data, length);
+    MIDIPacketList list;
+    list.numPackets = 1;
+    list.packet[0].timeStamp = 0;
+    list.packet[0].length = length;
+    memcpy(list.packet[0].data, data, length);
+
+    MIDISend(outputPort, endpoint, &list);
 }
