@@ -311,8 +311,8 @@ struct MMDMIDICmd3x {
 
 /* MMD alloc, free and parse functions */
 int MMD2_length_get(struct MMD2 *);
-struct MMD2 *MMD2_load(char *);
-void MMD2_save(struct MMD2 *, char *);
+struct MMD2 *MMD2_load(const char *);
+void MMD2_save(struct MMD2 *, const char *);
 void MMD2_free(struct MMD2 *);
 void MMD2song_free(struct MMD2song *);
 void MMD1Block_free(struct MMD1Block *);

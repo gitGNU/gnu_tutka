@@ -151,7 +151,7 @@ int MMD2_length_get(struct MMD2 *mmd)
 }
 
 /* Loads an MMD2 file and returns a pointer to its MMD0 structure */
-struct MMD2 *MMD2_load(char *filename)
+struct MMD2 *MMD2_load(const char *filename)
 {
     if (filename == NULL) {
         return NULL;
@@ -182,7 +182,7 @@ struct MMD2 *MMD2_load(char *filename)
 }
 
 /* Saves an MMD2 file */
-void MMD2_save(struct MMD2 *mmd, char *filename)
+void MMD2_save(struct MMD2 *mmd, const char *filename)
 {
     if (mmd == NULL || filename == NULL) {
         return;

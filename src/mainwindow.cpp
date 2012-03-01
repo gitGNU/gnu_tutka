@@ -25,8 +25,6 @@
  *
  * Tracker scrollbars
  * Tracker mousewheel
- * Block/playing sequence names in main window
- * File types in file dialogs
  * Localization
  * 
  * MIDI input
@@ -35,7 +33,6 @@
  *
  * Settings->Preferences->Scheduling mode
  * Export MIDI
- * MMD import/export
  */
 
 #include <QApplication>
@@ -65,7 +62,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     player(player),
     ui(new Ui::MainWindow),
     instrumentPropertiesDialog(new InstrumentPropertiesDialog(player->midi())),
-    openDialog(new QFileDialog),
+    openDialog(new QFileDialog(NULL, "Open file", QString(), "Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med)")),
     preferencesDialog(new PreferencesDialog(player->midi())),
     trackVolumesDialog(new TrackVolumesDialog),
     transposeDialog(new TransposeDialog),
@@ -1007,7 +1004,7 @@ void MainWindow::save()
 
 void MainWindow::saveAs()
 {
-    QString path = QFileDialog::getSaveFileName();
+    QString path = QFileDialog::getSaveFileName(NULL, "Save as", QString(), "Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med);;Standard MIDI files (*.mid)");
 
     if (!path.isEmpty()) {
         song->save(path);
