@@ -67,6 +67,9 @@ public:
     // Sets a note in a block
     void setNote(unsigned int line, unsigned int track, unsigned char octave, unsigned char note, unsigned char instrument);
 
+    // Sets a note in a block
+    void setNoteFull(unsigned int line, unsigned int track, unsigned char note, unsigned char instrument);
+
     // Gets an instrument from a block
     unsigned char instrument(unsigned int line, unsigned int track);
 

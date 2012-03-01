@@ -74,6 +74,11 @@ QByteArray Message::data() const
     return data_;
 }
 
+void Message::setData(const char *data, int length)
+{
+    data_ = QByteArray(data, length);
+}
+
 void Message::loadBinary(const QString &filename)
 {
     QFile file(filename);

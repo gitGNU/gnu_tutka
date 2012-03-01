@@ -58,6 +58,9 @@ public:
     // Returns the master volume
     unsigned int masterVolume() const;
 
+    // Sets the master volume
+    void setMasterVolume(unsigned int masterVolume);
+
     // Returns the path the song was last stored to
     QString path() const;
 

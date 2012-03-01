@@ -180,6 +180,14 @@ void Block::setNote(unsigned int line, unsigned int track, unsigned char octave,
     emit areaChanged(track, line, track, line);
 }
 
+void Block::setNoteFull(unsigned int line, unsigned int track, unsigned char note, unsigned char instrument)
+{
+    notes_[2 * (tracks_ * line + track)] = note;
+    notes_[2 * (tracks_ * line + track) + 1] = instrument;
+
+    emit areaChanged(track, line, track, line);
+}
+
 unsigned char Block::instrument(unsigned int line, unsigned int track)
 {
     return notes_[2 * (tracks_ * line + track) + 1];

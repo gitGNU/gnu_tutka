@@ -118,6 +118,11 @@ unsigned int Song::masterVolume() const
     return masterVolume_;
 }
 
+void Song::setMasterVolume(unsigned int masterVolume)
+{
+    masterVolume_ = masterVolume;
+}
+
 QString Song::path() const
 {
     return path_;

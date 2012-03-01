@@ -36,7 +36,9 @@ SOURCES += main.cpp \
     track.cpp \
     clickablelabel.cpp \
     inputmidiinterfacestablemodel.cpp \
-    outputmidiinterfacestablemodel.cpp
+    outputmidiinterfacestablemodel.cpp \
+    mmd.cpp \
+    conversion.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -73,8 +75,8 @@ HEADERS += block.h \
     clickablelabel.h \
     inputmidiinterfacestablemodel.h \
     outputmidiinterfacestablemodel.h \
-    alsamidi.h \
-    alsamidiinterface.h
+    mmd.h \
+    conversion.h
 
 FORMS += \
     mainwindow.ui \
