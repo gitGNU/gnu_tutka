@@ -85,7 +85,7 @@ public:
     void tempo(unsigned int);
 
 protected:
-    virtual void write(const unsigned char *data, unsigned int length);
+    virtual void write(const char *data, unsigned int length);
 
 public slots:
     // Enables or disables the interface

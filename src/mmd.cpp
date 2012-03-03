@@ -37,13 +37,13 @@ int MMD2_length_get(struct MMD2 *mmd)
         return 0;
     }
 
-    int length = 0, i, j;
+    int length = 0;
 
     // MMD2
     length += sizeof(struct MMD2);
     // PlaySeqs
-    for (i = 0; i < mmd->song->numpseqs; i++) {
-        length += sizeof(struct PlaySeq) + (mmd->song->playseqtable[i]->length - 1) * sizeof(unsigned short);
+    for (int playseq = 0; playseq < mmd->song->numpseqs; playseq++) {
+        length += sizeof(struct PlaySeq) + (mmd->song->playseqtable[playseq]->length - 1) * sizeof(unsigned short);
     }
     length += mmd->song->numpseqs * sizeof(int);
     // sectiontable
@@ -55,32 +55,33 @@ int MMD2_length_get(struct MMD2 *mmd)
     // MMD2Song
     length += sizeof(struct MMD2song);
     // SampleArr
-    if (mmd->smplarr != NULL)
+    if (mmd->smplarr != NULL) {
         length += mmd->song->numsamples * sizeof(int);
+    }
 
     // Blockarr
-    for (i = 0; i < mmd->song->numblocks; i++) {
-        if (mmd->blockarr[i]->info != NULL) {
-            if (mmd->blockarr[i]->info->hlmask != NULL) {
+    for (int block = 0; block < mmd->song->numblocks; block++) {
+        if (mmd->blockarr[block]->info != NULL) {
+            if (mmd->blockarr[block]->info->hlmask != NULL) {
                 // hlmask
-                length += (1 + mmd->blockarr[i]->lines / 32) * sizeof(unsigned int);
+                length += (1 + mmd->blockarr[block]->lines / 32) * sizeof(unsigned int);
             }
-            if (mmd->blockarr[i]->info->blockname != NULL) {
-                length += (mmd->blockarr[i]->info->blocknamelen + 1) & 0xfffffffe;
+            if (mmd->blockarr[block]->info->blockname != NULL) {
+                length += (mmd->blockarr[block]->info->blocknamelen + 1) & 0xfffffffe;
             }
-            if (mmd->blockarr[i]->info->pagetable != NULL) {
-                for (j = 0; j < mmd->blockarr[i]->info->pagetable->num_pages; j++) {
+            if (mmd->blockarr[block]->info->pagetable != NULL) {
+                for (int commandPage = 0; commandPage < mmd->blockarr[block]->info->pagetable->num_pages; commandPage++) {
                     // page
-                    length += (mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1)) * sizeof(unsigned short);
+                    length += (mmd->blockarr[block]->numtracks * (mmd->blockarr[block]->lines + 1)) * sizeof(unsigned short);
                 }
                 // pagetable
-                length += sizeof(struct BlockCmdPageTable) + mmd->blockarr[i]->info->pagetable->num_pages * sizeof(int);
+                length += sizeof(struct BlockCmdPageTable) + mmd->blockarr[block]->info->pagetable->num_pages * sizeof(int);
             }
             // blockinfo
             length += sizeof(struct BlockInfo);
         }
         // block
-        length += sizeof(struct MMD1Block) + 4 * mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1);
+        length += sizeof(struct MMD1Block) + 4 * mmd->blockarr[block]->numtracks * (mmd->blockarr[block]->lines + 1);
     }
     length += mmd->song->numblocks * sizeof(int);
 
@@ -91,12 +92,13 @@ int MMD2_length_get(struct MMD2 *mmd)
         }
         // instrext
         if (mmd->expdata->exp_smp != NULL) {
-            for (i = 0; i < mmd->expdata->s_ext_entries; i++)
+            for (int i = 0; i < mmd->expdata->s_ext_entries; i++) {
                 length += mmd->expdata->s_ext_entrsz;
+            }
         }
         // instrinfo
         if (mmd->expdata->iinfo != NULL) {
-            for (i = 0; i < mmd->expdata->i_ext_entries; i++) {
+            for (int i = 0; i < mmd->expdata->i_ext_entries; i++) {
                 length += mmd->expdata->i_ext_entrsz;
             }
         }
@@ -115,7 +117,7 @@ int MMD2_length_get(struct MMD2 *mmd)
         if (mmd->expdata->dumps != NULL) {
             struct MMDDump **dumps = (struct MMDDump **)((char *)mmd->expdata->dumps + sizeof(struct MMDDumpData));
             // dump data
-            for (i = 0; i < mmd->expdata->dumps->numdumps; i++) {
+            for (int i = 0; i < mmd->expdata->dumps->numdumps; i++) {
                 // dump
                 length += ((dumps[i]->length + 1) & 0xfffffffe);
                 length += 10 + dumps[i]->ext_len;

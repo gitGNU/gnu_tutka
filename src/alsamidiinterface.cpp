@@ -31,7 +31,7 @@ AlsaMIDIInterface::AlsaMIDIInterface(AlsaMIDI *midi, snd_seq_port_info_t *pinfo,
     snd_seq_subscribe_port(midi->seq, subs);
 }
 
-void AlsaMIDIInterface::write(const unsigned char *data, unsigned int length)
+void AlsaMIDIInterface::write(const char *data, unsigned int length)
 {
     // Create event
     snd_seq_event_t ev;

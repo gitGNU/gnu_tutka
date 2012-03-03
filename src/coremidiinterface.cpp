@@ -60,7 +60,7 @@ QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)
     return name;
 }
 
-void CoreMIDIInterface::write(const unsigned char *data, unsigned int length)
+void CoreMIDIInterface::write(const char *data, unsigned int length)
 {
     MIDIPacketList list;
     list.numPackets = 1;

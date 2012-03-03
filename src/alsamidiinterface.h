@@ -13,7 +13,7 @@ class AlsaMIDIInterface : public MIDIInterface
 public:
     explicit AlsaMIDIInterface(AlsaMIDI *midi, snd_seq_port_info_t *pinfo, DirectionFlags flags, QObject *parent = NULL);
 
-    virtual void write(const unsigned char *data, unsigned int length);
+    virtual void write(const char *data, unsigned int length);
 
 private:
     AlsaMIDI *midi;
