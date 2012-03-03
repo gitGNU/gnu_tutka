@@ -38,7 +38,10 @@ SOURCES += main.cpp \
     inputmidiinterfacestablemodel.cpp \
     outputmidiinterfacestablemodel.cpp \
     mmd.cpp \
-    conversion.cpp
+    conversion.cpp \
+    smf.cpp \
+    buffermidi.cpp \
+    buffermidiinterface.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -76,7 +79,10 @@ HEADERS += block.h \
     inputmidiinterfacestablemodel.h \
     outputmidiinterfacestablemodel.h \
     mmd.h \
-    conversion.h
+    conversion.h \
+    smf.h \
+    buffermidi.h \
+    buffermidiinterface.h
 
 FORMS += \
     mainwindow.ui \

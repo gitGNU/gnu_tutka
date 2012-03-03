@@ -88,9 +88,10 @@ public:
         Midi
     };
 
-    // Creates a player for a song
-    Player(MIDI *midi_, const QString &path = QString(), QObject *parent = NULL);
-    // Closes a player for a song
+    // Creates a player
+    Player(MIDI *midi, const QString &path = QString(), QObject *parent = NULL);
+    Player(MIDI *midi, Song *song, QObject *parent = NULL);
+    // Closes a player
     virtual ~Player();
 
     unsigned int section() const;
@@ -100,8 +101,8 @@ public:
     unsigned int line() const;
     Mode mode() const;
 
-    // Plays a song to a MIDI interface witout any scheduling (for export)
-//    void export(MIDIInterface *);
+    // Plays a song without any scheduling (for export)
+    void playWithoutScheduling();
 
     // Plays a note using given instrument on a given channel
     void playNote(unsigned int, unsigned char, unsigned char, unsigned char);

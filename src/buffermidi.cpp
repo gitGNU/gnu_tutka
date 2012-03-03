@@ -1,4 +1,5 @@
-/* conversion.h
+/*
+ * buffermidi.cpp
  *
  * Copyright 2002-2012 Vesa Halttunen
  *
@@ -19,20 +20,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef CONVERSION_H
-#define CONVERSION_H
+#include "buffermidi.h"
+#include "buffermidiinterface.h"
 
-class Song;
-class SMF;
-class MMD2;
+BufferMIDI::BufferMIDI(QObject *parent) : MIDI(parent)
+{
+    updateInterfaces();
+}
 
-// Converts an MMD2 module to a song
-Song *mmd2ToSong(MMD2 *mmd);
+BufferMIDI::~BufferMIDI()
+{
+}
 
-// Converts a song to an MMD2 module
-MMD2 *songToMMD2(Song *song);
+void BufferMIDI::updateInterfaces()
+{
+    outputs_.clear();
+    outputs_.append(QSharedPointer<MIDIInterface>(new BufferMIDIInterface(this, MIDIInterface::Output)));
+    inputs_.clear();
+    inputs_.append(QSharedPointer<MIDIInterface>(new BufferMIDIInterface(this, MIDIInterface::Input)));
+}
 
-// Converts a song to a standard MIDI file
-SMF *songToSMF(Song *song);
-
-#endif // CONVERSION_H
+QByteArray BufferMIDI::data() const
+{
+    return static_cast<BufferMIDIInterface *>(outputs_[0].data())->data();
+}

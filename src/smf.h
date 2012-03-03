@@ -1,4 +1,5 @@
-/* conversion.h
+/*
+ * smf.h
  *
  * Copyright 2002-2012 Vesa Halttunen
  *
@@ -19,20 +20,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef CONVERSION_H
-#define CONVERSION_H
+#ifndef SMF_H
+#define SMF_H
 
-class Song;
-class SMF;
-class MMD2;
+#include <QByteArray>
+#include <QList>
 
-// Converts an MMD2 module to a song
-Song *mmd2ToSong(MMD2 *mmd);
+class SMFChunk {
+public:
+    SMFChunk(unsigned int id);
+    QByteArray toByteArray() const;
 
-// Converts a song to an MMD2 module
-MMD2 *songToMMD2(Song *song);
+protected:
+    unsigned int id;
+    QByteArray data;
+};
 
-// Converts a song to a standard MIDI file
-SMF *songToSMF(Song *song);
+class SMFHeader : public SMFChunk {
+public:
+    SMFHeader(unsigned short format = 0, unsigned short tracks = 1, unsigned short division = 24);
+};
 
-#endif // CONVERSION_H
+class SMFTrack : public SMFChunk {
+public:
+    SMFTrack(const QByteArray &data);
+};
+
+class SMF
+{
+public:
+    SMF();
+
+    void addTrack(const QByteArray &data);
+    void save(const QString &path) const;
+
+private:
+    SMFHeader header;
+    QList<struct SMFTrack> tracks;
+};
+
+#endif // SMF_H

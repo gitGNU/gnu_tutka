@@ -1,4 +1,5 @@
-/* conversion.h
+/*
+ * buffermidi.h
  *
  * Copyright 2002-2012 Vesa Halttunen
  *
@@ -19,20 +20,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef CONVERSION_H
-#define CONVERSION_H
+#ifndef BUFFERMIDI_H
+#define BUFFERMIDI_H
 
-class Song;
-class SMF;
-class MMD2;
+#include "midi.h"
+#include <QByteArray>
 
-// Converts an MMD2 module to a song
-Song *mmd2ToSong(MMD2 *mmd);
+class BufferMIDI : public MIDI
+{
+public:
+    BufferMIDI(QObject *parent = NULL);
+    virtual ~BufferMIDI();
 
-// Converts a song to an MMD2 module
-MMD2 *songToMMD2(Song *song);
+    QByteArray data() const;
 
-// Converts a song to a standard MIDI file
-SMF *songToSMF(Song *song);
+protected:
+    virtual void updateInterfaces();
+};
 
-#endif // CONVERSION_H
+#endif // BUFFERMIDI_H

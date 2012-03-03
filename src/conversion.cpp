@@ -27,7 +27,9 @@
 #include "instrument.h"
 #include "message.h"
 #include "mmd.h"
-#include "midi.h"
+#include "smf.h"
+#include "buffermidi.h"
+#include "midiinterface.h"
 #include "player.h"
 #include "conversion.h"
 
@@ -558,50 +560,26 @@ struct MMD2 *songToMMD2(Song *song)
     return mmd;
 }
 
-#ifdef TODO
 // Converts a song to a standard MIDI file
-struct smf *song_convert_smf(Song *song)
+SMF *songToSMF(Song *song)
 {
-    nullcheck_pointer(song, song_convert_smf);
-
-    struct smf *smf;
-    struct midi_interface *midi;
-    int i;
-    unsigned char endMTrk[3];
-
-    smf = calloc(1, sizeof(struct smf));
-
-    // Allocate the MThd chunk
-    smf->MThd = calloc(1, sizeof(struct smf_MThd));
-    smf->MThd->ID[0] = 'M';
-    smf->MThd->ID[1] = 'T';
-    smf->MThd->ID[2] = 'h';
-    smf->MThd->ID[3] = 'd';
-    smf->MThd->Length = 6;
-    smf->MThd->Format = 0;
-    smf->MThd->NumTracks = 1;
-    smf->MThd->Division = 24;
-
-    // Allocate the MTrk chunks
-    smf->MTrks = calloc(smf->MThd->NumTracks, sizeof(struct smf_MTrk *));
-    for (i = 0; i < smf->MThd->NumTracks; i++) {
-        smf->MTrks[i] = calloc(1, sizeof(struct smf_MTrk));
-        smf->MTrks[i]->ID[0] = 'M';
-        smf->MTrks[i]->ID[1] = 'T';
-        smf->MTrks[i]->ID[2] = 'r';
-        smf->MTrks[i]->ID[3] = 'k';
+    if (song == NULL) {
+        return NULL;
     }
 
-    midi = midi_interface_alloc(MIDI_BUFFER, NULL);
-    player_midi_export(song, midi);
+    SMF *smf = new SMF;
+    BufferMIDI *midi = new BufferMIDI;
+    Player *player = new Player(midi, song);
+    QMetaObject::invokeMethod(player, "init");
+    player->playWithoutScheduling();
+    char endMTrk[3];
     endMTrk[0] = 0xff;
     endMTrk[1] = 0x2f;
     endMTrk[2] = 0x00;
-    midi_write_raw(midi, endMTrk, 3);
-    smf->MTrks[0]->Length = midi_get_buffer_length(midi);
-    smf->MTrks[0]->Data = midi_get_buffer(midi);
-    midi_interface_free(midi);
+    midi->output(0)->writeRaw(QByteArray(endMTrk, 3));
+    smf->addTrack(midi->data());
+    delete player;
+    delete midi;
 
     return smf;
 }
-#endif

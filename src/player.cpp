@@ -73,6 +73,34 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     QTimer::singleShot(0, this, SLOT(init()));
 }
 
+Player::Player(MIDI *midi, Song *song, QObject *parent) :
+    QThread(parent),
+    section_(0),
+    playseq_(0),
+    position_(0),
+    block_(0),
+    line_(0),
+    tick(0),
+    song(song),
+    mode_(ModeIdle),
+    sched(SchedulingNanoSleep),
+    syncMode(Off),
+    ticksSoFar(0),
+    externalSyncTicks(0),
+    killThread(false),
+    midi_(midi),
+    rtc(-1),
+    rtcFrequency(0),
+    rtcPIE(false),
+    solo(0),
+    postCommand(0),
+    postValue(0)
+{
+    connect(midi, SIGNAL(outputsChanged()), this, SLOT(remapMidiOutputs()));
+
+    QTimer::singleShot(0, this, SLOT(init()));
+}
+
 Player::~Player()
 {
     // Stop the player
@@ -829,68 +857,17 @@ void Player::run()
     mutex.unlock();
 }
 
-#ifdef TODO
-// Plays a song to a MIDI device witout any scheduling (for export)
-void Player::midiExport(Song *song, MIDIInterface *midi)
+void Player::playWithoutScheduling()
 {
-    int i, j;
-    midi = (struct midi *)calloc(1, sizeof(struct midi));
-
-    // Check how many MIDI interfaces are used in the song
-    for (i = 0; i < song->numinstruments; i++) {
-        struct instrument *instrument = song->instruments[i];
-        for (j = 0; j < instrument->numoutputs; j++) {
-            struct instrument_output *output = instrument->outputs[j];
-            if (output->midiinterface > midi->numoutputs)
-                midi->numoutputs = output->midiinterface;
-        }
+    sched = SchedulingNone;
+    mode_ = ModePlaySong;
+    for (int instrument = 0; instrument < song->instruments(); instrument++) {
+        song->instrument(instrument)->setMidiInterface(0);
     }
-    midi->numoutputs++;
-
-    song = song;
-    midi->outputs = (struct midi_interface **)calloc(midi->numoutputs, sizeof(struct midi_interface *));
-    for (i = 0; i < midi->outputs(); i++)
-        midi->output(i) = midi;
-    sched = SCHED_NONE;
-    mode = MODE_PLAY_SONG;
-    Player::refresh_playseq_and_block(player);
-
-    // Initialize track status array
-    Player::trackstatus_create(player, 0);
-
-    // Create MIDI controller values array
-    midicontrollervalues = (unsigned char **)calloc(midi->numoutputs, sizeof(unsigned char *));
-    for (i = 0; i < midi->numoutputs; i++)
-        midicontrollervalues[i] = (unsigned char *)calloc(16 * VALUES, sizeof(unsigned char));
-
-    // Send messages to be autosent
-    for (i = 0; i < song->nummessages; i++) {
-        if (song->messages[i]->autosend)
-            midi_write_raw(midi->outputs[0], song->messages[i]->data, song->messages[i]->length);
-    }
-
-    // Set tempo
-    midi_tempo(midi->outputs[0], song->tempo());
-
-    Player::thread(player);
-    Player::stop_notes(player);
-
-    // Free the track status array
-    if (trackstatus != NULL) {
-        for (i = 0; i < song->maxtracks; i++) {
-            for (j = 0; j < trackstatus[i]->numinterfaces; j++)
-                free(trackstatus[i]->interfaces[j]);
-            free(trackstatus[i]->interfaces);
-            free(trackstatus[i]);
-        }
-        free(trackstatus);
-    }
-
-    // Free MIDI interface array
-    free(midi->outputs);
-    free(player);
+    midi_->output(0)->tempo(song->tempo());
+    run();
+    stopNotes();
 }
-#endif
 
 void Player::play(Mode mode, bool cont)
 {

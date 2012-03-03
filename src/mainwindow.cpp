@@ -32,7 +32,6 @@
  * Settings->Record Controllers
  *
  * Settings->Preferences->Scheduling mode
- * Export MIDI
  */
 
 #include <QApplication>
@@ -54,6 +53,9 @@
 #include "song.h"
 #include "track.h"
 #include "block.h"
+#include "conversion.h"
+#include "mmd.h"
+#include "smf.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 
@@ -1007,7 +1009,17 @@ void MainWindow::saveAs()
     QString path = QFileDialog::getSaveFileName(NULL, "Save as", QString(), "Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med);;Standard MIDI files (*.mid)");
 
     if (!path.isEmpty()) {
-        song->save(path);
+        if (path.endsWith(".med") || path.endsWith(".mmd")) {
+            struct MMD2 *mmd = songToMMD2(song);
+            MMD2_save(mmd, path.toUtf8().constData());
+            MMD2_free(mmd);
+        } else if (path.endsWith(".mid")) {
+            SMF *smf = songToSMF(song);
+            smf->save(path);
+            delete smf;
+        } else {
+            song->save(path);
+        }
     }
 }
 
