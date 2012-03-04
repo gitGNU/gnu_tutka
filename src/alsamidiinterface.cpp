@@ -42,7 +42,7 @@ void AlsaMIDIInterface::write(const char *data, unsigned int length)
 
     // The encoder may send the data in multiple packets
     for (int sent = 0; sent < length;) {
-        sent += snd_midi_event_encode(midi->encoder, data + sent, length - sent, &ev);
+        sent += snd_midi_event_encode(midi->encoder, (const unsigned char *)(data + sent), length - sent, &ev);
         snd_seq_event_output(midi->seq, &ev);
     }
     snd_seq_drain_output(midi->seq);

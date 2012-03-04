@@ -192,10 +192,6 @@ void MIDIInterface::tempo(unsigned int tempo)
     data[4] = (ms >> 8) & 0xff;
     data[5] = ms & 0xff;
 
-    printf("MITTEE %d %x\n", tempo, data[3]);
-    printf("MITTEE %d %x\n", tempo, data[4]);
-    printf("MITTEE %d %x\n", tempo, data[5]);
-
     write(data, 6);
 }
 

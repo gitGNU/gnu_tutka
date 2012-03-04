@@ -62,7 +62,7 @@ QByteArray SMFChunk::toByteArray() const
 }
 
 SMFHeader::SMFHeader(unsigned short format, unsigned short tracks, unsigned short division) :
-    SMFChunk('MThd')
+    SMFChunk(0x4d546864) // MThd
 {
     data.append(format >> 8);
     data.append(format);
@@ -73,7 +73,7 @@ SMFHeader::SMFHeader(unsigned short format, unsigned short tracks, unsigned shor
 }
 
 SMFTrack::SMFTrack(const QByteArray &data) :
-    SMFChunk('MTrk')
+    SMFChunk(0x4d54726b) // MTrk
 {
     this->data = data;
 }

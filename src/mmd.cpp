@@ -183,7 +183,9 @@ struct MMD2 *MMD2_load(const char *filename)
 
     // Allocate memory and read file
     data = (unsigned char *)malloc(flength);
-    fread(data, sizeof(unsigned char), flength, file);
+    if (fread(data, sizeof(unsigned char), flength, file) < flength) {
+        fprintf(stderr, "Warning: file not completely read\n");
+    }
 
     mmd = MMD2_parse(data, 0);
 
@@ -567,7 +569,9 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
         free(data);
         return;
     }
-    fwrite(data, sizeof(unsigned char), mmd->modlen, file);
+    if (fwrite(data, sizeof(unsigned char), mmd->modlen, file) < mmd->modlen) {
+        fprintf(stderr, "Warning: file not completely written\n");
+    }
     free(data);
     fclose(file);
 }
