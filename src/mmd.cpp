@@ -40,10 +40,10 @@ int MMD2_length_get(struct MMD2 *mmd)
     int length = 0;
 
     // MMD2
-    length += sizeof(struct MMD2);
+    length += sizeof_struct_MMD2;
     // PlaySeqs
     for (int playseq = 0; playseq < mmd->song->numpseqs; playseq++) {
-        length += sizeof(struct PlaySeq) + (mmd->song->playseqtable[playseq]->length - 1) * sizeof(unsigned short);
+        length += sizeof_struct_PlaySeq + (mmd->song->playseqtable[playseq]->length - 1) * sizeof(unsigned short);
     }
     length += mmd->song->numpseqs * sizeof(int);
     // sectiontable
@@ -53,7 +53,7 @@ int MMD2_length_get(struct MMD2 *mmd)
     // trackpans
     length += ((mmd->song->numtracks + 1) & 0xfffffffe);
     // MMD2Song
-    length += sizeof(struct MMD2song);
+    length += sizeof_struct_MMD2song;
     // SampleArr
     if (mmd->smplarr != NULL) {
         length += mmd->song->numsamples * sizeof(int);
@@ -75,13 +75,13 @@ int MMD2_length_get(struct MMD2 *mmd)
                     length += (mmd->blockarr[block]->numtracks * (mmd->blockarr[block]->lines + 1)) * sizeof(unsigned short);
                 }
                 // pagetable
-                length += sizeof(struct BlockCmdPageTable) + mmd->blockarr[block]->info->pagetable->num_pages * sizeof(int);
+                length += sizeof_struct_BlockCmdPageTable + mmd->blockarr[block]->info->pagetable->num_pages * sizeof(int);
             }
             // blockinfo
-            length += sizeof(struct BlockInfo);
+            length += sizeof_struct_BlockInfo;
         }
         // block
-        length += sizeof(struct MMD1Block) + 4 * mmd->blockarr[block]->numtracks * (mmd->blockarr[block]->lines + 1);
+        length += sizeof_struct_MMD1Block + 4 * mmd->blockarr[block]->numtracks * (mmd->blockarr[block]->lines + 1);
     }
     length += mmd->song->numblocks * sizeof(int);
 
@@ -104,11 +104,11 @@ int MMD2_length_get(struct MMD2 *mmd)
         }
         // notationinfo
         if (mmd->expdata->n_info != NULL) {
-            length += sizeof(struct NotationInfo);
+            length += sizeof_struct_NotationInfo;
         }
         // mmdinfo
         if (mmd->expdata->mmdinfo != NULL) {
-            length += sizeof(struct MMDInfo) + ((mmd->expdata->mmdinfo->length + 1) & 0xfffffffe);
+            length += sizeof_struct_MMDInfo + ((mmd->expdata->mmdinfo->length + 1) & 0xfffffffe);
         }
         // songname
         if (mmd->expdata->songname != NULL) {
@@ -122,7 +122,7 @@ int MMD2_length_get(struct MMD2 *mmd)
                 length += ((dumps[i]->length + 1) & 0xfffffffe);
                 length += 10 + dumps[i]->ext_len;
             }
-            length += sizeof(struct MMDDumpData) + mmd->expdata->dumps->numdumps * sizeof(int);
+            length += sizeof_struct_MMDDumpData + mmd->expdata->dumps->numdumps * sizeof(int);
         }
         if (mmd->expdata->mmdrexx != NULL) {
             if (mmd->expdata->mmdrexx->trigcmd != NULL) {
@@ -136,10 +136,10 @@ int MMD2_length_get(struct MMD2 *mmd)
                         length += (trig->port_len + 2) & 0xfffffffe;
                     }
                     // mmdarexxtrigcmd
-                    length += sizeof(struct MMDARexxTrigCmd);
+                    length += sizeof_struct_MMDARexxTrigCmd;
                 }
                 // mmdarexx
-                length += sizeof(struct MMDARexx);
+                length += sizeof_struct_MMDARexx;
             }
         }
         if (mmd->expdata->mmdcmd3x != NULL) {
@@ -154,7 +154,7 @@ int MMD2_length_get(struct MMD2 *mmd)
             length += 12;
         }
         // MMD0exp
-        length += sizeof(struct MMD0exp);
+        length += sizeof_struct_MMD0exp;
     }
 
     return length;
@@ -217,11 +217,11 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
     putbyte(data + 20, mmd->mmdflags);
     putword(data + 48, mmd->actplayline);
     putbyte(data + 51, mmd->extra_songs);
-    offsets[0] = sizeof(struct MMD2);
+    offsets[0] = sizeof_struct_MMD2;
     // PlaySeqs
     offsets[1] = offsets[0];
     for (i = 0; i < mmd->song->numpseqs; i++) {
-        offsets[1] += sizeof(struct PlaySeq) + (mmd->song->playseqtable[i]->length - 1) * sizeof(unsigned short);
+        offsets[1] += sizeof_struct_PlaySeq + (mmd->song->playseqtable[i]->length - 1) * sizeof(unsigned short);
     }
     // offsets[1]: playseqtable
     for (i = 0; i < mmd->song->numpseqs; i++) {
@@ -231,7 +231,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
             putword(data + offsets[0] + 42 + j * sizeof(unsigned short), mmd->song->playseqtable[i]->seq[j]);
         }
         putlong(data + offsets[1] + i * sizeof(int), offsets[0]);
-        offsets[0] += sizeof(struct PlaySeq) + (mmd->song->playseqtable[i]->length - 1) * sizeof(unsigned short);
+        offsets[0] += sizeof_struct_PlaySeq + (mmd->song->playseqtable[i]->length - 1) * sizeof(unsigned short);
     }
     offsets[0] += mmd->song->numpseqs * sizeof(int);
     // sectiontable
@@ -283,7 +283,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
     putbyte(data + offsets[0] + 786, mmd->song->mastervol);
     putbyte(data + offsets[0] + 787, mmd->song->numsamples);
 
-    offsets[0] += sizeof(struct MMD2song);
+    offsets[0] += sizeof_struct_MMD2song;
     // SampleArr
     if (mmd->smplarr != NULL) {
         // This needs fixing. This points to the space after MMD0exp.
@@ -294,9 +294,9 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
     // Block 0
     offsets[1] = offsets[0];
     for (i = 0; i < mmd->song->numblocks; i++) {
-        offsets[1] += sizeof(struct MMD1Block) + 4 * mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1);
+        offsets[1] += sizeof_struct_MMD1Block + 4 * mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1);
         if (mmd->blockarr[i]->info != NULL) {
-            offsets[1] += sizeof(struct BlockInfo);
+            offsets[1] += sizeof_struct_BlockInfo;
             if (mmd->blockarr[i]->info->hlmask != NULL) {
                 offsets[1] += (1 + mmd->blockarr[i]->lines / 32) * sizeof(unsigned int);
             }
@@ -304,7 +304,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
                 offsets[1] += (mmd->blockarr[i]->info->blocknamelen + 1) & 0xfffffffe;
             }
             if (mmd->blockarr[i]->info->pagetable != NULL) {
-                offsets[1] += sizeof(struct BlockCmdPageTable) + mmd->blockarr[i]->info->pagetable->num_pages * sizeof(unsigned short *) + mmd->blockarr[i]->info->pagetable->num_pages * (mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1)) * sizeof(unsigned short);
+                offsets[1] += sizeof_struct_BlockCmdPageTable + mmd->blockarr[i]->info->pagetable->num_pages * sizeof(unsigned short *) + mmd->blockarr[i]->info->pagetable->num_pages * (mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1)) * sizeof(unsigned short);
             }
         }
     }
@@ -346,7 +346,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
                 offsets[5] = offsets[0];
                 putword(data + offsets[0] + 0, mmd->blockarr[i]->info->pagetable->num_pages);
                 putword(data + offsets[0] + 2, mmd->blockarr[i]->info->pagetable->reserved);
-                offsets[0] += sizeof(struct BlockCmdPageTable) + mmd->blockarr[i]->info->pagetable->num_pages * sizeof(int);
+                offsets[0] += sizeof_struct_BlockCmdPageTable + mmd->blockarr[i]->info->pagetable->num_pages * sizeof(int);
             }
             // blockinfo
             offsets[2] = offsets[0];
@@ -354,7 +354,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
             putlong(data + offsets[0] + 4, offsets[4]);
             putlong(data + offsets[0] + 8, mmd->blockarr[i]->info->blocknamelen);
             putlong(data + offsets[0] + 12, offsets[5]);
-            offsets[0] += sizeof(struct BlockInfo);
+            offsets[0] += sizeof_struct_BlockInfo;
         }
         // block
         putlong(data + offsets[1] + i * sizeof(int), offsets[0]);
@@ -362,7 +362,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
         putword(data + offsets[0] + 2, mmd->blockarr[i]->lines);
         putlong(data + offsets[0] + 4, offsets[2]);
         memcpy(data + offsets[0] + 8, (unsigned char *)mmd->blockarr[i] + sizeof(struct MMD1Block), 4 * mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1));
-        offsets[0] += sizeof(struct MMD1Block) + 4 * mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1);
+        offsets[0] += sizeof_struct_MMD1Block + 4 * mmd->blockarr[i]->numtracks * (mmd->blockarr[i]->lines + 1);
     }
     offsets[0] += mmd->song->numblocks * sizeof(int);
 
@@ -402,7 +402,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
         if (mmd->expdata->iinfo != NULL) {
             offsets[3] = offsets[0];
             for (i = 0; i < mmd->expdata->i_ext_entries; i++) {
-                memcpy(data + offsets[0], mmd->expdata->iinfo[i].name, sizeof(struct MMDInstrInfo));
+                memcpy(data + offsets[0], mmd->expdata->iinfo[i].name, sizeof_struct_MMDInstrInfo);
                 offsets[0] += mmd->expdata->i_ext_entrsz;
             }
         }
@@ -418,7 +418,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
             putword(data + offsets[0] + 8, mmd->expdata->n_info->trksel[3]);
             putword(data + offsets[0] + 10, mmd->expdata->n_info->trksel[4]);
             memcpy(data + offsets[0] + 12, mmd->expdata->n_info->trkshow, 96);
-            offsets[0] += sizeof(struct NotationInfo);
+            offsets[0] += sizeof_struct_NotationInfo;
         }
         // mmdinfo
         offsets[5] = 0;
@@ -427,7 +427,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
             putword(data + offsets[0] + 6, mmd->expdata->mmdinfo->type);
             putlong(data + offsets[0] + 8, mmd->expdata->mmdinfo->length);
             memcpy(data + offsets[0] + 12, ((unsigned char *)mmd->expdata->mmdinfo) + sizeof(struct MMDInfo), mmd->expdata->mmdinfo->length);
-            offsets[0] += sizeof(struct MMDInfo) + ((mmd->expdata->mmdinfo->length + 1) & 0xfffffffe);
+            offsets[0] += sizeof_struct_MMDInfo + ((mmd->expdata->mmdinfo->length + 1) & 0xfffffffe);
         }
         // songname
         offsets[6] = 0;
@@ -462,7 +462,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
                 }
                 offsets[0] += 10 + dumps[i]->ext_len;
             }
-            offsets[0] += sizeof(struct MMDDumpData) + mmd->expdata->dumps->numdumps * sizeof(int);
+            offsets[0] += sizeof_struct_MMDDumpData + mmd->expdata->dumps->numdumps * sizeof(int);
         }
         // MMDArexx
         offsets[8] = 0;
@@ -506,14 +506,14 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
                     putword(data + offsets[0] + 16, trigs[i]->cmd_len);
                     putword(data + offsets[0] + 18, trigs[i]->port_len);
                     offsets[13] = offsets[0];
-                    offsets[0] += sizeof(struct MMDARexxTrigCmd);
+                    offsets[0] += sizeof_struct_MMDARexxTrigCmd;
                 }
                 free(trigs);
                 // mmdarexx
                 offsets[8] = offsets[0];
                 putword(data + offsets[0] + 2, mmd->expdata->mmdrexx->trigcmdlen);
                 putlong(data + offsets[0] + 4, offsets[13]);
-                offsets[0] += sizeof(struct MMDARexx);
+                offsets[0] += sizeof_struct_MMDARexx;
             }
         }
         // MMDCmd3x
@@ -562,7 +562,7 @@ void MMD2_save(struct MMD2 *mmd, const char *filename)
         putlong(data + offsets[0] + 56, offsets[5]);
         putlong(data + offsets[0] + 60, offsets[8]);
         putlong(data + offsets[0] + 64, offsets[9]);
-        offsets[0] += sizeof(struct MMD0exp);
+        offsets[0] += sizeof_struct_MMD0exp;
     }
 
     if ((file = fopen(filename, "w")) == NULL) {
@@ -845,7 +845,7 @@ struct MMD0exp *MMD0exp_parse(unsigned char *base, int offset)
     mmd0exp->i_ext_entrsz = getword(data + 26);
     mmd0exp->iinfo = (struct MMDInstrInfo *)calloc(mmd0exp->i_ext_entries, sizeof(struct MMDInstrInfo));
     for (i = 0; i < mmd0exp->i_ext_entries; i++) {
-        memcpy(&mmd0exp->iinfo[i], base + getlong(data + 20) + i * mmd0exp->i_ext_entrsz, sizeof(struct MMDInstrInfo));
+        memcpy(&mmd0exp->iinfo[i], base + getlong(data + 20) + i * mmd0exp->i_ext_entrsz, sizeof_struct_MMDInstrInfo);
     }
     // instrinfo
     mmd0exp->jumpmask = getlong(data + 28);
@@ -883,7 +883,7 @@ struct MMD0exp *MMD0exp_parse(unsigned char *base, int offset)
         mmd0exp->dumps = (struct MMDDumpData *)calloc(1, sizeof(struct MMDDumpData) + getword(data2) * sizeof(struct MMDDump *));
         mmd0exp->dumps->numdumps = getword(data2);
         // Is this really the only way to do this? I know, this is horrible but this is what the lame MMD spec says
-        dumps = (struct MMDDump **)((char *)mmd0exp->dumps + sizeof(struct MMDDumpData));
+        dumps = (struct MMDDump **)((char *)mmd0exp->dumps + sizeof_struct_MMDDumpData);
         for (i = 0; i < mmd0exp->dumps->numdumps; i++) {
             data3 = base + getlong(data2 + 8 + 4 * i);
             // dump

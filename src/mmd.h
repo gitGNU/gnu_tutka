@@ -28,6 +28,30 @@
 #define ID_MMD3 0x4d4d4433
 #define MMD_LOADTOFASTMEM 0x1
 
+// 32 bit sizes of structures
+#define sizeof_struct_MMD0 52
+#define sizeof_struct_MMD2 52
+#define sizeof_struct_MMD0sample 8
+#define sizeof_struct_MMD0song 788
+#define sizeof_struct_MMD2song 788
+#define sizeof_struct_PlaySeq 44
+#define sizeof_struct_BlockCmdPageTable 4
+#define sizeof_struct_BlockInfo 36
+#define sizeof_struct_MMD0Block 2
+#define sizeof_struct_MMD1Block 8
+#define sizeof_struct_InstrHdr 8
+#define sizeof_struct_SynthInstr 536
+#define sizeof_struct_MMD0exp 84
+#define sizeof_struct_InstrExt 20
+#define sizeof_struct_MMDInstrInfo 40
+#define sizeof_struct_NotationInfo 108
+#define sizeof_struct_MMDDumpData 8
+#define sizeof_struct_MMDDump 32
+#define sizeof_struct_MMDInfo 12
+#define sizeof_struct_MMDARexx 8
+#define sizeof_struct_MMDARexxTrigCmd 20
+#define sizeof_struct_MMDMIDICmd3x 12
+
 struct MMD0 {
     unsigned int id;
     unsigned int modlen;
