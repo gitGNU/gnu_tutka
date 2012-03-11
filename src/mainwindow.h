@@ -59,6 +59,9 @@ public:
 
     virtual bool eventFilter(QObject *watched, QEvent *event);
 
+protected:
+    virtual void wheelEvent(QWheelEvent *event);
+
 private slots:
     void setSong(Song *song);
     void setSection(unsigned int section);

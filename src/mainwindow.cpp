@@ -250,6 +250,15 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     return handled ? true : QMainWindow::eventFilter(watched, event);
 }
 
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    if (event->delta() > 0) {
+        ui->tracker->setLine(ui->tracker->line() - 8);
+    } else if (event->delta() < 0) {
+        ui->tracker->setLine(ui->tracker->line() + 8);
+    }
+}
+
 bool MainWindow::keyPress(QKeyEvent *event)
 {
     Song *song = ui->tracker->song();

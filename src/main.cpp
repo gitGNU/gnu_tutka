@@ -23,7 +23,6 @@
 /*
  * TODO
  *
- * Tracker mousewheel
  * Localization
  * MIDI Message List Receive
  * ALSA sequencer events
