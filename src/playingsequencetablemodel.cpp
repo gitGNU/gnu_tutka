@@ -81,9 +81,9 @@ QVariant PlayingSequenceTableModel::headerData(int section, Qt::Orientation orie
         if (orientation == Qt::Horizontal) {
             switch(section) {
             case 0:
-                return QVariant("Block Number");
+                return tr("Block Number");
             case 1:
-                return QVariant("Block Name");
+                return tr("Block Name");
             default:
                 break;
             }

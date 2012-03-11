@@ -39,9 +39,9 @@ QVariant OutputMidiInterfacesTableModel::headerData(int section, Qt::Orientation
         if (orientation == Qt::Horizontal) {
             switch(section) {
             case 0:
-                return QVariant("Name");
+                return tr("Name");
             case 1:
-                return QVariant("Enabled");
+                return tr("Enabled");
             default:
                 break;
             }

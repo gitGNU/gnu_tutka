@@ -76,11 +76,11 @@ QVariant MessageListTableModel::headerData(int section, Qt::Orientation orientat
         if (orientation == Qt::Horizontal) {
             switch(section) {
             case 0:
-                return QVariant("Name");
+                return tr("Name");
             case 1:
-                return QVariant("Length");
+                return tr("Length");
             case 2:
-                return QVariant("Automatically Send Message After Loading Song");
+                return tr("Automatically Send Message After Loading Song");
             default:
                 break;
             }

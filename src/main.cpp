@@ -23,12 +23,13 @@
 /*
  * TODO
  *
- * Localization
  * MIDI Message List Receive
  * ALSA sequencer events
  */
 
 #include <QApplication>
+#include <QTranslator>
+#include <QLocale>
 #ifdef __APPLE__
 #include "coremidi.h"
 #elif __linux
@@ -42,6 +43,9 @@
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
+    QTranslator translator;
+    translator.load(QString("tutka_") + QLocale::system().name());
+    app.installTranslator(&translator);
 
 #ifdef __APPLE__
     MIDI *midi = new CoreMIDI;

@@ -34,12 +34,12 @@ TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget 
     track(track),
     volumeLabel(new QLabel),
     volumeSlider(new QSlider),
-    muteCheckBox(new QCheckBox("Mute")),
-    soloCheckBox(new QCheckBox("Solo")),
+    muteCheckBox(new QCheckBox(tr("Mute"))),
+    soloCheckBox(new QCheckBox(tr("Solo"))),
     nameLineEdit(new QLineEdit)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(new QLabel(QString("Track %1").arg(number)));
+    layout->addWidget(new QLabel(tr("Track %1").arg(number)));
     layout->addWidget(volumeLabel);
     layout->addWidget(volumeSlider);
     layout->addWidget(muteCheckBox);

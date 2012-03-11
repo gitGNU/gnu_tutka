@@ -72,9 +72,9 @@ QVariant SectionListTableModel::headerData(int section, Qt::Orientation orientat
         if (orientation == Qt::Horizontal) {
             switch(section) {
             case 0:
-                return QVariant("Playing Sequence Number");
+                return tr("Playing Sequence Number");
             case 1:
-                return QVariant("Playing Sequence Name");
+                return tr("Playing Sequence Name");
             default:
                 break;
             }

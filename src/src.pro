@@ -99,6 +99,8 @@ FORMS += \
     blocklistdialog.ui \
     messagelistdialog.ui
 
+TRANSLATIONS += tutka_fi.ts
+
 TEMPLATE = app
 TARGET = Tutka
 QT += xml

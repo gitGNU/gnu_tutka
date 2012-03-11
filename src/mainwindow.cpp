@@ -54,7 +54,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     player(player),
     ui(new Ui::MainWindow),
     instrumentPropertiesDialog(new InstrumentPropertiesDialog(player->midi())),
-    openDialog(new QFileDialog(NULL, "Open file", QString(), "Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med)")),
+    openDialog(new QFileDialog(NULL, tr("Open file"), QString(), tr("Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med)"))),
     preferencesDialog(new PreferencesDialog(player)),
     trackVolumesDialog(new TrackVolumesDialog),
     transposeDialog(new TransposeDialog),
@@ -793,7 +793,7 @@ void MainWindow::setSong(Song *song)
 
 void MainWindow::setSection(unsigned int section)
 {
-    ui->labelSection->setText(QString("Section %1/%2").arg(section + 1).arg(song->sections()));
+    ui->labelSection->setText(tr("Section %1/%2").arg(section + 1).arg(song->sections()));
 }
 
 void MainWindow::setPlayseq(unsigned int playseq)
@@ -806,15 +806,15 @@ void MainWindow::setPlayseq(unsigned int playseq)
 
     QString name = song->playseq(playseq)->name();
     if (name.isEmpty()) {
-        ui->labelPlayingSequence->setText(QString("Playing Sequence %1/%2").arg(playseq + 1).arg(song->playseqs()));
+        ui->labelPlayingSequence->setText(tr("Playing Sequence %1/%2").arg(playseq + 1).arg(song->playseqs()));
     } else {
-        ui->labelPlayingSequence->setText(QString("Playing Sequence %1/%2: %3").arg(playseq + 1).arg(song->playseqs()).arg(name));
+        ui->labelPlayingSequence->setText(tr("Playing Sequence %1/%2: %3").arg(playseq + 1).arg(song->playseqs()).arg(name));
     }
 }
 
 void MainWindow::setPosition(unsigned int position)
 {
-    ui->labelPosition->setText(QString("Position %1/%2").arg(position + 1).arg(song->playseq(player->playseq())->length()));
+    ui->labelPosition->setText(tr("Position %1/%2").arg(position + 1).arg(song->playseq(player->playseq())->length()));
 }
 
 void MainWindow::setBlock(unsigned int block)
@@ -829,29 +829,29 @@ void MainWindow::setBlock(unsigned int block)
 
     QString name = song->block(block)->name();
     if (name.isEmpty()) {
-        ui->labelBlock->setText(QString("Block %1/%2").arg(block + 1).arg(song->blocks()));
+        ui->labelBlock->setText(tr("Block %1/%2").arg(block + 1).arg(song->blocks()));
     } else {
-        ui->labelBlock->setText(QString("Block %1/%2: %3").arg(block + 1).arg(song->blocks()).arg(name));
+        ui->labelBlock->setText(tr("Block %1/%2: %3").arg(block + 1).arg(song->blocks()).arg(name));
     }
     setCommandPage(ui->tracker->commandPage());
 }
 
 void MainWindow::setCommandPage(unsigned int commandPage)
 {
-    ui->labelCommandPage->setText(QString("Command Page %1/%2").arg(commandPage + 1).arg(song->block(player->block())->commandPages()));
+    ui->labelCommandPage->setText(tr("Command Page %1/%2").arg(commandPage + 1).arg(song->block(player->block())->commandPages()));
 }
 
 void MainWindow::setMode(Player::Mode mode)
 {
     switch (mode) {
     case Player::ModePlaySong:
-        ui->labelStatus->setText(QString("Playing song"));
+        ui->labelStatus->setText(tr("Playing song"));
         break;
     case Player::ModePlayBlock:
-        ui->labelStatus->setText(QString("Playing block"));
+        ui->labelStatus->setText(tr("Playing block"));
         break;
     default:
-        ui->labelStatus->setText(QString("Stopped"));
+        ui->labelStatus->setText(tr("Stopped"));
         break;
     }
 }
@@ -893,7 +893,7 @@ void MainWindow::setSelection(int startTrack, int startLine, int endTrack, int e
 
 void MainWindow::showAbout()
 {
-    QMessageBox::about(this, "About Tutka", "Tutka 0.99.0 (C) 2012 Vesa Halttunen <vesuri@jormas.com>");
+    QMessageBox::about(this, tr("About Tutka"), tr("Tutka 0.99.0 (C) 2012 Vesa Halttunen <vesuri@jormas.com>"));
 }
 
 void MainWindow::cutSelection()
@@ -1018,7 +1018,7 @@ void MainWindow::save()
 
 void MainWindow::saveAs()
 {
-    QString path = QFileDialog::getSaveFileName(NULL, "Save as", QString(), "Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med);;Standard MIDI files (*.mid)");
+    QString path = QFileDialog::getSaveFileName(NULL, tr("Save as"), QString(), tr("Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med);;Standard MIDI files (*.mid)"));
 
     if (!path.isEmpty()) {
         if (path.endsWith(".med") || path.endsWith(".mmd")) {

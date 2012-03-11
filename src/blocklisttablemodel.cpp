@@ -76,13 +76,13 @@ QVariant BlockListTableModel::headerData(int section, Qt::Orientation orientatio
         if (orientation == Qt::Horizontal) {
             switch(section) {
             case 0:
-                return QVariant("Name");
+                return tr("Name");
             case 1:
-                return QVariant("Tracks");
+                return tr("Tracks");
             case 2:
-                return QVariant("Length");
+                return tr("Length");
             case 3:
-                return QVariant("Command pages");
+                return tr("Command pages");
             default:
                 break;
             }
