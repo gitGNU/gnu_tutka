@@ -41,12 +41,12 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="buddy">
-        <cstring>comboBox</cstring>
+        <cstring>comboBoxSchedulingMode</cstring>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="comboBoxSchedulingMode">
        <item>
         <property name="text">
          <string>RTC</string>

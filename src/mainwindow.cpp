@@ -30,8 +30,6 @@
  * MIDI input
  * MIDI Message List Receive
  * Settings->Record Controllers
- *
- * Settings->Preferences->Scheduling mode
  */
 
 #include <QApplication>
@@ -65,7 +63,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     ui(new Ui::MainWindow),
     instrumentPropertiesDialog(new InstrumentPropertiesDialog(player->midi())),
     openDialog(new QFileDialog(NULL, "Open file", QString(), "Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med)")),
-    preferencesDialog(new PreferencesDialog(player->midi())),
+    preferencesDialog(new PreferencesDialog(player)),
     trackVolumesDialog(new TrackVolumesDialog),
     transposeDialog(new TransposeDialog),
     expandShrinkDialog(new ExpandShrinkDialog),

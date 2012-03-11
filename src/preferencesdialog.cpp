@@ -20,17 +20,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "midi.h"
+#include "player.h"
 #include "outputmidiinterfacestablemodel.h"
 #include "inputmidiinterfacestablemodel.h"
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
-PreferencesDialog::PreferencesDialog(MIDI *midi, QWidget *parent) :
+PreferencesDialog::PreferencesDialog(Player *player, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PreferencesDialog),
-    outputMidiInterfacesTableModel(new OutputMidiInterfacesTableModel(midi)),
-    inputMidiInterfacesTableModel(new InputMidiInterfacesTableModel(midi))
+    player(player),
+    outputMidiInterfacesTableModel(new OutputMidiInterfacesTableModel(player->midi())),
+    inputMidiInterfacesTableModel(new InputMidiInterfacesTableModel(player->midi()))
 {
     ui->setupUi(this);
 
@@ -38,9 +39,16 @@ PreferencesDialog::PreferencesDialog(MIDI *midi, QWidget *parent) :
     ui->tableViewOutputMidiInterfaces->setColumnWidth(0, 300);
     ui->tableViewInputMidiInterfaces->setModel(inputMidiInterfacesTableModel);
     ui->tableViewInputMidiInterfaces->setColumnWidth(0, 300);
+
+    connect(ui->comboBoxSchedulingMode, SIGNAL(currentIndexChanged(int)), this, SLOT(setSchedulingMode(int)));
 }
 
 PreferencesDialog::~PreferencesDialog()
 {
     delete ui;
+}
+
+void PreferencesDialog::setSchedulingMode(int schedulingMode)
+{
+    player->setScheduler(schedulingMode == 0 ? Player::SchedulingRTC : Player::SchedulingNanoSleep);
 }

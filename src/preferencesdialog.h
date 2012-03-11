@@ -29,7 +29,7 @@ namespace Ui {
     class PreferencesDialog;
 }
 
-class MIDI;
+class Player;
 class OutputMidiInterfacesTableModel;
 class InputMidiInterfacesTableModel;
 
@@ -38,11 +38,15 @@ class PreferencesDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PreferencesDialog(MIDI *midi, QWidget *parent = 0);
+    explicit PreferencesDialog(Player *player, QWidget *parent = 0);
     ~PreferencesDialog();
+
+private slots:
+    void setSchedulingMode(int schedulingMode);
 
 private:
     Ui::PreferencesDialog *ui;
+    Player *player;
     OutputMidiInterfacesTableModel *outputMidiInterfacesTableModel;
     InputMidiInterfacesTableModel *inputMidiInterfacesTableModel;
 };
