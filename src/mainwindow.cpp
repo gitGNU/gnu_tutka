@@ -20,22 +20,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
- * TODO
- *
- * Tracker scrollbars
- * Tracker mousewheel
- * Localization
- * 
- * MIDI Message List Receive
- * ALSA sequencer events
- */
-
 #include <QApplication>
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
+#include <QScrollBar>
 #include "instrumentpropertiesdialog.h"
 #include "preferencesdialog.h"
 #include "trackvolumesdialog.h"
@@ -99,7 +89,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     externalSyncActionGroup->setExclusive(true);
 
     connect(player, SIGNAL(songChanged(Song *)), this, SLOT(setSong(Song *)));
-    connect(player, SIGNAL(songChanged(Song *)), ui->trackerMain, SLOT(setSong(Song *)));
+    connect(player, SIGNAL(songChanged(Song *)), ui->tracker, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), transposeDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), expandShrinkDialog, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), changeInstrumentDialog, SLOT(setSong(Song *)));
@@ -117,21 +107,25 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(positionChanged(unsigned int)), this, SLOT(setPosition(unsigned int)));
     connect(player, SIGNAL(positionChanged(unsigned int)), playingSequenceDialog, SLOT(setPosition(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), this, SLOT(setBlock(unsigned int)));
-    connect(player, SIGNAL(blockChanged(unsigned int)), ui->trackerMain, SLOT(setBlock(unsigned int)));
+    connect(player, SIGNAL(blockChanged(unsigned int)), ui->tracker, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), transposeDialog, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), expandShrinkDialog, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), changeInstrumentDialog, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), blockListDialog, SLOT(setBlock(unsigned int)));
-    connect(player, SIGNAL(lineChanged(unsigned int)), ui->trackerMain, SLOT(setLine(unsigned int)));
+    connect(player, SIGNAL(lineChanged(int)), ui->tracker, SLOT(setLine(int)));
     connect(player, SIGNAL(modeChanged(Player::Mode)), this, SLOT(setMode(Player::Mode)));
     connect(player, SIGNAL(timeChanged(unsigned int)), this, SLOT(setTime(unsigned int)));
-    connect(ui->trackerMain, SIGNAL(cursorTrackChanged(int)), transposeDialog, SLOT(setTrack(int)));
-    connect(ui->trackerMain, SIGNAL(cursorTrackChanged(int)), expandShrinkDialog, SLOT(setTrack(int)));
-    connect(ui->trackerMain, SIGNAL(cursorTrackChanged(int)), changeInstrumentDialog, SLOT(setTrack(int)));
-    connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), this, SLOT(setSelection(int, int, int, int)));
-    connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), transposeDialog, SLOT(setSelection(int, int, int, int)));
-    connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), expandShrinkDialog, SLOT(setSelection(int, int, int, int)));
-    connect(ui->trackerMain, SIGNAL(selectionChanged(int, int, int, int)), changeInstrumentDialog, SLOT(setSelection(int, int, int, int)));
+    connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), transposeDialog, SLOT(setTrack(int)));
+    connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), expandShrinkDialog, SLOT(setTrack(int)));
+    connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), changeInstrumentDialog, SLOT(setTrack(int)));
+    connect(ui->tracker, SIGNAL(selectionChanged(int, int, int, int)), this, SLOT(setSelection(int, int, int, int)));
+    connect(ui->tracker, SIGNAL(selectionChanged(int, int, int, int)), transposeDialog, SLOT(setSelection(int, int, int, int)));
+    connect(ui->tracker, SIGNAL(selectionChanged(int, int, int, int)), expandShrinkDialog, SLOT(setSelection(int, int, int, int)));
+    connect(ui->tracker, SIGNAL(selectionChanged(int, int, int, int)), changeInstrumentDialog, SLOT(setSelection(int, int, int, int)));
+    connect(ui->tracker, SIGNAL(trackChanged(int, int, int)), this, SLOT(setTrackerHorizontalScrollBar(int, int, int)));
+    connect(ui->tracker, SIGNAL(lineChanged(int, int, int)), this, SLOT(setTrackerVerticalScrollBar(int, int, int)));
+    connect(ui->horizontalScrollBarTracker, SIGNAL(valueChanged(int)), ui->tracker, SLOT(setLeftmostTrack(int)));
+    connect(ui->verticalScrollBarTracker, SIGNAL(valueChanged(int)), ui->tracker, SLOT(setLine(int)));
     connect(ui->buttonPlaySong, SIGNAL(clicked()), player, SLOT(playSong()));
     connect(ui->buttonPlayBlock, SIGNAL(clicked()), player, SLOT(playBlock()));
     connect(ui->buttonContinueSong, SIGNAL(clicked()), player, SLOT(continueSong()));
@@ -258,9 +252,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 
 bool MainWindow::keyPress(QKeyEvent *event)
 {
-    Tracker *tracker = ui->trackerMain;
-    Song *song = tracker->song();
-    Block *block = tracker->block();
+    Song *song = ui->tracker->song();
+    Block *block = ui->tracker->block();
     bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
     bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
     bool alt = (event->modifiers() & Qt::AltModifier) != 0;
@@ -271,12 +264,12 @@ bool MainWindow::keyPress(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_B:
             // CTRL-B: Selection mode on/off
-            tracker->markSelection(!tracker->isInSelectionMode());
+            ui->tracker->markSelection(!ui->tracker->isInSelectionMode());
             handled = true;
             break;
         case Qt::Key_K:
             // CTRL-K: Clear until the end of the track
-            block->clear(tracker->track(), tracker->line(), tracker->track(), block->length() - 1);
+            block->clear(ui->tracker->track(), ui->tracker->line(), ui->tracker->track(), block->length() - 1);
             handled = true;
             break;
         case Qt::Key_Left:
@@ -302,17 +295,17 @@ bool MainWindow::keyPress(QKeyEvent *event)
         case Qt::Key_Tab:
         case Qt::Key_Backtab:
             // CTRL-Shift-Tab: Next command page
-            tracker->setCommandPage(tracker->commandPage() + 1);
+            ui->tracker->setCommandPage(ui->tracker->commandPage() + 1);
             handled = true;
             break;
         case Qt::Key_Delete: {
             if (QApplication::activeWindow() == this) {
                 // Delete command and refresh
                 for (int i = 0; i < block->commandPages(); i++) {
-                    block->setCommandFull(tracker->line(), tracker->track(), i, 0, 0);
+                    block->setCommandFull(ui->tracker->line(), ui->tracker->track(), i, 0, 0);
                 }
 
-                tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
+                ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
 
                 handled = true;
             }
@@ -336,7 +329,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 }
                 if (channel < song->maxTracks()) {
                     song->track(channel)->setSolo(!song->track(channel)->isSolo());
-                    tracker->redraw();
+                    ui->tracker->redraw();
                 }
             } else {
                 // CTRL+0-9: Set space value
@@ -364,7 +357,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
         case Qt::Key_Backtab:
             // Shift-Tab: Previous track - only in main window
             if (QApplication::activeWindow() == this) {
-                tracker->stepCursorTrack(-1);
+                ui->tracker->stepCursorTrack(-1);
                 handled = true;
             }
             break;
@@ -373,12 +366,12 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 int n = block->commandPages();
 
                 // Delete note+command and refresh
-                block->setNote(tracker->line(), tracker->cursorTrack(), 0, 0, 0);
+                block->setNote(ui->tracker->line(), ui->tracker->cursorTrack(), 0, 0, 0);
                 for (int commandPage = 0; commandPage < n; commandPage++) {
-                    block->setCommandFull(tracker->line(), tracker->cursorTrack(), commandPage, 0, 0);
+                    block->setCommandFull(ui->tracker->line(), ui->tracker->cursorTrack(), commandPage, 0, 0);
                 }
 
-                tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
+                ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
 
                 handled = true;
             }
@@ -388,7 +381,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
             // Shift-Backspace: Insert row
             if (QApplication::activeWindow() == this) {
                 if (ui->checkBoxEdit->isChecked()) {
-                    block->insertLine(tracker->line(), alt ? -1 : tracker->cursorTrack());
+                    block->insertLine(ui->tracker->line(), alt ? -1 : ui->tracker->cursorTrack());
                 }
                 handled = true;
             }
@@ -432,7 +425,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
         case Qt::Key_Backspace:
             // Backspace: delete line
             if (QApplication::activeWindow() == this) {
-                block->deleteLine(tracker->line());
+                block->deleteLine(ui->tracker->line());
                 handled = true;
             }
             break;
@@ -511,7 +504,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
         } else {
             note = keyToNote.value(event->key(), -1) - 1;
 
-            if (tracker->cursorItem() == 0) {
+            if (ui->tracker->cursorItem() == 0) {
                 // Editing notes
                 data = keyToNote.value(event->key(), -1);
 
@@ -528,21 +521,21 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
                             if (ui->checkBoxEdit->isChecked()) {
                                 // Set note and refresh
-                                block->setNote(tracker->line(), tracker->cursorTrack(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
+                                block->setNote(ui->tracker->line(), ui->tracker->cursorTrack(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
                             }
 
-                            tracker->stepCursorTrack(1);
+                            ui->tracker->stepCursorTrack(1);
                             chordStatus++;
                         }
                     } else if (ui->checkBoxEdit->isChecked()) {
                         // Set note and refresh
-                        block->setNote(tracker->line(), tracker->cursorTrack(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
-                        tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
+                        block->setNote(ui->tracker->line(), ui->tracker->cursorTrack(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
+                        ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
                     }
                     handled = true;
                 }
             } else if (ui->checkBoxEdit->isChecked()) {
-                switch (tracker->cursorItem()) {
+                switch (ui->tracker->cursorItem()) {
                 case 1:
                 case 2:
                     // Editing instrument
@@ -556,14 +549,14 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
                     if (data >= 0) {
                         // Set instrument and refresh
-                        int ins = block->instrument(tracker->line(), tracker->cursorTrack());
-                        if (tracker->cursorItem() == 1) {
+                        int ins = block->instrument(ui->tracker->line(), ui->tracker->cursorTrack());
+                        if (ui->tracker->cursorItem() == 1) {
                             ins = (ins & 0x0f) | (data << 4);
                         } else {
                             ins = (ins & 0xf0) | data;
                         }
-                        block->setInstrument(tracker->line(), tracker->cursorTrack(), ins);
-                        tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
+                        block->setInstrument(ui->tracker->line(), ui->tracker->cursorTrack(), ins);
+                        ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
                         handled = true;
                     }
                     break;
@@ -582,8 +575,8 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
                     if (data >= 0) {
                         // Set effect and refresh
-                        block->setCommand(tracker->line(), tracker->cursorTrack(), tracker->commandPage(), tracker->cursorItem() - 3, data);
-                        tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
+                        block->setCommand(ui->tracker->line(), ui->tracker->cursorTrack(), ui->tracker->commandPage(), ui->tracker->cursorItem() - 3, data);
+                        ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
                         handled = true;
                     }
                     break;
@@ -638,71 +631,71 @@ bool MainWindow::keyPress(QKeyEvent *event)
             case Qt::Key_Down:
                 // Down: Go down -*/
                 if (QApplication::activeWindow() == this) {
-                    tracker->setLine(tracker->line() + 1);
+                    ui->tracker->setLine(ui->tracker->line() + 1);
                     handled = true;
                 }
                 break;
             case Qt::Key_Up:
                 // Up: Go up
                 if (QApplication::activeWindow() == this) {
-                    tracker->setLine(tracker->line() - 1);
+                    ui->tracker->setLine(ui->tracker->line() - 1);
                     handled = true;
                 }
                 break;
             case Qt::Key_Left:
                 // Left: Go left
                 if (QApplication::activeWindow() == this) {
-                    tracker->stepCursorItem(-1);
+                    ui->tracker->stepCursorItem(-1);
                     handled = true;
                 }
                 break;
             case Qt::Key_Right:
                 // Right: Go right
                 if (QApplication::activeWindow() == this) {
-                    tracker->stepCursorItem(1);
+                    ui->tracker->stepCursorItem(1);
                     handled = true;
                 }
                 break;
             case Qt::Key_Tab:
                 // Tab: Next track
                 if (QApplication::activeWindow() == this) {
-                    tracker->setCursorItem(0);
-                    tracker->stepCursorTrack(1);
+                    ui->tracker->setCursorItem(0);
+                    ui->tracker->stepCursorTrack(1);
                     handled = true;
                 }
                 break;
             case Qt::Key_Home:
                 // End: Go to the beginning of block
                 if (QApplication::activeWindow() == this) {
-                    tracker->setLine(0);
+                    ui->tracker->setLine(0);
                     handled = true;
                 }
                 break;
             case Qt::Key_End:
                 // End: Go to the end of block
                 if (QApplication::activeWindow() == this) {
-                    tracker->setLine(block->length() - 1);
+                    ui->tracker->setLine(block->length() - 1);
                     handled = true;
                 }
                 break;
             case Qt::Key_PageDown:
                 // Page down: Go down 8 lines
                 if (QApplication::activeWindow() == this) {
-                    tracker->setLine(tracker->line() + 8);
+                    ui->tracker->setLine(ui->tracker->line() + 8);
                     handled = true;
                 }
                 break;
             case Qt::Key_PageUp:
                 // Page up: Go up 8 lines
                 if (QApplication::activeWindow() == this) {
-                    tracker->setLine(tracker->line() - 8);
+                    ui->tracker->setLine(ui->tracker->line() - 8);
                     handled = true;
                 }
                 break;
             case Qt::Key_Backspace:
                 // Backspace: delete line
                 if (QApplication::activeWindow() == this) {
-                    block->deleteLine(tracker->line(), tracker->cursorTrack());
+                    block->deleteLine(ui->tracker->line(), ui->tracker->cursorTrack());
                     handled = true;
                 }
                 break;
@@ -721,8 +714,8 @@ bool MainWindow::keyPress(QKeyEvent *event)
         }
 
         // Play note if a key was pressed but not if cursor is in cmd pos
-        if (note >= 0 && tracker->cursorItem() == 0) {
-            player->playNote(ui->spinBoxInstrument->value(), ui->comboBoxKeyboardOctaves->currentIndex() * 12 + note, 127, tracker->cursorTrack());
+        if (note >= 0 && ui->tracker->cursorItem() == 0) {
+            player->playNote(ui->spinBoxInstrument->value(), ui->comboBoxKeyboardOctaves->currentIndex() * 12 + note, 127, ui->tracker->cursorTrack());
             handled = true;
         }
     }
@@ -732,25 +725,24 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
 bool MainWindow::keyRelease(QKeyEvent * event)
 {
-    Tracker *tracker = ui->trackerMain;
     bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
     bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
     bool handled = false;
 
     // Key has been released
     if (!ctrl && !shift) {
-        if (ui->checkBoxChord->isChecked() && tracker->cursorItem() == 0) {
+        if (ui->checkBoxChord->isChecked() && ui->tracker->cursorItem() == 0) {
             if (event->key() != Qt::Key_Delete && keyToNote.contains(event->key())) {
                 // Find the key from the keys down list and remove it
                 keyboardKeysDown.removeAll(event->key());
 
                 // Go to the previous channel
-                tracker->stepCursorTrack(-1);
+                ui->tracker->stepCursorTrack(-1);
                 chordStatus--;
 
                 // If all chord notes have been released go to the next line
                 if (chordStatus == 0 && ui->checkBoxEdit->isChecked()) {
-                    tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
+                    ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
                 }
                 handled = true;
             }
@@ -775,7 +767,7 @@ void MainWindow::setSong(Song *song)
     setPlayseq(player->playseq());
     setPosition(player->position());
     setBlock(player->block());
-    setCommandPage(ui->trackerMain->commandPage());
+    setCommandPage(ui->tracker->commandPage());
     setMode(player->mode());
     setTime(0);
     setInstrument(ui->spinBoxInstrument->value());
@@ -832,7 +824,7 @@ void MainWindow::setBlock(unsigned int block)
     } else {
         ui->labelBlock->setText(QString("Block %1/%2: %3").arg(block + 1).arg(song->blocks()).arg(name));
     }
-    setCommandPage(ui->trackerMain->commandPage());
+    setCommandPage(ui->tracker->commandPage());
 }
 
 void MainWindow::setCommandPage(unsigned int commandPage)
@@ -897,20 +889,20 @@ void MainWindow::showAbout()
 
 void MainWindow::cutSelection()
 {
-    if (ui->trackerMain->isInSelectionMode()) {
-        ui->trackerMain->markSelection(false);
+    if (ui->tracker->isInSelectionMode()) {
+        ui->tracker->markSelection(false);
     }
 
     delete copySelection_;
     copySelection_ = song->block(block)->copy(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     song->block(block)->clear(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
-    ui->trackerMain->clearMarkSelection();
+    ui->tracker->clearMarkSelection();
 }
 
 void MainWindow::copySelection()
 {
-    if (ui->trackerMain->isInSelectionMode()) {
-        ui->trackerMain->markSelection(false);
+    if (ui->tracker->isInSelectionMode()) {
+        ui->tracker->markSelection(false);
     }
 
     delete copySelection_;
@@ -920,7 +912,7 @@ void MainWindow::copySelection()
 void MainWindow::pasteSelection()
 {
     if (copySelection_ != NULL) {
-        song->block(block)->paste(copySelection_, ui->trackerMain->track(), ui->trackerMain->line());
+        song->block(block)->paste(copySelection_, ui->tracker->track(), ui->tracker->line());
     }
 }
 
@@ -956,47 +948,47 @@ void MainWindow::clearBlock()
 
 void MainWindow::selectAllBlock()
 {
-    ui->trackerMain->setSelection(0, 0, song->block(block)->tracks() - 1, song->block(block)->length() - 1);
+    ui->tracker->setSelection(0, 0, song->block(block)->tracks() - 1, song->block(block)->length() - 1);
 }
 
 void MainWindow::cutTrack()
 {
     delete copyTrack_;
-    copyTrack_ = song->block(block)->copy(ui->trackerMain->track(), 0, ui->trackerMain->track(), song->block(block)->length() - 1);
-    song->block(block)->clear(ui->trackerMain->track(), 0, ui->trackerMain->track(), song->block(block)->length() - 1);
+    copyTrack_ = song->block(block)->copy(ui->tracker->track(), 0, ui->tracker->track(), song->block(block)->length() - 1);
+    song->block(block)->clear(ui->tracker->track(), 0, ui->tracker->track(), song->block(block)->length() - 1);
 }
 
 void MainWindow::copyTrack()
 {
     delete copyTrack_;
-    copyTrack_ = song->block(block)->copy(ui->trackerMain->track(), 0, ui->trackerMain->track(), song->block(block)->length() - 1);
+    copyTrack_ = song->block(block)->copy(ui->tracker->track(), 0, ui->tracker->track(), song->block(block)->length() - 1);
 }
 
 void MainWindow::pasteTrack()
 {
     if (copyTrack_ != NULL) {
-        song->block(block)->paste(copyTrack_, ui->trackerMain->track(), 0);
+        song->block(block)->paste(copyTrack_, ui->tracker->track(), 0);
     }
 }
 
 void MainWindow::clearTrack()
 {
-    song->block(block)->clear(ui->trackerMain->track(), 0, ui->trackerMain->track(), song->block(block)->length() - 1);
+    song->block(block)->clear(ui->tracker->track(), 0, ui->tracker->track(), song->block(block)->length() - 1);
 }
 
 void MainWindow::selectAllTrack()
 {
-    ui->trackerMain->setSelection(ui->trackerMain->track(), 0, ui->trackerMain->track(), song->block(block)->length() - 1);
+    ui->tracker->setSelection(ui->tracker->track(), 0, ui->tracker->track(), song->block(block)->length() - 1);
 }
 
 void MainWindow::insertTrack()
 {
-    song->block(block)->insertTrack(ui->trackerMain->track());
+    song->block(block)->insertTrack(ui->tracker->track());
 }
 
 void MainWindow::deleteTrack()
 {
-    song->block(block)->deleteTrack(ui->trackerMain->track());
+    song->block(block)->deleteTrack(ui->tracker->track());
 }
 
 void MainWindow::setExternalSync()
@@ -1051,7 +1043,7 @@ void MainWindow::setBlock()
 
 void MainWindow::setCommandPage()
 {
-    setCommandPage(ui->trackerMain->commandPage());
+    setCommandPage(ui->tracker->commandPage());
 }
 
 void MainWindow::readMidiInput()
@@ -1069,8 +1061,7 @@ void MainWindow::handleMidiInput(const QByteArray &data)
         return;
     }
 
-    Tracker *tracker = ui->trackerMain;
-    Block *block = tracker->block();
+    Block *block = ui->tracker->block();
     switch (data[0] & 0xf0) {
     case 0x80:
         // Note off
@@ -1082,11 +1073,11 @@ void MainWindow::handleMidiInput(const QByteArray &data)
                 }
 
                 // Move the cursor to the previous channel
-                tracker->stepCursorTrack(-1);
+                ui->tracker->stepCursorTrack(-1);
 
                 // If all notes of the chord have been released move to the next line
                 if (chordStatus == 0) {
-                    tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
+                    ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
                 }
             }
         }
@@ -1094,31 +1085,49 @@ void MainWindow::handleMidiInput(const QByteArray &data)
     case 0x90:
         // Note on
         if (ui->checkBoxEdit->isChecked()) {
-            block->setNote(tracker->line(), tracker->cursorTrack(), data[1] / 12, data[1] % 12 + 1, ui->spinBoxInstrument->value() + 1);
-            block->setCommandFull(tracker->line(), tracker->cursorTrack(), tracker->commandPage(), Player::CommandVelocity, data[2]);
+            block->setNote(ui->tracker->line(), ui->tracker->cursorTrack(), data[1] / 12, data[1] % 12 + 1, ui->spinBoxInstrument->value() + 1);
+            block->setCommandFull(ui->tracker->line(), ui->tracker->cursorTrack(), ui->tracker->commandPage(), Player::CommandVelocity, data[2]);
             if (ui->checkBoxChord->isChecked()) {
                 chordStatus++;
 
                 // Move the cursor to the next channel
-                tracker->stepCursorTrack(1);
+                ui->tracker->stepCursorTrack(1);
             } else {
-                tracker->setLine(tracker->line() + ui->spinBoxSpace->value());
+                ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
             }
         }
         break;
     case 0xb0:
         // MIDI controller
         if (ui->checkBoxEdit->isChecked() && ui->actionSettingsRecordControllers->isChecked()) {
-            block->setCommandFull(tracker->line(), tracker->cursorTrack(), tracker->commandPage(), Player::CommandMidiControllers + data[1], data[2]);
+            block->setCommandFull(ui->tracker->line(), ui->tracker->cursorTrack(), ui->tracker->commandPage(), Player::CommandMidiControllers + data[1], data[2]);
         }
         break;
     case 0xe0:
         // Pitch wheel
         if (ui->checkBoxEdit->isChecked()) {
-            block->setCommandFull(tracker->line(), tracker->cursorTrack(), tracker->commandPage(), Player::CommandPitchWheel, data[2]);
+            block->setCommandFull(ui->tracker->line(), ui->tracker->cursorTrack(), ui->tracker->commandPage(), Player::CommandPitchWheel, data[2]);
         }
         break;
     default:
         break;
     }
+}
+
+void MainWindow::setTrackerHorizontalScrollBar(int track, int tracks, int visibleTracks)
+{
+    ui->horizontalScrollBarTracker->blockSignals(true);
+    ui->horizontalScrollBarTracker->setRange(0, tracks - visibleTracks);
+    ui->horizontalScrollBarTracker->setValue(track);
+    ui->horizontalScrollBarTracker->setPageStep(visibleTracks);
+    ui->horizontalScrollBarTracker->blockSignals(false);
+}
+
+void MainWindow::setTrackerVerticalScrollBar(int line, int length, int visibleLines)
+{
+    ui->verticalScrollBarTracker->blockSignals(true);
+    ui->verticalScrollBarTracker->setRange(0, length - 1);
+    ui->verticalScrollBarTracker->setValue(line);
+    ui->verticalScrollBarTracker->setPageStep(visibleLines);
+    ui->verticalScrollBarTracker->blockSignals(false);
 }

@@ -20,6 +20,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/*
+ * TODO
+ *
+ * Tracker mousewheel
+ * Localization
+ * MIDI Message List Receive
+ * ALSA sequencer events
+ */
+
 #include <QApplication>
 #ifdef __APPLE__
 #include "coremidi.h"

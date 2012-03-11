@@ -59,7 +59,8 @@ public:
 public slots:
     void setSong(Song *song);
     void setBlock(unsigned int block);
-    void setLine(unsigned int line);
+    void setLine(int line);
+    void setLeftmostTrack(int leftmostTrack);
 
 private slots:
     void redrawArea(int startTrack, int startLine, int endTrack, int endLine);
@@ -67,9 +68,9 @@ private slots:
     void checkBounds();
 
 signals:
-    void patposChanged(int, int, int);
-    void xpanningChanged(int, int, int);
-    void cursorTrackChanged(int);
+    void lineChanged(int line, int length, int visibleLines);
+    void trackChanged(int track, int tracks, int visibleTracks);
+    void cursorTrackChanged(int track);
     void selectionChanged(int startTrack, int startLine, int endTrack, int endLine);
 
 protected:
@@ -97,7 +98,6 @@ private:
 
     void redrawRow(int row);
     void redrawCurrentRow();
-    void setLeftmostTrack(int leftmostTrack);
     void setVisibleArea();
     void noteToString(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf);
     void clearNotesLine(int y, int line);

@@ -174,7 +174,7 @@ signals:
     void playseqChanged(unsigned int playseq);
     void positionChanged(unsigned int position);
     void blockChanged(unsigned int block);
-    void lineChanged(unsigned int line);
+    void lineChanged(int line);
     void modeChanged(Player::Mode mode);
     void timeChanged(unsigned int time);
 

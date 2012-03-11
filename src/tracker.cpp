@@ -86,7 +86,7 @@ void Tracker::setTracks(int tracks)
         initDisplay(geometry().width(), geometry().height());
         queueDraw();
 
-        emit xpanningChanged(leftmostTrack, tracks, visibleTracks);
+        emit trackChanged(leftmostTrack, tracks, visibleTracks);
     }
 }
 
@@ -99,7 +99,7 @@ void Tracker::setCommandPage(int commandPage)
     }
 }
 
-void Tracker::setLine(unsigned int line)
+void Tracker::setLine(int line)
 {
     if (block_ == NULL) {
         return;
@@ -109,7 +109,7 @@ void Tracker::setLine(unsigned int line)
 
     if (line_ != line) {
         line_ = line;
-        emit patposChanged(line, block_->length(), visibleLines);
+        emit lineChanged(line, block_->length(), visibleLines);
 
         queueDraw();
     }
@@ -166,7 +166,7 @@ void Tracker::setBlock(unsigned int number)
                 cursorTrack_ = block->tracks() - 1;
             }
 
-            emit patposChanged(line_, block->length(), visibleLines);
+            emit lineChanged(line_, block->length(), visibleLines);
         }
         queueDraw();
     }
@@ -188,7 +188,7 @@ void Tracker::setLeftmostTrack(int leftmostTrack)
             cursorTrack_ = leftmostTrack + visibleTracks - 1;
         }
 
-        emit xpanningChanged(leftmostTrack, tracks, visibleTracks);
+        emit trackChanged(leftmostTrack, tracks, visibleTracks);
     }
 }
 
@@ -597,8 +597,8 @@ void Tracker::initDisplay(int width, int height)
     setVisibleArea();
 
     if (block_) {
-        emit patposChanged(line_, block_->length(), visibleLines);
-        emit xpanningChanged(leftmostTrack, tracks, visibleTracks);
+        emit lineChanged(line_, block_->length(), visibleLines);
+        emit trackChanged(leftmostTrack, tracks, visibleTracks);
     }
 
     delete pixmap;
