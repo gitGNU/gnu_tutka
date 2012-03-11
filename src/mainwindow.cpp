@@ -28,6 +28,7 @@
  * Localization
  * 
  * MIDI Message List Receive
+ * ALSA sequencer events
  */
 
 #include <QApplication>

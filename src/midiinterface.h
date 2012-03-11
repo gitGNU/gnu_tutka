@@ -89,7 +89,7 @@ public:
 
 protected:
     virtual QByteArray read();
-    virtual void write(const char *data, unsigned int length);
+    virtual void write(const QByteArray &data);
 
 public slots:
     // Enables or disables the interface

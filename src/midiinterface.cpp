@@ -69,89 +69,89 @@ void MIDIInterface::noteOff(unsigned char channel, unsigned char note, unsigned 
 {
     qDebug("Note off %d %d %d", channel, note, velocity);
 
-    char data[3];
+    QByteArray data(3, 0);
 
     data[0] = 0x80 | channel;
     data[1] = note & 0x7f;
     data[2] = velocity & 0x7f;
 
-    write(data, 3);
+    write(data);
 }
 
 void MIDIInterface::noteOn(unsigned char channel, unsigned char note, unsigned char velocity)
 {
     qDebug("Note on %d %d %d", channel, note, velocity);
 
-    char data[3];
+    QByteArray data(3, 0);
 
     data[0] = 0x90 | channel;
     data[1] = note & 0x7f;
     data[2] = velocity & 0x7f;
 
-    write(data, 3);
+    write(data);
 }
 
 void MIDIInterface::aftertouch(unsigned char channel, unsigned char note, unsigned char pressure)
 {
     qDebug("Aftertouch %d %d %d", channel, note, pressure);
 
-    char data[3];
+    QByteArray data(3, 0);
 
     data[0] = 0xa0 | channel;
     data[1] = note & 0x7f;
     data[2] = pressure & 0x7f;
 
-    write(data, 3);
+    write(data);
 }
 
 void MIDIInterface::controller(unsigned char channel, unsigned char controller, unsigned char value)
 {
     qDebug("Controller %d %d %d", channel, controller, value);
 
-    char data[3];
+    QByteArray data(3, 0);
 
     data[0] = 0xb0 | channel;
     data[1] = controller & 0x7f;
     data[2] = value & 0x7f;
 
-    write(data, 3);
+    write(data);
 }
 
 void MIDIInterface::programChange(unsigned char channel, unsigned char program)
 {
     qDebug("Program change %d %d", channel, program);
 
-    char data[2];
+    QByteArray data(2, 0);
 
     data[0] = 0xc0 | channel;
     data[1] = program & 0x7f;
 
-    write(data, 2);
+    write(data);
 }
 
 void MIDIInterface::channelPressure(unsigned char channel, unsigned char pressure)
 {
     qDebug("Channel pressure %d %d", channel, pressure);
 
-    char data[2];
+    QByteArray data(2, 0);
 
     data[0] = 0xd0 | channel;
     data[1] = pressure & 0x7f;
 
-    write(data, 2);
+    write(data);
 }
 
 void MIDIInterface::pitchWheel(unsigned char channel, unsigned short value)
 {
     qDebug("Pitch wheel %d %d", channel, value);
 
-    char data[3];
+    QByteArray data(3, 0);
 
     data[0] = 0xe0 | channel;
     data[1] = (value >> 7) & 0x7f;
     data[2] = value & 0x7f;
 
-    write(data, 3);
+    write(data);
 }
 
 QByteArray MIDIInterface::readRaw()
@@ -169,24 +169,21 @@ void MIDIInterface::writeRaw(const QByteArray &data)
         return;
     }
 
-    write(data.constData(), data.length());
+    write(data);
 }
 
 void MIDIInterface::clock()
 {
     qDebug("Clock");
 
-    char data[] = { 0xf8 };
+    QByteArray data(1, 0xf8);
 
-    write(data, 1);
+    write(data);
 }
 
 void MIDIInterface::tempo(unsigned int tempo)
 {
     qDebug("Tempo %d", tempo);
-
-    char data[] = { 0xff, 0x51, 0x03, 0x00, 0x00, 0x00 };
-    unsigned int ms = 60000000 / tempo;
 
 #ifdef TODO
     /* Tempo is only relevant when exporting */
@@ -195,11 +192,17 @@ void MIDIInterface::tempo(unsigned int tempo)
     }
 #endif
 
+    unsigned int ms = 60000000 / tempo;
+    QByteArray data(6, 0);
+
+    data[0] = 0xff;
+    data[1] = 0x51;
+    data[2] = 0x03;
     data[3] = (ms >> 16) & 0xff;
     data[4] = (ms >> 8) & 0xff;
     data[5] = ms & 0xff;
 
-    write(data, 6);
+    write(data);
 }
 
 QByteArray MIDIInterface::read()
@@ -207,10 +210,9 @@ QByteArray MIDIInterface::read()
     return QByteArray();
 }
 
-void MIDIInterface::write(const char *data, unsigned int length)
+void MIDIInterface::write(const QByteArray &data)
 {
-    Q_UNUSED(data)
-    if (length > 0) {
-        qDebug("Write %d bytes (%s)", length, "");
+    if (!data.isEmpty()) {
+        qDebug("Write %d bytes", data.length());
     }
 }

@@ -31,7 +31,53 @@ AlsaMIDIInterface::AlsaMIDIInterface(AlsaMIDI *midi, snd_seq_port_info_t *pinfo,
     snd_seq_subscribe_port(midi->seq, subs);
 }
 
-void AlsaMIDIInterface::write(const char *data, unsigned int length)
+QByteArray AlsaMIDIInterface::read()
+{
+    snd_seq_event_t *ev;
+    while (snd_seq_event_input(midi->seq, &ev) >= 0) {
+        // Check event type
+        switch (ev->type) {
+        // TODO support ALSA sequencer events
+        case SND_SEQ_EVENT_START:
+//            if (editor_player_get_external_sync(midi->editor) == EXTERNAL_SYNC_MIDI)
+//                editor_player_start(midi->editor, MODE_PLAY_SONG, 0);
+            break;
+        case SND_SEQ_EVENT_CONTINUE:
+//            if (editor_player_get_external_sync(midi->editor) == EXTERNAL_SYNC_MIDI)
+//                editor_player_start(midi->editor, MODE_PLAY_SONG, 1);
+            break;
+        case SND_SEQ_EVENT_STOP:
+//            if (editor_player_get_external_sync(midi->editor) == EXTERNAL_SYNC_MIDI)
+//                editor_player_stop(midi->editor);
+            break;
+        case SND_SEQ_EVENT_CLOCK:
+//            if (editor_player_get_external_sync(midi->editor) == EXTERNAL_SYNC_MIDI)
+//                editor_player_external_sync(midi->editor, 1);
+            break;
+        case SND_SEQ_EVENT_PORT_START:
+        case SND_SEQ_EVENT_PORT_EXIT:
+        case SND_SEQ_EVENT_PORT_CHANGE:
+            // Ports have been changed
+//            midi->changed = 1;
+            break;
+        default: {
+            // Get the event to the incoming buffer
+            QByteArray data(snd_seq_event_length(ev), 0);
+            int decoded = snd_midi_event_decode(midi->decoder, (unsigned char *)data.constData(), data.length(), ev);
+            if (decoded < 0) {
+                // Some sort of an error occurred
+                break;
+            }
+
+            input.append(data);
+        }
+        }
+    }
+
+    return input.isEmpty() ? QByteArray() : input.takeFirst();
+}
+
+void AlsaMIDIInterface::write(const QByteArray &data)
 {
     // Create event
     snd_seq_event_t ev;
@@ -41,8 +87,8 @@ void AlsaMIDIInterface::write(const char *data, unsigned int length)
     snd_seq_ev_set_direct(&ev);
 
     // The encoder may send the data in multiple packets
-    for (int sent = 0; sent < length;) {
-        sent += snd_midi_event_encode(midi->encoder, (const unsigned char *)(data + sent), length - sent, &ev);
+    for (int sent = 0; sent < data.length();) {
+        sent += snd_midi_event_encode(midi->encoder, (const unsigned char *)(data.constData() + sent), data.length() - sent, &ev);
         snd_seq_event_output(midi->seq, &ev);
     }
     snd_seq_drain_output(midi->seq);

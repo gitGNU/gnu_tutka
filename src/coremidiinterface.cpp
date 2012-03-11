@@ -65,13 +65,13 @@ QByteArray CoreMIDIInterface::read()
     return input.isEmpty() ? QByteArray() : input.takeFirst();
 }
 
-void CoreMIDIInterface::write(const char *data, unsigned int length)
+void CoreMIDIInterface::write(const QByteArray &data)
 {
     MIDIPacketList list;
     list.numPackets = 1;
     list.packet[0].timeStamp = 0;
-    list.packet[0].length = length;
-    memcpy(list.packet[0].data, data, length);
+    list.packet[0].length = data.length();
+    memcpy(list.packet[0].data, data.constData(), data.length());
 
     MIDISend(outputPort, endpoint, &list);
 }
