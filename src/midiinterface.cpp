@@ -185,13 +185,6 @@ void MIDIInterface::tempo(unsigned int tempo)
 {
     qDebug("Tempo %d", tempo);
 
-#ifdef TODO
-    /* Tempo is only relevant when exporting */
-    if (midi->type != MIDI_BUFFER) {
-        return;
-    }
-#endif
-
     unsigned int ms = 60000000 / tempo;
     QByteArray data(6, 0);
 

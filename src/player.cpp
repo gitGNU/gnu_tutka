@@ -779,7 +779,6 @@ void Player::run()
             case CommandTempo:
                 // COMMAND_TPL and COMMAND_TEMPO can only mean "stop" as stop cmds
                 killThread = true;
-                return; // TODO ??
                 break;
             default:
                 // Advance in block

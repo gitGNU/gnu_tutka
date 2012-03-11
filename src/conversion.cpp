@@ -279,7 +279,7 @@ Song *mmd2ToSong(struct MMD2 *mmd)
         }
 
         // Track volumes
-        // TODO make sure tracks have been created
+        QMetaObject::invokeMethod(song, "checkMaxTrcaks");
         for (int track = 0; track < mmd->song->numtracks; track++) {
             song->track(track)->setVolume(mmd->song->trackvols[track] < 64 ? (mmd->song->trackvols[track] * 2) : 127);
         }
