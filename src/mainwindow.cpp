@@ -266,7 +266,11 @@ bool MainWindow::keyPress(QKeyEvent *event)
     bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
     bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
     bool alt = (event->modifiers() & Qt::AltModifier) != 0;
+#ifdef __APPLE__
+    bool keypad = false;
+#else
     bool keypad = (event->modifiers() & Qt::KeypadModifier) != 0;
+#endif
     bool handled = false;
 
     if (ctrl) {
