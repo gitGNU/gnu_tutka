@@ -31,6 +31,7 @@ namespace Ui {
     class MainWindow;
 }
 
+class MIDIInput;
 class InstrumentPropertiesDialog;
 class QFileDialog;
 class PreferencesDialog;
@@ -93,12 +94,15 @@ private slots:
     void setPlayseq();
     void setBlock();
     void setCommandPage();
+    void readMidiInput();
+    void handleMidiInput(const QByteArray &data);
 
 private:
     bool keyPress(QKeyEvent *event);
     bool keyRelease(QKeyEvent *event);
 
     Player *player;
+    MIDIInput *midiInput;
     Ui::MainWindow *ui;
     InstrumentPropertiesDialog *instrumentPropertiesDialog;
     QFileDialog *openDialog;

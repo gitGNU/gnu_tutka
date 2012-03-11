@@ -154,6 +154,13 @@ void MIDIInterface::pitchWheel(unsigned char channel, unsigned short value)
     write(data, 3);
 }
 
+QByteArray MIDIInterface::readRaw()
+{
+//    qDebug("Read raw");
+
+    return read();
+}
+
 void MIDIInterface::writeRaw(const QByteArray &data)
 {
     qDebug("Write raw %p %d", data.constData(), data.length());
@@ -193,6 +200,11 @@ void MIDIInterface::tempo(unsigned int tempo)
     data[5] = ms & 0xff;
 
     write(data, 6);
+}
+
+QByteArray MIDIInterface::read()
+{
+    return QByteArray();
 }
 
 void MIDIInterface::write(const char *data, unsigned int length)

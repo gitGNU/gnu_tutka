@@ -9,13 +9,17 @@ class CoreMIDIInterface : public MIDIInterface
 public:
     CoreMIDIInterface(MIDIClientRef client, MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent = NULL);
 
+    virtual QByteArray read();
     virtual void write(const char *data, unsigned int length);
 
 private:
+    static void readMidi(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
+
     MIDIClientRef client;
     MIDIEndpointRef endpoint;
     MIDIPortRef outputPort;
     MIDIPortRef inputPort;
+    QList<QByteArray> input;
 
     static QString getMidiDeviceName(MIDIEndpointRef endpoint);
 };

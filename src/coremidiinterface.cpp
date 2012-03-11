@@ -14,9 +14,9 @@ CoreMIDIInterface::CoreMIDIInterface(MIDIClientRef client, MIDIEndpointRef endpo
     }
 
     if ((flags & Input) != 0) {
-//        MIDIInputPortCreate(client, CFSTR("Tutka Input"), &inputPort);
+        MIDIInputPortCreate(client, CFSTR("Tutka Input"), readMidi, this, &inputPort);
+        MIDIPortConnectSource(inputPort, endpoint, this);
     }
-//    setEnabled(false);
 }
 
 QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)
@@ -60,6 +60,11 @@ QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)
     return name;
 }
 
+QByteArray CoreMIDIInterface::read()
+{
+    return input.isEmpty() ? QByteArray() : input.takeFirst();
+}
+
 void CoreMIDIInterface::write(const char *data, unsigned int length)
 {
     MIDIPacketList list;
@@ -69,4 +74,14 @@ void CoreMIDIInterface::write(const char *data, unsigned int length)
     memcpy(list.packet[0].data, data, length);
 
     MIDISend(outputPort, endpoint, &list);
+}
+
+void CoreMIDIInterface::readMidi(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon)
+{
+    Q_UNUSED(srcConnRefCon)
+
+    CoreMIDIInterface *interface = (CoreMIDIInterface *)readProcRefCon;
+    for (int packet = 0; packet < pktlist->numPackets; packet++) {
+        interface->input.append(QByteArray((const char *)pktlist->packet[0].data, pktlist->packet[0].length));
+    }
 }
