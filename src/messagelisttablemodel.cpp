@@ -95,7 +95,7 @@ bool MessageListTableModel::setData(const QModelIndex &index, const QVariant &va
 {
     bool success = false;
 
-    if (index.row() >= 0 && index.row() < song->sections()) {
+    if (index.row() >= 0 && index.row() < song->messages()) {
         if (role == Qt::EditRole) {
             switch(index.column()) {
             case 0:

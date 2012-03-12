@@ -35,7 +35,8 @@ MessageListDialog::MessageListDialog(MIDI *midi, QWidget *parent) :
     midi(midi),
     song(NULL),
     messageListTableModel(new MessageListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(this))
+    spinBoxDelegate(new SpinBoxDelegate(this)),
+    selectedMessage(-1)
 {
     ui->setupUi(this);
 
@@ -69,29 +70,25 @@ void MessageListDialog::setSong(Song *song)
 
 void MessageListDialog::insertMessage()
 {
-    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
-    song->insertMessage(indexes.isEmpty() ? 0 : indexes.first().row());
+    song->insertMessage(selectedMessage >= 0 ? selectedMessage : 0);
 }
 
 void MessageListDialog::appendMessage()
 {
-    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
-    song->insertMessage(indexes.isEmpty() ? 0 : song->messages());
+    song->insertMessage(song->messages());
 }
 
 void MessageListDialog::deleteMessage()
 {
-    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
-    if (!indexes.isEmpty()) {
-        song->deleteMessage(indexes.first().row());
+    if (selectedMessage >= 0) {
+        song->deleteMessage(selectedMessage);
     }
 }
 
 void MessageListDialog::sendMessage()
 {
-    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
-    if (!indexes.isEmpty()) {
-        Message *message = song->message(indexes.first().row());
+    if (selectedMessage >= 0) {
+        Message *message = song->message(selectedMessage);
         for (int output = 0; output < midi->outputs(); output++) {
             midi->output(output)->writeRaw(message->data());
         }
@@ -104,24 +101,22 @@ void MessageListDialog::receiveMessage()
 
 void MessageListDialog::loadMessage()
 {
-    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
-    if (!indexes.isEmpty()) {
-        QString path = QFileDialog::getOpenFileName();
+    if (selectedMessage >= 0) {
+        QString path = QFileDialog::getOpenFileName(NULL, tr("Load message"));
 
         if (!path.isEmpty()) {
-            song->message(indexes.first().row())->loadBinary(path);
+            song->message(selectedMessage)->loadBinary(path);
         }
     }
 }
 
 void MessageListDialog::saveMessage()
 {
-    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
-    if (!indexes.isEmpty()) {
-        QString path = QFileDialog::getSaveFileName();
+    if (selectedMessage >= 0) {
+        QString path = QFileDialog::getSaveFileName(NULL, tr("Save message as"));
 
         if (!path.isEmpty()) {
-            song->message(indexes.first().row())->saveBinary(path);
+            song->message(selectedMessage)->saveBinary(path);
         }
     }
 }
@@ -138,4 +133,5 @@ void MessageListDialog::setSelection(const QItemSelection &selected, const QItem
     ui->pushButtonReceive->setEnabled(messageSelected);
     ui->pushButtonLoad->setEnabled(messageSelected);
     ui->pushButtonSave->setEnabled(messageSelected);
+    selectedMessage = messageSelected ? indexes.first().row() : -1;
 }

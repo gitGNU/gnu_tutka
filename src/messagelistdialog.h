@@ -62,6 +62,7 @@ private:
     Song *song;
     MessageListTableModel *messageListTableModel;
     SpinBoxDelegate *spinBoxDelegate;
+    int selectedMessage;
 };
 
 #endif // MESSAGELISTDIALOG_H
