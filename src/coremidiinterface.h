@@ -19,7 +19,6 @@ private:
     MIDIEndpointRef endpoint;
     MIDIPortRef outputPort;
     MIDIPortRef inputPort;
-    QList<QByteArray> input;
 
     static QString getMidiDeviceName(MIDIEndpointRef endpoint);
 };

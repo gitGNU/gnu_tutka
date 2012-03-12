@@ -88,6 +88,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     externalSyncActionGroup->addAction(ui->actionExternalSyncMidi);
     externalSyncActionGroup->setExclusive(true);
 
+    connect(player->midi(), SIGNAL(inputReceived(QByteArray)), this, SLOT(handleMidiInput(QByteArray)));
     connect(player, SIGNAL(songChanged(Song *)), this, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), ui->tracker, SLOT(setSong(Song *)));
     connect(player, SIGNAL(songChanged(Song *)), transposeDialog, SLOT(setSong(Song *)));
@@ -223,8 +224,6 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     keyToNote.insert(Qt::Key_Aring, 30);
     keyToNote.insert(Qt::Key_acute, 31);
     keyToNote.insert(Qt::Key_Delete, 0);
-
-    readMidiInput();
 }
 
 MainWindow::~MainWindow()
@@ -1057,15 +1056,6 @@ void MainWindow::setBlock()
 void MainWindow::setCommandPage()
 {
     setCommandPage(ui->tracker->commandPage());
-}
-
-void MainWindow::readMidiInput()
-{
-    for (int input = 0; input < player->midi()->inputs(); input++) {
-        handleMidiInput(player->midi()->input(input)->readRaw());
-    }
-
-    QTimer::singleShot(0, this, SLOT(readMidiInput()));
 }
 
 void MainWindow::handleMidiInput(const QByteArray &data)

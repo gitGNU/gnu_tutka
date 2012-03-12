@@ -60,11 +60,6 @@ QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)
     return name;
 }
 
-QByteArray CoreMIDIInterface::read()
-{
-    return input.isEmpty() ? QByteArray() : input.takeFirst();
-}
-
 void CoreMIDIInterface::write(const QByteArray &data)
 {
     MIDIPacketList list;
@@ -78,10 +73,10 @@ void CoreMIDIInterface::write(const QByteArray &data)
 
 void CoreMIDIInterface::readMidi(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon)
 {
+    Q_UNUSED(readProcRefCon)
     Q_UNUSED(srcConnRefCon)
 
-    CoreMIDIInterface *interface = (CoreMIDIInterface *)readProcRefCon;
     for (int packet = 0; packet < pktlist->numPackets; packet++) {
-        interface->input.append(QByteArray((const char *)pktlist->packet[0].data, pktlist->packet[0].length));
+        emit inputReceived(QByteArray((const char *)pktlist->packet[packet].data, pktlist->packet[packet].length));
     }
 }

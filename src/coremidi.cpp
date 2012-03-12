@@ -22,6 +22,7 @@ void CoreMIDI::updateInterfaces()
     for (ItemCount index = 0; index < MIDIGetNumberOfSources(); index++) {
         MIDIInterface *interface = new CoreMIDIInterface(client, MIDIGetSource(index), MIDIInterface::Input);
         connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(inputsChanged()));
+        connect(interface, SIGNAL(inputReceived(QByteArray)), this, SIGNAL(inputReceived(QByteArray)));
         inputs_.append(QSharedPointer<MIDIInterface>(interface));
     }
 }

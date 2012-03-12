@@ -111,6 +111,7 @@ void AlsaMIDI::updateInterfaces()
                 if (isInput) {
                     MIDIInterface *interface = new AlsaMIDIInterface(this, pinfo, MIDIInterface::Input);
                     connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(inputsChanged()));
+                    connect(interface, SIGNAL(inputReceived(QByteArray)), this, SIGNAL(inputReceived(QByteArray)));
                     inputs_.append(QSharedPointer<MIDIInterface>(interface));
                 }
             }

@@ -1,3 +1,4 @@
+#include <QTimer>
 #include "alsamidi.h"
 #include "alsamidiinterface.h"
 
@@ -29,13 +30,16 @@ AlsaMIDIInterface::AlsaMIDIInterface(AlsaMIDI *midi, snd_seq_port_info_t *pinfo,
 
     // Try subscribing to the port
     snd_seq_subscribe_port(midi->seq, subs);
+
+    QTimer::singleShot(0, this, SLOT(read()));
 }
 
-QByteArray AlsaMIDIInterface::read()
+void AlsaMIDIInterface::read()
 {
     snd_seq_event_t *ev;
     while (snd_seq_event_input(midi->seq, &ev) >= 0) {
         // Check event type
+        qWarning("XX TYPE %d", ev->type);
         switch (ev->type) {
         // TODO support ALSA sequencer events
         case SND_SEQ_EVENT_START:
@@ -69,12 +73,13 @@ QByteArray AlsaMIDIInterface::read()
                 break;
             }
 
-            input.append(data);
+            qWarning("XX PERKELE %d", data.length());
+            emit inputReceived(data);
         }
         }
     }
 
-    return input.isEmpty() ? QByteArray() : input.takeFirst();
+    QTimer::singleShot(250, this, SLOT(read()));
 }
 
 void AlsaMIDIInterface::write(const QByteArray &data)

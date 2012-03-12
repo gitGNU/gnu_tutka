@@ -51,6 +51,9 @@ signals:
     void outputsChanged();
     void inputsChanged();
 
+    // Emitted when input has been received
+    void inputReceived(QByteArray data);
+
 protected:
     virtual void updateInterfaces();
 

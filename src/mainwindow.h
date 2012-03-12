@@ -97,7 +97,6 @@ private slots:
     void setPlayseq();
     void setBlock();
     void setCommandPage();
-    void readMidiInput();
     void handleMidiInput(const QByteArray &data);
     void setTrackerHorizontalScrollBar(int track, int tracks, int visibleTracks);
     void setTrackerVerticalScrollBar(int line, int length, int visibleLines);

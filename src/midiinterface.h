@@ -75,9 +75,6 @@ public:
     // Sets the pitch wheel value of a MIDI channel
     void pitchWheel(unsigned char, unsigned short);
 
-    // Receives a MIDI message
-    QByteArray readRaw();
-
     // Sends a MIDI message
     void writeRaw(const QByteArray &data);
 
@@ -88,7 +85,6 @@ public:
     void tempo(unsigned int);
 
 protected:
-    virtual QByteArray read();
     virtual void write(const QByteArray &data);
 
 public slots:
@@ -98,6 +94,9 @@ public slots:
 signals:
     // Emitted when the interface is enabled or disabled
     void enabledChanged(bool);
+
+    // Emitted when input has been received
+    void inputReceived(QByteArray data);
 
 protected:
     QString name_;
