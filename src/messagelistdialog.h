@@ -55,6 +55,7 @@ private slots:
     void loadMessage();
     void saveMessage();
     void setSelection(const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection());
+    void receiveMessage(const QByteArray &data);
 
 private:
     Ui::MessageListDialog *ui;
@@ -63,6 +64,7 @@ private:
     MessageListTableModel *messageListTableModel;
     SpinBoxDelegate *spinBoxDelegate;
     int selectedMessage;
+    QByteArray receivedMessage;
 };
 
 #endif // MESSAGELISTDIALOG_H

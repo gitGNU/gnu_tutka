@@ -97,6 +97,7 @@ void MessageListDialog::sendMessage()
 
 void MessageListDialog::receiveMessage()
 {
+    connect(midi, SIGNAL(inputReceived(QByteArray)), this, SLOT(receiveMessage(QByteArray)), Qt::UniqueConnection);
 }
 
 void MessageListDialog::loadMessage()
@@ -134,4 +135,20 @@ void MessageListDialog::setSelection(const QItemSelection &selected, const QItem
     ui->pushButtonLoad->setEnabled(messageSelected);
     ui->pushButtonSave->setEnabled(messageSelected);
     selectedMessage = messageSelected ? indexes.first().row() : -1;
+}
+
+void MessageListDialog::receiveMessage(const QByteArray &data)
+{
+    if (selectedMessage < 0 || data.isEmpty() || data[0] == (char)0xfe) {
+        return;
+    }
+
+    receivedMessage.append(data);
+    if (receivedMessage.length() >= song->message(selectedMessage)->length()) {
+        receivedMessage.truncate(song->message(selectedMessage)->length());
+        song->message(selectedMessage)->setData(receivedMessage);
+
+        receivedMessage.clear();
+        disconnect(midi, SIGNAL(inputReceived(QByteArray)), this, SLOT(receiveMessage(QByteArray)));
+    }
 }

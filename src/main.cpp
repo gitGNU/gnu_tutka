@@ -23,7 +23,7 @@
 /*
  * TODO
  *
- * MIDI Message List Receive
+ * MIDI Message List Receive progress/stop support
  * ALSA sequencer events
  * Settings load/save
  */

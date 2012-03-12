@@ -31,7 +31,9 @@ AlsaMIDIInterface::AlsaMIDIInterface(AlsaMIDI *midi, snd_seq_port_info_t *pinfo,
     // Try subscribing to the port
     snd_seq_subscribe_port(midi->seq, subs);
 
-    QTimer::singleShot(0, this, SLOT(read()));
+    if ((flags & Input) != 0) {
+        QTimer::singleShot(0, this, SLOT(read()));
+    }
 }
 
 void AlsaMIDIInterface::read()
@@ -39,7 +41,6 @@ void AlsaMIDIInterface::read()
     snd_seq_event_t *ev;
     while (snd_seq_event_input(midi->seq, &ev) >= 0) {
         // Check event type
-        qWarning("XX TYPE %d", ev->type);
         switch (ev->type) {
         // TODO support ALSA sequencer events
         case SND_SEQ_EVENT_START:
@@ -66,20 +67,20 @@ void AlsaMIDIInterface::read()
             break;
         default: {
             // Get the event to the incoming buffer
-            QByteArray data(snd_seq_event_length(ev), 0);
-            int decoded = snd_midi_event_decode(midi->decoder, (unsigned char *)data.constData(), data.length(), ev);
+            int length = snd_seq_event_length(ev);
+            unsigned char temp[length];
+            int decoded = snd_midi_event_decode(midi->decoder, temp, length, ev);
             if (decoded < 0) {
                 // Some sort of an error occurred
                 break;
             }
 
-            qWarning("XX PERKELE %d", data.length());
-            emit inputReceived(data);
+            emit inputReceived(QByteArray((const char *)temp, decoded));
         }
         }
     }
 
-    QTimer::singleShot(250, this, SLOT(read()));
+    QTimer::singleShot(40, this, SLOT(read()));
 }
 
 void AlsaMIDIInterface::write(const QByteArray &data)

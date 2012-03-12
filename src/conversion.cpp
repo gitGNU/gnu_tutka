@@ -19,6 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <QByteArray>
 #include <cstring>
 #include "song.h"
 #include "track.h"
@@ -294,8 +295,7 @@ Song *mmd2ToSong(struct MMD2 *mmd)
                 song->insertMessage(message);
             }
             for (int number = 0; number < mmd->expdata->dumps->numdumps; number++) {
-                song->message(number)->setLength(dumps[number]->length);
-                song->message(number)->setData((const char *)dumps[number]->data, dumps[number]->length);
+                song->message(number)->setData(QByteArray((const char *)dumps[number]->data, dumps[number]->length));
 
                 if (dumps[number]->ext_len >= 20) {
                     song->message(number)->setName(QString::fromLatin1((char *)dumps[number]->name));

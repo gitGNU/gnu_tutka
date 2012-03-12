@@ -53,7 +53,7 @@ public:
     QByteArray data() const;
 
     // Sets the data of the message
-    void setData(const char *data, int length);
+    void setData(const QByteArray &data);
 
     // Loads a message from a file
     void loadBinary(const QString &filename);
