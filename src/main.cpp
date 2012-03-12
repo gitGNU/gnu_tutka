@@ -25,6 +25,7 @@
  *
  * MIDI Message List Receive
  * ALSA sequencer events
+ * Settings load/save
  */
 
 #include <QApplication>

@@ -24,6 +24,7 @@
 #define MESSAGELISTDIALOG_H
 
 #include <QDialog>
+#include <QItemSelection>
 
 namespace Ui {
     class MessageListDialog;
@@ -53,6 +54,7 @@ private slots:
     void receiveMessage();
     void loadMessage();
     void saveMessage();
+    void setSelection(const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection());
 
 private:
     Ui::MessageListDialog *ui;

@@ -50,6 +50,10 @@ MessageListDialog::MessageListDialog(MIDI *midi, QWidget *parent) :
     connect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(receiveMessage()));
     connect(ui->pushButtonLoad, SIGNAL(clicked()), this, SLOT(loadMessage()));
     connect(ui->pushButtonSave, SIGNAL(clicked()), this, SLOT(saveMessage()));
+    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(setSelection(QItemSelection, QItemSelection)));
+    connect(ui->tableView->model(), SIGNAL(modelReset()), this, SLOT(setSelection()));
+
+    setSelection();
 }
 
 MessageListDialog::~MessageListDialog()
@@ -66,17 +70,13 @@ void MessageListDialog::setSong(Song *song)
 void MessageListDialog::insertMessage()
 {
     QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
-    if (!indexes.isEmpty()) {
-        song->insertMessage(indexes.first().row());
-    }
+    song->insertMessage(indexes.isEmpty() ? 0 : indexes.first().row());
 }
 
 void MessageListDialog::appendMessage()
 {
     QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
-    if (!indexes.isEmpty()) {
-        song->insertMessage(song->messages());
-    }
+    song->insertMessage(indexes.isEmpty() ? 0 : song->messages());
 }
 
 void MessageListDialog::deleteMessage()
@@ -124,4 +124,18 @@ void MessageListDialog::saveMessage()
             song->message(indexes.first().row())->saveBinary(path);
         }
     }
+}
+
+void MessageListDialog::setSelection(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(selected)
+    Q_UNUSED(deselected)
+
+    QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
+    bool messageSelected = !indexes.isEmpty();
+    ui->pushButtonDelete->setEnabled(messageSelected);
+    ui->pushButtonSend->setEnabled(messageSelected);
+    ui->pushButtonReceive->setEnabled(messageSelected);
+    ui->pushButtonLoad->setEnabled(messageSelected);
+    ui->pushButtonSave->setEnabled(messageSelected);
 }
