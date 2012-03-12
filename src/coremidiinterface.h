@@ -9,7 +9,6 @@ class CoreMIDIInterface : public MIDIInterface
 public:
     CoreMIDIInterface(MIDIClientRef client, MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent = NULL);
 
-    virtual QByteArray read();
     virtual void write(const QByteArray &data);
 
 private:

@@ -73,10 +73,10 @@ void CoreMIDIInterface::write(const QByteArray &data)
 
 void CoreMIDIInterface::readMidi(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon)
 {
-    Q_UNUSED(readProcRefCon)
     Q_UNUSED(srcConnRefCon)
 
+    CoreMIDIInterface *interface = (CoreMIDIInterface *)readProcRefCon;
     for (int packet = 0; packet < pktlist->numPackets; packet++) {
-        emit inputReceived(QByteArray((const char *)pktlist->packet[packet].data, pktlist->packet[packet].length));
+        emit interface->inputReceived(QByteArray((const char *)pktlist->packet[packet].data, pktlist->packet[packet].length));
     }
 }
