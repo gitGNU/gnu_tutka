@@ -23,12 +23,16 @@
 #ifndef MESSAGE_H_
 #define MESSAGE_H_
 
+#include <QObject>
+
 class QDomElement;
 class QDomDocument;
 
-class Message {
+class Message : public QObject {
+    Q_OBJECT
+
 public:
-    Message();
+    Message(QObject *parent = NULL);
     virtual ~Message();
 
     // Returns the name of the message
@@ -66,6 +70,10 @@ public:
 
     // Saves a message to an XML file
     void save(int number, QDomElement &parentElement, QDomDocument &document);
+
+signals:
+    // Emitted when the length of the message changes
+    void lengthChanged();
 
 private:
     // Name

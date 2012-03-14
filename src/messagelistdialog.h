@@ -56,6 +56,8 @@ private slots:
     void saveMessage();
     void setSelection(const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection());
     void receiveMessage(const QByteArray &data);
+    void setReceiveButtonVisibility();
+    void stopReception();
 
 private:
     Ui::MessageListDialog *ui;

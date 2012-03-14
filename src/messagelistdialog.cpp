@@ -65,6 +65,7 @@ MessageListDialog::~MessageListDialog()
 void MessageListDialog::setSong(Song *song)
 {
     this->song = song;
+    selectedMessage = -1;
     messageListTableModel->setSong(song);
 }
 
@@ -97,7 +98,13 @@ void MessageListDialog::sendMessage()
 
 void MessageListDialog::receiveMessage()
 {
-    connect(midi, SIGNAL(inputReceived(QByteArray)), this, SLOT(receiveMessage(QByteArray)), Qt::UniqueConnection);
+    if (selectedMessage >= 0 && song->message(selectedMessage)->length() > 0) {
+        disconnect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(receiveMessage()));
+        connect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(stopReception()));
+        connect(midi, SIGNAL(inputReceived(QByteArray)), this, SLOT(receiveMessage(QByteArray)), Qt::UniqueConnection);
+        ui->pushButtonReceive->setText(tr("Stop"));
+        ui->labelStatus->setText(tr("%1/%2 bytes received").arg(0).arg(song->message(selectedMessage)->length()));
+    }
 }
 
 void MessageListDialog::loadMessage()
@@ -127,14 +134,20 @@ void MessageListDialog::setSelection(const QItemSelection &selected, const QItem
     Q_UNUSED(selected)
     Q_UNUSED(deselected)
 
+    if (selectedMessage >= 0 && selectedMessage < song->messages()) {
+        disconnect(song->message(selectedMessage), SIGNAL(lengthChanged()), this, SLOT(setReceiveButtonVisibility()));
+    }
     QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
     bool messageSelected = !indexes.isEmpty();
+    selectedMessage = messageSelected ? indexes.first().row() : -1;
     ui->pushButtonDelete->setEnabled(messageSelected);
     ui->pushButtonSend->setEnabled(messageSelected);
-    ui->pushButtonReceive->setEnabled(messageSelected);
     ui->pushButtonLoad->setEnabled(messageSelected);
     ui->pushButtonSave->setEnabled(messageSelected);
-    selectedMessage = messageSelected ? indexes.first().row() : -1;
+    setReceiveButtonVisibility();
+    if (selectedMessage >= 0) {
+        connect(song->message(selectedMessage), SIGNAL(lengthChanged()), this, SLOT(setReceiveButtonVisibility()));
+    }
 }
 
 void MessageListDialog::receiveMessage(const QByteArray &data)
@@ -144,11 +157,28 @@ void MessageListDialog::receiveMessage(const QByteArray &data)
     }
 
     receivedMessage.append(data);
+    ui->labelStatus->setText(tr("%1/%2 bytes received").arg(receivedMessage.length()).arg(song->message(selectedMessage)->length()));
+
     if (receivedMessage.length() >= song->message(selectedMessage)->length()) {
         receivedMessage.truncate(song->message(selectedMessage)->length());
         song->message(selectedMessage)->setData(receivedMessage);
 
-        receivedMessage.clear();
-        disconnect(midi, SIGNAL(inputReceived(QByteArray)), this, SLOT(receiveMessage(QByteArray)));
+        stopReception();
     }
+}
+
+void MessageListDialog::setReceiveButtonVisibility()
+{
+    ui->pushButtonReceive->setEnabled(selectedMessage >= 0 && song->message(selectedMessage)->length() > 0);
+}
+
+void MessageListDialog::stopReception()
+{
+    receivedMessage.clear();
+
+    disconnect(midi, SIGNAL(inputReceived(QByteArray)), this, SLOT(receiveMessage(QByteArray)));
+    disconnect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(stopReception()));
+    connect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(receiveMessage()));
+    ui->pushButtonReceive->setText(tr("Receive"));
+    ui->labelStatus->setText(QString());
 }

@@ -24,7 +24,8 @@
 #include <QDomElement>
 #include "message.h"
 
-Message::Message() :
+Message::Message(QObject *parent) :
+    QObject(parent),
     autoSend(false)
 {
 }
@@ -52,10 +53,14 @@ void Message::setLength(unsigned int length)
 {
     int oldLength = data_.length();
 
-    data_.resize(length);
+    if (length != oldLength) {
+        data_.resize(length);
 
-    for (int i = oldLength; i < length; i++) {
-        data_[i] = 0;
+        for (int i = oldLength; i < length; i++) {
+            data_[i] = 0;
+        }
+
+        emit lengthChanged();
     }
 }
 
@@ -76,7 +81,13 @@ QByteArray Message::data() const
 
 void Message::setData(const QByteArray &data)
 {
+    int oldLength = data_.length();
+
     data_ = data;
+
+    if (data_.length() != oldLength) {
+        emit lengthChanged();
+    }
 }
 
 void Message::loadBinary(const QString &filename)
