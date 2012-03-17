@@ -24,6 +24,7 @@
 #define PREFERENCESDIALOG_H
 
 #include <QDialog>
+#include <QSettings>
 
 namespace Ui {
     class PreferencesDialog;
@@ -43,12 +44,15 @@ public:
 
 private slots:
     void setSchedulingMode(int schedulingMode);
+    void saveSettings();
 
 private:
+    void loadSettings();
     Ui::PreferencesDialog *ui;
     Player *player;
     OutputMidiInterfacesTableModel *outputMidiInterfacesTableModel;
     InputMidiInterfacesTableModel *inputMidiInterfacesTableModel;
+    QSettings settings;
 };
 
 #endif // PREFERENCESDIALOG_H

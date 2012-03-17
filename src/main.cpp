@@ -24,7 +24,7 @@
  * TODO
  *
  * Update MIDI interfaces when new applications appear (ALSA/CoreMIDI)
- * Settings load/save
+ * Scheduling setting load/save
  */
 
 #include <QApplication>

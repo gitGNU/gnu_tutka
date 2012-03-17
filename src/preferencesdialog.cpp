@@ -21,6 +21,8 @@
  */
 
 #include "player.h"
+#include "midi.h"
+#include "midiinterface.h"
 #include "outputmidiinterfacestablemodel.h"
 #include "inputmidiinterfacestablemodel.h"
 #include "preferencesdialog.h"
@@ -31,7 +33,8 @@ PreferencesDialog::PreferencesDialog(Player *player, QWidget *parent) :
     ui(new Ui::PreferencesDialog),
     player(player),
     outputMidiInterfacesTableModel(new OutputMidiInterfacesTableModel(player->midi())),
-    inputMidiInterfacesTableModel(new InputMidiInterfacesTableModel(player->midi()))
+    inputMidiInterfacesTableModel(new InputMidiInterfacesTableModel(player->midi())),
+    settings("nongnu.org", "Tutka")
 {
     ui->setupUi(this);
 
@@ -41,6 +44,10 @@ PreferencesDialog::PreferencesDialog(Player *player, QWidget *parent) :
     ui->tableViewInputMidiInterfaces->setColumnWidth(0, 300);
 
     connect(ui->comboBoxSchedulingMode, SIGNAL(currentIndexChanged(int)), this, SLOT(setSchedulingMode(int)));
+    connect(player->midi(), SIGNAL(inputsChanged()), this, SLOT(saveSettings()));
+    connect(player->midi(), SIGNAL(outputsChanged()), this, SLOT(saveSettings()));
+
+    loadSettings();
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -51,4 +58,94 @@ PreferencesDialog::~PreferencesDialog()
 void PreferencesDialog::setSchedulingMode(int schedulingMode)
 {
     player->setScheduler(schedulingMode == 0 ? Player::SchedulingRTC : Player::SchedulingNanoSleep);
+}
+
+void PreferencesDialog::loadSettings()
+{
+    MIDI *midi = player->midi();
+    QStringList inputs;
+    QStringList outputs;
+    QStringList unavailableInputs;
+    QStringList unavailableOutputs;
+
+    QString inputsString = settings.value("MIDI/In").toString();
+    if (!inputsString.isEmpty()) {
+        foreach (const QString &inputName, inputsString.split(",")) {
+            int input = midi->input(inputName);
+            if (input >= 0) {
+                midi->input(input)->setEnabled(true);
+                inputs.append(inputName);
+            } else {
+                unavailableInputs.append(inputName);
+            }
+        }
+    }
+
+    QString outputsString = settings.value("MIDI/Out").toString();
+    if (!outputsString.isEmpty()) {
+        foreach (const QString &outputName, outputsString.split(",")) {
+            int output = midi->output(outputName);
+            if (output >= 0) {
+                midi->output(output)->setEnabled(true);
+                outputs.append(outputName);
+            } else {
+                unavailableOutputs.append(outputName);
+            }
+        }
+    }
+
+    QString unavailableInputsString = settings.value("MIDI/UnavailableIn").toString();
+    if (!unavailableInputsString.isEmpty()) {
+        foreach (const QString &inputName, unavailableInputsString.split(",")) {
+            int input = midi->input(inputName);
+            if (input >= 0) {
+                midi->input(input)->setEnabled(true);
+                inputs.append(inputName);
+            } else {
+                unavailableInputs.append(inputName);
+            }
+        }
+    }
+
+    QString unavailableOutputsString = settings.value("MIDI/UnavailableOut").toString();
+    if (!unavailableOutputsString.isEmpty()) {
+        foreach (const QString &outputName, unavailableOutputsString.split(",")) {
+            int output = midi->output(outputName);
+            if (output >= 0) {
+                midi->output(output)->setEnabled(true);
+                outputs.append(outputName);
+            } else {
+                unavailableOutputs.append(outputName);
+            }
+        }
+    }
+
+    settings.setValue("MIDI/In", inputs.join(","));
+    settings.setValue("MIDI/Out", outputs.join(","));
+    settings.setValue("MIDI/UnavailableIn", unavailableInputs.join(","));
+    settings.setValue("MIDI/UnavailableOut", unavailableOutputs.join(","));
+}
+
+void PreferencesDialog::saveSettings()
+{
+    MIDI *midi = player->midi();
+    QStringList inputs;
+    QStringList outputs;
+
+    for (int input = 0; input < midi->inputs(); input++) {
+        MIDIInterface *interface = midi->input(input).data();
+        if (interface->isEnabled()) {
+            inputs.append(interface->name());
+        }
+    }
+
+    for (int output = 1; output < midi->outputs(); output++) {
+        MIDIInterface *interface = midi->output(output).data();
+        if (interface->isEnabled()) {
+            outputs.append(interface->name());
+        }
+    }
+
+    settings.setValue("MIDI/In", inputs.join(","));
+    settings.setValue("MIDI/Out", outputs.join(","));
 }
