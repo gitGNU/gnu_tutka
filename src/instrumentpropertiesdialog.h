@@ -46,6 +46,7 @@ public slots:
 
 private slots:
     void updateMidiInterfaceComboBox();
+    void setMidiInterface(const QString &name);
 
 private:
     Ui::InstrumentPropertiesDialog *ui;

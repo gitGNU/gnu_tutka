@@ -77,8 +77,10 @@ unsigned int MIDI::inputs() const
 
 void MIDI::updateInterfaces()
 {
+    MIDIInterface *output = new MIDIInterface(MIDIInterface::Output);
+    output->setEnabled(true);
+
     outputs_.clear();
-    outputs_.append(QSharedPointer<MIDIInterface>(new MIDIInterface(MIDIInterface::Output)));
+    outputs_.append(QSharedPointer<MIDIInterface>(output));
     inputs_.clear();
-    inputs_.append(QSharedPointer<MIDIInterface>(new MIDIInterface(MIDIInterface::Input)));
 }

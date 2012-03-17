@@ -35,6 +35,7 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
 {
     ui->setupUi(this);
 
+    connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), this, SLOT(setMidiInterface(QString)));
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(updateMidiInterfaceComboBox()));
     updateMidiInterfaceComboBox();
 }
@@ -60,7 +61,6 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         disconnect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setDefaultVelocity(int)));
         disconnect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setTranspose(int)));
         disconnect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setHold(int)));
-        disconnect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(int)), oldInstrument, SLOT(setMidiInterface(int)));
         disconnect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), oldInstrument, SLOT(setMidiInterfaceName(QString)));
 
         // Make sure the instrument exists
@@ -83,7 +83,6 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         connect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), instrument, SLOT(setDefaultVelocity(int)));
         connect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), instrument, SLOT(setTranspose(int)));
         connect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), instrument, SLOT(setHold(int)));
-        connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(int)), instrument, SLOT(setMidiInterface(int)));
         connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), instrument, SLOT(setMidiInterfaceName(QString)));
     }
 }
@@ -100,5 +99,12 @@ void InstrumentPropertiesDialog::updateMidiInterfaceComboBox()
                 ui->comboBoxMidiInterface->setCurrentIndex(number);
             }
         }
+    }
+}
+
+void InstrumentPropertiesDialog::setMidiInterface(const QString &name)
+{
+    if (song != NULL) {
+        song->instrument(instrument)->setMidiInterface(midi->output(name));
     }
 }
