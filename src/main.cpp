@@ -23,7 +23,6 @@
 /*
  * TODO
  *
- * ALSA sequencer events
  * Settings load/save
  */
 

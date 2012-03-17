@@ -50,6 +50,10 @@ public:
 signals:
     void outputsChanged();
     void inputsChanged();
+    void startReceived();
+    void stopReceived();
+    void continueReceived();
+    void clockReceived();
 
     // Emitted when input has been received
     void inputReceived(QByteArray data);

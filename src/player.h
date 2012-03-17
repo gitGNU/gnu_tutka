@@ -133,9 +133,6 @@ public:
     // Unlock the player
     void unlock();
 
-    // A method to notify the player about an incoming sync signal
-    void externalSync(unsigned int);
-
     // Set the scheduler of a player
     void setExternalSync(ExternalSync externalSync);
     void setScheduler(Scheduling);
@@ -154,6 +151,8 @@ public slots:
     // Resets the pitch wheel on all channels
     void resetPitch();
     void setSong(const QString &path = QString());
+    // A method to notify the player about an incoming sync signal
+    void externalSync(unsigned int ticks = 1);
 
 private slots:
     // Initializes the player

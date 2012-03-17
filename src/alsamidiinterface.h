@@ -15,6 +15,13 @@ public:
 
     virtual void write(const QByteArray &data);
 
+signals:
+    void startReceived();
+    void stopReceived();
+    void continueReceived();
+    void clockReceived();
+    void portsChanged();
+
 private slots:
     void read();
 

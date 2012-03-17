@@ -112,6 +112,10 @@ void AlsaMIDI::updateInterfaces()
                     MIDIInterface *interface = new AlsaMIDIInterface(this, pinfo, MIDIInterface::Input);
                     connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(inputsChanged()));
                     connect(interface, SIGNAL(inputReceived(QByteArray)), this, SIGNAL(inputReceived(QByteArray)));
+                    connect(interface, SIGNAL(startReceived()), this, SIGNAL(startReceived()));
+                    connect(interface, SIGNAL(stopReceived()), this, SIGNAL(stopReceived()));
+                    connect(interface, SIGNAL(continueReceived()), this, SIGNAL(continueReceived()));
+                    connect(interface, SIGNAL(clockReceived()), this, SIGNAL(clockReceived()));
                     inputs_.append(QSharedPointer<MIDIInterface>(interface));
                 }
             }

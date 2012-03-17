@@ -42,28 +42,23 @@ void AlsaMIDIInterface::read()
     while (snd_seq_event_input(midi->seq, &ev) >= 0) {
         // Check event type
         switch (ev->type) {
-        // TODO support ALSA sequencer events
         case SND_SEQ_EVENT_START:
-//            if (editor_player_get_external_sync(midi->editor) == EXTERNAL_SYNC_MIDI)
-//                editor_player_start(midi->editor, MODE_PLAY_SONG, 0);
+            emit startReceived();
             break;
         case SND_SEQ_EVENT_CONTINUE:
-//            if (editor_player_get_external_sync(midi->editor) == EXTERNAL_SYNC_MIDI)
-//                editor_player_start(midi->editor, MODE_PLAY_SONG, 1);
+            emit continueReceived();
             break;
         case SND_SEQ_EVENT_STOP:
-//            if (editor_player_get_external_sync(midi->editor) == EXTERNAL_SYNC_MIDI)
-//                editor_player_stop(midi->editor);
+            emit stopReceived();
             break;
         case SND_SEQ_EVENT_CLOCK:
-//            if (editor_player_get_external_sync(midi->editor) == EXTERNAL_SYNC_MIDI)
-//                editor_player_external_sync(midi->editor, 1);
+            emit clockReceived();
             break;
         case SND_SEQ_EVENT_PORT_START:
         case SND_SEQ_EVENT_PORT_EXIT:
         case SND_SEQ_EVENT_PORT_CHANGE:
             // Ports have been changed
-//            midi->changed = 1;
+            emit portsChanged();
             break;
         default: {
             // Get the event to the incoming buffer
@@ -74,8 +69,8 @@ void AlsaMIDIInterface::read()
                 // Some sort of an error occurred
                 break;
             }
-
-            emit inputReceived(QByteArray((const char *)temp, decoded));
+            inputReceived(QByteArray((const char*)(temp), decoded));
+            break;
         }
         }
     }

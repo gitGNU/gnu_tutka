@@ -69,6 +69,10 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     postValue(0)
 {
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(remapMidiOutputs()));
+    connect(midi, SIGNAL(startReceived()), this, SLOT(playSong()));
+    connect(midi, SIGNAL(continueReceived()), this, SLOT(continueSong()));
+    connect(midi, SIGNAL(stopReceived()), this, SLOT(stop()));
+    connect(midi, SIGNAL(clockReceived()), this, SLOT(externalSync()));
 
     QTimer::singleShot(0, this, SLOT(init()));
 }
