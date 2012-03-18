@@ -24,7 +24,7 @@
  * TODO
  *
  * Update MIDI interfaces when new applications appear (ALSA/CoreMIDI)
- * Scheduling setting load/save
+ * File dialog paths load/save
  */
 
 #include <QApplication>

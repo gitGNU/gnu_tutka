@@ -44,10 +44,10 @@ PreferencesDialog::PreferencesDialog(Player *player, QWidget *parent) :
     ui->tableViewInputMidiInterfaces->setColumnWidth(0, 300);
 
     connect(ui->comboBoxSchedulingMode, SIGNAL(currentIndexChanged(int)), this, SLOT(setSchedulingMode(int)));
+    loadSettings();
+
     connect(player->midi(), SIGNAL(inputsChanged()), this, SLOT(saveSettings()));
     connect(player->midi(), SIGNAL(outputsChanged()), this, SLOT(saveSettings()));
-
-    loadSettings();
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -58,6 +58,8 @@ PreferencesDialog::~PreferencesDialog()
 void PreferencesDialog::setSchedulingMode(int schedulingMode)
 {
     player->setScheduler(schedulingMode == 0 ? Player::SchedulingRTC : Player::SchedulingNanoSleep);
+
+    saveSettings();
 }
 
 void PreferencesDialog::loadSettings()
@@ -124,6 +126,7 @@ void PreferencesDialog::loadSettings()
     settings.setValue("MIDI/Out", outputs.join(","));
     settings.setValue("MIDI/UnavailableIn", unavailableInputs.join(","));
     settings.setValue("MIDI/UnavailableOut", unavailableOutputs.join(","));
+    ui->comboBoxSchedulingMode->setCurrentIndex(settings.value("SchedulingMode").toInt());
 }
 
 void PreferencesDialog::saveSettings()
@@ -148,4 +151,5 @@ void PreferencesDialog::saveSettings()
 
     settings.setValue("MIDI/In", inputs.join(","));
     settings.setValue("MIDI/Out", outputs.join(","));
+    settings.setValue("SchedulingMode", ui->comboBoxSchedulingMode->currentIndex());
 }
