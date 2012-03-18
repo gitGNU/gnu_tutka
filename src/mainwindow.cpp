@@ -57,8 +57,9 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     QMainWindow(parent),
     player(player),
     ui(new Ui::MainWindow),
+    settings("nongnu.org", "Tutka"),
     instrumentPropertiesDialog(new InstrumentPropertiesDialog(player->midi())),
-    openDialog(new QFileDialog(NULL, tr("Open file"), QString(), tr("Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med)"))),
+    openDialog(new QFileDialog(NULL, tr("Open file"), settings.value("Paths/songPath").toString(), tr("Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med)"))),
     preferencesDialog(new PreferencesDialog(player)),
     trackVolumesDialog(new TrackVolumesDialog),
     transposeDialog(new TransposeDialog),
@@ -143,6 +144,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionFileNew, SIGNAL(triggered()), player, SLOT(setSong()));
     connect(ui->actionFileOpen, SIGNAL(triggered()), openDialog, SLOT(show()));
     connect(openDialog, SIGNAL(fileSelected(QString)), player, SLOT(setSong(QString)));
+    connect(openDialog, SIGNAL(fileSelected(QString)), this, SLOT(setSongPath(QString)));
     connect(ui->actionFileSave, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui->actionFileSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
     connect(ui->actionFileQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
@@ -1039,7 +1041,7 @@ void MainWindow::save()
 
 void MainWindow::saveAs()
 {
-    QString path = QFileDialog::getSaveFileName(NULL, tr("Save as"), QString(), tr("Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med);;Standard MIDI files (*.mid)"));
+    QString path = QFileDialog::getSaveFileName(NULL, tr("Save as"), settings.value("Paths/songPath").toString(), tr("Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med);;Standard MIDI files (*.mid)"));
 
     if (!path.isEmpty()) {
         if (path.endsWith(".med") || path.endsWith(".mmd")) {
@@ -1053,6 +1055,8 @@ void MainWindow::saveAs()
         } else {
             song->save(path);
         }
+
+        setSongPath(path);
     }
 }
 
@@ -1151,4 +1155,9 @@ void MainWindow::setTrackerVerticalScrollBar(int line, int length, int visibleLi
     ui->verticalScrollBarTracker->setValue(line);
     ui->verticalScrollBarTracker->setPageStep(visibleLines);
     ui->verticalScrollBarTracker->blockSignals(false);
+}
+
+void MainWindow::setSongPath(const QString &path)
+{
+    settings.setValue("Paths/songPath", QFileInfo(path).absolutePath());
 }

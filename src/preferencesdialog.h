@@ -49,10 +49,10 @@ private slots:
 private:
     void loadSettings();
     Ui::PreferencesDialog *ui;
+    QSettings settings;
     Player *player;
     OutputMidiInterfacesTableModel *outputMidiInterfacesTableModel;
     InputMidiInterfacesTableModel *inputMidiInterfacesTableModel;
-    QSettings settings;
 };
 
 #endif // PREFERENCESDIALOG_H

@@ -25,13 +25,13 @@
 
 #include "player.h"
 #include <QMainWindow>
+#include <QSettings>
 #include <QHash>
 
 namespace Ui {
     class MainWindow;
 }
 
-class MIDIInput;
 class InstrumentPropertiesDialog;
 class QFileDialog;
 class PreferencesDialog;
@@ -100,14 +100,15 @@ private slots:
     void handleMidiInput(const QByteArray &data);
     void setTrackerHorizontalScrollBar(int track, int tracks, int visibleTracks);
     void setTrackerVerticalScrollBar(int line, int length, int visibleLines);
+    void setSongPath(const QString &path);
 
 private:
     bool keyPress(QKeyEvent *event);
     bool keyRelease(QKeyEvent *event);
 
     Player *player;
-    MIDIInput *midiInput;
     Ui::MainWindow *ui;
+    QSettings settings;
     InstrumentPropertiesDialog *instrumentPropertiesDialog;
     QFileDialog *openDialog;
     QFileDialog *saveDialog;
