@@ -70,7 +70,7 @@ void PreferencesDialog::loadSettings()
     QStringList unavailableInputs;
     QStringList unavailableOutputs;
 
-    QString inputsString = settings.value("MIDI/In").toString();
+    QString inputsString = settings.value("MIDI/inputInterfaces").toString();
     if (!inputsString.isEmpty()) {
         foreach (const QString &inputName, inputsString.split(",")) {
             int input = midi->input(inputName);
@@ -83,7 +83,7 @@ void PreferencesDialog::loadSettings()
         }
     }
 
-    QString outputsString = settings.value("MIDI/Out").toString();
+    QString outputsString = settings.value("MIDI/outputInterfaces").toString();
     if (!outputsString.isEmpty()) {
         foreach (const QString &outputName, outputsString.split(",")) {
             int output = midi->output(outputName);
@@ -96,7 +96,7 @@ void PreferencesDialog::loadSettings()
         }
     }
 
-    QString unavailableInputsString = settings.value("MIDI/UnavailableIn").toString();
+    QString unavailableInputsString = settings.value("MIDI/unavailableInputInterfaces").toString();
     if (!unavailableInputsString.isEmpty()) {
         foreach (const QString &inputName, unavailableInputsString.split(",")) {
             int input = midi->input(inputName);
@@ -109,7 +109,7 @@ void PreferencesDialog::loadSettings()
         }
     }
 
-    QString unavailableOutputsString = settings.value("MIDI/UnavailableOut").toString();
+    QString unavailableOutputsString = settings.value("MIDI/unavailableOutputInterfaces").toString();
     if (!unavailableOutputsString.isEmpty()) {
         foreach (const QString &outputName, unavailableOutputsString.split(",")) {
             int output = midi->output(outputName);
@@ -122,11 +122,11 @@ void PreferencesDialog::loadSettings()
         }
     }
 
-    settings.setValue("MIDI/In", inputs.join(","));
-    settings.setValue("MIDI/Out", outputs.join(","));
-    settings.setValue("MIDI/UnavailableIn", unavailableInputs.join(","));
-    settings.setValue("MIDI/UnavailableOut", unavailableOutputs.join(","));
-    ui->comboBoxSchedulingMode->setCurrentIndex(settings.value("SchedulingMode").toInt());
+    settings.setValue("MIDI/inputInterfaces", inputs.join(","));
+    settings.setValue("MIDI/outputInterfaces", outputs.join(","));
+    settings.setValue("MIDI/unavailableInputInterfaces", unavailableInputs.join(","));
+    settings.setValue("MIDI/unavailableOutputInterfaces", unavailableOutputs.join(","));
+    ui->comboBoxSchedulingMode->setCurrentIndex(settings.value("schedulingMode").toInt());
 }
 
 void PreferencesDialog::saveSettings()
@@ -149,7 +149,7 @@ void PreferencesDialog::saveSettings()
         }
     }
 
-    settings.setValue("MIDI/In", inputs.join(","));
-    settings.setValue("MIDI/Out", outputs.join(","));
-    settings.setValue("SchedulingMode", ui->comboBoxSchedulingMode->currentIndex());
+    settings.setValue("MIDI/inputInterfaces", inputs.join(","));
+    settings.setValue("MIDI/outputInterfaces", outputs.join(","));
+    settings.setValue("schedulingMode", ui->comboBoxSchedulingMode->currentIndex());
 }
