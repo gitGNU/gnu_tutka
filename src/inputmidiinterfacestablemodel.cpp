@@ -11,7 +11,7 @@ InputMidiInterfacesTableModel::InputMidiInterfacesTableModel(MIDI *midi, QObject
 
 int InputMidiInterfacesTableModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : (midi->inputs() - 1);
+    return parent.isValid() ? 0 : midi->inputs();
 }
 
 int InputMidiInterfacesTableModel::columnCount(const QModelIndex &parent) const
@@ -24,12 +24,12 @@ QVariant InputMidiInterfacesTableModel::data(const QModelIndex &index, int role)
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
         case 0:
-            return midi->input(index.row() + 1)->name();
+            return midi->input(index.row())->name();
         default:
             break;
         }
     } else if (role == Qt::CheckStateRole && index.column() == 1) {
-        return midi->input(index.row() + 1)->isEnabled() ? QVariant(Qt::Checked) : QVariant(Qt::Unchecked);
+        return midi->input(index.row())->isEnabled() ? QVariant(Qt::Checked) : QVariant(Qt::Unchecked);
     }
     return QVariant();
 }
@@ -54,7 +54,7 @@ QVariant InputMidiInterfacesTableModel::headerData(int section, Qt::Orientation 
 bool InputMidiInterfacesTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (role == Qt::CheckStateRole && index.column() == 1) {
-        midi->input(index.row() + 1)->setEnabled(value == QVariant(Qt::Checked));
+        midi->input(index.row())->setEnabled(value == QVariant(Qt::Checked));
         return true;
     } else {
         return false;
