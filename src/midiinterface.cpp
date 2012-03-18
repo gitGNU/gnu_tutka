@@ -60,7 +60,7 @@ void MIDIInterface::setEnabled(bool enabled)
 
 void MIDIInterface::setTick(unsigned int tick)
 {
-    qDebug("Tick %d", tick);
+//    qDebug("Tick %d", tick);
 
     this->tick = tick;
 }
