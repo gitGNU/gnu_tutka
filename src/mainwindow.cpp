@@ -20,6 +20,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef __linux
+#define XK_MISCELLANY
+#include <X11/keysymdef.h>
+#endif
 #include <QApplication>
 #include <QKeyEvent>
 #include <QFileDialog>
@@ -274,11 +278,18 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
     if (ctrl) {
         switch (event->key()) {
-        case Qt::Key_Control:
-            // Right Control: Play song
-            player->playSong();
-            handled = true;
+        case Qt::Key_Control: {
+            bool isRight = true;
+#ifdef __linux
+            isRight = event->nativeVirtualKey() == XK_Control_R;
+#endif
+            if (isRight) {
+                // Right Control: Play song
+                player->playSong();
+                handled = true;
+            }
             break;
+        }
         case Qt::Key_B:
             // CTRL-B: Selection mode on/off
             ui->tracker->markSelection(!ui->tracker->isInSelectionMode());
@@ -361,11 +372,18 @@ bool MainWindow::keyPress(QKeyEvent *event)
         }
     } else if (shift) {
         switch (event->key()) {
-        case Qt::Key_Shift:
-            // Right shift: Play block
-            player->playBlock();
-            handled = true;
+        case Qt::Key_Shift: {
+            bool isRight = true;
+#ifdef __linux
+            isRight = event->nativeVirtualKey() == XK_Shift_R;
+#endif
+            if (isRight) {
+                // Right shift: Play block
+                player->playBlock();
+                handled = true;
+            }
             break;
+        }
         case Qt::Key_Left:
             // Shift-Left: Previous position
             player->setPosition(player->position() - 1);
