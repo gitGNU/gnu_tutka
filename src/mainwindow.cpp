@@ -274,6 +274,11 @@ bool MainWindow::keyPress(QKeyEvent *event)
 
     if (ctrl) {
         switch (event->key()) {
+        case Qt::Key_Control:
+            // Right Control: Play song
+            player->playSong();
+            handled = true;
+            break;
         case Qt::Key_B:
             // CTRL-B: Selection mode on/off
             ui->tracker->markSelection(!ui->tracker->isInSelectionMode());
@@ -356,6 +361,11 @@ bool MainWindow::keyPress(QKeyEvent *event)
         }
     } else if (shift) {
         switch (event->key()) {
+        case Qt::Key_Shift:
+            // Right shift: Play block
+            player->playBlock();
+            handled = true;
+            break;
         case Qt::Key_Left:
             // Shift-Left: Previous position
             player->setPosition(player->position() - 1);
@@ -599,16 +609,6 @@ bool MainWindow::keyPress(QKeyEvent *event)
             case Qt::Key_NumLock:
                 instrument = 0;
                 break;
-            case Qt::Key_Shift:
-                // Right shift: Play block
-                player->playBlock();
-                handled = true;
-                break;
-            case Qt::Key_Control:
-                // Right Control: Play song
-                player->playSong();
-                handled = true;
-                break;
             case Qt::Key_Space:
                 // If the song is playing, stop
                 if (player->mode() != Player::ModeIdle) {
@@ -641,7 +641,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 break;
             }
             case Qt::Key_Down:
-                // Down: Go down -*/
+                // Down: Go down
                 if (QApplication::activeWindow() == this) {
                     ui->tracker->setLine(ui->tracker->line() + 1);
                     handled = true;
