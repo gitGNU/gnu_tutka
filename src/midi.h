@@ -50,6 +50,8 @@ public:
 signals:
     void outputsChanged();
     void inputsChanged();
+    void outputEnabledChanged(bool enabled);
+    void inputEnabledChanged(bool enabled);
     void startReceived();
     void stopReceived();
     void continueReceived();

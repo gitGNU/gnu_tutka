@@ -20,10 +20,6 @@ signals:
     void stopReceived();
     void continueReceived();
     void clockReceived();
-    void portsChanged();
-
-private slots:
-    void read();
 
 private:
     AlsaMIDI *midi;

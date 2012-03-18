@@ -44,10 +44,10 @@ public:
 
 private slots:
     void setSchedulingMode(int schedulingMode);
+    void enableInterfaces();
     void saveSettings();
 
 private:
-    void loadSettings();
     Player *player;
     Ui::PreferencesDialog *ui;
     QSettings settings;

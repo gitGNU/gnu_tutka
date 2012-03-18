@@ -12,8 +12,11 @@ public:
     explicit AlsaMIDI(QObject *parent = NULL);
     virtual ~AlsaMIDI();
 
-protected:
+protected slots:
     virtual void updateInterfaces();
+
+private slots:
+    void read();
 
 private:
     // ALSA MIDI sequencer interface

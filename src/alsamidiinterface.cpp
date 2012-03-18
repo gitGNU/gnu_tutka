@@ -1,4 +1,3 @@
-#include <QTimer>
 #include "alsamidi.h"
 #include "alsamidiinterface.h"
 
@@ -30,52 +29,6 @@ AlsaMIDIInterface::AlsaMIDIInterface(AlsaMIDI *midi, snd_seq_port_info_t *pinfo,
 
     // Try subscribing to the port
     snd_seq_subscribe_port(midi->seq, subs);
-
-    if ((flags & Input) != 0) {
-        QTimer::singleShot(0, this, SLOT(read()));
-    }
-}
-
-void AlsaMIDIInterface::read()
-{
-    snd_seq_event_t *ev;
-    while (snd_seq_event_input(midi->seq, &ev) >= 0) {
-        // Check event type
-        switch (ev->type) {
-        case SND_SEQ_EVENT_START:
-            emit startReceived();
-            break;
-        case SND_SEQ_EVENT_CONTINUE:
-            emit continueReceived();
-            break;
-        case SND_SEQ_EVENT_STOP:
-            emit stopReceived();
-            break;
-        case SND_SEQ_EVENT_CLOCK:
-            emit clockReceived();
-            break;
-        case SND_SEQ_EVENT_PORT_START:
-        case SND_SEQ_EVENT_PORT_EXIT:
-        case SND_SEQ_EVENT_PORT_CHANGE:
-            // Ports have been changed
-            emit portsChanged();
-            break;
-        default: {
-            // Get the event to the incoming buffer
-            int length = snd_seq_event_length(ev);
-            unsigned char temp[length];
-            int decoded = snd_midi_event_decode(midi->decoder, temp, length, ev);
-            if (decoded < 0) {
-                // Some sort of an error occurred
-                break;
-            }
-            inputReceived(QByteArray((const char*)(temp), decoded));
-            break;
-        }
-        }
-    }
-
-    QTimer::singleShot(40, this, SLOT(read()));
 }
 
 void AlsaMIDIInterface::write(const QByteArray &data)

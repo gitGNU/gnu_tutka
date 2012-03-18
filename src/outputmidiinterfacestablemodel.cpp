@@ -6,6 +6,7 @@ OutputMidiInterfacesTableModel::OutputMidiInterfacesTableModel(MIDI *midi, QObje
     QAbstractTableModel(parent),
     midi(midi)
 {
+    connect(midi, SIGNAL(outputsChanged()), this, SLOT(refresh()));
 }
 
 int OutputMidiInterfacesTableModel::rowCount(const QModelIndex &parent) const

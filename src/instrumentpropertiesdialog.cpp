@@ -37,6 +37,7 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
 
     connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), this, SLOT(setMidiInterface(QString)));
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(updateMidiInterfaceComboBox()));
+    connect(midi, SIGNAL(outputEnabledChanged(bool)), this, SLOT(updateMidiInterfaceComboBox()));
     updateMidiInterfaceComboBox();
 }
 
@@ -89,17 +90,19 @@ void InstrumentPropertiesDialog::setInstrument(int number)
 
 void InstrumentPropertiesDialog::updateMidiInterfaceComboBox()
 {
+    ui->comboBoxMidiInterface->blockSignals(true);
     ui->comboBoxMidiInterface->clear();
 
     for (int number = 0; number < midi->outputs(); number++) {
         QSharedPointer<MIDIInterface> interface = midi->output(number);
         if (interface->isEnabled()) {
             ui->comboBoxMidiInterface->addItem(midi->output(number)->name());
-            if (song != NULL && midi->output(number)->name() == song->instrument(this->instrument)->name()) {
-                ui->comboBoxMidiInterface->setCurrentIndex(number);
+            if (song != NULL && midi->output(number)->name() == song->instrument(this->instrument)->midiInterfaceName()) {
+                ui->comboBoxMidiInterface->setCurrentIndex(ui->comboBoxMidiInterface->count() - 1);
             }
         }
     }
+    ui->comboBoxMidiInterface->blockSignals(false);
 }
 
 void InstrumentPropertiesDialog::setMidiInterface(const QString &name)

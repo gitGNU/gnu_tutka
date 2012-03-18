@@ -23,7 +23,7 @@
 /*
  * TODO
  *
- * Update MIDI interfaces when new applications appear (ALSA/CoreMIDI)
+ * Update MIDI interfaces when new applications appear (CoreMIDI)
  */
 
 #include <QApplication>

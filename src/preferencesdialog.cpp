@@ -44,10 +44,12 @@ PreferencesDialog::PreferencesDialog(Player *player, QWidget *parent) :
     ui->tableViewInputMidiInterfaces->setColumnWidth(0, 300);
 
     connect(ui->comboBoxSchedulingMode, SIGNAL(currentIndexChanged(int)), this, SLOT(setSchedulingMode(int)));
-    loadSettings();
+    ui->comboBoxSchedulingMode->setCurrentIndex(settings.value("schedulingMode").toInt());
 
-    connect(player->midi(), SIGNAL(inputsChanged()), this, SLOT(saveSettings()));
-    connect(player->midi(), SIGNAL(outputsChanged()), this, SLOT(saveSettings()));
+    enableInterfaces();
+
+    connect(player->midi(), SIGNAL(outputsChanged()), this, SLOT(enableInterfaces()));
+    connect(player->midi(), SIGNAL(inputsChanged()), this, SLOT(enableInterfaces()));
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -59,42 +61,17 @@ void PreferencesDialog::setSchedulingMode(int schedulingMode)
 {
     player->setScheduler(schedulingMode == 0 ? Player::SchedulingRTC : Player::SchedulingNanoSleep);
 
-    saveSettings();
+    settings.setValue("schedulingMode", ui->comboBoxSchedulingMode->currentIndex());
 }
 
-void PreferencesDialog::loadSettings()
+void PreferencesDialog::enableInterfaces()
 {
     MIDI *midi = player->midi();
-    QStringList inputs;
-    QStringList outputs;
+    disconnect(midi, SIGNAL(outputEnabledChanged(bool)), this, SLOT(saveSettings()));
+    disconnect(midi, SIGNAL(inputEnabledChanged(bool)), this, SLOT(saveSettings()));
+
     QStringList unavailableInputs;
     QStringList unavailableOutputs;
-
-    QString inputsString = settings.value("MIDI/inputInterfaces").toString();
-    if (!inputsString.isEmpty()) {
-        foreach (const QString &inputName, inputsString.split(",")) {
-            int input = midi->input(inputName);
-            if (input >= 0) {
-                midi->input(input)->setEnabled(true);
-                inputs.append(inputName);
-            } else {
-                unavailableInputs.append(inputName);
-            }
-        }
-    }
-
-    QString outputsString = settings.value("MIDI/outputInterfaces").toString();
-    if (!outputsString.isEmpty()) {
-        foreach (const QString &outputName, outputsString.split(",")) {
-            int output = midi->output(outputName);
-            if (output >= 0) {
-                midi->output(output)->setEnabled(true);
-                outputs.append(outputName);
-            } else {
-                unavailableOutputs.append(outputName);
-            }
-        }
-    }
 
     QString unavailableInputsString = settings.value("MIDI/unavailableInputInterfaces").toString();
     if (!unavailableInputsString.isEmpty()) {
@@ -102,7 +79,18 @@ void PreferencesDialog::loadSettings()
             int input = midi->input(inputName);
             if (input >= 0) {
                 midi->input(input)->setEnabled(true);
-                inputs.append(inputName);
+            } else {
+                unavailableInputs.append(inputName);
+            }
+        }
+    }
+
+    QString inputsString = settings.value("MIDI/inputInterfaces").toString();
+    if (!inputsString.isEmpty()) {
+        foreach (const QString &inputName, inputsString.split(",")) {
+            int input = midi->input(inputName);
+            if (input >= 0) {
+                midi->input(input)->setEnabled(true);
             } else {
                 unavailableInputs.append(inputName);
             }
@@ -115,18 +103,31 @@ void PreferencesDialog::loadSettings()
             int output = midi->output(outputName);
             if (output >= 0) {
                 midi->output(output)->setEnabled(true);
-                outputs.append(outputName);
             } else {
                 unavailableOutputs.append(outputName);
             }
         }
     }
 
-    settings.setValue("MIDI/inputInterfaces", inputs.join(","));
-    settings.setValue("MIDI/outputInterfaces", outputs.join(","));
+    QString outputsString = settings.value("MIDI/outputInterfaces").toString();
+    if (!outputsString.isEmpty()) {
+        foreach (const QString &outputName, outputsString.split(",")) {
+            int output = midi->output(outputName);
+            if (output >= 0) {
+                midi->output(output)->setEnabled(true);
+            } else {
+                unavailableOutputs.append(outputName);
+            }
+        }
+    }
+
     settings.setValue("MIDI/unavailableInputInterfaces", unavailableInputs.join(","));
     settings.setValue("MIDI/unavailableOutputInterfaces", unavailableOutputs.join(","));
-    ui->comboBoxSchedulingMode->setCurrentIndex(settings.value("schedulingMode").toInt());
+
+    saveSettings();
+
+    connect(midi, SIGNAL(outputEnabledChanged(bool)), this, SLOT(saveSettings()));
+    connect(midi, SIGNAL(inputEnabledChanged(bool)), this, SLOT(saveSettings()));
 }
 
 void PreferencesDialog::saveSettings()
@@ -151,5 +152,4 @@ void PreferencesDialog::saveSettings()
 
     settings.setValue("MIDI/inputInterfaces", inputs.join(","));
     settings.setValue("MIDI/outputInterfaces", outputs.join(","));
-    settings.setValue("schedulingMode", ui->comboBoxSchedulingMode->currentIndex());
 }

@@ -1,3 +1,4 @@
+#include <QTimer>
 #include "alsamidiinterface.h"
 #include "alsamidi.h"
 
@@ -40,6 +41,8 @@ AlsaMIDI::AlsaMIDI(QObject *parent) :
             updateInterfaces();
         }
     }
+
+    QTimer::singleShot(0, this, SLOT(read()));
 }
 
 AlsaMIDI::~AlsaMIDI()
@@ -59,7 +62,8 @@ AlsaMIDI::~AlsaMIDI()
         snd_seq_unsubscribe_port(seq, subs);
 
         // Unsubscribe and free all interfaces
-        //midi_unsubscribe_all(midi);
+        inputs_.clear();
+        outputs_.clear();
 
         // Free MIDI event encoder and decoder
         if (encoder != NULL) {
@@ -84,9 +88,8 @@ void AlsaMIDI::updateInterfaces()
     MIDI::updateInterfaces();
 
     snd_seq_client_info_t *cinfo;
-    snd_seq_port_info_t *pinfo;
-
     snd_seq_client_info_alloca(&cinfo);
+    snd_seq_port_info_t *pinfo;
     snd_seq_port_info_alloca(&pinfo);
     snd_seq_client_info_set_client(cinfo, SND_SEQ_CLIENT_SYSTEM);
     while (snd_seq_query_next_client(seq, cinfo) >= 0) {
@@ -104,13 +107,13 @@ void AlsaMIDI::updateInterfaces()
                 // Create an interface structure for the port
                 if (isOutput) {
                     MIDIInterface *interface = new AlsaMIDIInterface(this, pinfo, MIDIInterface::Output);
-                    connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(outputsChanged()));
+                    connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(outputEnabledChanged(bool)));
                     outputs_.append(QSharedPointer<MIDIInterface>(interface));
                 }
 
                 if (isInput) {
                     MIDIInterface *interface = new AlsaMIDIInterface(this, pinfo, MIDIInterface::Input);
-                    connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(inputsChanged()));
+                    connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(inputEnabledChanged(bool)));
                     connect(interface, SIGNAL(inputReceived(QByteArray)), this, SIGNAL(inputReceived(QByteArray)));
                     connect(interface, SIGNAL(startReceived()), this, SIGNAL(startReceived()));
                     connect(interface, SIGNAL(stopReceived()), this, SIGNAL(stopReceived()));
@@ -121,4 +124,46 @@ void AlsaMIDI::updateInterfaces()
             }
         }
     }
+
+    emit outputsChanged();
+    emit inputsChanged();
+}
+
+void AlsaMIDI::read()
+{
+    snd_seq_event_t *ev;
+    while (snd_seq_event_input(seq, &ev) >= 0) {
+        switch (ev->type) {
+        case SND_SEQ_EVENT_START:
+            emit startReceived();
+            break;
+        case SND_SEQ_EVENT_CONTINUE:
+            emit continueReceived();
+            break;
+        case SND_SEQ_EVENT_STOP:
+            emit stopReceived();
+            break;
+        case SND_SEQ_EVENT_CLOCK:
+            emit clockReceived();
+            break;
+        case SND_SEQ_EVENT_PORT_START:
+        case SND_SEQ_EVENT_PORT_EXIT:
+        case SND_SEQ_EVENT_PORT_CHANGE:
+            // Ports have been added, removed or changed so update interfaces
+            updateInterfaces();
+            break;
+        default: {
+            // Get the event to the incoming buffer and decode it
+            int length = snd_seq_event_length(ev);
+            unsigned char temp[length];
+            int decoded = snd_midi_event_decode(decoder, temp, length, ev);
+            if (decoded >= 0) {
+                inputReceived(QByteArray((const char*)(temp), decoded));
+            }
+            break;
+        }
+        }
+    }
+
+    QTimer::singleShot(40, this, SLOT(read()));
 }
