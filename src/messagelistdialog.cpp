@@ -31,8 +31,9 @@
 
 MessageListDialog::MessageListDialog(MIDI *midi, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::MessageListDialog),
     midi(midi),
+    ui(new Ui::MessageListDialog),
+    settings("nongnu.org", "Tutka"),
     song(NULL),
     messageListTableModel(new MessageListTableModel(this)),
     spinBoxDelegate(new SpinBoxDelegate(this)),
@@ -110,10 +111,12 @@ void MessageListDialog::receiveMessage()
 void MessageListDialog::loadMessage()
 {
     if (selectedMessage >= 0) {
-        QString path = QFileDialog::getOpenFileName(NULL, tr("Load message"));
+        QString path = QFileDialog::getOpenFileName(NULL, tr("Load message"), settings.value("Paths/messagePath").toString());
 
         if (!path.isEmpty()) {
             song->message(selectedMessage)->loadBinary(path);
+
+            settings.setValue("Paths/messagePath", QFileInfo(path).absolutePath());
         }
     }
 }
@@ -121,10 +124,12 @@ void MessageListDialog::loadMessage()
 void MessageListDialog::saveMessage()
 {
     if (selectedMessage >= 0) {
-        QString path = QFileDialog::getSaveFileName(NULL, tr("Save message as"));
+        QString path = QFileDialog::getSaveFileName(NULL, tr("Save message as"), settings.value("Paths/messagePath").toString());
 
         if (!path.isEmpty()) {
             song->message(selectedMessage)->saveBinary(path);
+
+            settings.setValue("Paths/messagePath", QFileInfo(path).absolutePath());
         }
     }
 }

@@ -23,6 +23,7 @@
 #ifndef MESSAGELISTDIALOG_H
 #define MESSAGELISTDIALOG_H
 
+#include <QSettings>
 #include <QDialog>
 #include <QItemSelection>
 
@@ -60,8 +61,9 @@ private slots:
     void stopReception();
 
 private:
-    Ui::MessageListDialog *ui;
     MIDI *midi;
+    Ui::MessageListDialog *ui;
+    QSettings settings;
     Song *song;
     MessageListTableModel *messageListTableModel;
     SpinBoxDelegate *spinBoxDelegate;

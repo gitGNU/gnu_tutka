@@ -28,8 +28,8 @@
 
 InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::InstrumentPropertiesDialog),
     midi(midi),
+    ui(new Ui::InstrumentPropertiesDialog),
     song(NULL),
     instrument(0)
 {

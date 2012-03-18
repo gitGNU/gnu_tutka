@@ -30,9 +30,9 @@
 
 PreferencesDialog::PreferencesDialog(Player *player, QWidget *parent) :
     QDialog(parent),
+    player(player),
     ui(new Ui::PreferencesDialog),
     settings("nongnu.org", "Tutka"),
-    player(player),
     outputMidiInterfacesTableModel(new OutputMidiInterfacesTableModel(player->midi())),
     inputMidiInterfacesTableModel(new InputMidiInterfacesTableModel(player->midi()))
 {

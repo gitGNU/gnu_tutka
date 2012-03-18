@@ -49,8 +49,8 @@ private slots:
     void setMidiInterface(const QString &name);
 
 private:
-    Ui::InstrumentPropertiesDialog *ui;
     MIDI *midi;
+    Ui::InstrumentPropertiesDialog *ui;
     Song *song;
     int instrument;
 };
