@@ -18,6 +18,7 @@ void CoreMIDIInterface::write(const QByteArray &data)
     memcpy(list.packet[0].data, data.constData(), data.length());
 
     MIDISend(midi->outputPort, endpoint, &list);
+    MIDIReceived(midi->source, &list);
 }
 
 void CoreMIDIInterface::setEnabled(bool enabled)

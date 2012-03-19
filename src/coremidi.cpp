@@ -7,12 +7,14 @@ CoreMIDI::CoreMIDI(QObject *parent) :
     MIDIClientCreate(CFSTR("Tutka"), handleMidiNotification, this, &client);
     MIDIOutputPortCreate(client, CFSTR("Tutka Output"), &outputPort);
     MIDIInputPortCreate(client, CFSTR("Tutka Input"), readMidi, this, &inputPort);
+    MIDISourceCreate(client, CFSTR("Tutka Output"), &source);
 
     updateInterfaces();
 }
 
 CoreMIDI::~CoreMIDI()
 {
+    MIDIEndpointDispose(source);
     MIDIPortDispose(outputPort);
     MIDIPortDispose(inputPort);
     MIDIClientDispose(client);
@@ -29,10 +31,13 @@ void CoreMIDI::updateInterfaces()
     }
 
     for (ItemCount index = 0; index < MIDIGetNumberOfSources(); index++) {
-        MIDIInterface *interface = new CoreMIDIInterface(this, MIDIGetSource(index), MIDIInterface::Input);
-        connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(inputEnabledChanged(bool)));
-        connect(interface, SIGNAL(inputReceived(QByteArray)), this, SIGNAL(inputReceived(QByteArray)));
-        inputs_.append(QSharedPointer<MIDIInterface>(interface));
+        MIDIEndpointRef source = MIDIGetSource(index);
+        if (source != this->source) {
+            MIDIInterface *interface = new CoreMIDIInterface(this, source, MIDIInterface::Input);
+            connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(inputEnabledChanged(bool)));
+            connect(interface, SIGNAL(inputReceived(QByteArray)), this, SIGNAL(inputReceived(QByteArray)));
+            inputs_.append(QSharedPointer<MIDIInterface>(interface));
+        }
     }
 
     emit outputsChanged();

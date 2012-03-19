@@ -20,6 +20,7 @@ private:
     MIDIClientRef client;
     MIDIPortRef outputPort;
     MIDIPortRef inputPort;
+    MIDIEndpointRef source;
 
     friend class CoreMIDIInterface;
 };
