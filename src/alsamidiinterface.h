@@ -12,8 +12,10 @@ class AlsaMIDIInterface : public MIDIInterface
 
 public:
     explicit AlsaMIDIInterface(AlsaMIDI *midi, snd_seq_port_info_t *pinfo, DirectionFlags flags, QObject *parent = NULL);
+    virtual ~AlsaMIDIInterface();
 
     virtual void write(const QByteArray &data);
+    virtual void setEnabled(bool enabled);
 
 signals:
     void startReceived();

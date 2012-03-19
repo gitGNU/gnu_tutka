@@ -89,7 +89,7 @@ protected:
 
 public slots:
     // Enables or disables the interface
-    void setEnabled(bool enabled);
+    virtual void setEnabled(bool enabled);
 
 signals:
     // Emitted when the interface is enabled or disabled

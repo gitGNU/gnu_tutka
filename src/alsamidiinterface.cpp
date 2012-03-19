@@ -23,12 +23,14 @@ AlsaMIDIInterface::AlsaMIDIInterface(AlsaMIDI *midi, snd_seq_port_info_t *pinfo,
         dest.client = midi->client;
         dest.port = midi->port;
     }
-    snd_seq_port_subscribe_alloca(&subs);
+    snd_seq_port_subscribe_malloc(&subs);
     snd_seq_port_subscribe_set_sender(subs, &sender);
     snd_seq_port_subscribe_set_dest(subs, &dest);
+}
 
-    // Try subscribing to the port
-    snd_seq_subscribe_port(midi->seq, subs);
+AlsaMIDIInterface::~AlsaMIDIInterface()
+{
+    snd_seq_port_subscribe_free(subs);
 }
 
 void AlsaMIDIInterface::write(const QByteArray &data)
@@ -46,4 +48,19 @@ void AlsaMIDIInterface::write(const QByteArray &data)
         snd_seq_event_output(midi->seq, &ev);
     }
     snd_seq_drain_output(midi->seq);
+}
+
+void AlsaMIDIInterface::setEnabled(bool enabled)
+{
+    bool wasEnabled = isEnabled();
+
+    MIDIInterface::setEnabled(enabled);
+
+    if (enabled != wasEnabled) {
+        if (enabled) {
+            snd_seq_subscribe_port(midi->seq, subs);
+        } else {
+            snd_seq_unsubscribe_port(midi->seq, subs);
+        }
+    }
 }
