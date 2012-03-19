@@ -281,7 +281,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
     if (ctrl) {
         switch (event->key()) {
         case Qt::Key_Control: {
-            bool isRight = true;
+            bool isRight = false;
 #ifdef __linux
             isRight = event->nativeVirtualKey() == XK_Control_R;
 #endif
@@ -375,7 +375,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
     } else if (shift) {
         switch (event->key()) {
         case Qt::Key_Shift: {
-            bool isRight = true;
+            bool isRight = false;
 #ifdef __linux
             isRight = event->nativeVirtualKey() == XK_Shift_R;
 #endif
