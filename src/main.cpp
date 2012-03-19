@@ -22,6 +22,19 @@
 
 /*
  * TODO
+ *
+ * Dialog selection gets removed when inserting/removing
+ * Playing sequence allows setting an inexisting block
+ * Playing sequence uses block numbers 0-> when they're 1->
+ * Position label does not change when modifying current playing sequence length
+ * Playing sequence list has no selection by default
+ * Playing sequence list allows pressing Delete on the last sequence
+ * Section list allows pressing Delete on the last position
+ * Section list allows setting an inexisting playing sequence
+ * Cursor keys don't work as expected when playing
+ * Block list allows setting tracks, length and command pages to 0
+ * Track->Delete is not disabled if there's 1 track
+ * Preferences->Scheduling mode does not reflect reality if RTC is not available
  */
 
 #include <QApplication>
