@@ -4,7 +4,7 @@
 CoreMIDI::CoreMIDI(QObject *parent) :
     MIDI(parent)
 {
-    MIDIClientCreate(CFSTR("Tutka"), NULL, NULL, &client);
+    MIDIClientCreate(CFSTR("Tutka"), handleMidiNotification, this, &client);
 
     updateInterfaces();
 }
@@ -28,4 +28,12 @@ void CoreMIDI::updateInterfaces()
 
     emit outputsChanged();
     emit inputsChanged();
+}
+
+void CoreMIDI::handleMidiNotification(const MIDINotification *message, void *refCon)
+{
+    if (message->messageID == kMIDIMsgSetupChanged) {
+        CoreMIDI *midi = (CoreMIDI *)refCon;
+        midi->updateInterfaces();
+    }
 }

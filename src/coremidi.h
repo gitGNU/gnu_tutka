@@ -13,6 +13,8 @@ protected:
     virtual void updateInterfaces();
 
 private:
+    static void handleMidiNotification(const MIDINotification *message, void *refCon);
+
     MIDIClientRef client;
 };
 
