@@ -24,6 +24,7 @@
  * TODO
  *
  * Update MIDI interfaces when new applications appear (CoreMIDI)
+ * Don't accept input from disabled inputs (ALSA)
  */
 
 #include <QApplication>
