@@ -1,31 +1,37 @@
+#include "coremidi.h"
 #include "coremidiinterface.h"
 
-CoreMIDIInterface::CoreMIDIInterface(MIDIClientRef client, MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent) :
+CoreMIDIInterface::CoreMIDIInterface(CoreMIDI *midi, MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent) :
     MIDIInterface(flags, parent),
-    client(client),
-    endpoint(endpoint),
-    outputPort(NULL),
-    inputPort(NULL)
+    midi(midi),
+    endpoint(endpoint)
 {
     name_ = getMidiDeviceName(endpoint);
-
-    if ((flags & Output) != 0) {
-        MIDIOutputPortCreate(client, CFSTR("Tutka Output"), &outputPort);
-    }
-
-    if ((flags & Input) != 0) {
-        MIDIInputPortCreate(client, CFSTR("Tutka Input"), readMidi, this, &inputPort);
-    }
 }
 
-CoreMIDIInterface::~CoreMIDIInterface()
+void CoreMIDIInterface::write(const QByteArray &data)
 {
-    if (outputPort != 0) {
-        MIDIPortDispose(outputPort);
-    }
+    MIDIPacketList list;
+    list.numPackets = 1;
+    list.packet[0].timeStamp = 0;
+    list.packet[0].length = data.length();
+    memcpy(list.packet[0].data, data.constData(), data.length());
 
-    if (inputPort != 0) {
-        MIDIPortDispose(inputPort);
+    MIDISend(midi->outputPort, endpoint, &list);
+}
+
+void CoreMIDIInterface::setEnabled(bool enabled)
+{
+    bool wasEnabled = isEnabled();
+
+    MIDIInterface::setEnabled(enabled);
+
+    if (enabled != wasEnabled && (flags_ & Input) != 0) {
+        if (enabled) {
+            MIDIPortConnectSource(midi->inputPort, endpoint, midi);
+        } else {
+            MIDIPortDisconnectSource(midi->inputPort, endpoint);
+        }
     }
 }
 
@@ -68,40 +74,4 @@ QString CoreMIDIInterface::getMidiDeviceName(MIDIEndpointRef endpoint)
     QString name(newName);
     delete [] newName;
     return name;
-}
-
-void CoreMIDIInterface::write(const QByteArray &data)
-{
-    MIDIPacketList list;
-    list.numPackets = 1;
-    list.packet[0].timeStamp = 0;
-    list.packet[0].length = data.length();
-    memcpy(list.packet[0].data, data.constData(), data.length());
-
-    MIDISend(outputPort, endpoint, &list);
-}
-
-void CoreMIDIInterface::setEnabled(bool enabled)
-{
-    bool wasEnabled = isEnabled();
-
-    MIDIInterface::setEnabled(enabled);
-
-    if (enabled != wasEnabled && inputPort != 0) {
-        if (enabled) {
-            MIDIPortConnectSource(inputPort, endpoint, this);
-        } else {
-            MIDIPortDisconnectSource(inputPort, endpoint);
-        }
-    }
-}
-
-void CoreMIDIInterface::readMidi(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon)
-{
-    Q_UNUSED(srcConnRefCon)
-
-    CoreMIDIInterface *interface = (CoreMIDIInterface *)readProcRefCon;
-    for (int packet = 0; packet < pktlist->numPackets; packet++) {
-        emit interface->inputReceived(QByteArray((const char *)pktlist->packet[packet].data, pktlist->packet[packet].length));
-    }
 }

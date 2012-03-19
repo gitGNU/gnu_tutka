@@ -5,8 +5,17 @@ CoreMIDI::CoreMIDI(QObject *parent) :
     MIDI(parent)
 {
     MIDIClientCreate(CFSTR("Tutka"), handleMidiNotification, this, &client);
+    MIDIOutputPortCreate(client, CFSTR("Tutka Output"), &outputPort);
+    MIDIInputPortCreate(client, CFSTR("Tutka Input"), readMidi, this, &inputPort);
 
     updateInterfaces();
+}
+
+CoreMIDI::~CoreMIDI()
+{
+    MIDIPortDispose(outputPort);
+    MIDIPortDispose(inputPort);
+    MIDIClientDispose(client);
 }
 
 void CoreMIDI::updateInterfaces()
@@ -14,13 +23,13 @@ void CoreMIDI::updateInterfaces()
     MIDI::updateInterfaces();
 
     for (ItemCount index = 0; index < MIDIGetNumberOfDestinations(); index++) {
-        MIDIInterface *interface = new CoreMIDIInterface(client, MIDIGetDestination(index), MIDIInterface::Output);
+        MIDIInterface *interface = new CoreMIDIInterface(this, MIDIGetDestination(index), MIDIInterface::Output);
         connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(outputEnabledChanged(bool)));
         outputs_.append(QSharedPointer<MIDIInterface>(interface));
     }
 
     for (ItemCount index = 0; index < MIDIGetNumberOfSources(); index++) {
-        MIDIInterface *interface = new CoreMIDIInterface(client, MIDIGetSource(index), MIDIInterface::Input);
+        MIDIInterface *interface = new CoreMIDIInterface(this, MIDIGetSource(index), MIDIInterface::Input);
         connect(interface, SIGNAL(enabledChanged(bool)), this, SIGNAL(inputEnabledChanged(bool)));
         connect(interface, SIGNAL(inputReceived(QByteArray)), this, SIGNAL(inputReceived(QByteArray)));
         inputs_.append(QSharedPointer<MIDIInterface>(interface));
@@ -28,6 +37,17 @@ void CoreMIDI::updateInterfaces()
 
     emit outputsChanged();
     emit inputsChanged();
+}
+
+
+void CoreMIDI::readMidi(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon)
+{
+    Q_UNUSED(srcConnRefCon)
+
+    CoreMIDI *midi = (CoreMIDI *)readProcRefCon;
+    for (int packet = 0; packet < pktlist->numPackets; packet++) {
+        emit midi->inputReceived(QByteArray((const char *)pktlist->packet[packet].data, pktlist->packet[packet].length));
+    }
 }
 
 void CoreMIDI::handleMidiNotification(const MIDINotification *message, void *refCon)

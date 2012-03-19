@@ -4,23 +4,19 @@
 #include <MIDIServices.h>
 #include "midiinterface.h"
 
+class CoreMIDI;
+
 class CoreMIDIInterface : public MIDIInterface
 {
 public:
-    CoreMIDIInterface(MIDIClientRef client, MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent = NULL);
-    virtual ~CoreMIDIInterface();
+    CoreMIDIInterface(CoreMIDI *midi, MIDIEndpointRef endpoint, DirectionFlags flags, QObject *parent = NULL);
 
     virtual void write(const QByteArray &data);
     virtual void setEnabled(bool enabled);
 
 private:
-    static void readMidi(const MIDIPacketList *pktlist, void *readProcRefCon, void *srcConnRefCon);
-
-    MIDIClientRef client;
+    CoreMIDI *midi;
     MIDIEndpointRef endpoint;
-    DirectionFlags flags;
-    MIDIPortRef outputPort;
-    MIDIPortRef inputPort;
 
     static QString getMidiDeviceName(MIDIEndpointRef endpoint);
 };
