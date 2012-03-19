@@ -80,7 +80,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         // Connect the widgets for editing the instrument
         connect(instrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
         connect(ui->lineEditName, SIGNAL(textChanged(QString)), instrument, SLOT(setName(QString)));
-        connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), instrument, SLOT(setMidiChannel(int)));
+        connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), this, SLOT(setMidiChannel(int)));
         connect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), instrument, SLOT(setDefaultVelocity(int)));
         connect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), instrument, SLOT(setTranspose(int)));
         connect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), instrument, SLOT(setHold(int)));
@@ -110,4 +110,9 @@ void InstrumentPropertiesDialog::setMidiInterface(const QString &name)
     if (song != NULL) {
         song->instrument(instrument)->setMidiInterface(midi->output(name));
     }
+}
+
+void InstrumentPropertiesDialog::setMidiChannel(int midiChannel)
+{
+    song->instrument(instrument)->setMidiChannel(midiChannel - 1);
 }

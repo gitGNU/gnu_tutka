@@ -47,6 +47,7 @@ public slots:
 private slots:
     void updateMidiInterfaceComboBox();
     void setMidiInterface(const QString &name);
+    void setMidiChannel(int midiChannel);
 
 private:
     MIDI *midi;
