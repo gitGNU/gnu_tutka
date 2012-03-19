@@ -24,6 +24,7 @@
  * TODO
  *
  * Don't accept input from disabled inputs (ALSA)
+ * Create Core MIDI source and allow that to be used as an output
  */
 
 #include <QApplication>
