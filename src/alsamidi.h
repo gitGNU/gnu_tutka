@@ -1,6 +1,7 @@
 #ifndef ALSAMIDI_H
 #define ALSAMIDI_H
 
+#include <QThread>
 #include <alsa/asoundlib.h>
 #include "midi.h"
 
@@ -15,10 +16,17 @@ public:
 protected slots:
     virtual void updateInterfaces();
 
-private slots:
-    void read();
-
 private:
+    class InputThread : public QThread
+    {
+    public:
+        InputThread(AlsaMIDI *midi);
+        virtual void run();
+
+    private:
+        AlsaMIDI *midi;
+    };
+
     // ALSA MIDI sequencer interface
     snd_seq_t *seq;
 
@@ -33,6 +41,9 @@ private:
 
     // MIDI event decoder
     snd_midi_event_t *decoder;
+
+    // Input thread
+    InputThread inputThread;
 
     friend class AlsaMIDIInterface;
 };

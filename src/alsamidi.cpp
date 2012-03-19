@@ -3,7 +3,13 @@
 #include "alsamidi.h"
 
 AlsaMIDI::AlsaMIDI(QObject *parent) :
-    MIDI(parent)
+    MIDI(parent),
+    seq(NULL),
+    client(0),
+    port(0),
+    encoder(NULL),
+    decoder(NULL),
+    inputThread(this)
 {
     snd_seq_addr_t sender, dest;
     snd_seq_port_subscribe_t *subs;
@@ -42,7 +48,7 @@ AlsaMIDI::AlsaMIDI(QObject *parent) :
         }
     }
 
-    QTimer::singleShot(0, this, SLOT(read()));
+    inputThread.start();
 }
 
 AlsaMIDI::~AlsaMIDI()
@@ -80,6 +86,7 @@ AlsaMIDI::~AlsaMIDI()
 
         // Delete client
         snd_seq_close(seq);
+        seq = NULL;
     }
 }
 
@@ -129,41 +136,53 @@ void AlsaMIDI::updateInterfaces()
     emit inputsChanged();
 }
 
-void AlsaMIDI::read()
+AlsaMIDI::InputThread::InputThread(AlsaMIDI *midi) :
+        QThread(midi),
+        midi(midi)
 {
-    snd_seq_event_t *ev;
-    while (snd_seq_event_input(seq, &ev) >= 0) {
-        switch (ev->type) {
-        case SND_SEQ_EVENT_START:
-            emit startReceived();
-            break;
-        case SND_SEQ_EVENT_CONTINUE:
-            emit continueReceived();
-            break;
-        case SND_SEQ_EVENT_STOP:
-            emit stopReceived();
-            break;
-        case SND_SEQ_EVENT_CLOCK:
-            emit clockReceived();
-            break;
-        case SND_SEQ_EVENT_PORT_START:
-        case SND_SEQ_EVENT_PORT_EXIT:
-        case SND_SEQ_EVENT_PORT_CHANGE:
-            // Ports have been added, removed or changed so update interfaces
-            updateInterfaces();
-            break;
-        default: {
-            // Get the event to the incoming buffer and decode it
-            int length = snd_seq_event_length(ev);
-            unsigned char temp[length];
-            int decoded = snd_midi_event_decode(decoder, temp, length, ev);
-            if (decoded >= 0) {
-                inputReceived(QByteArray((const char*)(temp), decoded));
+}
+
+void AlsaMIDI::InputThread::run()
+{
+    while (midi->seq != NULL) {
+        int pollDescriptorCount = snd_seq_poll_descriptors_count(midi->seq, POLLIN);
+        struct pollfd pollDescriptors[pollDescriptorCount];
+        snd_seq_poll_descriptors(midi->seq, pollDescriptors, pollDescriptorCount, POLLIN);
+
+        if (poll(pollDescriptors, pollDescriptorCount, -1) > 0) {
+            snd_seq_event_t *ev;
+            while (snd_seq_event_input(midi->seq, &ev) >= 0) {
+                switch (ev->type) {
+                case SND_SEQ_EVENT_START:
+                    emit midi->startReceived();
+                    break;
+                case SND_SEQ_EVENT_CONTINUE:
+                    emit midi->continueReceived();
+                    break;
+                case SND_SEQ_EVENT_STOP:
+                    emit midi->stopReceived();
+                    break;
+                case SND_SEQ_EVENT_CLOCK:
+                    emit midi->clockReceived();
+                    break;
+                case SND_SEQ_EVENT_PORT_START:
+                case SND_SEQ_EVENT_PORT_EXIT:
+                case SND_SEQ_EVENT_PORT_CHANGE:
+                    // Ports have been added, removed or changed so update interfaces
+                    midi->updateInterfaces();
+                    break;
+                default: {
+                    // Get the event to the incoming buffer and decode it
+                    int length = snd_seq_event_length(ev);
+                    unsigned char temp[length];
+                    int decoded = snd_midi_event_decode(midi->decoder, temp, length, ev);
+                    if (decoded >= 0) {
+                        emit midi->inputReceived(QByteArray((const char*)(temp), decoded));
+                    }
+                    break;
+                }
+                }
             }
-            break;
-        }
         }
     }
-
-    QTimer::singleShot(40, this, SLOT(read()));
 }
