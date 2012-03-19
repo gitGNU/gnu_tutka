@@ -38,6 +38,13 @@ TrackVolumesDialog::~TrackVolumesDialog()
     delete ui;
 }
 
+void TrackVolumesDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void TrackVolumesDialog::setSong(Song *song)
 {
     if (this->song != NULL) {

@@ -52,6 +52,13 @@ BlockListDialog::~BlockListDialog()
     delete ui;
 }
 
+void BlockListDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void BlockListDialog::setSong(Song *song)
 {
     this->song = song;

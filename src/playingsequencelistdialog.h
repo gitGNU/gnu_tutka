@@ -41,6 +41,7 @@ public:
     ~PlayingSequenceListDialog();
 
 public slots:
+    void makeVisible();
     void setSong(Song *song);
     void setPlayingSequence(unsigned int playingSequence);
 

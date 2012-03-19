@@ -46,30 +46,36 @@ ChangeInstrumentDialog::~ChangeInstrumentDialog()
     delete ui;
 }
 
+void ChangeInstrumentDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void ChangeInstrumentDialog::showSong()
 {
     ui->comboBoxArea->setCurrentIndex(0);
-    show();
+    makeVisible();
 }
 
 void ChangeInstrumentDialog::showBlock()
 {
     ui->comboBoxArea->setCurrentIndex(1);
-    show();
+    makeVisible();
 }
 
 void ChangeInstrumentDialog::showTrack()
 {
     ui->comboBoxArea->setCurrentIndex(2);
-    show();
+    makeVisible();
 }
 
 void ChangeInstrumentDialog::showSelection()
 {
     ui->comboBoxArea->setCurrentIndex(3);
-    show();
+    makeVisible();
 }
-
 
 void ChangeInstrumentDialog::setSong(Song *song)
 {

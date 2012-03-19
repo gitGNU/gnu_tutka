@@ -45,6 +45,7 @@ public:
     ~MessageListDialog();
 
 public slots:
+    void makeVisible();
     void setSong(Song *song);
 
 private slots:

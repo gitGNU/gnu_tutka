@@ -50,6 +50,13 @@ SectionListDialog::~SectionListDialog()
     delete ui;
 }
 
+void SectionListDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void SectionListDialog::setSong(Song *song)
 {
     this->song = song;

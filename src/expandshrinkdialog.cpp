@@ -46,28 +46,35 @@ ExpandShrinkDialog::~ExpandShrinkDialog()
     delete ui;
 }
 
+void ExpandShrinkDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void ExpandShrinkDialog::showSong()
 {
     ui->comboBoxArea->setCurrentIndex(0);
-    show();
+    makeVisible();
 }
 
 void ExpandShrinkDialog::showBlock()
 {
     ui->comboBoxArea->setCurrentIndex(1);
-    show();
+    makeVisible();
 }
 
 void ExpandShrinkDialog::showTrack()
 {
     ui->comboBoxArea->setCurrentIndex(2);
-    show();
+    makeVisible();
 }
 
 void ExpandShrinkDialog::showSelection()
 {
     ui->comboBoxArea->setCurrentIndex(3);
-    show();
+    makeVisible();
 }
 
 void ExpandShrinkDialog::setSong(Song *song)

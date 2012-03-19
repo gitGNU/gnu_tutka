@@ -42,6 +42,7 @@ public:
     ~SectionListDialog();
 
 public slots:
+    void makeVisible();
     void setSong(Song *song);
     void setSection(unsigned int section);
 

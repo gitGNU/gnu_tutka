@@ -46,6 +46,13 @@ InstrumentPropertiesDialog::~InstrumentPropertiesDialog()
     delete ui;
 }
 
+void InstrumentPropertiesDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void InstrumentPropertiesDialog::setSong(Song *song)
 {
     this->song = song;

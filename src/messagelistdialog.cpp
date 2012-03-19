@@ -63,6 +63,13 @@ MessageListDialog::~MessageListDialog()
     delete ui;
 }
 
+void MessageListDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void MessageListDialog::setSong(Song *song)
 {
     this->song = song;

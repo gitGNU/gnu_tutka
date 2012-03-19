@@ -46,28 +46,35 @@ TransposeDialog::~TransposeDialog()
     delete ui;
 }
 
+void TransposeDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void TransposeDialog::showSong()
 {
     ui->comboBoxArea->setCurrentIndex(0);
-    show();
+    makeVisible();
 }
 
 void TransposeDialog::showBlock()
 {
     ui->comboBoxArea->setCurrentIndex(1);
-    show();
+    makeVisible();
 }
 
 void TransposeDialog::showTrack()
 {
     ui->comboBoxArea->setCurrentIndex(2);
-    show();
+    makeVisible();
 }
 
 void TransposeDialog::showSelection()
 {
     ui->comboBoxArea->setCurrentIndex(3);
-    show();
+    makeVisible();
 }
 
 void TransposeDialog::setSong(Song *song)

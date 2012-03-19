@@ -40,6 +40,7 @@ public:
     ~SongPropertiesDialog();
 
 public slots:
+    void makeVisible();
     void setSong(Song *song);
 
 private:

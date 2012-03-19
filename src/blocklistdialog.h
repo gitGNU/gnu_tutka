@@ -42,6 +42,7 @@ public:
     ~BlockListDialog();
 
 public slots:
+    void makeVisible();
     void setSong(Song *song);
     void setBlock(unsigned int block);
 

@@ -57,6 +57,13 @@ PreferencesDialog::~PreferencesDialog()
     delete ui;
 }
 
+void PreferencesDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void PreferencesDialog::setSchedulingMode(int schedulingMode)
 {
     player->setScheduler(schedulingMode == 0 ? Player::SchedulingRTC : Player::SchedulingNanoSleep);

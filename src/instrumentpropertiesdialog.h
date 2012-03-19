@@ -41,6 +41,7 @@ public:
     ~InstrumentPropertiesDialog();
 
 public slots:
+    void makeVisible();
     void setSong(Song *song);
     void setInstrument(int number);
 

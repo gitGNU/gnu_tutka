@@ -42,6 +42,9 @@ public:
     explicit PreferencesDialog(Player *player, QWidget *parent = 0);
     ~PreferencesDialog();
 
+public slots:
+    void makeVisible();
+
 private slots:
     void setSchedulingMode(int schedulingMode);
     void enableInterfaces();

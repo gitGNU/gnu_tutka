@@ -40,6 +40,7 @@ public:
     ~TrackVolumesDialog();
 
 public slots:
+    void makeVisible();
     void setSong(Song *song);
 
 private slots:

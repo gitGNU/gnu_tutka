@@ -45,6 +45,13 @@ PlayingSequenceListDialog::~PlayingSequenceListDialog()
     delete ui;
 }
 
+void PlayingSequenceListDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void PlayingSequenceListDialog::setSong(Song *song)
 {
     this->song = song;

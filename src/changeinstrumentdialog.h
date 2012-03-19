@@ -40,6 +40,7 @@ public:
     ~ChangeInstrumentDialog();
 
 public slots:
+    void makeVisible();
     void showSong();
     void showBlock();
     void showTrack();

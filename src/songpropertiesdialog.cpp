@@ -37,6 +37,13 @@ SongPropertiesDialog::~SongPropertiesDialog()
     delete ui;
 }
 
+void SongPropertiesDialog::makeVisible()
+{
+    show();
+    raise();
+    activateWindow();
+}
+
 void SongPropertiesDialog::setSong(Song *song)
 {
     if (this->song != song) {
