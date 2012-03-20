@@ -23,8 +23,10 @@
 #include <QSpinBox>
 #include "spinboxdelegate.h"
 
-SpinBoxDelegate::SpinBoxDelegate(QObject *parent)
-    : QItemDelegate(parent)
+SpinBoxDelegate::SpinBoxDelegate(int minimum, int maximum, QObject *parent)
+    : QItemDelegate(parent),
+      minimum(minimum),
+      maximum(maximum)
 {
 }
 
@@ -34,8 +36,8 @@ QWidget *SpinBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
     Q_UNUSED(index)
 
     QSpinBox *editor = new QSpinBox(parent);
-    editor->setMinimum(0);
-    editor->setMaximum(65536);
+    editor->setMinimum(minimum);
+    editor->setMaximum(maximum);
 
     return editor;
 }

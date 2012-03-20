@@ -31,7 +31,7 @@ BlockListDialog::BlockListDialog(QWidget *parent) :
     ui(new Ui::BlockListDialog),
     song(NULL),
     blockListTableModel(new BlockListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(this))
+    spinBoxDelegate(new SpinBoxDelegate(1, 65536, this))
 {
     ui->setupUi(this);
 

@@ -31,7 +31,7 @@ SectionListDialog::SectionListDialog(QWidget *parent) :
     ui(new Ui::SectionListDialog),
     song(NULL),
     sectionListTableModel(new SectionListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(this))
+    spinBoxDelegate(new SpinBoxDelegate(0, 65536, this))
 {
     ui->setupUi(this);
 

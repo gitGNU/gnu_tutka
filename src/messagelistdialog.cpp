@@ -36,7 +36,7 @@ MessageListDialog::MessageListDialog(MIDI *midi, QWidget *parent) :
     settings("nongnu.org", "Tutka"),
     song(NULL),
     messageListTableModel(new MessageListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(this)),
+    spinBoxDelegate(new SpinBoxDelegate(0, 16777216, this)),
     selectedMessage(-1)
 {
     ui->setupUi(this);

@@ -32,7 +32,6 @@
  * Section list allows pressing Delete on the last position
  * Section list allows setting an inexisting playing sequence
  * Cursor keys don't work as expected when playing
- * Block list allows setting tracks, length and command pages to 0
  * Track->Delete is not disabled if there's 1 track
  * Preferences->Scheduling mode does not reflect reality if RTC is not available
  */

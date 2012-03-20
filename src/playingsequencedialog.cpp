@@ -33,7 +33,7 @@ PlayingSequenceDialog::PlayingSequenceDialog(QWidget *parent) :
     song(NULL),
     playseq(NULL),
     playingSequenceTableModel(new PlayingSequenceTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(this))
+    spinBoxDelegate(new SpinBoxDelegate(0, 65536, this))
 {
     ui->setupUi(this);
 
