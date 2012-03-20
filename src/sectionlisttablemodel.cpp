@@ -57,7 +57,7 @@ QVariant SectionListTableModel::data(const QModelIndex &index, int role) const
     } else {
         switch (index.column()) {
         case 0:
-            return song->section(index.row());
+            return song->section(index.row()) + 1;
         case 1:
             return song->playseq(song->section(index.row()))->name();
         default:
@@ -92,7 +92,7 @@ bool SectionListTableModel::setData(const QModelIndex &index, const QVariant &va
 
         switch(index.column()) {
         case 0:
-            song->setSection(index.row(), value.toInt(&success));
+            song->setSection(index.row(), value.toInt(&success) - 1);
             break;
         default:
             break;

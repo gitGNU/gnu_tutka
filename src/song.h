@@ -167,10 +167,10 @@ private slots:
 
 signals:
     // Emitted when the number of blocks has changed
-    void blocksChanged(unsigned int blocks);
+    void blocksChanged(int blocks);
 
     // Emitted when the number of playing sequences has changed
-    void playseqsChanged(unsigned int playseqs);
+    void playseqsChanged(int playseqs);
 
     // Emitted when the number of sections has changed
     void sectionsChanged(unsigned int sections);

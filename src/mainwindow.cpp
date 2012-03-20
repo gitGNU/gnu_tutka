@@ -789,8 +789,8 @@ void MainWindow::setSong(Song *song)
     if (this->song != NULL) {
         disconnect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), this->song, SLOT(setSendSync(bool)));
         disconnect(this->song, SIGNAL(sectionsChanged(uint)), this, SLOT(setSection()));
-        disconnect(this->song, SIGNAL(playseqsChanged(uint)), this, SLOT(setPlayseq()));
-        disconnect(this->song, SIGNAL(blocksChanged(uint)), this, SLOT(setBlock()));
+        disconnect(this->song, SIGNAL(playseqsChanged(int)), this, SLOT(setPlayseq()));
+        disconnect(this->song, SIGNAL(blocksChanged(int)), this, SLOT(setBlock()));
     }
 
     this->song = song;
@@ -810,8 +810,8 @@ void MainWindow::setSong(Song *song)
 
     connect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), song, SLOT(setSendSync(bool)));
     connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(setSection()));
-    connect(song, SIGNAL(playseqsChanged(uint)), this, SLOT(setPlayseq()));
-    connect(song, SIGNAL(blocksChanged(uint)), this, SLOT(setBlock()));
+    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(setPlayseq()));
+    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(setBlock()));
 }
 
 void MainWindow::setSection(unsigned int section)

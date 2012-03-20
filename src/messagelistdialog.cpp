@@ -36,14 +36,13 @@ MessageListDialog::MessageListDialog(MIDI *midi, QWidget *parent) :
     settings("nongnu.org", "Tutka"),
     song(NULL),
     messageListTableModel(new MessageListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(0, 16777216, this)),
     selectedMessage(-1)
 {
     ui->setupUi(this);
 
     ui->tableView->setModel(messageListTableModel);
     ui->tableView->setColumnWidth(0, 200);
-    ui->tableView->setItemDelegateForColumn(1, spinBoxDelegate);
+    ui->tableView->setItemDelegateForColumn(1, new SpinBoxDelegate(0, 16777216, this));
 
     connect(ui->pushButtonInsertNew, SIGNAL(clicked()), this, SLOT(insertMessage()));
     connect(ui->pushButtonAppendNew, SIGNAL(clicked()), this, SLOT(appendMessage()));

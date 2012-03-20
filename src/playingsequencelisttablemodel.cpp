@@ -34,10 +34,10 @@ void PlayingSequenceListTableModel::setSong(Song *song)
 {
     beginResetModel();
     if (this->song != NULL) {
-        disconnect(this->song, SIGNAL(playseqsChanged(uint)), this, SLOT(refresh()));
+        disconnect(this->song, SIGNAL(playseqsChanged(int)), this, SLOT(refresh()));
     }
     this->song = song;
-    connect(this->song, SIGNAL(playseqsChanged(uint)), this, SLOT(refresh()));
+    connect(this->song, SIGNAL(playseqsChanged(int)), this, SLOT(refresh()));
     endResetModel();
 }
 

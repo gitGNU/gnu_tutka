@@ -31,14 +31,12 @@ SectionListDialog::SectionListDialog(QWidget *parent) :
     ui(new Ui::SectionListDialog),
     song(NULL),
     sectionListTableModel(new SectionListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(0, 65536, this))
+    spinBoxDelegate(new SpinBoxDelegate(1, 1, this))
 {
     ui->setupUi(this);
 
     ui->tableView->setModel(sectionListTableModel);
-    ui->tableView->setItemDelegateForColumn(1, spinBoxDelegate);
-    ui->tableView->setItemDelegateForColumn(2, spinBoxDelegate);
-    ui->tableView->setItemDelegateForColumn(3, spinBoxDelegate);
+    ui->tableView->setItemDelegateForColumn(0, spinBoxDelegate);
 
     connect(ui->pushButtonInsert, SIGNAL(clicked()), this, SLOT(insertSection()));
     connect(ui->pushButtonAppend, SIGNAL(clicked()), this, SLOT(appendSection()));
@@ -59,7 +57,12 @@ void SectionListDialog::makeVisible()
 
 void SectionListDialog::setSong(Song *song)
 {
+    if (this->song != NULL) {
+        disconnect(this->song, SIGNAL(playseqsChanged(int)), spinBoxDelegate, SLOT(setMaximum(int)));
+    }
+
     this->song = song;
+    connect(this->song, SIGNAL(playseqsChanged(int)), spinBoxDelegate, SLOT(setMaximum(int)));
     sectionListTableModel->setSong(song);
 }
 

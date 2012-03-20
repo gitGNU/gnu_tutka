@@ -33,14 +33,12 @@ PlayingSequenceDialog::PlayingSequenceDialog(QWidget *parent) :
     song(NULL),
     playseq(NULL),
     playingSequenceTableModel(new PlayingSequenceTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(0, 65536, this))
+    spinBoxDelegate(new SpinBoxDelegate(1, 1, this))
 {
     ui->setupUi(this);
 
     ui->tableView->setModel(playingSequenceTableModel);
-    ui->tableView->setItemDelegateForColumn(1, spinBoxDelegate);
-    ui->tableView->setItemDelegateForColumn(2, spinBoxDelegate);
-    ui->tableView->setItemDelegateForColumn(3, spinBoxDelegate);
+    ui->tableView->setItemDelegateForColumn(0, spinBoxDelegate);
 
     connect(ui->pushButtonInsert, SIGNAL(clicked()), this, SLOT(insertBlock()));
     connect(ui->pushButtonAppend, SIGNAL(clicked()), this, SLOT(appendBlock()));
@@ -61,7 +59,12 @@ void PlayingSequenceDialog::makeVisible()
 
 void PlayingSequenceDialog::setSong(Song *song)
 {
+    if (this->song != NULL) {
+        disconnect(this->song, SIGNAL(blocksChanged(int)), spinBoxDelegate, SLOT(setMaximum(int)));
+    }
+
     this->song = song;
+    connect(this->song, SIGNAL(blocksChanged(int)), spinBoxDelegate, SLOT(setMaximum(int)));
     playingSequenceTableModel->setSong(song);
 }
 

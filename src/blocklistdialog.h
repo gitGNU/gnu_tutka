@@ -31,7 +31,6 @@ namespace Ui {
 
 class Song;
 class BlockListTableModel;
-class SpinBoxDelegate;
 
 class BlockListDialog : public QDialog
 {
@@ -55,7 +54,6 @@ private:
     Ui::BlockListDialog *ui;
     Song *song;
     BlockListTableModel *blockListTableModel;
-    SpinBoxDelegate *spinBoxDelegate;
 };
 
 #endif // BLOCKLISTDIALOG_H

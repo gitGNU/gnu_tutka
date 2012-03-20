@@ -30,14 +30,15 @@ BlockListDialog::BlockListDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BlockListDialog),
     song(NULL),
-    blockListTableModel(new BlockListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(1, 65536, this))
+    blockListTableModel(new BlockListTableModel(this))
 {
     ui->setupUi(this);
 
     ui->tableView->setModel(blockListTableModel);
     ui->tableView->setColumnWidth(0, 200);
     ui->tableView->setColumnWidth(3, 100);
+
+    SpinBoxDelegate *spinBoxDelegate = new SpinBoxDelegate(1, 65536, this);
     ui->tableView->setItemDelegateForColumn(1, spinBoxDelegate);
     ui->tableView->setItemDelegateForColumn(2, spinBoxDelegate);
     ui->tableView->setItemDelegateForColumn(3, spinBoxDelegate);

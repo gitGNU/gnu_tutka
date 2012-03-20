@@ -1002,8 +1002,8 @@ void Player::setSong(const QString &path)
 
     init();
 
-    connect(song, SIGNAL(blocksChanged(uint)), this, SLOT(refreshPlayseqAndBlock()));
-    connect(song, SIGNAL(playseqsChanged(uint)), this, SLOT(refreshPlayseqAndBlock()));
+    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(refreshPlayseqAndBlock()));
+    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(refreshPlayseqAndBlock()));
     connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(refreshPlayseqAndBlock()));
 
     if (oldSong != NULL) {

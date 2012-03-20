@@ -60,3 +60,8 @@ void SpinBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionVi
 
     editor->setGeometry(option.rect);
 }
+
+void SpinBoxDelegate::setMaximum(int maximum)
+{
+    this->maximum = maximum;
+}

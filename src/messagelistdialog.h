@@ -34,7 +34,6 @@ namespace Ui {
 class MIDI;
 class Song;
 class MessageListTableModel;
-class SpinBoxDelegate;
 
 class MessageListDialog : public QDialog
 {
@@ -67,7 +66,6 @@ private:
     QSettings settings;
     Song *song;
     MessageListTableModel *messageListTableModel;
-    SpinBoxDelegate *spinBoxDelegate;
     int selectedMessage;
     QByteArray receivedMessage;
 };

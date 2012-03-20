@@ -66,7 +66,7 @@ QVariant PlayingSequenceTableModel::data(const QModelIndex &index, int role) con
     } else {
         switch (index.column()) {
         case 0:
-            return playseq->at(index.row());
+            return playseq->at(index.row()) + 1;
         case 1:
             return song->block(playseq->at(index.row()))->name();
         default:
@@ -101,7 +101,7 @@ bool PlayingSequenceTableModel::setData(const QModelIndex &index, const QVariant
 
         switch(index.column()) {
         case 0:
-            playseq->set(index.row(), value.toInt(&success));
+            playseq->set(index.row(), value.toInt(&success) - 1);
             break;
         default:
             break;

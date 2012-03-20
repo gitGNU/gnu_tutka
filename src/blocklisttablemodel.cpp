@@ -33,10 +33,10 @@ void BlockListTableModel::setSong(Song *song)
 {
     beginResetModel();
     if (this->song != NULL) {
-        disconnect(this->song, SIGNAL(blocksChanged(uint)), this, SLOT(refresh()));
+        disconnect(this->song, SIGNAL(blocksChanged(int)), this, SLOT(refresh()));
     }
     this->song = song;
-    connect(this->song, SIGNAL(blocksChanged(uint)), this, SLOT(refresh()));
+    connect(this->song, SIGNAL(blocksChanged(int)), this, SLOT(refresh()));
     endResetModel();
 }
 
