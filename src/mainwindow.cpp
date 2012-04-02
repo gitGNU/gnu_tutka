@@ -258,15 +258,14 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
     if (event->delta() > 0) {
-        ui->tracker->setLine(ui->tracker->line() - 8);
+        player->setLine(player->line() - 8);
     } else if (event->delta() < 0) {
-        ui->tracker->setLine(ui->tracker->line() + 8);
+        player->setLine(player->line() + 8);
     }
 }
 
 bool MainWindow::keyPress(QKeyEvent *event)
 {
-    Song *song = ui->tracker->song();
     Block *block = ui->tracker->block();
     bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
     bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
@@ -335,7 +334,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                     block->setCommandFull(ui->tracker->line(), ui->tracker->track(), i, 0, 0);
                 }
 
-                ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
+                player->setLine(player->line() + ui->spinBoxSpace->value());
 
                 handled = true;
             }
@@ -413,7 +412,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                     block->setCommandFull(ui->tracker->line(), ui->tracker->cursorTrack(), commandPage, 0, 0);
                 }
 
-                ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
+                player->setLine(player->line() + ui->spinBoxSpace->value());
 
                 handled = true;
             }
@@ -572,7 +571,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                     } else if (ui->checkBoxEdit->isChecked()) {
                         // Set note and refresh
                         block->setNote(ui->tracker->line(), ui->tracker->cursorTrack(), ui->comboBoxKeyboardOctaves->currentIndex(), data, ui->spinBoxInstrument->value() + 1);
-                        ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
+                        player->setLine(player->line() + ui->spinBoxSpace->value());
                     }
                     handled = true;
                 }
@@ -598,7 +597,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                             ins = (ins & 0xf0) | data;
                         }
                         block->setInstrument(ui->tracker->line(), ui->tracker->cursorTrack(), ins);
-                        ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
+                        player->setLine(player->line() + ui->spinBoxSpace->value());
                         handled = true;
                     }
                     break;
@@ -618,7 +617,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
                     if (data >= 0) {
                         // Set effect and refresh
                         block->setCommand(ui->tracker->line(), ui->tracker->cursorTrack(), ui->tracker->commandPage(), ui->tracker->cursorItem() - 3, data);
-                        ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
+                        player->setLine(player->line() + ui->spinBoxSpace->value());
                         handled = true;
                     }
                     break;
@@ -663,14 +662,14 @@ bool MainWindow::keyPress(QKeyEvent *event)
             case Qt::Key_Down:
                 // Down: Go down
                 if (QApplication::activeWindow() == this) {
-                    ui->tracker->setLine(ui->tracker->line() + 1);
+                    player->setLine(player->line() + 1);
                     handled = true;
                 }
                 break;
             case Qt::Key_Up:
                 // Up: Go up
                 if (QApplication::activeWindow() == this) {
-                    ui->tracker->setLine(ui->tracker->line() - 1);
+                    player->setLine(player->line() - 1);
                     handled = true;
                 }
                 break;
@@ -699,28 +698,28 @@ bool MainWindow::keyPress(QKeyEvent *event)
             case Qt::Key_Home:
                 // End: Go to the beginning of block
                 if (QApplication::activeWindow() == this) {
-                    ui->tracker->setLine(0);
+                    player->setLine(0);
                     handled = true;
                 }
                 break;
             case Qt::Key_End:
                 // End: Go to the end of block
                 if (QApplication::activeWindow() == this) {
-                    ui->tracker->setLine(block->length() - 1);
+                    player->setLine(block->length() - 1);
                     handled = true;
                 }
                 break;
             case Qt::Key_PageDown:
                 // Page down: Go down 8 lines
                 if (QApplication::activeWindow() == this) {
-                    ui->tracker->setLine(ui->tracker->line() + 8);
+                    player->setLine(player->line() + 8);
                     handled = true;
                 }
                 break;
             case Qt::Key_PageUp:
                 // Page up: Go up 8 lines
                 if (QApplication::activeWindow() == this) {
-                    ui->tracker->setLine(ui->tracker->line() - 8);
+                    player->setLine(player->line() - 8);
                     handled = true;
                 }
                 break;
@@ -774,7 +773,7 @@ bool MainWindow::keyRelease(QKeyEvent * event)
 
                 // If all chord notes have been released go to the next line
                 if (chordStatus == 0 && ui->checkBoxEdit->isChecked()) {
-                    ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
+                    player->setLine(player->line() + ui->spinBoxSpace->value());
                 }
                 handled = true;
             }
@@ -1102,7 +1101,7 @@ void MainWindow::handleMidiInput(const QByteArray &data)
 
                 // If all notes of the chord have been released move to the next line
                 if (chordStatus == 0) {
-                    ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
+                    player->setLine(player->line() + ui->spinBoxSpace->value());
                 }
             }
         }
@@ -1118,7 +1117,7 @@ void MainWindow::handleMidiInput(const QByteArray &data)
                 // Move the cursor to the next channel
                 ui->tracker->stepCursorTrack(1);
             } else {
-                ui->tracker->setLine(ui->tracker->line() + ui->spinBoxSpace->value());
+               player->setLine(player->line() + ui->spinBoxSpace->value());
             }
         }
         break;

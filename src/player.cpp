@@ -1038,7 +1038,7 @@ void Player::init()
     section_ = (unsigned int)-1;
     playseq_ = (unsigned int)-1;
     position_ = (unsigned int)-1;
-    line_ = (unsigned int)-1;
+    line_ = 0;
     refreshPlayseqAndBlock();
 }
 
