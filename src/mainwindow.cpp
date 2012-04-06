@@ -850,12 +850,14 @@ void MainWindow::setBlock(unsigned int block)
     if (this->block < song->blocks()) {
         disconnect(song->block(this->block), SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
         disconnect(song->block(this->block), SIGNAL(commandPagesChanged(int)), this, SLOT(setCommandPage()));
+        disconnect(song->block(this->block), SIGNAL(tracksChanged(int)), this, SLOT(setDeleteTrackVisibility()));
     }
 
     this->block = block;
 
     connect(song->block(block), SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
     connect(song->block(block), SIGNAL(commandPagesChanged(int)), this, SLOT(setCommandPage()));
+    connect(song->block(this->block), SIGNAL(tracksChanged(int)), this, SLOT(setDeleteTrackVisibility()));
 
     QString name = song->block(block)->name();
     if (name.isEmpty()) {
@@ -864,6 +866,7 @@ void MainWindow::setBlock(unsigned int block)
         ui->labelBlock->setText(tr("Block %1/%2: %3").arg(block + 1).arg(song->blocks()).arg(name));
     }
     setCommandPage(ui->tracker->commandPage());
+    setDeleteTrackVisibility();
 }
 
 void MainWindow::setCommandPage(unsigned int commandPage)
@@ -1172,4 +1175,11 @@ void MainWindow::setTrackerVerticalScrollBar(int line, int length, int visibleLi
 void MainWindow::setSongPath(const QString &path)
 {
     settings.setValue("Paths/songPath", QFileInfo(path).absolutePath());
+}
+
+void MainWindow::setDeleteTrackVisibility()
+{
+    if (song != NULL && block < song->blocks()) {
+        ui->actionTrackDelete->setEnabled(song->block(block)->tracks() > 1);
+    }
 }

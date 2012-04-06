@@ -102,6 +102,7 @@ private slots:
     void setTrackerHorizontalScrollBar(int track, int tracks, int visibleTracks);
     void setTrackerVerticalScrollBar(int line, int length, int visibleLines);
     void setSongPath(const QString &path);
+    void setDeleteTrackVisibility();
 
 private:
     bool keyPress(QKeyEvent *event);

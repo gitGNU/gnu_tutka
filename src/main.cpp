@@ -24,7 +24,6 @@
  * TODO
  *
  * Changing playing sequence name doesn't show up in section list dialog
- * Track->Delete is not disabled if there's 1 track
  * Preferences->Scheduling mode does not reflect reality if RTC is not available
  */
 
