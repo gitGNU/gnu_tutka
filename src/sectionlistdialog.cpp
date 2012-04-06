@@ -31,7 +31,8 @@ SectionListDialog::SectionListDialog(QWidget *parent) :
     ui(new Ui::SectionListDialog),
     song(NULL),
     sectionListTableModel(new SectionListTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(1, 1, this))
+    spinBoxDelegate(new SpinBoxDelegate(1, 1, this)),
+    section(-1)
 {
     ui->setupUi(this);
 
@@ -41,6 +42,8 @@ SectionListDialog::SectionListDialog(QWidget *parent) :
     connect(ui->pushButtonInsert, SIGNAL(clicked()), this, SLOT(insertSection()));
     connect(ui->pushButtonAppend, SIGNAL(clicked()), this, SLOT(appendSection()));
     connect(ui->pushButtonDelete, SIGNAL(clicked()), this, SLOT(deleteSection()));
+    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(setSection(QItemSelection, QItemSelection)));
+    connect(sectionListTableModel, SIGNAL(modelReset()), this, SLOT(setSelection()));
 }
 
 SectionListDialog::~SectionListDialog()
@@ -59,16 +62,21 @@ void SectionListDialog::setSong(Song *song)
 {
     if (this->song != NULL) {
         disconnect(this->song, SIGNAL(playseqsChanged(int)), spinBoxDelegate, SLOT(setMaximum(int)));
+        disconnect(this->song, SIGNAL(sectionsChanged(unsigned int)), this, SLOT(setDeleteButtonVisibility()));
     }
 
     this->song = song;
     connect(this->song, SIGNAL(playseqsChanged(int)), spinBoxDelegate, SLOT(setMaximum(int)));
     sectionListTableModel->setSong(song);
+
+    connect(song, SIGNAL(sectionsChanged(unsigned int)), this, SLOT(setDeleteButtonVisibility()));
+    setDeleteButtonVisibility();
 }
 
 void SectionListDialog::setSection(unsigned int section)
 {
     ui->tableView->selectRow(section);
+    this->section = section;
 }
 
 void SectionListDialog::insertSection()
@@ -93,4 +101,31 @@ void SectionListDialog::deleteSection()
     if (!indexes.isEmpty()) {
         song->deleteSection(indexes.first().row());
     }
+}
+
+
+void SectionListDialog::setSelection()
+{
+    if (section >= 0) {
+        ui->tableView->selectRow(section);
+    }
+}
+
+void SectionListDialog::setSection(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(deselected)
+
+    QModelIndexList indexes = selected.indexes();
+    if (!indexes.isEmpty()) {
+        int section = indexes.first().row();
+        if (section != this->section) {
+            this->section = section;
+            emit sectionSelected(this->section);
+        }
+    }
+}
+
+void SectionListDialog::setDeleteButtonVisibility()
+{
+    ui->pushButtonDelete->setEnabled(song != NULL && song->sections() > 1);
 }

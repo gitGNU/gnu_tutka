@@ -24,6 +24,7 @@
 #define SECTIONLISTDIALOG_H
 
 #include <QDialog>
+#include <QItemSelection>
 
 namespace Ui {
     class SectionListDialog;
@@ -41,6 +42,9 @@ public:
     explicit SectionListDialog(QWidget *parent = 0);
     ~SectionListDialog();
 
+signals:
+    void sectionSelected(int section);
+
 public slots:
     void makeVisible();
     void setSong(Song *song);
@@ -50,12 +54,16 @@ private slots:
     void insertSection();
     void appendSection();
     void deleteSection();
+    void setSelection();
+    void setSection(const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection());
+    void setDeleteButtonVisibility();
 
 private:
     Ui::SectionListDialog *ui;
     Song *song;
     SectionListTableModel *sectionListTableModel;
     SpinBoxDelegate *spinBoxDelegate;
+    int section;
 };
 
 #endif // SECTIONLISTDIALOG_H

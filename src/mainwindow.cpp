@@ -199,6 +199,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(blockListDialog, SIGNAL(blockSelected(int)), player, SLOT(setBlock(int)));
     connect(playingSequenceDialog, SIGNAL(positionSelected(int)), player, SLOT(setPosition(int)));
     connect(playingSequenceListDialog, SIGNAL(playingSequenceSelected(int)), player, SLOT(setPlayseq(int)));
+    connect(sectionListDialog, SIGNAL(sectionSelected(int)), player, SLOT(setSection(int)));
 
     keyToNote.insert(Qt::Key_Z, 1);
     keyToNote.insert(Qt::Key_S, 2);
