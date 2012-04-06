@@ -65,8 +65,15 @@ void BlockListDialog::makeVisible()
 
 void BlockListDialog::setSong(Song *song)
 {
+    if (this->song != NULL) {
+        disconnect(this->song, SIGNAL(blocksChanged(int)), this, SLOT(setDeleteButtonVisibility()));
+    }
+
     this->song = song;
     blockListTableModel->setSong(song);
+
+    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(setDeleteButtonVisibility()));
+    setDeleteButtonVisibility();
 }
 
 void BlockListDialog::setBlock(unsigned int block)
@@ -118,4 +125,9 @@ void BlockListDialog::setBlock(const QItemSelection &selected, const QItemSelect
             emit blockSelected(this->block);
         }
     }
+}
+
+void BlockListDialog::setDeleteButtonVisibility()
+{
+    ui->pushButtonDelete->setEnabled(song != NULL && song->blocks() > 1);
 }

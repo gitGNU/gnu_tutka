@@ -55,6 +55,7 @@ private slots:
     void deleteBlock();
     void setSelection();
     void setBlock(const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection());
+    void setDeleteButtonVisibility();
 
 private:
     Ui::BlockListDialog *ui;
