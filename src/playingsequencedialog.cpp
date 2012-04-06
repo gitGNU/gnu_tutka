@@ -33,7 +33,8 @@ PlayingSequenceDialog::PlayingSequenceDialog(QWidget *parent) :
     song(NULL),
     playseq(NULL),
     playingSequenceTableModel(new PlayingSequenceTableModel(this)),
-    spinBoxDelegate(new SpinBoxDelegate(1, 1, this))
+    spinBoxDelegate(new SpinBoxDelegate(1, 1, this)),
+    position(-1)
 {
     ui->setupUi(this);
 
@@ -43,6 +44,7 @@ PlayingSequenceDialog::PlayingSequenceDialog(QWidget *parent) :
     connect(ui->pushButtonInsert, SIGNAL(clicked()), this, SLOT(insertBlock()));
     connect(ui->pushButtonAppend, SIGNAL(clicked()), this, SLOT(appendBlock()));
     connect(ui->pushButtonDelete, SIGNAL(clicked()), this, SLOT(deleteBlock()));
+    connect(playingSequenceTableModel, SIGNAL(modelReset()), this, SLOT(setSelection()));
 }
 
 PlayingSequenceDialog::~PlayingSequenceDialog()
@@ -70,13 +72,21 @@ void PlayingSequenceDialog::setSong(Song *song)
 
 void PlayingSequenceDialog::setPlayseq(unsigned int playseq)
 {
+    if (this->playseq != NULL) {
+        disconnect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(setDeleteButtonVisibility()));
+    }
+
     this->playseq = song->playseq(playseq);
     playingSequenceTableModel->setPlayseq(this->playseq);
+
+    connect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(setDeleteButtonVisibility()));
+    setDeleteButtonVisibility();
 }
 
 void PlayingSequenceDialog::setPosition(unsigned int position)
 {
     ui->tableView->selectRow(position);
+    this->position = position;
 }
 
 void PlayingSequenceDialog::insertBlock()
@@ -101,4 +111,30 @@ void PlayingSequenceDialog::deleteBlock()
     if (!indexes.isEmpty()) {
         playseq->remove(indexes.first().row());
     }
+}
+
+void PlayingSequenceDialog::setSelection()
+{
+    if (position >= 0) {
+        ui->tableView->selectRow(position);
+    }
+}
+
+void PlayingSequenceDialog::setPosition(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(deselected)
+
+    QModelIndexList indexes = selected.indexes();
+    if (!indexes.isEmpty()) {
+        int position = indexes.first().row();
+        if (position != this->position) {
+            this->position = position;
+            emit positionSelected(this->position);
+        }
+    }
+}
+
+void PlayingSequenceDialog::setDeleteButtonVisibility()
+{
+    ui->pushButtonDelete->setEnabled(playseq != NULL && playseq->length() > 1);
 }
