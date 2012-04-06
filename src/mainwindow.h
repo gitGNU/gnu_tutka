@@ -95,6 +95,7 @@ private slots:
     void saveAs();
     void setSection();
     void setPlayseq();
+    void setPosition();
     void setBlock();
     void setCommandPage();
     void handleMidiInput(const QByteArray &data);

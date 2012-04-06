@@ -44,6 +44,7 @@ PlayingSequenceDialog::PlayingSequenceDialog(QWidget *parent) :
     connect(ui->pushButtonInsert, SIGNAL(clicked()), this, SLOT(insertBlock()));
     connect(ui->pushButtonAppend, SIGNAL(clicked()), this, SLOT(appendBlock()));
     connect(ui->pushButtonDelete, SIGNAL(clicked()), this, SLOT(deleteBlock()));
+    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(setPosition(QItemSelection, QItemSelection)));
     connect(playingSequenceTableModel, SIGNAL(modelReset()), this, SLOT(setSelection()));
 }
 
