@@ -34,9 +34,13 @@ void SectionListTableModel::setSong(Song *song)
     beginResetModel();
     if (this->song != NULL) {
         disconnect(this->song, SIGNAL(sectionsChanged(uint)), this, SLOT(refresh()));
+        disconnect(this->song, SIGNAL(playseqsChanged(int)), this, SLOT(refresh()));
+        disconnect(this->song, SIGNAL(playseqNameChanged()), this, SLOT(refresh()));
     }
     this->song = song;
     connect(this->song, SIGNAL(sectionsChanged(uint)), this, SLOT(refresh()));
+    connect(this->song, SIGNAL(playseqsChanged(int)), this, SLOT(refresh()));
+    connect(this->song, SIGNAL(playseqNameChanged()), this, SLOT(refresh()));
     endResetModel();
 }
 

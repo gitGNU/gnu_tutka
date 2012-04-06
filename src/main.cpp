@@ -23,7 +23,6 @@
 /*
  * TODO
  *
- * Changing playing sequence name doesn't show up in section list dialog
  * Preferences->Scheduling mode does not reflect reality if RTC is not available
  */
 

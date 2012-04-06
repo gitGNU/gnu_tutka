@@ -78,7 +78,9 @@ void Song::init()
     Block *block = new Block;
     connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
     sections_.append(0);
-    playseqs_.append(new Playseq);
+    Playseq *playseq = new Playseq;
+    connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
+    playseqs_.append(playseq);
     blocks_.append(block);
     checkMaxTracks();
 }
@@ -260,7 +262,9 @@ void Song::insertPlayseq(unsigned int pos)
     }
 
     // Insert a new playing sequence
-    playseqs_.insert(pos, new Playseq);
+    Playseq *playseq = new Playseq;
+    connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
+    playseqs_.insert(pos, playseq);
 
     // Update sections
     for (int i = 0; i < sections_.count(); i++) {
@@ -552,7 +556,9 @@ bool Song::parse(QDomElement element)
                             }
 
                             while (playseqs_.count() < number) {
-                                playseqs_.append(new Playseq);
+                                Playseq *playseq = new Playseq;
+                                connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
+                                playseqs_.append(playseq);
                             }
                             if (playseqs_.count() == number) {
                                 playseqs_.append(playseq);

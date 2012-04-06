@@ -181,6 +181,9 @@ signals:
     // Emitted when the maximum number of tracks has changed
     void maxTracksChanged(unsigned int maxTracks);
 
+    // Emitted when a name of a playing sequence has changed
+    void playseqNameChanged();
+
 private:
     // Initializes an empty song
     void init();
