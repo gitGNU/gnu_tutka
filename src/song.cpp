@@ -230,7 +230,7 @@ void Song::deleteBlock(unsigned int pos)
             pos = blocks_.count() - 1;
         }
 
-        blocks_.removeAt(pos);
+        Block *block = blocks_.takeAt(pos);
 
         // Update playing sequences
         for (int i = 0; i < playseqs_.count(); i++) {
@@ -242,9 +242,11 @@ void Song::deleteBlock(unsigned int pos)
         }
 
         mutex.unlock();
-    }
 
-    emit blocksChanged(blocks_.count());
+        emit blocksChanged(blocks_.count());
+
+        delete block;
+    }
 }
 
 // Inserts a new playseq in the playseq array in the given position

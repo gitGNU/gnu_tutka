@@ -53,7 +53,7 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     block_(0),
     line_(0),
     tick(0),
-    song(new Song(path)),
+    song(NULL),
     mode_(ModeIdle),
     sched(SchedulingNone),
     syncMode(Off),
@@ -74,7 +74,7 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     connect(midi, SIGNAL(stopReceived()), this, SLOT(stop()));
     connect(midi, SIGNAL(clockReceived()), this, SLOT(externalSync()));
 
-    QTimer::singleShot(0, this, SLOT(init()));
+    setSong(path);
 }
 
 Player::Player(MIDI *midi, Song *song, QObject *parent) :
@@ -116,7 +116,7 @@ Player::~Player()
     }
 }
 
-void Player::refreshPlayseqAndBlock()
+void Player::updateLocation()
 {
     unsigned int oldSection = section_;
     unsigned int oldPlayseq = playseq_;
@@ -146,6 +146,8 @@ void Player::refreshPlayseqAndBlock()
     if (block_ != oldBlock) {
         emit blockChanged(block_);
     }
+
+    emit locationUpdated();
 }
 
 bool Player::nextSection()
@@ -186,7 +188,7 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
 {
     // Notes are played if the track is not muted and no tracks are soloed or the current track is soloed
     if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
-        QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
+        QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
 
         // Stop currently playing note
         if (trackStatus->note != -1) {
@@ -221,7 +223,7 @@ void Player::stopMuted()
 {
     for (int track = 0; track < song->maxTracks(); track++) {
         if (song->track(track)->isMuted() || (solo && !song->track(track)->isSolo())) {
-            QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
+            QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
             if (trackStatus->note != -1) {
                 midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                 trackStatus->note = -1;
@@ -234,7 +236,7 @@ void Player::stopMuted()
 void Player::stopNotes()
 {
     for (int track = 0; track < song->maxTracks(); track++) {
-        QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
+        QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
         if (trackStatus->note != -1) {
             midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
 
@@ -566,7 +568,7 @@ void Player::run()
 
         // Stop notes if there are new notes about to be played
         for (int track = 0; track < block->tracks(); track++) {
-            QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
+            QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
 
             // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
             if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
@@ -633,7 +635,7 @@ void Player::run()
 
         // Play notes scheduled to be played
         for (int track = 0; track < block->tracks(); track++) {
-            QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
+            QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
 
             // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
             if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
@@ -728,7 +730,7 @@ void Player::run()
 
         // Decrement hold times of notes and stop notes that should be stopped
         for (int track = 0; track < song->maxTracks(); track++) {
-            QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
+            QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
             if (trackStatus->hold >= 0) {
                 trackStatus->hold--;
                 if (trackStatus->hold < 0 && trackStatus->note != -1) {
@@ -751,7 +753,7 @@ void Player::run()
 
             // Advance arpeggios
             for (int track = 0; track < song->maxTracks(); track++) {
-                QSharedPointer<TrackStatus> trackStatus = this->trackStatus[track];
+                QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
                 int arpeggioInstrument = trackStatus->instrument;
 
                 if (arpeggioInstrument >= 0 && trackStatus->baseNote >= 0) {
@@ -799,7 +801,7 @@ void Player::run()
             postValue = 0;
 
             if (changeBlock) {
-                refreshPlayseqAndBlock();
+                updateLocation();
             }
         }
 
@@ -888,7 +890,7 @@ void Player::play(Mode mode, bool cont)
             position_ = 0;
             line_ = 0;
         }
-        refreshPlayseqAndBlock();
+        updateLocation();
         break;
     case ModePlayBlock:
         if (!cont) {
@@ -962,12 +964,12 @@ void Player::trackStatusCreate()
     int maxTracks = song != NULL ? song->maxTracks() : 0;
 
     // Free the extraneous status structures
-    while (trackStatus.count() > maxTracks) {
-        trackStatus.removeLast();
+    while (trackStatuses.count() > maxTracks) {
+        trackStatuses.removeLast();
     }
 
     // Set new tracks to -1
-    while (trackStatus.count() < maxTracks) {
+    while (trackStatuses.count() < maxTracks) {
         TrackStatus *status = new TrackStatus;
         status->instrument = -1;
         status->previousCommand = 0;
@@ -975,7 +977,7 @@ void Player::trackStatusCreate()
         status->midiChannel = -1;
         status->volume = -1;
         status->hold = -1;
-        trackStatus.append(QSharedPointer<TrackStatus>(status));
+        trackStatuses.append(QSharedPointer<TrackStatus>(status));
     }
 }
 
@@ -1000,19 +1002,17 @@ void Player::setSong(const QString &path)
         song = new Song(path);
     }
 
-    init();
+    delete oldSong;
 
-    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(refreshPlayseqAndBlock()));
-    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(refreshPlayseqAndBlock()));
-    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(refreshPlayseqAndBlock()));
-
-    if (oldSong != NULL) {
-        delete oldSong;
-    }
+    QTimer::singleShot(0, this, SLOT(init()));
 }
 
 void Player::init()
 {
+    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(updateLocation()));
+    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(updateLocation()));
+    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(updateLocation()));
+
     remapMidiOutputs();
 
     // Recreate the track status array
@@ -1039,7 +1039,7 @@ void Player::init()
     playseq_ = (unsigned int)-1;
     position_ = (unsigned int)-1;
     line_ = 0;
-    refreshPlayseqAndBlock();
+    updateLocation();
 }
 
 void Player::setSection(int section)

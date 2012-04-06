@@ -121,6 +121,9 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(lineChanged(int)), ui->tracker, SLOT(setLine(int)));
     connect(player, SIGNAL(modeChanged(Player::Mode)), this, SLOT(setMode(Player::Mode)));
     connect(player, SIGNAL(timeChanged(unsigned int)), this, SLOT(setTime(unsigned int)));
+    connect(player, SIGNAL(locationUpdated()), this, SLOT(setSection()));
+    connect(player, SIGNAL(locationUpdated()), this, SLOT(setPlayseq()));
+    connect(player, SIGNAL(locationUpdated()), this, SLOT(setBlock()));
     connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), transposeDialog, SLOT(setTrack(int)));
     connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), expandShrinkDialog, SLOT(setTrack(int)));
     connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), changeInstrumentDialog, SLOT(setTrack(int)));
@@ -192,6 +195,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->labelPosition, SIGNAL(clicked()), playingSequenceDialog, SLOT(makeVisible()));
     connect(ui->labelPlayingSequence, SIGNAL(clicked()), playingSequenceListDialog, SLOT(makeVisible()));
     connect(ui->labelBlock, SIGNAL(clicked()), blockListDialog, SLOT(makeVisible()));
+    connect(blockListDialog, SIGNAL(blockSelected(int)), player, SLOT(setBlock(int)));
 
     keyToNote.insert(Qt::Key_Z, 1);
     keyToNote.insert(Qt::Key_S, 2);
@@ -787,9 +791,6 @@ void MainWindow::setSong(Song *song)
 {
     if (this->song != NULL) {
         disconnect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), this->song, SLOT(setSendSync(bool)));
-        disconnect(this->song, SIGNAL(sectionsChanged(uint)), this, SLOT(setSection()));
-        disconnect(this->song, SIGNAL(playseqsChanged(int)), this, SLOT(setPlayseq()));
-        disconnect(this->song, SIGNAL(blocksChanged(int)), this, SLOT(setBlock()));
     }
 
     this->song = song;
@@ -808,9 +809,6 @@ void MainWindow::setSong(Song *song)
     ui->actionSettingsSendMidiSync->setChecked(song->sendSync());
 
     connect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), song, SLOT(setSendSync(bool)));
-    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(setSection()));
-    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(setPlayseq()));
-    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(setBlock()));
 }
 
 void MainWindow::setSection(unsigned int section)
@@ -841,8 +839,10 @@ void MainWindow::setPosition(unsigned int position)
 
 void MainWindow::setBlock(unsigned int block)
 {
-    disconnect(song->block(this->block), SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
-    disconnect(song->block(this->block), SIGNAL(commandPagesChanged(int)), this, SLOT(setCommandPage()));
+    if (this->block < song->blocks()) {
+        disconnect(song->block(this->block), SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
+        disconnect(song->block(this->block), SIGNAL(commandPagesChanged(int)), this, SLOT(setCommandPage()));
+    }
 
     this->block = block;
 

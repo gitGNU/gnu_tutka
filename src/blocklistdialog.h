@@ -24,6 +24,7 @@
 #define BLOCKLISTDIALOG_H
 
 #include <QDialog>
+#include <QItemSelection>
 
 namespace Ui {
     class BlockListDialog;
@@ -40,6 +41,9 @@ public:
     explicit BlockListDialog(QWidget *parent = NULL);
     ~BlockListDialog();
 
+signals:
+    void blockSelected(int block);
+
 public slots:
     void makeVisible();
     void setSong(Song *song);
@@ -49,11 +53,14 @@ private slots:
     void insertBlock();
     void appendBlock();
     void deleteBlock();
+    void setSelection();
+    void setBlock(const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection());
 
 private:
     Ui::BlockListDialog *ui;
     Song *song;
     BlockListTableModel *blockListTableModel;
+    int block;
 };
 
 #endif // BLOCKLISTDIALOG_H

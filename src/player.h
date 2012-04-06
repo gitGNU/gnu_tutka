@@ -116,10 +116,6 @@ public:
     void resetTime(bool);
 
     // Set player position
-    void setSection(int);
-    void setPlayseq(int);
-    void setPosition(int);
-    void setBlock(int);
     void setLine(int);
     void setTick(int);
 
@@ -154,6 +150,12 @@ public slots:
     // A method to notify the player about an incoming sync signal
     void externalSync(unsigned int ticks = 1);
 
+    // Set player position
+    void setSection(int);
+    void setPlayseq(int);
+    void setPosition(int);
+    void setBlock(int);
+
 private slots:
     // Initializes the player
     void init();
@@ -162,7 +164,7 @@ private slots:
     void trackStatusCreate();
 
     // Refreshes playseq from section and block from position
-    void refreshPlayseqAndBlock();
+    void updateLocation();
 
     // Notifies the player that MIDI interfaces have changed
     void remapMidiOutputs();
@@ -176,6 +178,7 @@ signals:
     void lineChanged(int line);
     void modeChanged(Player::Mode mode);
     void timeChanged(unsigned int time);
+    void locationUpdated();
 
 protected:
     virtual void run();
@@ -208,7 +211,7 @@ private:
     Scheduling sched;
     ExternalSync syncMode;
     // Status of tracks; notes playing
-    QList<QSharedPointer<TrackStatus> > trackStatus;
+    QList<QSharedPointer<TrackStatus> > trackStatuses;
     // MIDI controller values; one for each controller on each channel
     QList<QVector<unsigned char> > midiControllerValues;
     // For measuring how long the song has been playing

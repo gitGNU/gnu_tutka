@@ -30,7 +30,8 @@ BlockListDialog::BlockListDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BlockListDialog),
     song(NULL),
-    blockListTableModel(new BlockListTableModel(this))
+    blockListTableModel(new BlockListTableModel(this)),
+    block(-1)
 {
     ui->setupUi(this);
 
@@ -46,6 +47,8 @@ BlockListDialog::BlockListDialog(QWidget *parent) :
     connect(ui->pushButtonInsertNew, SIGNAL(clicked()), this, SLOT(insertBlock()));
     connect(ui->pushButtonAppendNew, SIGNAL(clicked()), this, SLOT(appendBlock()));
     connect(ui->pushButtonDelete, SIGNAL(clicked()), this, SLOT(deleteBlock()));
+    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(setBlock(QItemSelection, QItemSelection)));
+    connect(blockListTableModel, SIGNAL(modelReset()), this, SLOT(setSelection()));
 }
 
 BlockListDialog::~BlockListDialog()
@@ -69,6 +72,7 @@ void BlockListDialog::setSong(Song *song)
 void BlockListDialog::setBlock(unsigned int block)
 {
     ui->tableView->selectRow(block);
+    this->block = block;
 }
 
 void BlockListDialog::insertBlock()
@@ -92,5 +96,26 @@ void BlockListDialog::deleteBlock()
     QModelIndexList indexes = ui->tableView->selectionModel()->selectedIndexes();
     if (!indexes.isEmpty()) {
         song->deleteBlock(indexes.first().row());
+    }
+}
+
+void BlockListDialog::setSelection()
+{
+    if (block >= 0) {
+        ui->tableView->selectRow(block);
+    }
+}
+
+void BlockListDialog::setBlock(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(deselected)
+
+    QModelIndexList indexes = selected.indexes();
+    if (!indexes.isEmpty()) {
+        int block = indexes.first().row();
+        if (block != this->block) {
+            this->block = block;
+            emit blockSelected(this->block);
+        }
     }
 }
