@@ -14,9 +14,6 @@
    <string>Playing Sequence 1/1</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>6</number>
-   </property>
    <property name="margin">
     <number>6</number>
    </property>
@@ -88,6 +85,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>pushButtonInsert</tabstop>
+  <tabstop>pushButtonAppend</tabstop>
+  <tabstop>pushButtonDelete</tabstop>
+  <tabstop>tableView</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

@@ -109,6 +109,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(sectionChanged(unsigned int)), this, SLOT(setSection(unsigned int)));
     connect(player, SIGNAL(sectionChanged(unsigned int)), sectionListDialog, SLOT(setSection(unsigned int)));
     connect(player, SIGNAL(playseqChanged(unsigned int)), this, SLOT(setPlayseq(unsigned int)));
+    connect(player, SIGNAL(playseqChanged(unsigned int)), playingSequenceListDialog, SLOT(setPlayingSequence(unsigned int)));
     connect(player, SIGNAL(playseqChanged(unsigned int)), playingSequenceDialog, SLOT(setPlayseq(unsigned int)));
     connect(player, SIGNAL(positionChanged(unsigned int)), this, SLOT(setPosition(unsigned int)));
     connect(player, SIGNAL(positionChanged(unsigned int)), playingSequenceDialog, SLOT(setPosition(unsigned int)));
@@ -196,6 +197,8 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->labelPlayingSequence, SIGNAL(clicked()), playingSequenceListDialog, SLOT(makeVisible()));
     connect(ui->labelBlock, SIGNAL(clicked()), blockListDialog, SLOT(makeVisible()));
     connect(blockListDialog, SIGNAL(blockSelected(int)), player, SLOT(setBlock(int)));
+    connect(playingSequenceDialog, SIGNAL(positionSelected(int)), player, SLOT(setPosition(int)));
+    connect(playingSequenceListDialog, SIGNAL(playingSequenceSelected(int)), player, SLOT(setPlayseq(int)));
 
     keyToNote.insert(Qt::Key_Z, 1);
     keyToNote.insert(Qt::Key_S, 2);
@@ -818,7 +821,9 @@ void MainWindow::setSection(unsigned int section)
 
 void MainWindow::setPlayseq(unsigned int playseq)
 {
-    disconnect(song->playseq(this->playseq), SIGNAL(nameChanged(QString)), this, SLOT(setPlayseq()));
+    if (this->playseq < song->playseqs()) {
+        disconnect(song->playseq(this->playseq), SIGNAL(nameChanged(QString)), this, SLOT(setPlayseq()));
+    }
 
     this->playseq = playseq;
 

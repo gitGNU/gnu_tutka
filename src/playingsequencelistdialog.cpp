@@ -29,7 +29,8 @@ PlayingSequenceListDialog::PlayingSequenceListDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PlayingSequenceListDialog),
     song(NULL),
-    playingSequenceListTableModel(new PlayingSequenceListTableModel(this))
+    playingSequenceListTableModel(new PlayingSequenceListTableModel(this)),
+    playingSequence(-1)
 {
     ui->setupUi(this);
 
@@ -38,6 +39,8 @@ PlayingSequenceListDialog::PlayingSequenceListDialog(QWidget *parent) :
     connect(ui->pushButtonInsertNew, SIGNAL(clicked()), this, SLOT(insertPlayingSequence()));
     connect(ui->pushButtonAppendNew, SIGNAL(clicked()), this, SLOT(appendPlayingSequence()));
     connect(ui->pushButtonDelete, SIGNAL(clicked()), this, SLOT(deletePlayingSequence()));
+    connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), this, SLOT(setPlayingSequence(QItemSelection, QItemSelection)));
+    connect(playingSequenceListTableModel, SIGNAL(modelReset()), this, SLOT(setSelection()));
 }
 
 PlayingSequenceListDialog::~PlayingSequenceListDialog()
@@ -54,13 +57,21 @@ void PlayingSequenceListDialog::makeVisible()
 
 void PlayingSequenceListDialog::setSong(Song *song)
 {
+    if (this->song != NULL) {
+        disconnect(this->song, SIGNAL(playseqsChanged(int)), this, SLOT(setDeleteButtonVisibility()));
+    }
+
     this->song = song;
     playingSequenceListTableModel->setSong(song);
+
+    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(setDeleteButtonVisibility()));
+    setDeleteButtonVisibility();
 }
 
 void PlayingSequenceListDialog::setPlayingSequence(unsigned int playingSequence)
 {
     ui->tableView->selectRow(playingSequence);
+    this->playingSequence = playingSequence;
 }
 
 void PlayingSequenceListDialog::insertPlayingSequence()
@@ -85,4 +96,30 @@ void PlayingSequenceListDialog::deletePlayingSequence()
     if (!indexes.isEmpty()) {
         song->deletePlayseq(indexes.first().row());
     }
+}
+
+void PlayingSequenceListDialog::setSelection()
+{
+    if (playingSequence >= 0) {
+        ui->tableView->selectRow(playingSequence);
+    }
+}
+
+void PlayingSequenceListDialog::setPlayingSequence(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(deselected)
+
+    QModelIndexList indexes = selected.indexes();
+    if (!indexes.isEmpty()) {
+        int playingSequence = indexes.first().row();
+        if (playingSequence != this->playingSequence) {
+            this->playingSequence = playingSequence;
+            emit playingSequenceSelected(this->playingSequence);
+        }
+    }
+}
+
+void PlayingSequenceListDialog::setDeleteButtonVisibility()
+{
+    ui->pushButtonDelete->setEnabled(song != NULL && song->playseqs() > 1);
 }

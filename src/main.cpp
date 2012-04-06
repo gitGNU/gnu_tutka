@@ -25,11 +25,8 @@
  *
  * Dialog selection gets removed when inserting/removing
  * Position label does not change when modifying current playing sequence length
- * Playing sequence list has no selection by default
- * Playing sequence list allows pressing Delete on the last sequence
  * Changing playing sequence name doesn't show up in section list dialog
  * Section list allows pressing Delete on the last position
- * Cursor keys don't work as expected when playing
  * Track->Delete is not disabled if there's 1 track
  * Preferences->Scheduling mode does not reflect reality if RTC is not available
  */

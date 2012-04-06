@@ -285,7 +285,7 @@ void Song::deletePlayseq(unsigned int pos)
             pos = playseqs_.count() - 1;
         }
 
-        playseqs_.removeAt(pos);
+        Playseq *playseq = playseqs_.takeAt(pos);
 
         // Update section lists
         for (int i = 0; i < sections_.count(); i++) {
@@ -295,9 +295,11 @@ void Song::deletePlayseq(unsigned int pos)
         }
 
         mutex.unlock();
-    }
 
-    emit playseqsChanged(playseqs_.count());
+        emit playseqsChanged(playseqs_.count());
+
+        delete playseq;
+    }
 }
 
 void Song::insertSection(unsigned int pos)

@@ -24,6 +24,7 @@
 #define PLAYINGSEQUENCELISTDIALOG_H
 
 #include <QDialog>
+#include <QItemSelection>
 
 namespace Ui {
     class PlayingSequenceListDialog;
@@ -40,10 +41,16 @@ public:
     explicit PlayingSequenceListDialog(QWidget *parent = 0);
     ~PlayingSequenceListDialog();
 
+signals:
+    void playingSequenceSelected(int playingSequence);
+
 public slots:
     void makeVisible();
     void setSong(Song *song);
     void setPlayingSequence(unsigned int playingSequence);
+    void setSelection();
+    void setPlayingSequence(const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection());
+    void setDeleteButtonVisibility();
 
 private slots:
     void insertPlayingSequence();
@@ -54,6 +61,7 @@ private:
     Ui::PlayingSequenceListDialog *ui;
     Song *song;
     PlayingSequenceListTableModel *playingSequenceListTableModel;
+    int playingSequence;
 };
 
 #endif // PLAYINGSEQUENCELISTDIALOG_H
