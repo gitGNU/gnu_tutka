@@ -22,8 +22,6 @@
 
 /*
  * TODO
- *
- * Preferences->Scheduling mode does not reflect reality if RTC is not available
  */
 
 #include <QApplication>
@@ -54,7 +52,6 @@ int main(int argc, char **argv)
     MIDI *midi = new MIDI;
 #endif
     Player *player = new Player(midi, argc > 1 ? argv[1] : QString());
-    player->setScheduler(Player::SchedulingRTC);
     MainWindow *mainWindow = new MainWindow(player);
     mainWindow->show();
     mainWindow->raise();

@@ -25,6 +25,7 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <QHash>
 
 namespace Ui {
     class PreferencesDialog;
@@ -33,6 +34,7 @@ namespace Ui {
 class Player;
 class OutputMidiInterfacesTableModel;
 class InputMidiInterfacesTableModel;
+class Scheduler;
 
 class PreferencesDialog : public QDialog
 {
@@ -46,7 +48,8 @@ public slots:
     void makeVisible();
 
 private slots:
-    void setSchedulingMode(int schedulingMode);
+    void setSchedulingMode(const QString &name);
+    void setScheduler(int index);
     void enableInterfaces();
     void saveSettings();
 
@@ -56,6 +59,7 @@ private:
     QSettings settings;
     OutputMidiInterfacesTableModel *outputMidiInterfacesTableModel;
     InputMidiInterfacesTableModel *inputMidiInterfacesTableModel;
+    QHash<int, Scheduler *> schedulers;
 };
 
 #endif // PREFERENCESDIALOG_H

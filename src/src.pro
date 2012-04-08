@@ -41,7 +41,10 @@ SOURCES += main.cpp \
     conversion.cpp \
     smf.cpp \
     buffermidi.cpp \
-    buffermidiinterface.cpp
+    buffermidiinterface.cpp \
+    scheduler.cpp \
+    schedulerrtc.cpp \
+    schedulernanosleep.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -82,7 +85,10 @@ HEADERS += block.h \
     conversion.h \
     smf.h \
     buffermidi.h \
-    buffermidiinterface.h
+    buffermidiinterface.h \
+    scheduler.h \
+    schedulerrtc.h \
+    schedulernanosleep.h
 
 FORMS += \
     mainwindow.ui \

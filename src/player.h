@@ -32,6 +32,7 @@
 class Song;
 class Block;
 class MIDI;
+class Scheduler;
 
 class Player : public QThread {
     Q_OBJECT
@@ -75,12 +76,6 @@ public:
         ModeIdle,
         ModePlaySong,
         ModePlayBlock
-    };
-
-    enum Scheduling {
-        SchedulingNone,
-        SchedulingRTC,
-        SchedulingNanoSleep
     };
 
     enum ExternalSync {
@@ -131,7 +126,7 @@ public:
 
     // Set the scheduler of a player
     void setExternalSync(ExternalSync externalSync);
-    void setScheduler(Scheduling);
+    void setScheduler(Scheduler *scheduler);
 
     MIDI *midi() const;
 
@@ -208,7 +203,7 @@ private:
     // Player mode
     Mode mode_;
     // Player scheduling mode
-    Scheduling sched;
+    Scheduler *scheduler;
     ExternalSync syncMode;
     // Status of tracks; notes playing
     QList<QSharedPointer<TrackStatus> > trackStatuses;
@@ -228,12 +223,6 @@ private:
     bool killThread;
     // MIDI subsystem
     MIDI *midi_;
-    // RTC device file descriptor
-    int rtc;
-    // Obtained RTC frequency
-    int rtcFrequency;
-    // RTC periodic interrupts enabled
-    bool rtcPIE;
     // Indicates whether some tracks are soloed or not
     unsigned int solo;
     // The command to be executed after the current line

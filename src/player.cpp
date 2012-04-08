@@ -22,14 +22,7 @@
 
 #include <cstddef>
 #include <cstdlib>
-#include <fcntl.h>
-#include <time.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
 #include <sys/time.h>
-#ifdef __linux
-#include <linux/rtc.h>
-#endif
 #include <QThread>
 #include <QTimer>
 #include <QFile>
@@ -40,10 +33,8 @@
 #include "midi.h"
 #include "mmd.h"
 #include "conversion.h"
+#include "scheduler.h"
 #include "player.h"
-
-#define MAXIMUM_RTC_FREQ 2048
-#define MINIMUM_RTC_FREQ 512
 
 Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     QThread(parent),
@@ -55,15 +46,12 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     tick(0),
     song(NULL),
     mode_(ModeIdle),
-    sched(SchedulingNone),
+    scheduler(NULL),
     syncMode(Off),
     ticksSoFar(0),
     externalSyncTicks(0),
     killThread(false),
     midi_(midi),
-    rtc(-1),
-    rtcFrequency(0),
-    rtcPIE(false),
     solo(0),
     postCommand(0),
     postValue(0)
@@ -87,15 +75,12 @@ Player::Player(MIDI *midi, Song *song, QObject *parent) :
     tick(0),
     song(song),
     mode_(ModeIdle),
-    sched(SchedulingNone),
+    scheduler(NULL),
     syncMode(Off),
     ticksSoFar(0),
     externalSyncTicks(0),
     killThread(false),
     midi_(midi),
-    rtc(-1),
-    rtcFrequency(0),
-    rtcPIE(false),
     solo(0),
     postCommand(0),
     postValue(0)
@@ -109,11 +94,6 @@ Player::~Player()
 {
     // Stop the player
     stop();
-
-    // Close RTC
-    if (rtc != -1) {
-        close(rtc);
-    }
 }
 
 void Player::updateLocation()
@@ -458,15 +438,15 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
 
 void Player::run()
 {
-    struct timespec req, rem;
-    struct timeval next, now;
     ExternalSync prevsyncMode = syncMode;
     unsigned int oldTime = (unsigned int)-1;
 
     tick = 0;
     ticksSoFar = 0;
-    next.tv_sec = playingStarted.tv_sec;
-    next.tv_usec = playingStarted.tv_usec;
+
+    if (scheduler != NULL) {
+        scheduler->start(playingStarted);
+    }
 
     while (true) {
         bool looped = false;
@@ -484,67 +464,15 @@ void Player::run()
             if (externalSyncTicks > 0) {
                 externalSyncTicks--;
             }
-        } else {
-            if (sched == SchedulingRTC || sched == SchedulingNanoSleep) {
-                // If the scheduler has changed from external sync reset the timing
-                if (prevsyncMode != Off) {
-                    gettimeofday(&next, NULL);
-                }
-                prevsyncMode = syncMode;
+        } else if (scheduler != NULL) {
+            song->unlock();
+            mutex.unlock();
 
-                // Calculate time of next tick (tick every 1000000/((BPM/60)*24) usecs)
-                next.tv_sec += (25 / song->tempo()) / 10;
-                next.tv_usec += ((2500000 / song->tempo()) % 1000000);
-                while (next.tv_usec > 1000000) {
-                    next.tv_sec++;
-                    next.tv_usec -= 1000000;
-                }
+            scheduler->waitForTick(song, syncMode != prevsyncMode);
+            prevsyncMode = syncMode;
 
-                gettimeofday(&now, NULL);
-
-                // Select scheduling type
-                if (sched == SchedulingNanoSleep) {
-                    // Nanosleep: calculate difference between now and the next tick
-                    req.tv_sec = next.tv_sec - now.tv_sec;
-                    req.tv_nsec = (next.tv_usec - now.tv_usec) * 1000;
-                    while (req.tv_nsec < 0) {
-                        req.tv_sec--;
-                        req.tv_nsec += 1000000000;
-                    }
-
-                    // Sleep until the next tick if necessary
-                    song->unlock();
-                    mutex.unlock();
-                    if (req.tv_sec >= 0) {
-                        while (nanosleep(&req, &rem) == -1) { };
-                    }
-                    mutex.lock();
-                    song->lock();
-                } else {
-                    // Make sure periodic interrupts are on
-                    if (!rtcPIE) {
-    #ifdef __linux
-                        ioctl(rtc, RTC_PIE_ON, 0);
-    #endif
-                        rtcPIE = true;
-                    }
-
-                    // Rtc: read RTC interrupts until it's time to play again
-                    song->unlock();
-                    mutex.unlock();
-                    while ((next.tv_sec - now.tv_sec) > 0 || ((next.tv_sec - now.tv_sec) == 0 && (next.tv_usec - now.tv_usec) > 1000000 / rtcFrequency)) {
-                        unsigned long l;
-                        ssize_t n = read(rtc, &l, sizeof(unsigned long));
-                        Q_UNUSED(n)
-                        gettimeofday(&now, NULL);
-                    }
-                    while ((next.tv_sec - now.tv_sec) > 0 || ((next.tv_sec - now.tv_sec) == 0 && (next.tv_usec - now.tv_usec) > 0)) {
-                        gettimeofday(&now, NULL);
-                    }
-                    mutex.lock();
-                    song->lock();
-                }
-            }
+            mutex.lock();
+            song->lock();
         }
 
         // Handle this tick
@@ -806,7 +734,7 @@ void Player::run()
         }
 
         // Check whether this thread should be killed
-        if (killThread || (sched == SchedulingNone && looped)) {
+        if (killThread || (scheduler == NULL && looped)) {
             break;
         }
         song->unlock();
@@ -816,7 +744,8 @@ void Player::run()
             emit lineChanged(line_);
         }
 
-        if (sched != SchedulingNone) {
+        if (scheduler != NULL) {
+            struct timeval now;
             gettimeofday(&now, NULL);
 
             unsigned int time = (unsigned int)(playedSoFar.tv_sec * 1000 + playedSoFar.tv_usec / 1000 + (now.tv_sec * 1000 + now.tv_usec / 1000) - (playingStarted.tv_sec * 1000 + playingStarted.tv_usec / 1000)) / 1000;
@@ -828,34 +757,29 @@ void Player::run()
         }
     }
 
-    if (sched != SchedulingNone) {
-        // Calculate how long the song has been playing
-        gettimeofday(&now, NULL);
-        now.tv_sec -= playingStarted.tv_sec;
-        if (now.tv_usec >= playingStarted.tv_usec) {
-            now.tv_usec -= playingStarted.tv_usec;
-        } else {
-            now.tv_usec += 1000000 - playingStarted.tv_usec;
-            now.tv_sec--;
-        }
-        playedSoFar.tv_sec += now.tv_sec;
-        playedSoFar.tv_usec += now.tv_usec;
-        if (playedSoFar.tv_usec > 1000000) {
-            playedSoFar.tv_sec++;
-            playedSoFar.tv_usec -= 1000000;
-        }
-
-        // Turn off periodic interrupts
-        if (sched == SchedulingRTC && rtcPIE) {
-#ifdef __linux
-            ioctl(rtc, RTC_PIE_OFF, 0);
-#endif
-            rtcPIE = false;
-        }
-
-        // Stop all playing notes
-        stopNotes();
+    // Calculate how long the song has been playing
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    now.tv_sec -= playingStarted.tv_sec;
+    if (now.tv_usec >= playingStarted.tv_usec) {
+        now.tv_usec -= playingStarted.tv_usec;
+    } else {
+        now.tv_usec += 1000000 - playingStarted.tv_usec;
+        now.tv_sec--;
     }
+    playedSoFar.tv_sec += now.tv_sec;
+    playedSoFar.tv_usec += now.tv_usec;
+    if (playedSoFar.tv_usec > 1000000) {
+        playedSoFar.tv_sec++;
+        playedSoFar.tv_usec -= 1000000;
+    }
+
+    if (scheduler != NULL) {
+        scheduler->stop();
+    }
+
+    // Stop all playing notes
+    stopNotes();
 
     // The mutex is locked if the thread was killed and loop broken
     song->unlock();
@@ -864,7 +788,7 @@ void Player::run()
 
 void Player::playWithoutScheduling()
 {
-    sched = SchedulingNone;
+    scheduler = NULL;
     mode_ = ModePlaySong;
     for (int instrument = 0; instrument < song->instruments(); instrument++) {
         song->instrument(instrument)->setMidiInterface(0);
@@ -1234,46 +1158,9 @@ void Player::setExternalSync(ExternalSync externalSync)
     }
 }
 
-void Player::setScheduler(Scheduling scheduler)
+void Player::setScheduler(Scheduler *scheduler)
 {
-    mutex.lock();
-
-    sched = scheduler;
-    if (sched == SchedulingRTC) {
-        rtc = open("/dev/rtc", O_RDONLY);
-        if (rtc == -1) {
-            sched = SchedulingNanoSleep;
-        } else {
-            bool success = false;
-            rtcFrequency = MAXIMUM_RTC_FREQ;
-            rtcPIE = 0;
-
-#ifdef __linux
-            // RTC scheduling requested: try every 2^N value down from MAXIMUM_RTC_FREQ to MINIMUM_RTC_FREQ
-            while (rtcFrequency >= MINIMUM_RTC_FREQ && !success) {
-                if (ioctl(rtc, RTC_UIE_OFF, 0) == -1 || ioctl(rtc, RTC_IRQP_SET, rtcFrequency) == -1) {
-                    rtcFrequency /= 2;
-                } else {
-                    success = true;
-                }
-            }
-#endif
-
-            // If all frequencies failed fall back to nanosleep()
-            if (!success) {
-                close(rtc);
-                rtc = -1;
-                sched = SchedulingNanoSleep;
-            }
-        }
-    } else {
-        if (rtc != -1) {
-            close(rtc);
-        }
-        rtc = -1;
-    }
-
-    mutex.unlock();
+    this->scheduler = scheduler;
 }
 
 unsigned int Player::section() const

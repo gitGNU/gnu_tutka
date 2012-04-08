@@ -14,9 +14,6 @@
    <string>Preferences</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
-   <property name="spacing">
-    <number>6</number>
-   </property>
    <property name="margin">
     <number>6</number>
    </property>
@@ -52,18 +49,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QComboBox" name="comboBoxSchedulingMode">
-       <item>
-        <property name="text">
-         <string>RTC</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Nanosleep</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="comboBoxSchedulingMode"/>
      </item>
      <item row="0" column="1">
       <widget class="QTableView" name="tableViewOutputMidiInterfaces">

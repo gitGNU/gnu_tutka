@@ -21,6 +21,7 @@
  */
 
 #include "player.h"
+#include "scheduler.h"
 #include "midi.h"
 #include "midiinterface.h"
 #include "outputmidiinterfacestablemodel.h"
@@ -43,13 +44,18 @@ PreferencesDialog::PreferencesDialog(Player *player, QWidget *parent) :
     ui->tableViewInputMidiInterfaces->setModel(inputMidiInterfacesTableModel);
     ui->tableViewInputMidiInterfaces->setColumnWidth(0, 300);
 
-    connect(ui->comboBoxSchedulingMode, SIGNAL(currentIndexChanged(int)), this, SLOT(setSchedulingMode(int)));
-    ui->comboBoxSchedulingMode->setCurrentIndex(settings.value("schedulingMode").toInt());
-
     enableInterfaces();
+
+    int index = 0;
+    foreach (Scheduler *scheduler, Scheduler::schedulers()) {
+        ui->comboBoxSchedulingMode->insertItem(index, tr(scheduler->name()));
+        schedulers.insert(index++, scheduler);
+    }
+    setSchedulingMode(settings.value("schedulingMode").toString());
 
     connect(player->midi(), SIGNAL(outputsChanged()), this, SLOT(enableInterfaces()));
     connect(player->midi(), SIGNAL(inputsChanged()), this, SLOT(enableInterfaces()));
+    connect(ui->comboBoxSchedulingMode, SIGNAL(currentIndexChanged(int)), this, SLOT(setScheduler(int)));
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -64,11 +70,27 @@ void PreferencesDialog::makeVisible()
     activateWindow();
 }
 
-void PreferencesDialog::setSchedulingMode(int schedulingMode)
+void PreferencesDialog::setSchedulingMode(const QString &name)
 {
-    player->setScheduler(schedulingMode == 0 ? Player::SchedulingRTC : Player::SchedulingNanoSleep);
+    int currentIndex = 0;
 
-    settings.setValue("schedulingMode", ui->comboBoxSchedulingMode->currentIndex());
+    for (int index = 0; index < schedulers.count(); index++) {
+        Scheduler *scheduler = schedulers.value(index);
+        if (scheduler->name() == name) {
+            currentIndex = index;
+            break;
+        }
+    }
+
+    ui->comboBoxSchedulingMode->setCurrentIndex(currentIndex);
+    player->setScheduler(schedulers.value(currentIndex));
+}
+
+void PreferencesDialog::setScheduler(int index)
+{
+    Scheduler *scheduler = schedulers.value(index);
+    player->setScheduler(scheduler);
+    settings.setValue("schedulingMode", scheduler->name());
 }
 
 void PreferencesDialog::enableInterfaces()
