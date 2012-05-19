@@ -45,6 +45,7 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     line_(0),
     tick(0),
     song(NULL),
+    oldSong(NULL),
     mode_(ModeIdle),
     scheduler(NULL),
     syncMode(Off),
@@ -907,7 +908,7 @@ void Player::trackStatusCreate()
 
 void Player::setSong(const QString &path)
 {
-    Song *oldSong = song;
+    oldSong = song;
     song = NULL;
 
     QFile file(path);
@@ -925,8 +926,6 @@ void Player::setSong(const QString &path)
     if (song == NULL) {
         song = new Song(path);
     }
-
-    delete oldSong;
 
     QTimer::singleShot(0, this, SLOT(init()));
 }
@@ -964,6 +963,9 @@ void Player::init()
     position_ = (unsigned int)-1;
     line_ = 0;
     updateLocation();
+
+    delete oldSong;
+    oldSong = NULL;
 }
 
 void Player::setSection(int section)

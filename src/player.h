@@ -200,6 +200,8 @@ private:
     unsigned int section_, playseq_, position_, block_, line_, tick;
     // The song currently being played
     Song *song;
+    // The previous song being destroyed
+    Song *oldSong;
     // Player mode
     Mode mode_;
     // Player scheduling mode
