@@ -22,6 +22,8 @@
 
 /*
  * TODO
+ *
+ * Window positions are not stored
  */
 
 #include <QApplication>
