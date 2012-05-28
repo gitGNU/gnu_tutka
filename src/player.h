@@ -114,11 +114,6 @@ public:
     void setLine(int);
     void setTick(int);
 
-    // Sets whether some tracks are considered soloed or not
-    void setSolo(unsigned int);
-    // Checks whether some tracks are soloed or not
-    void checkSolo();
-
     // Lock the player
     void lock();
     // Unlock the player
@@ -163,6 +158,9 @@ private slots:
 
     // Notifies the player that MIDI interfaces have changed
     void remapMidiOutputs();
+
+    // Checks whether some tracks are soloed or not
+    void checkSolo();
 
 signals:
     void songChanged(Song *song);

@@ -38,7 +38,6 @@ class Tracker : public QWidget
 public:
     explicit Tracker(QWidget *parent = 0);
     void setCommandPage(int commandPage);
-    void redraw();
     bool isInSelectionMode();
     void markSelection(bool enable);
     void stepCursorTrack(int direction);
@@ -66,6 +65,7 @@ private slots:
     void redrawArea(int startTrack, int startLine, int endTrack, int endLine);
     void setTracks(int tracks);
     void checkBounds();
+    void queueDraw();
 
 signals:
     void lineChanged(int line, int length, int visibleLines);
@@ -96,8 +96,6 @@ private:
         ColorLast
     };
 
-    void redrawRow(int row);
-    void redrawCurrentRow();
     void setVisibleArea();
     void noteToString(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buf);
     void clearNotesLine(int y, int line);
@@ -114,7 +112,6 @@ private:
     bool setFont(const QString &fontname);
     // If selecting, mouse is used to select in pattern
     void mouseToCursorPos(int x, int y, int *cursorTrack, int *cursorItem, int *line);
-    void queueDraw();
 
     int visibleLines;
     int startY;

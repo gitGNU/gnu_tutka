@@ -184,12 +184,18 @@ signals:
     // Emitted when a name of a playing sequence has changed
     void playseqNameChanged();
 
+    // Emitted when a track is muted or soloed
+    void trackMutedOrSoloed();
+
 private:
     // Initializes an empty song
     void init();
 
     // Parses a song element in an XML file
     bool parse(QDomElement element);
+
+    // Creates a new track and associates it with this song
+    void addTrack(const QString &name = QString());
 
     // Name of the song
     QString name_;

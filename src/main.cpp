@@ -24,6 +24,7 @@
  * TODO
  *
  * Window positions are not stored
+ * When pressing play song position is not reset to 1
  */
 
 #include <QApplication>

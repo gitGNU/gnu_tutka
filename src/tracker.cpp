@@ -115,25 +115,15 @@ void Tracker::setLine(int line)
     }
 }
 
-void Tracker::redraw()
-{
-    queueDraw();
-}
-
-void Tracker::redrawRow(int)
-{
-    // This is yet to be optimized :-)
-    redraw();
-}
-
-void Tracker::redrawCurrentRow()
-{
-    redrawRow(line_);
-}
-
 void Tracker::setSong(Song *song)
 {
+    if (song_ != NULL) {
+        disconnect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(queueDraw()));
+    }
+
     song_ = song;
+
+    connect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(queueDraw()));
 }
 
 void Tracker::setBlock(unsigned int number)
@@ -272,7 +262,7 @@ void Tracker::markSelection(bool enable)
         selectionStartTrack = selectionEndTrack = cursorTrack_;
         selectionStartLine = selectionEndLine = line_;
         inSelectionMode = true;
-        redraw();
+        queueDraw();
     }
 
     emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
@@ -284,7 +274,7 @@ void Tracker::clearMarkSelection()
         selectionStartTrack = selectionEndTrack = -1;
         selectionStartLine = selectionEndLine = -1;
         inSelectionMode = false;
-        redraw();
+        queueDraw();
 
         emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     }
@@ -741,7 +731,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
             selectionEndLine = selectionStartLine;
             selectionEndTrack = selectionStartTrack;
             mouseSelecting = true;
-            redraw();
+            queueDraw();
             emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
         } else if (mouseButton == Qt::RightButton) {
             // Tracker cursor posititioning and clear block mark if any
@@ -749,7 +739,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
                 selectionStartTrack = selectionEndTrack = -1;
                 selectionStartLine = selectionEndLine = -1;
                 inSelectionMode = false;
-                redraw();
+                queueDraw();
                 emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
             }
             mouseToCursorPos(x, y, &cursorTrack, &cursorItem, &line);
@@ -794,7 +784,7 @@ void Tracker::mouseMoveEvent(QMouseEvent *event)
         } else if ((selectionEndLine < line_ - (visibleLines / 2)) || (y <= 0 && line_ > selectionEndLine)) {
             setLine(line_ - 1);
         }
-        redraw();
+        queueDraw();
         emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     }
 
@@ -878,7 +868,7 @@ void Tracker::redrawArea(int startTrack, int startLine, int endTrack, int endLin
     Q_UNUSED(endTrack)
     Q_UNUSED(endLine)
 
-    redraw();
+    queueDraw();
 }
 
 void Tracker::checkBounds()
@@ -904,6 +894,6 @@ void Tracker::setSelection(int startTrack, int startLine, int endTrack, int endL
     selectionEndTrack = endTrack;
     selectionEndLine = endLine;
     inSelectionMode = false;
-    redraw();
+    queueDraw();
     emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
 }

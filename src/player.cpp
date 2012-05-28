@@ -935,6 +935,7 @@ void Player::init()
     connect(song, SIGNAL(blocksChanged(int)), this, SLOT(updateLocation()));
     connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(updateLocation()));
     connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(updateLocation()));
+    connect(song, SIGNAL(trackMutedOrSoloed()), this, SLOT(checkSolo()));
 
     remapMidiOutputs();
 
@@ -1088,11 +1089,6 @@ void Player::resetTime(bool resetSofar)
         playedSoFar.tv_sec = 0;
         playedSoFar.tv_usec = 0;
     }
-}
-
-void Player::setSolo(unsigned int solo)
-{
-    this->solo = solo;
 }
 
 void Player::checkSolo()

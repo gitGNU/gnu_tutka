@@ -61,7 +61,7 @@ Song::~Song()
     }
     foreach(Track *track, tracks) {
         delete track;
-   }
+    }
     foreach(Message *message, messages_) {
         delete message;
     }
@@ -406,7 +406,7 @@ void Song::checkMaxTracks()
     if (oldMax < max) {
         for (int track = oldMax; track < max; track++) {
             // Give a descriptive name for the new track
-            tracks.append(new Track(QString("Track %1").arg(track + 1)));
+            addTrack(QString("Track %1").arg(track + 1));
         }
     } else if (oldMax > max) {
         // Tracks removed: free track datas
@@ -616,7 +616,7 @@ bool Song::parse(QDomElement element)
                             }
 
                             while (tracks.count() <= track) {
-                                tracks.append(new Track);
+                                addTrack();
                             }
 
                             // Get volume, mute, solo and name
@@ -659,7 +659,7 @@ bool Song::parse(QDomElement element)
                             }
 
                             while (tracks.count() < track) {
-                                tracks.append(new Track);
+                                addTrack();
                             }
 
                             // Get the volume
@@ -811,4 +811,12 @@ void Song::lock()
 void Song::unlock()
 {
     mutex.unlock();
+}
+
+void Song::addTrack(const QString &name)
+{
+    Track *track = new Track(name);
+    connect(track, SIGNAL(mutedChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
+    connect(track, SIGNAL(soloChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
+    tracks.append(track);
 }

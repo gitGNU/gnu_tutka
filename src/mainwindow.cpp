@@ -366,7 +366,6 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 }
                 if (channel < song->maxTracks()) {
                     song->track(channel)->setSolo(!song->track(channel)->isSolo());
-                    ui->tracker->redraw();
                 }
             } else {
                 // CTRL+0-9: Set space value
