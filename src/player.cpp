@@ -97,7 +97,7 @@ Player::~Player()
     stop();
 }
 
-void Player::updateLocation()
+void Player::updateLocation(bool blocksChanged)
 {
     unsigned int oldSection = section_;
     unsigned int oldPlayseq = playseq_;
@@ -124,11 +124,16 @@ void Player::updateLocation()
     if (position_ != oldPosition) {
         emit positionChanged(position_);
     }
-    if (block_ != oldBlock) {
+    if (block_ != oldBlock || blocksChanged) {
         emit blockChanged(block_);
     }
 
     emit locationUpdated();
+}
+
+void Player::updateLocation(int)
+{
+    updateLocation(true);
 }
 
 bool Player::nextSection()
@@ -932,7 +937,7 @@ void Player::setSong(const QString &path)
 
 void Player::init()
 {
-    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(updateLocation()));
+    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(updateLocation(int)));
     connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(updateLocation()));
     connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(updateLocation()));
     connect(song, SIGNAL(trackMutedOrSoloed()), this, SLOT(checkSolo()));
