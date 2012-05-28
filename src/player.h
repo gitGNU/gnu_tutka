@@ -154,10 +154,10 @@ private slots:
     void trackStatusCreate();
 
     // Refreshes playseq from section and block from position
-    void updateLocation(bool blocksChanged = false);
+    void updateLocation(bool alwaysSendLocationSignals = false);
 
-    // Refreshes playseq from section and block from position taking into account that the number of blocks has changed
-    void updateLocation(int blocks);
+    // Refreshes playseq from section and block from position and signals the location regardless of whether the location has changed or not
+    void updateLocationAlways();
 
     // Notifies the player that MIDI interfaces have changed
     void remapMidiOutputs();
@@ -174,7 +174,6 @@ signals:
     void lineChanged(int line);
     void modeChanged(Player::Mode mode);
     void timeChanged(unsigned int time);
-    void locationUpdated();
 
 protected:
     virtual void run();

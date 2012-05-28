@@ -97,7 +97,7 @@ Player::~Player()
     stop();
 }
 
-void Player::updateLocation(bool blocksChanged)
+void Player::updateLocation(bool alwaysSendLocationSignals)
 {
     unsigned int oldSection = section_;
     unsigned int oldPlayseq = playseq_;
@@ -115,23 +115,21 @@ void Player::updateLocation(bool blocksChanged)
 
     block_ = song->playseq(playseq_)->at(position_);
 
-    if (section_ != oldSection) {
+    if (section_ != oldSection || alwaysSendLocationSignals) {
         emit sectionChanged(section_);
     }
-    if (playseq_ != oldPlayseq) {
+    if (playseq_ != oldPlayseq || alwaysSendLocationSignals) {
         emit playseqChanged(playseq_);
     }
-    if (position_ != oldPosition) {
+    if (position_ != oldPosition || alwaysSendLocationSignals) {
         emit positionChanged(position_);
     }
-    if (block_ != oldBlock || blocksChanged) {
+    if (block_ != oldBlock || alwaysSendLocationSignals) {
         emit blockChanged(block_);
     }
-
-    emit locationUpdated();
 }
 
-void Player::updateLocation(int)
+void Player::updateLocationAlways()
 {
     updateLocation(true);
 }
@@ -937,9 +935,9 @@ void Player::setSong(const QString &path)
 
 void Player::init()
 {
-    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(updateLocation(int)));
-    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(updateLocation()));
-    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(updateLocation()));
+    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(updateLocationAlways()));
+    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(updateLocationAlways()));
+    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(updateLocationAlways()));
     connect(song, SIGNAL(trackMutedOrSoloed()), this, SLOT(checkSolo()));
 
     remapMidiOutputs();

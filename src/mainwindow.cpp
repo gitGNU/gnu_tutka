@@ -122,9 +122,6 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(lineChanged(int)), ui->tracker, SLOT(setLine(int)));
     connect(player, SIGNAL(modeChanged(Player::Mode)), this, SLOT(setMode(Player::Mode)));
     connect(player, SIGNAL(timeChanged(unsigned int)), this, SLOT(setTime(unsigned int)));
-    connect(player, SIGNAL(locationUpdated()), this, SLOT(setSection()));
-    connect(player, SIGNAL(locationUpdated()), this, SLOT(setPlayseq()));
-    connect(player, SIGNAL(locationUpdated()), this, SLOT(setBlock()));
     connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), transposeDialog, SLOT(setTrack(int)));
     connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), expandShrinkDialog, SLOT(setTrack(int)));
     connect(ui->tracker, SIGNAL(cursorTrackChanged(int)), changeInstrumentDialog, SLOT(setTrack(int)));
