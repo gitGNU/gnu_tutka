@@ -58,6 +58,8 @@ int Track::volume() const
 void Track::setMute(bool mute)
 {
     this->mute = mute;
+
+    emit mutedChanged(this->mute);
 }
 
 bool Track::isMuted() const
@@ -68,6 +70,8 @@ bool Track::isMuted() const
 void Track::setSolo(bool solo)
 {
     this->solo = solo;
+
+    emit soloChanged(this->solo);
 }
 
 bool Track::isSolo() const

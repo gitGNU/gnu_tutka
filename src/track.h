@@ -43,6 +43,10 @@ public slots:
     void setMute(bool mute);
     void setSolo(bool solo);
 
+signals:
+    void mutedChanged(bool muted);
+    void soloChanged(bool solo);
+
 private:
     // Name of the track
     QString name_;
