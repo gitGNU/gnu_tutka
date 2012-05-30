@@ -52,6 +52,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="buttonPlaySong">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="text">
              <string>Play</string>
             </property>
@@ -59,6 +62,9 @@
           </item>
           <item row="0" column="3">
            <widget class="QPushButton" name="buttonContinueSong">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="text">
              <string>Continue</string>
             </property>
@@ -73,6 +79,9 @@
           </item>
           <item row="1" column="1">
            <widget class="QPushButton" name="buttonPlayBlock">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="text">
              <string>Play</string>
             </property>
@@ -80,6 +89,9 @@
           </item>
           <item row="1" column="3">
            <widget class="QPushButton" name="buttonContinueBlock">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="text">
              <string>Continue</string>
             </property>
@@ -87,6 +99,9 @@
           </item>
           <item row="2" column="1" colspan="3">
            <widget class="QPushButton" name="buttonStop">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="text">
              <string>Stop</string>
             </property>
@@ -124,6 +139,9 @@
              </property>
              <item>
               <widget class="InstrumentSpinBox" name="spinBoxInstrument">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="minimum">
                 <number>0</number>
                </property>
@@ -133,10 +151,17 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEditInstrument"/>
+              <widget class="QLineEdit" name="lineEditInstrument">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="buttonInstrumentProperties">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="text">
                 <string>Properties</string>
                </property>
@@ -169,6 +194,9 @@
              </item>
              <item>
               <widget class="QCheckBox" name="checkBoxEdit">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="text">
                 <string>Edit</string>
                </property>
@@ -176,6 +204,9 @@
              </item>
              <item>
               <widget class="QCheckBox" name="checkBoxChord">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="text">
                 <string>Chord</string>
                </property>
@@ -190,6 +221,9 @@
              </item>
              <item>
               <widget class="QSpinBox" name="spinBoxSpace">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="maximum">
                 <number>32</number>
                </property>
@@ -207,6 +241,9 @@
              </item>
              <item>
               <widget class="QComboBox" name="comboBoxKeyboardOctaves">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="currentIndex">
                 <number>3</number>
                </property>
