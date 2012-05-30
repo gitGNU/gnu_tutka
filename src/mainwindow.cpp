@@ -131,6 +131,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->tracker, SIGNAL(selectionChanged(int, int, int, int)), changeInstrumentDialog, SLOT(setSelection(int, int, int, int)));
     connect(ui->tracker, SIGNAL(trackChanged(int, int, int)), this, SLOT(setTrackerHorizontalScrollBar(int, int, int)));
     connect(ui->tracker, SIGNAL(lineChanged(int, int, int)), this, SLOT(setTrackerVerticalScrollBar(int, int, int)));
+    connect(ui->tracker, SIGNAL(commandPageChanged(int)), this, SLOT(setCommandPage(int)));
     connect(ui->horizontalScrollBarTracker, SIGNAL(valueChanged(int)), ui->tracker, SLOT(setLeftmostTrack(int)));
     connect(ui->verticalScrollBarTracker, SIGNAL(valueChanged(int)), ui->tracker, SLOT(setLine(int)));
     connect(ui->buttonPlaySong, SIGNAL(clicked()), player, SLOT(playSong()));
@@ -327,9 +328,13 @@ bool MainWindow::keyPress(QKeyEvent *event)
             handled = true;
             break;
         case Qt::Key_Tab:
-        case Qt::Key_Backtab:
-            // CTRL-Shift-Tab: Next command page
+            // CTRL-Tab: Next command page
             ui->tracker->setCommandPage(ui->tracker->commandPage() + 1);
+            handled = true;
+            break;
+        case Qt::Key_Backtab:
+            // CTRL-Shift-Tab: Previous command page
+            ui->tracker->setCommandPage(ui->tracker->commandPage() - 1);
             handled = true;
             break;
         case Qt::Key_Delete: {
@@ -865,7 +870,7 @@ void MainWindow::setBlock(unsigned int block)
     setDeleteTrackVisibility();
 }
 
-void MainWindow::setCommandPage(unsigned int commandPage)
+void MainWindow::setCommandPage(int commandPage)
 {
     ui->labelCommandPage->setText(tr("Command Page %1/%2").arg(commandPage + 1).arg(song->block(player->block())->commandPages()));
 }

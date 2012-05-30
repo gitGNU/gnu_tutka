@@ -72,6 +72,7 @@ signals:
     void trackChanged(int track, int tracks, int visibleTracks);
     void cursorTrackChanged(int track);
     void selectionChanged(int startTrack, int startLine, int endTrack, int endLine);
+    void commandPageChanged(int commandPage);
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);

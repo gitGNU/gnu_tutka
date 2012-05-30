@@ -92,8 +92,15 @@ void Tracker::setTracks(int tracks)
 
 void Tracker::setCommandPage(int commandPage)
 {
+    if (commandPage < 0) {
+        commandPage = block_->commandPages() - 1;
+    } else if (commandPage >= block_->commandPages()) {
+        commandPage = 0;
+    }
+
     if (commandPage_ != commandPage) {
         commandPage_ = commandPage;
+        emit commandPageChanged(commandPage_);
 
         queueDraw();
     }
@@ -157,6 +164,11 @@ void Tracker::setBlock(unsigned int number)
             }
 
             emit lineChanged(line_, block->length(), visibleLines);
+
+            if (commandPage_ >= block->commandPages()) {
+                commandPage_ = block->commandPages() - 1;
+                emit commandPageChanged(commandPage_);
+            }
         }
         queueDraw();
     }

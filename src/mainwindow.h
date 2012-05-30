@@ -68,7 +68,7 @@ private slots:
     void setPlayseq(unsigned int playseq);
     void setPosition(unsigned int position);
     void setBlock(unsigned int block);
-    void setCommandPage(unsigned int commandPage);
+    void setCommandPage(int commandPage);
     void setMode(Player::Mode mode);
     void setTime(unsigned int time);
     void setInstrument(int instrument);
