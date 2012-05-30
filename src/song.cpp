@@ -488,6 +488,7 @@ bool Song::parse(QDomElement element)
                     if (temp.isElement()) {
                         int number = -1;
                         Block *block = Block::parse(temp);
+                        connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
 
                         if (block != NULL) {
                             prop = temp.attributeNode("number");
@@ -496,7 +497,9 @@ bool Song::parse(QDomElement element)
                             }
 
                             while (blocks_.count() < number) {
-                                blocks_.append(new Block);
+                                Block *fillBlock = new Block;
+                                connect(fillBlock, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+                                blocks_.append(fillBlock);
                             }
                             if (blocks_.count() == number) {
                                 blocks_.append(block);
