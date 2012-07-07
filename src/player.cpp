@@ -273,6 +273,10 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         midiChannel = trackStatus->midiChannel;
     }
 
+    if (midiInterface < 0 || midiChannel < 0) {
+        return;
+    }
+
     QSharedPointer<MIDIInterface> output = midi_->output(midiInterface);
 
     // Check for previous command if any
@@ -903,6 +907,7 @@ void Player::trackStatusCreate()
         status->previousCommand = 0;
         status->note = -1;
         status->midiChannel = -1;
+        status->midiInterface = -1;
         status->volume = -1;
         status->hold = -1;
         trackStatuses.append(QSharedPointer<TrackStatus>(status));
