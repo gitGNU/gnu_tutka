@@ -45,6 +45,7 @@ class PlayingSequenceDialog;
 class PlayingSequenceListDialog;
 class BlockListDialog;
 class MessageListDialog;
+class HelpDialog;
 class QActionGroup;
 class Song;
 class Block;
@@ -125,6 +126,7 @@ private:
     PlayingSequenceListDialog *playingSequenceListDialog;
     BlockListDialog *blockListDialog;
     MessageListDialog *messageListDialog;
+    HelpDialog *helpDialog;
     QActionGroup *externalSyncActionGroup;
     Song *song;
     Block *copySelection_;

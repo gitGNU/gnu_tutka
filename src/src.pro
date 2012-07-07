@@ -44,7 +44,8 @@ SOURCES += main.cpp \
     buffermidiinterface.cpp \
     scheduler.cpp \
     schedulerrtc.cpp \
-    schedulernanosleep.cpp
+    schedulernanosleep.cpp \
+    helpdialog.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -88,7 +89,8 @@ HEADERS += block.h \
     buffermidiinterface.h \
     scheduler.h \
     schedulerrtc.h \
-    schedulernanosleep.h
+    schedulernanosleep.h \
+    helpdialog.h
 
 FORMS += \
     mainwindow.ui \
@@ -103,7 +105,8 @@ FORMS += \
     playingsequencedialog.ui \
     playingsequencelistdialog.ui \
     blocklistdialog.ui \
-    messagelistdialog.ui
+    messagelistdialog.ui \
+    helpdialog.ui
 
 TRANSLATIONS += tutka_fi.ts
 

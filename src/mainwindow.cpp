@@ -42,6 +42,7 @@
 #include "playingsequencelistdialog.h"
 #include "blocklistdialog.h"
 #include "messagelistdialog.h"
+#include "helpdialog.h"
 #include "song.h"
 #include "track.h"
 #include "block.h"
@@ -71,6 +72,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     playingSequenceListDialog(new PlayingSequenceListDialog),
     blockListDialog(new BlockListDialog),
     messageListDialog(new MessageListDialog(player->midi())),
+    helpDialog(new HelpDialog),
     externalSyncActionGroup(new QActionGroup(this)),
     song(NULL),
     copySelection_(NULL),
@@ -189,6 +191,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionMidiKillAllNotes, SIGNAL(triggered()), player, SLOT(stopAllNotes()));
     connect(ui->actionMidiResetPitch, SIGNAL(triggered()), player, SLOT(resetPitch()));
     connect(ui->actionSettingsPreferences, SIGNAL(triggered()), preferencesDialog, SLOT(makeVisible()));
+    connect(ui->actionHelpHelp, SIGNAL(triggered()), helpDialog, SLOT(makeVisible()));
     connect(ui->actionHelpAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
     connect(ui->labelSection, SIGNAL(clicked()), sectionListDialog, SLOT(makeVisible()));
     connect(ui->labelPosition, SIGNAL(clicked()), playingSequenceDialog, SLOT(makeVisible()));

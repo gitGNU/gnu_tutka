@@ -589,6 +589,7 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionHelpHelp"/>
     <addaction name="actionHelpAbout"/>
    </widget>
    <addaction name="menuFile"/>
@@ -1020,6 +1021,11 @@
    </property>
    <property name="text">
     <string>MIDI</string>
+   </property>
+  </action>
+  <action name="actionHelpHelp">
+   <property name="text">
+    <string>&amp;Help</string>
    </property>
   </action>
  </widget>
