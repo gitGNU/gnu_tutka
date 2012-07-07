@@ -1,0 +1,162 @@
+0.99.0
+------
+- Rewritten in C++ and Qt
+
+0.12.5
+------
+- Insert/delete track functionality was implemented
+
+0.12.4
+------
+- Tracker widget refreshing was improved
+- A bug in copy/paste functionality was fixed
+- A bug that caused a crash on startup in some environments was fixed
+
+0.12.3
+------
+- The tracker widget now uses Pango for better font rendering
+- Tracker scrollbars were fixed
+- Mouse wheel scrolling was implemented
+- Other small improvements to the tracker widget were made
+- External MIDI sync support was added
+- Relocation and Autopackage support were implemented
+- Preliminary Jack transport support was added
+
+0.12.2
+------
+- Tutka now uses the ALSA sequencer API for more flexible MIDI device support
+
+0.12.1
+------
+- MIDI message list and MIDI message receiving were improved
+- Multiple MIDI interface support was improved
+- Online manual was improved
+- Improvements and bugfixes were made to the GUI
+
+0.12.0
+------
+- Support for multiple MIDI interfaces (requires ALSA)
+- Program change command
+- Track solo toggles and track names
+- SMF export
+- GTK+ 2.4 migration (file chooser etc.)
+- Many internal cleanups
+
+0.11.2
+------
+- All list dialogs were cleaned up
+- Lots of bugfixes
+
+0.11.1
+------
+- MIDI message loading and saving implemented
+- MIDI message receiving improved
+- Track volume dialog improved
+- Confirm quit dialog implemented
+- Lots of bugfixes
+
+0.11.0
+------
+- MMD export
+- MMD import improvements
+- Raw MIDI messages are not limited to SysEx messages anymore
+
+0.10.3
+------
+- Preferences using GConf
+
+0.10.2
+------
+- Editor/GUI separation work
+- Timing improvements: nanosleep and RTC modes (512Hz RTC used by default - set
+  sysctl dev.rtc.max-user-freq to 512 - also running as root is recommended
+  for exact timing)
+- A command line player added
+- Change instrument and expand/shrink functionalities implemented
+- Primitive song printing implemented
+- An utility for killing all notes added
+- Numerous bugfixes
+- Stop command removed: use E00 or F00 instead
+
+0.10.1
+------
+- MIDI input implemented
+- Set last command value command implemented
+- MMD custom command conversion implemented
+
+0.10.0
+------
+- Menu shortcuts work and shortcut keys are displayed in menus
+- Stop command (4) won't hang Tutka anymore
+- Tutka is a GNOME 2.0 application
+- The GUI is loaded from a Glade file using libglade
+- Chord functionality is implemented
+- Problems with the track volume window fixed
+- Better file format
+- All effect pages can be edited
+- Transpose functionality
+- Send MIDI sync implemented
+- Autosend MIDI SysEx messages after loading if requested
+- Set hold value command
+- Retrigger command
+
+0.9.0
+-----
+- GUI completely recreated/written in Glade
+- Entry widgets work correctly now
+- Window closing and reopening works correctly now
+- Crashes when deleting blocks and playing sequences were fixed
+- Lots of small fixes and improvements
+
+0.8.2
+-----
+- Cutting, copying and pasting are implemented
+
+0.8.1
+-----
+- SysEX message list window and SysEx send/receive are implemented
+
+0.8.0
+-----
+- Pitch wheel command is implemented
+- Channel pressure command is implemented
+- MIDI controllers are implemented
+- Set row is implemented in command 02
+
+0.7.1
+-----
+- Includes are not installed anymore
+
+0.7.0
+-----
+- A new threaded method for exact timing is now implemented
+
+0.6.0
+-----
+- Track volumes are implemented
+- Track muting is implemented
+
+0.5.2
+-----
+- Playing sequences can be added and deleted
+
+0.5.1
+-----
+- GUI is cleaned up
+
+0.5.0
+-----
+- MMD loading works fine now
+- MMD effect pages are imported
+
+0.4.0
+-----
+- Most commands are now implemented
+- MMD commands are converted
+
+0.3.3
+-----
+- Playing sequences and sections can now be edited
+- Block properties can now be changed
+- Inexisting instruments will not cause crashes
+- Implemented XML loading and saving

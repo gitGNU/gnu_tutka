@@ -1,0 +1,87 @@
+TUTKA
+=====
+
+OVERVIEW
+========
+   Tutka is a free (as in freedom) tracker style MIDI sequencer for
+   GNU/Linux (and other systems; only GNU/Linux is supported at this
+   time though). It is similar to programs like SoundTracker, ProTracker 
+   and FastTracker except that it does not support samples and is meant 
+   for MIDI use only. Tutka is licensed under the GNU GPL.
+
+   In Tutka songs are made of blocks. Each block represents a period in
+   time. These blocks can be played in any order to form a complete song.
+   Blocks are made of tracks on which the notes are placed. All tracks of
+   a block are played simultaneously. Only one note can be played on one
+   track at a time. Blocks can vary in length and may have different
+   number of tracks.
+
+   Each note is played using an instrument. Each instrument can have
+   properties such as name, MIDI channel, default volume, hold time and
+   so on. Effects can also be applied to notes. In Tutka effects include
+   things like volume, aftertouch, pitch bending, note delays, setting
+   tempo and so on. MIDI controllers can also be used.
+
+   Tutka uses a custom XML based file format for storing songs. Songs in
+   OctaMED SoundStudio's MMD2 file format can also be loaded and saved.
+
+REQUIREMENTS
+============
+   Tutka is written in C++. Tutka requires Qt >= 4.8.0. For MIDI on GNU/Linux
+   Tutka needs ALSA 0.9.0 or later.
+
+NOTES (READ THIS!)
+==================
+   Even though Tutka has been very stable for quite some time now it is still
+   not finished. It may not work, it may lose your work or do other unintended
+   things. The author takes no responsibility for any loss of data caused by
+   Tutka. See the TODO file for a list of bugs and missing features.
+   Please report any bugs you find.
+
+   The file format may change in versions prior to 1.0. Only converter
+   scripts will be provided to make it possible to load files saved with
+   earlier versions. Earlier versions may not be able to load files saved
+   with later versions. After 1.0 such changes will not be made.
+
+COMMANDS
+========
+   All MIDI related commands have a command value range from $00 to $7F.
+   Values from $80 to $FF can be used for sliding (more information on this
+   later).
+
+   00 Set/slide value of previously used command (MMD: 00)
+   01 Slide/Set Pitch Wheel (MMD: 01/02/03)
+   02 End block, set row (set row not implemented yet) (MMD: 0F00/1D)
+   03 Set playseqpos (MMD: 0B)
+   07 Send program change
+   08 Send System Exclusive dump (MMD: 10)
+   09 Set hold value (MMD: 08)
+   0A Retrigger note (MMD: 1F)
+   0B Note delay (MMD: 1F)
+   0C Velocity/Aftertouch/Note off (MMD: 0C/0A/0FFF)
+   0D Channel pressure (MMD: 0D)
+   0E Set TPL/Stop (MMD: 09/0FFE)
+   0F Set tempo/Stop (MMD: 0F/0FFE)
+
+THANKS
+======
+   Thanks to Tommi Uimonen for many good bug reports and suggestions and
+   to Eric Skogen for feedback.
+
+COPYRIGHT
+=========
+   Copyright 2002-2012 Vesa Halttunen
+
+   Tutka is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   Tutka is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Tutka; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
