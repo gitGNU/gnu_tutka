@@ -818,7 +818,7 @@ void Player::play(Mode mode, bool cont)
             position_ = 0;
             line_ = 0;
         }
-        updateLocation();
+        updateLocation(true);
         break;
     case ModePlayBlock:
         if (!cont) {
