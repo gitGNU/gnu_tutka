@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
     QTranslator translator;
-    translator.load(QString("tutka_") + QLocale::system().name());
+    translator.load(QString("/usr/share/tutka/translations/tutka_") + QLocale::system().name());
     app.installTranslator(&translator);
 
 #ifdef __APPLE__

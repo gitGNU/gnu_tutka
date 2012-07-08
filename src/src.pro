@@ -108,8 +108,6 @@ FORMS += \
     messagelistdialog.ui \
     helpdialog.ui
 
-TRANSLATIONS += tutka_fi.ts
-
 TEMPLATE = app
 TARGET = Tutka
 QT += xml
@@ -134,6 +132,9 @@ desktop.files = tutka.desktop
 icon.path = /usr/share/icons/hicolor/64x64/apps
 icon.files = tutka.png
 
+translations.path = /usr/share/tutka/translations
+translations.files = tutka_fi.qm
+
 QMAKE_CFLAGS += -std=gnu99
 QMAKE_CXXFLAGS += \
     -g \
@@ -145,7 +146,7 @@ QMAKE_CLEAN += *.gcov \
     *.gcno \
     ./.obj/*.gcno
 
-INSTALLS += target schemas desktop icon
+INSTALLS += target schemas desktop icon translations
 
 
 
