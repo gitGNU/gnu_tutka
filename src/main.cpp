@@ -32,28 +32,27 @@
 #include <QLocale>
 #ifdef __APPLE__
 #include "coremidi.h"
+#define HostMIDI CoreMIDI
 #elif __linux
 #include "alsamidi.h"
+#define HostMIDI AlsaMIDI
 #else
 #include "midi.h"
+#define HostMIDI MIDI
 #endif
+#include "midiinterface.h"
 #include "player.h"
+#include "scheduler.h"
 #include "mainwindow.h"
 
-int main(int argc, char **argv)
+int runWithGUI(int argc, char **argv)
 {
     QApplication app(argc, argv);
     QTranslator translator;
     translator.load(QString("/usr/share/tutka/translations/tutka_") + QLocale::system().name());
     app.installTranslator(&translator);
 
-#ifdef __APPLE__
-    MIDI *midi = new CoreMIDI;
-#elif __linux
-    MIDI *midi = new AlsaMIDI;
-#else
-    MIDI *midi = new MIDI;
-#endif
+    MIDI *midi = new HostMIDI;
     Player *player = new Player(midi, argc > 1 ? argv[1] : QString());
     MainWindow *mainWindow = new MainWindow(player);
     mainWindow->show();
@@ -66,4 +65,44 @@ int main(int argc, char **argv)
     delete midi;
 
     return returnCode;
+}
+
+int runWithoutGUI(int argc, char **argv)
+{
+    // Remove the -p argument
+    for (int i = 2; i < argc; i++) {
+        argv[i - 1] = argv[i];
+    }
+    argc--;
+
+    QCoreApplication app(argc, argv);
+    MIDI *midi = new HostMIDI;
+    Player *player = new Player(midi, argv[1]);
+    player->setScheduler(Scheduler::schedulers().last());
+    for (int output = 0; output < midi->outputs(); output++) {
+        midi->output(output)->setEnabled(true);
+    }
+
+    app.processEvents();
+
+    // Let the potentially sent SysEx messages take effect before playing
+    usleep(1000000);
+
+    player->playSong();
+
+    int returnCode = app.exec();
+
+    delete player;
+    delete midi;
+
+    return returnCode;
+}
+
+int main(int argc, char **argv)
+{
+    if (argc > 2 && strcmp(argv[1], "-p") == 0) {
+        return runWithoutGUI(argc, argv);
+    } else {
+        return runWithGUI(argc, argv);
+    }
 }

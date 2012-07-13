@@ -121,6 +121,7 @@ void AlsaMIDI::updateInterfaces()
     snd_seq_port_info_t *pinfo;
     snd_seq_port_info_alloca(&pinfo);
     snd_seq_client_info_set_client(cinfo, SND_SEQ_CLIENT_SYSTEM);
+    // TODO: starting Ardour crashed Tutka here
     while (snd_seq_query_next_client(seq, cinfo) >= 0) {
         // Reset query info
         snd_seq_port_info_set_client(pinfo, snd_seq_client_info_get_client(cinfo));
