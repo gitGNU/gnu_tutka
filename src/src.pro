@@ -111,6 +111,7 @@ FORMS += \
 TEMPLATE = app
 TARGET = Tutka
 QT += xml
+DEFINES += QT_NO_DEBUG_OUTPUT
 
 unix:!macx:SOURCES += alsamidi.cpp alsamidiinterface.cpp
 unix:!macx:HEADERS += alsamidi.h alsamidiinterface.h

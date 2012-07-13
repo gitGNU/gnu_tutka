@@ -44,6 +44,30 @@
 #include "player.h"
 #include "scheduler.h"
 #include "mainwindow.h"
+#include <signal.h>
+#include <dlfcn.h>
+
+sighandler_t originalSigIntHandler = NULL;
+sighandler_t originalSigTermHandler = NULL;
+
+void quitSignalHandler(int)
+{
+    if (qApp != NULL) {
+        qApp->quit();
+    }
+}
+
+void installSignalHandlers()
+{
+    originalSigIntHandler = signal(SIGINT, quitSignalHandler);
+    originalSigTermHandler = signal(SIGTERM, quitSignalHandler);
+}
+
+void restoreSignalHandlers()
+{
+    signal(SIGINT, originalSigIntHandler);
+    signal(SIGTERM, originalSigTermHandler);
+}
 
 int runWithGUI(int argc, char **argv)
 {
@@ -75,6 +99,8 @@ int runWithoutGUI(int argc, char **argv)
     }
     argc--;
 
+    installSignalHandlers();
+
     QCoreApplication app(argc, argv);
     MIDI *midi = new HostMIDI;
     Player *player = new Player(midi, argv[1]);
@@ -92,8 +118,13 @@ int runWithoutGUI(int argc, char **argv)
 
     int returnCode = app.exec();
 
+    player->stopAllNotes();
+    app.processEvents();
+
     delete player;
     delete midi;
+
+    restoreSignalHandlers();
 
     return returnCode;
 }
