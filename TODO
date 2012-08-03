@@ -3,13 +3,13 @@ TODO
 
 1.0.0: documentation/localization
 ---------------------------------
-- Localization support
 - Better documentation and/or online help
 - Create a DTD for the file format
 
 1.1.x: arpeggiator
 ------------------
 - Arpeggiator
+- Window position storing
 
 1.2.x?
 ------

@@ -41,7 +41,7 @@ NOTES (READ THIS!)
    The file format may change in versions prior to 1.0. Only converter
    scripts will be provided to make it possible to load files saved with
    earlier versions. Earlier versions may not be able to load files saved
-   with later versions. After 1.0 such changes will not be made.
+   with later versions.
 
 COMMANDS
 ========
