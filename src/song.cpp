@@ -46,6 +46,7 @@ Song::Song(const QString &path, QObject *parent) :
     if (!initialized) {
         init();
     }
+    checkMaxTracks();
 }
 
 Song::~Song()
@@ -82,7 +83,6 @@ void Song::init()
     connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
     playseqs_.append(playseq);
     blocks_.append(block);
-    checkMaxTracks();
 }
 
 QString Song::name() const
