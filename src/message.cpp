@@ -134,8 +134,8 @@ Message *Message::parse(QDomElement element)
         message->data_.resize(length);
         unsigned int d;
         for (int i = 0; i < length; i++) {
-            c[0] = element.text().at(i * 2).toAscii();
-            c[1] = element.text().at(i * 2 + 1).toAscii();
+            c[0] = element.text().at(i * 2).toLatin1();
+            c[1] = element.text().at(i * 2 + 1).toLatin1();
             sscanf((char *)c, "%X", &d);
             message->data_[i] = d;
         }
