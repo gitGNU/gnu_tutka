@@ -29,8 +29,10 @@ BufferMIDIInterface::BufferMIDIInterface(BufferMIDI *midi, DirectionFlags flags,
 {
 }
 
-void BufferMIDIInterface::write(const char *data, unsigned int length)
+void BufferMIDIInterface::write(const QByteArray &dataArray)
 {
+    int length = dataArray.length();
+    const char *data = dataArray.constData();
     if (length > 0 && data[0] == (char)0xf0) {
         // SysEx messages need special treatment if written to a file
         unsigned long value = length - 1;
@@ -69,7 +71,7 @@ void BufferMIDIInterface::write(const char *data, unsigned int length)
 
         // Copy the rest of the data
         memcpy(newmessage + i + 1, data + 1, length - 1);
-        write(newmessage, length + l);
+        write(QByteArray(newmessage, length + l));
         delete [] newmessage;
     } else {
         data_.append(data, length);

@@ -36,7 +36,7 @@ public:
     QByteArray data() const;
 
 protected:
-    virtual void write(const char *data, unsigned int length);
+    virtual void write(const QByteArray &data);
 
 private:
     BufferMIDI *midi;
