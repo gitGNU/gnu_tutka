@@ -47,6 +47,10 @@
 #include <signal.h>
 #include <dlfcn.h>
 
+#ifndef sighandler_t
+#define sighandler_t sig_t
+#endif
+
 sighandler_t originalSigIntHandler = NULL;
 sighandler_t originalSigTermHandler = NULL;
 

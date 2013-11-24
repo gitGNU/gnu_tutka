@@ -110,7 +110,7 @@ FORMS += \
 
 TEMPLATE = app
 TARGET = Tutka
-QT += xml
+QT += xml widgets gui
 DEFINES += QT_NO_DEBUG_OUTPUT
 
 unix:!macx:SOURCES += alsamidi.cpp alsamidiinterface.cpp
@@ -120,7 +120,7 @@ unix:!macx:LIBS += -lasound
 macx:SOURCES += coremidi.cpp coremidiinterface.cpp
 macx:HEADERS += coremidi.h coremidiinterface.h
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
-macx:INCLUDEPATH += /System/Library/Frameworks/CoreMIDI.framework/Versions/A/Headers
+macx:INCLUDEPATH += /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreMIDIServer.framework/Versions/A/Headers
 
 target.path = /usr/bin
 
