@@ -61,7 +61,7 @@ Tracker::Tracker(QWidget *parent) :
     mouseSelecting(false),
     mouseButton(Qt::NoButton)
 {
-    font.setStyleHint(QFont::TypeWriter);
+    font.setStyleHint(QFont::Monospace);
     calculateFontSize();
     initColors();
 
