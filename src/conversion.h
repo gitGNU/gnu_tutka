@@ -24,7 +24,7 @@
 
 class Song;
 class SMF;
-class MMD2;
+struct MMD2;
 
 // Converts an MMD2 module to a song
 Song *mmd2ToSong(MMD2 *mmd);
