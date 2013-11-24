@@ -62,6 +62,7 @@ public:
 
 protected:
     virtual void wheelEvent(QWheelEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
 
 private slots:
     void setSong(Song *song);

@@ -273,6 +273,13 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     }
 }
 
+void MainWindow::mousePressEvent(QMouseEvent *)
+{
+    if (QApplication::focusWidget() != NULL) {
+        QApplication::focusWidget()->clearFocus();
+    }
+}
+
 bool MainWindow::keyPress(QKeyEvent *event)
 {
     Block *block = ui->tracker->block();
