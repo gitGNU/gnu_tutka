@@ -56,7 +56,7 @@ public:
 
 private:
     SMFHeader header;
-    QList<struct SMFTrack> tracks;
+    QList<SMFTrack> tracks;
 };
 
 #endif // SMF_H
