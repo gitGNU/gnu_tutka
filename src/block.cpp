@@ -116,8 +116,8 @@ void Block::setLength(unsigned int length)
             notes[(line * tracks_ + track) * 2] = notes_[(line * tracks_ + track) * 2];
             notes[(line * tracks_ + track) * 2 + 1] = notes_[(line * tracks_ + track) * 2 + 1];
             for (unsigned int commandPage = 0; commandPage < commandPages_; commandPage++) {
-                commands[commandPage * 2 * tracks_ * length + (line * tracks_ + track) * 2] = commands[commandPage * 2 * tracks_ * oldLength + (line * tracks_ + track) * 2];
-                commands[commandPage * 2 * tracks_ * length + (line * tracks_ + track) * 2 + 1] = commands[commandPage * 2 * tracks_ * oldLength + (line * tracks_ + track) * 2 + 1];
+                commands[commandPage * 2 * tracks_ * length + (line * tracks_ + track) * 2] = commands_[commandPage * 2 * tracks_ * oldLength + (line * tracks_ + track) * 2];
+                commands[commandPage * 2 * tracks_ * length + (line * tracks_ + track) * 2 + 1] = commands_[commandPage * 2 * tracks_ * oldLength + (line * tracks_ + track) * 2 + 1];
             }
         }
     }
