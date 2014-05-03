@@ -1,7 +1,7 @@
 /*
  * mainwindow.cpp
  *
- * Copyright 2002-2012 Vesa Halttunen
+ * Copyright 2002-2014 Vesa Halttunen
  *
  * This file is part of Tutka.
  *
@@ -937,7 +937,7 @@ void MainWindow::setSelection(int startTrack, int startLine, int endTrack, int e
 
 void MainWindow::showAbout()
 {
-    QMessageBox::about(this, tr("About Tutka"), tr("Tutka 0.99.0 (C) 2002-2012 Vesa Halttunen <vesuri@jormas.com>"));
+    QMessageBox::about(this, tr("About Tutka"), tr("Tutka 0.99.0 (C) 2002-2014 Vesa Halttunen <vesuri@jormas.com>"));
 }
 
 void MainWindow::cutSelection()

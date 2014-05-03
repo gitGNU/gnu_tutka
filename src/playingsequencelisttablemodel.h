@@ -1,7 +1,7 @@
 /*
  * playingsequencelisttablemodel.h
  *
- * Copyright 2002-2012 Vesa Halttunen
+ * Copyright 2002-2014 Vesa Halttunen
  *
  * This file is part of Tutka.
  *

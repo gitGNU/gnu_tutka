@@ -1203,8 +1203,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="mainwindow.cpp" line="933"/>
-        <source>Tutka 0.99.0 (C) 2002-2012 Vesa Halttunen &lt;vesuri@jormas.com&gt;</source>
-        <translation>Tutka 0.99.0 (C) 2002-2012 Vesa Halttunen &lt;vesuri@jormas.com&gt;</translation>
+        <source>Tutka 0.99.0 (C) 2002-2014 Vesa Halttunen &lt;vesuri@jormas.com&gt;</source>
+        <translation>Tutka 0.99.0 (C) 2002-2014 Vesa Halttunen &lt;vesuri@jormas.com&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1058"/>
