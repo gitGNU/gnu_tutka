@@ -112,6 +112,13 @@ TEMPLATE = app
 TARGET = Tutka
 QT += xml widgets gui
 DEFINES += QT_NO_DEBUG_OUTPUT
+TRANSLATIONS += tutka_fi.ts tutka_cs.ts
+
+QMAKE_EXTRA_COMPILERS += lrelease
+lrelease.input         = TRANSLATIONS
+lrelease.output        = ${QMAKE_FILE_BASE}.qm
+lrelease.commands      = $$[QT_INSTALL_BINS]/lrelease ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_BASE}.qm
+lrelease.CONFIG       += no_link target_predeps
 
 unix:!macx:SOURCES += alsamidi.cpp alsamidiinterface.cpp
 unix:!macx:HEADERS += alsamidi.h alsamidiinterface.h
@@ -134,7 +141,7 @@ icon.path = /usr/share/icons/hicolor/64x64/apps
 icon.files = tutka.png
 
 translations.path = /usr/share/tutka/translations
-translations.files = tutka_fi.qm
+translations.files = *.qm
 
 QMAKE_CFLAGS += -std=gnu99
 QMAKE_CXXFLAGS += \
@@ -148,36 +155,6 @@ QMAKE_CLEAN += *.gcov \
     ./.obj/*.gcno
 
 INSTALLS += target schemas desktop icon translations
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
