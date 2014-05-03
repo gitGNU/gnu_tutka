@@ -384,10 +384,9 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 ui->spinBoxSpace->blockSignals(true);
                 ui->spinBoxSpace->setValue(event->key() - Qt::Key_0);
                 ui->spinBoxSpace->blockSignals(false);
-
-                handled = true;
-                break;
             }
+            handled = true;
+            break;
         }
         }
     } else if (shift) {
@@ -480,6 +479,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
             if (channel < song->maxTracks()) {
                 song->track(channel)->setMute(!song->track(channel)->isMuted());
             }
+            handled = true;
             break;
         }
         case Qt::Key_Backspace:
