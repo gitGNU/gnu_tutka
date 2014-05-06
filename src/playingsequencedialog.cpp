@@ -82,6 +82,13 @@ void PlayingSequenceDialog::setPlayseq(unsigned int playseq)
 
     connect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(setDeleteButtonVisibility()));
     setDeleteButtonVisibility();
+
+    QString name = song->playseq(playseq)->name();
+    if (name.isEmpty()) {
+        setWindowTitle(tr("Playing Sequence %1/%2").arg(playseq + 1).arg(song->playseqs()));
+    } else {
+        setWindowTitle(tr("Playing Sequence %1/%2: %3").arg(playseq + 1).arg(song->playseqs()).arg(name));
+    }
 }
 
 void PlayingSequenceDialog::setPosition(unsigned int position)
