@@ -34,7 +34,11 @@ PlayingSequenceTableModel::PlayingSequenceTableModel(QObject *parent) :
 void PlayingSequenceTableModel::setSong(Song *song)
 {
     beginResetModel();
+    if (this->song != NULL) {
+        disconnect(this->song, SIGNAL(blocksChanged(int)), this, SLOT(refresh()));
+    }
     this->song = song;
+    connect(this->song, SIGNAL(blocksChanged(int)), this, SLOT(refresh()));
     endResetModel();
 }
 
