@@ -134,6 +134,16 @@ void Player::updateLocationAlways()
     updateLocation(true);
 }
 
+void Player::resetBlock()
+{
+    if (block_ >= song->blocks()) {
+        mutex.lock();
+        block_ = song->blocks() - 1;
+        mutex.unlock();
+    }
+    emit blockChanged(block_);
+}
+
 bool Player::nextSection()
 {
     unsigned int oldSection = section_;
@@ -940,7 +950,7 @@ void Player::setSong(const QString &path)
 
 void Player::init()
 {
-    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(updateLocationAlways()));
+    connect(song, SIGNAL(blocksChanged(int)), this, SLOT(resetBlock()));
     connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(updateLocationAlways()));
     connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(updateLocationAlways()));
     connect(song, SIGNAL(trackMutedOrSoloed()), this, SLOT(checkSolo()));

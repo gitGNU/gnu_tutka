@@ -159,6 +159,9 @@ private slots:
     // Refreshes playseq from section and block from position and signals the location regardless of whether the location has changed or not
     void updateLocationAlways();
 
+    // Resets the current block ensuring that the block currently exists
+    void resetBlock();
+
     // Notifies the player that MIDI interfaces have changed
     void remapMidiOutputs();
 
