@@ -130,9 +130,28 @@ void Player::updateLocation(bool alwaysSendLocationSignals)
     }
 }
 
-void Player::updateLocationAlways()
+void Player::resetSection()
 {
-    updateLocation(true);
+    unsigned int oldSection = section_;
+
+    setSection(section_);
+
+    if (section_ == oldSection) {
+        // Emit signal regardless of whether there's a change or not
+        emit sectionChanged(section_);
+    }
+}
+
+void Player::resetPlayseq()
+{
+    unsigned int oldPlayseq = playseq_;
+
+    setPlayseq(playseq_);
+
+    if (playseq_ == oldPlayseq) {
+        // Emit signal regardless of whether there's a change or not
+        emit playseqChanged(playseq_);
+    }
 }
 
 void Player::resetBlock()
@@ -967,8 +986,8 @@ void Player::init()
 {
     connect(song, SIGNAL(blockLengthChanged()), this, SLOT(resetLine()));
     connect(song, SIGNAL(blocksChanged(int)), this, SLOT(resetBlock()));
-    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(updateLocationAlways()));
-    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(updateLocationAlways()));
+    connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(resetPlayseq()));
+    connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(resetSection()));
     connect(song, SIGNAL(trackMutedOrSoloed()), this, SLOT(checkSolo()));
 
     remapMidiOutputs();

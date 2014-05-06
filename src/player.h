@@ -156,8 +156,11 @@ private slots:
     // Refreshes playseq from section and block from position
     void updateLocation(bool alwaysSendLocationSignals = false);
 
-    // Refreshes playseq from section and block from position and signals the location regardless of whether the location has changed or not
-    void updateLocationAlways();
+    // Resets the section number ensuring that the playing sequence currently exists
+    void resetSection();
+
+    // Resets the playing sequence number ensuring that the playing sequence currently exists
+    void resetPlayseq();
 
     // Resets the current block number ensuring that the block currently exists
     void resetBlock();
