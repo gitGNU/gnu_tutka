@@ -251,6 +251,36 @@ void Song::deleteBlock(unsigned int pos)
     }
 }
 
+void Song::splitBlock(unsigned int pos, unsigned int line)
+{
+    mutex.lock();
+
+    // Check block existence
+    if (pos > blocks_.count()) {
+        pos = blocks_.count();
+    }
+
+    // Insert a new block similar to the current block
+    Block *block = blocks_[pos]->split(line);
+    if (block != NULL) {
+        connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+        blocks_.insert(pos + 1, block);
+
+        // Update playing sequences
+        for (int i = 0; i < playseqs_.count(); i++) {
+            for (unsigned int j = 0; j < playseqs_[i]->length(); j++) {
+                if (playseqs_[i]->at(j) > pos) {
+                    playseqs_[i]->set(j, playseqs_[i]->at(j) + 1);;
+                }
+            }
+        }
+    }
+
+    mutex.unlock();
+
+    emit blocksChanged(blocks_.count());
+}
+
 // Inserts a new playseq in the playseq array in the given position
 void Song::insertPlayseq(unsigned int pos)
 {

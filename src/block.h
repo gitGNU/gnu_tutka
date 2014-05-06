@@ -118,6 +118,9 @@ public:
     // Deletes a track from the block
     void deleteTrack(int track);
 
+    // Splits the rest of the block into a new block
+    Block *split(int line);
+
     // Parses a block element in an XML file
     static Block *parse(QDomElement element);
 

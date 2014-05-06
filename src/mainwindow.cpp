@@ -174,6 +174,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionBlockTranspose, SIGNAL(triggered()), transposeDialog, SLOT(showBlock()));
     connect(ui->actionBlockExpandShrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(showBlock()));
     connect(ui->actionBlockChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showBlock()));
+    connect(ui->actionBlockSplit, SIGNAL(triggered()), this, SLOT(splitBlock()));
     connect(ui->actionTrackCut, SIGNAL(triggered()), this, SLOT(cutTrack()));
     connect(ui->actionTrackCopy, SIGNAL(triggered()), this, SLOT(copyTrack()));
     connect(ui->actionTrackPaste, SIGNAL(triggered()), this, SLOT(pasteTrack()));
@@ -1004,6 +1005,11 @@ void MainWindow::selectAllBlock()
     ui->tracker->setSelection(0, 0, song->block(block)->tracks() - 1, song->block(block)->length() - 1);
 }
 
+void MainWindow::splitBlock()
+{
+    song->splitBlock(block, ui->tracker->line());
+}
+
 void MainWindow::cutTrack()
 {
     delete copyTrack_;
@@ -1181,6 +1187,7 @@ void MainWindow::setTrackerVerticalScrollBar(int line, int length, int visibleLi
     ui->verticalScrollBarTracker->setValue(line);
     ui->verticalScrollBarTracker->setPageStep(visibleLines);
     ui->verticalScrollBarTracker->blockSignals(false);
+    ui->actionBlockSplit->setEnabled(line > 0);
 }
 
 void MainWindow::setSongPath(const QString &path)

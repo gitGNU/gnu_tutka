@@ -106,6 +106,9 @@ public:
     // Deletes a block from the given position of the block array
     void deleteBlock(unsigned int pos);
 
+    // Splits the block in the given position into two from the given line
+    void splitBlock(unsigned int pos, unsigned int line);
+
     // Inserts a new playseq in the playseq array in the given position
     void insertPlayseq(unsigned int pos);
 

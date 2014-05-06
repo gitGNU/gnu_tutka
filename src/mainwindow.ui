@@ -471,7 +471,7 @@
      <x>0</x>
      <y>0</y>
      <width>819</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -536,6 +536,8 @@
     <addaction name="actionBlockTranspose"/>
     <addaction name="actionBlockExpandShrink"/>
     <addaction name="actionBlockChangeInstrument"/>
+    <addaction name="separator"/>
+    <addaction name="actionBlockSplit"/>
     <addaction name="separator"/>
     <addaction name="actionBlockList"/>
    </widget>
@@ -1026,6 +1028,11 @@
   <action name="actionHelpHelp">
    <property name="text">
     <string>&amp;Help</string>
+   </property>
+  </action>
+  <action name="actionBlockSplit">
+   <property name="text">
+    <string>Split</string>
    </property>
   </action>
  </widget>

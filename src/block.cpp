@@ -497,6 +497,17 @@ void Block::deleteTrack(int track)
     }
 }
 
+Block *Block::split(int line)
+{
+    if (line > 0) {
+        Block *block = copy(0, line, tracks_ - 1, length_ - 1);
+        setLength(line);
+        return block;
+    } else {
+        return NULL;
+    }
+}
+
 Block *Block::parse(QDomElement element)
 {
     Block *block = NULL;
