@@ -34,6 +34,7 @@ PlayingSequenceDialog::PlayingSequenceDialog(QWidget *parent) :
     playseq(NULL),
     playingSequenceTableModel(new PlayingSequenceTableModel(this)),
     spinBoxDelegate(new SpinBoxDelegate(1, 1, this)),
+    playseqNumber(0),
     position(-1)
 {
     ui->setupUi(this);
@@ -74,21 +75,18 @@ void PlayingSequenceDialog::setSong(Song *song)
 void PlayingSequenceDialog::setPlayseq(unsigned int playseq)
 {
     if (this->playseq != NULL) {
+        disconnect(this->playseq, SIGNAL(nameChanged(QString)), this, SLOT(setWindowTitle()));
         disconnect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(setDeleteButtonVisibility()));
     }
 
+    this->playseqNumber = playseq;
     this->playseq = song->playseq(playseq);
     playingSequenceTableModel->setPlayseq(this->playseq);
 
+    connect(this->playseq, SIGNAL(nameChanged(QString)), this, SLOT(setWindowTitle()));
     connect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(setDeleteButtonVisibility()));
+    setWindowTitle();
     setDeleteButtonVisibility();
-
-    QString name = song->playseq(playseq)->name();
-    if (name.isEmpty()) {
-        setWindowTitle(tr("Playing Sequence %1/%2").arg(playseq + 1).arg(song->playseqs()));
-    } else {
-        setWindowTitle(tr("Playing Sequence %1/%2: %3").arg(playseq + 1).arg(song->playseqs()).arg(name));
-    }
 }
 
 void PlayingSequenceDialog::setPosition(unsigned int position)
@@ -139,6 +137,16 @@ void PlayingSequenceDialog::setPosition(const QItemSelection &selected, const QI
             this->position = position;
             emit positionSelected(this->position);
         }
+    }
+}
+
+void PlayingSequenceDialog::setWindowTitle()
+{
+    QString name = playseq->name();
+    if (name.isEmpty()) {
+        QDialog::setWindowTitle(tr("Playing Sequence %1/%2").arg(playseqNumber + 1).arg(song->playseqs()));
+    } else {
+        QDialog::setWindowTitle(tr("Playing Sequence %1/%2: %3").arg(playseqNumber + 1).arg(song->playseqs()).arg(name));
     }
 }
 

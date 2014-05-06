@@ -58,6 +58,7 @@ private slots:
     void deleteBlock();
     void setSelection();
     void setPosition(const QItemSelection &selected = QItemSelection(), const QItemSelection &deselected = QItemSelection());
+    void setWindowTitle();
     void setDeleteButtonVisibility();
 
 private:
@@ -66,6 +67,7 @@ private:
     Playseq *playseq;
     PlayingSequenceTableModel *playingSequenceTableModel;
     SpinBoxDelegate *spinBoxDelegate;
+    int playseqNumber;
     int position;
 };
 
