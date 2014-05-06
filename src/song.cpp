@@ -77,7 +77,7 @@ void Song::init()
     sendSync_ = false;
 
     Block *block = new Block;
-    connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+    connectBlockSignals(block);
     sections_.append(0);
     Playseq *playseq = new Playseq;
     connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
@@ -204,7 +204,7 @@ void Song::insertBlock(unsigned int pos, unsigned int current)
 
     // Insert a new block similar to the current block
     Block *block = new Block(blocks_[current]->tracks(), blocks_[current]->length(), blocks_[current]->commandPages());
-    connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+    connectBlockSignals(block);
     blocks_.insert(pos, block);
 
     // Update playing sequences
@@ -263,7 +263,7 @@ void Song::splitBlock(unsigned int pos, unsigned int line)
     // Insert a new block similar to the current block
     Block *block = blocks_[pos]->split(line);
     if (block != NULL) {
-        connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+        connectBlockSignals(block);
         blocks_.insert(pos + 1, block);
 
         // Update playing sequences
@@ -528,7 +528,7 @@ bool Song::parse(QDomElement element)
 
                             while (blocks_.count() < number) {
                                 Block *fillBlock = new Block;
-                                connect(fillBlock, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+                                connectBlockSignals(fillBlock);
                                 blocks_.append(fillBlock);
                             }
                             if (blocks_.count() == number) {
@@ -852,4 +852,10 @@ void Song::addTrack(const QString &name)
     connect(track, SIGNAL(mutedChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
     connect(track, SIGNAL(soloChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
     tracks.append(track);
+}
+
+void Song::connectBlockSignals(Block *block)
+{
+    connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+    connect(block, SIGNAL(lengthChanged(int)), this, SIGNAL(blockLengthChanged()));
 }

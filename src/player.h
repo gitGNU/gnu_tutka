@@ -111,7 +111,7 @@ public:
     void resetTime(bool);
 
     // Set player position
-    void setLine(int);
+    void setLine(int line, bool wrap = true);
     void setTick(int);
 
     // Lock the player
@@ -159,8 +159,11 @@ private slots:
     // Refreshes playseq from section and block from position and signals the location regardless of whether the location has changed or not
     void updateLocationAlways();
 
-    // Resets the current block ensuring that the block currently exists
+    // Resets the current block number ensuring that the block currently exists
     void resetBlock();
+
+    // Resets the current line number ensuring that the line currently exists
+    void resetLine();
 
     // Notifies the player that MIDI interfaces have changed
     void remapMidiOutputs();

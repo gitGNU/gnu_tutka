@@ -190,6 +190,9 @@ signals:
     // Emitted when a track is muted or soloed
     void trackMutedOrSoloed();
 
+    // Emitted when the length of a block has changed
+    void blockLengthChanged();
+
 private:
     // Initializes an empty song
     void init();
@@ -199,6 +202,9 @@ private:
 
     // Creates a new track and associates it with this song
     void addTrack(const QString &name = QString());
+
+    // Connects signals related to a block
+    void connectBlockSignals(Block *block);
 
     // Name of the song
     QString name_;

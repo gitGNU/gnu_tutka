@@ -107,24 +107,25 @@ void Player::updateLocation(bool alwaysSendLocationSignals)
     if (section_ >= song->sections()) {
         section_ = 0;
     }
-    playseq_ = song->section(section_);
+    setPlayseq(song->section(section_));
 
     if (position_ >= song->playseq(playseq_)->length()) {
         position_ = 0;
     }
-
-    block_ = song->playseq(playseq_)->at(position_);
+    setBlock(song->playseq(playseq_)->at(position_));
 
     if (section_ != oldSection || alwaysSendLocationSignals) {
         emit sectionChanged(section_);
     }
-    if (playseq_ != oldPlayseq || alwaysSendLocationSignals) {
+    if (playseq_ == oldPlayseq && alwaysSendLocationSignals) {
+        // Emit signal regardless of whether there's a change or not
         emit playseqChanged(playseq_);
     }
     if (position_ != oldPosition || alwaysSendLocationSignals) {
         emit positionChanged(position_);
     }
-    if (block_ != oldBlock || alwaysSendLocationSignals) {
+    if (block_ == oldBlock && alwaysSendLocationSignals) {
+        // Emit signal regardless of whether there's a change or not
         emit blockChanged(block_);
     }
 }
@@ -136,12 +137,26 @@ void Player::updateLocationAlways()
 
 void Player::resetBlock()
 {
-    if (block_ >= song->blocks()) {
-        mutex.lock();
-        block_ = song->blocks() - 1;
-        mutex.unlock();
+    unsigned int oldBlock = block_;
+
+    setBlock(block_);
+
+    if (block_ == oldBlock) {
+        // Emit signal regardless of whether there's a change or not
+        emit blockChanged(block_);
     }
-    emit blockChanged(block_);
+}
+
+void Player::resetLine()
+{
+    unsigned int oldLine = line_;
+
+    setLine(line_, false);
+
+    if (line_ == oldLine) {
+        // Emit signal regardless of whether there's a change or not
+        emit lineChanged(line_);
+    }
 }
 
 bool Player::nextSection()
@@ -950,6 +965,7 @@ void Player::setSong(const QString &path)
 
 void Player::init()
 {
+    connect(song, SIGNAL(blockLengthChanged()), this, SLOT(resetLine()));
     connect(song, SIGNAL(blocksChanged(int)), this, SLOT(resetBlock()));
     connect(song, SIGNAL(playseqsChanged(int)), this, SLOT(updateLocationAlways()));
     connect(song, SIGNAL(sectionsChanged(uint)), this, SLOT(updateLocationAlways()));
@@ -1069,18 +1085,26 @@ void Player::setBlock(int block)
     }
 }
 
-void Player::setLine(int line)
+void Player::setLine(int line, bool wrap)
 {
     unsigned int oldLine = line_;
 
     mutex.lock();
 
     // Bounds checking
-    while (line < 0) {
-        line += song->block(block_)->length();
-    }
-    while (line >= song->block(block_)->length()) {
-        line -= song->block(block_)->length();
+    if (wrap) {
+        while (line < 0) {
+            line += song->block(block_)->length();
+        }
+        while (line >= song->block(block_)->length()) {
+            line -= song->block(block_)->length();
+        }
+    } else {
+        if (line < 0) {
+            line = 0;
+        } else if (line >= song->block(block_)->length()) {
+            line = song->block(block_)->length() - 1;
+        }
     }
 
     line_ = line;
