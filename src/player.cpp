@@ -109,25 +109,33 @@ void Player::updateLocation(bool alwaysSendLocationSignals)
     if (section_ >= song->sections()) {
         section_ = 0;
     }
-    setPlayseq(song->section(section_));
+
+    unsigned int playseq = song->section(section_);
+    if (playseq >= song->playseqs()) {
+        playseq = song->playseqs() - 1;
+    }
+    playseq_ = playseq;
 
     if (position_ >= song->playseq(playseq_)->length()) {
         position_ = 0;
     }
-    setBlock(song->playseq(playseq_)->at(position_));
+
+    unsigned int block = song->playseq(playseq_)->at(position_);
+    if (block >= song->blocks()) {
+        block = song->blocks() - 1;
+    }
+    block_ = block;
 
     if (section_ != oldSection || alwaysSendLocationSignals) {
         emit sectionChanged(section_);
     }
-    if (playseq_ == oldPlayseq && alwaysSendLocationSignals) {
-        // Emit signal regardless of whether there's a change or not
+    if (playseq_ != oldPlayseq || alwaysSendLocationSignals) {
         emit playseqChanged(playseq_);
     }
     if (position_ != oldPosition || alwaysSendLocationSignals) {
         emit positionChanged(position_);
     }
-    if (block_ == oldBlock && alwaysSendLocationSignals) {
-        // Emit signal regardless of whether there's a change or not
+    if (block_ != oldBlock || alwaysSendLocationSignals) {
         emit blockChanged(block_);
     }
 }
