@@ -263,6 +263,10 @@ void Player::stopMuted()
 
 void Player::stopNotes()
 {
+    if (song == 0) {
+        return;
+    }
+
     for (int track = 0; track < song->maxTracks(); track++) {
         QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
         if (trackStatus->note != -1) {
@@ -960,6 +964,10 @@ void Player::trackStatusCreate()
 
 void Player::setSong(const QString &path)
 {
+    if (isRunning()) {
+        stop();
+    }
+
     oldSong = song;
     song = NULL;
 
