@@ -34,7 +34,7 @@ class Block : public QObject {
 
 public:
     // Allocates a block
-    Block(unsigned int tracks = 4, unsigned int length = 64, unsigned int commandPages = 1, QObject *parent = NULL);
+    Block(unsigned int tracks = 16, unsigned int length = 64, unsigned int commandPages = 1, QObject *parent = NULL);
     virtual ~Block();
 
     // Returns the name of the block
