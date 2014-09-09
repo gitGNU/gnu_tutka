@@ -55,7 +55,8 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     midi_(midi),
     solo(0),
     postCommand(0),
-    postValue(0)
+    postValue(0),
+    tempoChanged(false)
 {
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(remapMidiOutputs()));
     connect(midi, SIGNAL(startReceived()), this, SLOT(playSong()));
@@ -84,7 +85,8 @@ Player::Player(MIDI *midi, Song *song, QObject *parent) :
     midi_(midi),
     solo(0),
     postCommand(0),
-    postValue(0)
+    postValue(0),
+    tempoChanged(false)
 {
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(remapMidiOutputs()));
 
@@ -263,7 +265,7 @@ void Player::stopMuted()
 
 void Player::stopNotes()
 {
-    if (song == 0) {
+    if (song == NULL) {
         return;
     }
 
@@ -964,9 +966,11 @@ void Player::trackStatusCreate()
 
 void Player::setSong(const QString &path)
 {
-    if (isRunning()) {
-        stop();
+    if (oldSong != NULL) {
+        return;
     }
+
+    stop();
 
     oldSong = song;
     song = NULL;
