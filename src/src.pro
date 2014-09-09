@@ -109,7 +109,7 @@ FORMS += \
     helpdialog.ui
 
 TEMPLATE = app
-TARGET = Tutka
+TARGET = tutka
 QT += xml widgets gui
 DEFINES += QT_NO_DEBUG_OUTPUT
 TRANSLATIONS += tutka_fi.ts tutka_cs.ts
@@ -131,13 +131,10 @@ macx:INCLUDEPATH += /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.
 
 target.path = /usr/bin
 
-schemas.path = /usr/share/gconf/schemas
-schemas.files = tutka.schemas
-
 desktop.path = /usr/share/applications
 desktop.files = tutka.desktop
 
-icon.path = /usr/share/icons/hicolor/64x64/apps
+icon.path = /usr/share/icons/hicolor/48x48/apps
 icon.files = tutka.png
 
 translations.path = /usr/share/tutka/translations

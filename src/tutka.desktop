@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Tutka MIDI Tracker
+Comment=Compose music using MIDI
+Exec=tutka
+Icon=tutka
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;Midi;Sequencer;
