@@ -1036,6 +1036,8 @@ void Player::init()
 
 void Player::setSection(int section)
 {
+    mutex.lock();
+
     unsigned int oldSection = section_;
 
     // Bounds checking
@@ -1045,8 +1047,8 @@ void Player::setSection(int section)
         section = song->sections() - 1;
     }
 
-    mutex.lock();
     section_ = section;
+
     mutex.unlock();
 
     if (section_ != oldSection) {
@@ -1056,6 +1058,8 @@ void Player::setSection(int section)
 
 void Player::setPlayseq(int playseq)
 {
+    mutex.lock();
+
     unsigned int oldPlayseq = playseq_;
 
     // Bounds checking
@@ -1065,8 +1069,8 @@ void Player::setPlayseq(int playseq)
         playseq = song->playseqs() - 1;
     }
 
-    mutex.lock();
     playseq_ = playseq;
+
     mutex.unlock();
 
     if (playseq_ != oldPlayseq) {
@@ -1076,9 +1080,9 @@ void Player::setPlayseq(int playseq)
 
 void Player::setPosition(int position)
 {
-    unsigned int oldPosition = position_;
-
     mutex.lock();
+
+    unsigned int oldPosition = position_;
 
     // Bounds checking
     if (position < 0) {
@@ -1098,6 +1102,8 @@ void Player::setPosition(int position)
 
 void Player::setBlock(int block)
 {
+    mutex.lock();
+
     unsigned int oldBlock = block_;
 
     // Bounds checking
@@ -1107,8 +1113,8 @@ void Player::setBlock(int block)
         block = song->blocks() - 1;
     }
 
-    mutex.lock();
     block_ = block;
+
     mutex.unlock();
 
     if (block_ != oldBlock) {
@@ -1118,9 +1124,9 @@ void Player::setBlock(int block)
 
 void Player::setLine(int line, bool wrap)
 {
-    unsigned int oldLine = line_;
-
     mutex.lock();
+
+    unsigned int oldLine = line_;
 
     // Bounds checking
     if (wrap) {
