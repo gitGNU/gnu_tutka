@@ -133,9 +133,10 @@ Message *Message::parse(QDomElement element)
         int length = element.text().length() / 2;
         message->data_.resize(length);
         unsigned int d;
+        QByteArray data = element.text().toLatin1();
         for (int i = 0; i < length; i++) {
-            c[0] = element.text().at(i * 2).toLatin1();
-            c[1] = element.text().at(i * 2 + 1).toLatin1();
+            c[0] = data.at(i * 2);
+            c[1] = data.at(i * 2 + 1);
             sscanf((char *)c, "%X", &d);
             message->data_[i] = d;
         }
