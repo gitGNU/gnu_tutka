@@ -1023,7 +1023,9 @@ void Player::init()
     for (int message = 0; message < song->messages(); message++) {
         if (song->message(message)->isAutoSend()) {
             for (int output = 0; output < midi_->outputs(); output++) {
-                midi_->output(output)->writeRaw(song->message(message)->data());
+                if (midi_->output(output)->isEnabled()) {
+                    midi_->output(output)->writeRaw(song->message(message)->data());
+                }
             }
         }
     }
