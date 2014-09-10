@@ -1086,6 +1086,8 @@ void Player::setPlayseq(int playseq)
     if (playseq_ != oldPlayseq) {
         emit playseqChanged(playseq_);
     }
+
+    setPosition(position_);
 }
 
 void Player::setPosition(int position)
