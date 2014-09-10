@@ -883,6 +883,7 @@ void MainWindow::setPlayseq(unsigned int playseq)
     } else {
         ui->labelPlayingSequence->setText(tr("Playing Sequence %1/%2: %3").arg(playseq + 1).arg(song->playseqs()).arg(name));
     }
+    ui->labelPosition->setText(tr("Position %1/%2").arg(player->position() + 1).arg(song->playseq(player->playseq())->length()));
 }
 
 void MainWindow::setPosition(unsigned int position)
