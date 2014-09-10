@@ -68,6 +68,7 @@ void SectionListDialog::setSong(Song *song)
     this->song = song;
     connect(this->song, SIGNAL(playseqsChanged(int)), spinBoxDelegate, SLOT(setMaximum(int)));
     sectionListTableModel->setSong(song);
+    spinBoxDelegate->setMaximum(song->playseqs());
 
     connect(song, SIGNAL(sectionsChanged(unsigned int)), this, SLOT(setDeleteButtonVisibility()));
     setDeleteButtonVisibility();
