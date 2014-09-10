@@ -1,0 +1,208 @@
+<grammar xmlns="http://relaxng.org/ns/structure/1.0">
+  <start>
+    <element name="song">
+      <group>
+        <group>
+          <attribute name="name">
+            <text/>
+          </attribute>
+          <attribute name="tempo">
+            <text/>
+          </attribute>
+          <attribute name="ticksperline">
+            <text/>
+          </attribute>
+          <attribute name="mastervolume">
+            <text/>
+          </attribute>
+          <attribute name="sendsync">
+            <text/>
+          </attribute>
+        </group>
+        <group>
+          <element name="blocks">
+            <oneOrMore>
+              <element name="block">
+                <group>
+                  <group>
+                    <attribute name="number">
+                      <text/>
+                    </attribute>
+                    <attribute name="name">
+                      <text/>
+                    </attribute>
+                    <attribute name="tracks">
+                      <text/>
+                    </attribute>
+                    <attribute name="length">
+                      <text/>
+                    </attribute>
+                    <attribute name="commandpages">
+                      <text/>
+                    </attribute>
+                  </group>
+                  <group>
+                    <zeroOrMore>
+                      <element name="note">
+                        <group>
+                          <group>
+                            <attribute name="line">
+                              <text/>
+                            </attribute>
+                            <attribute name="track">
+                              <text/>
+                            </attribute>
+                            <attribute name="instrument">
+                              <text/>
+                            </attribute>
+                          </group>
+                          <text/>
+                        </group>
+                      </element>
+                    </zeroOrMore>
+                    <zeroOrMore>
+                      <element name="command">
+                        <group>
+                          <group>
+                            <attribute name="line">
+                              <text/>
+                            </attribute>
+                            <attribute name="track">
+                              <text/>
+                            </attribute>
+                            <attribute name="commandpage">
+                              <text/>
+                            </attribute>
+                            <attribute name="value">
+                              <text/>
+                            </attribute>
+                          </group>
+                          <text/>
+                        </group>
+                      </element>
+                    </zeroOrMore>
+                  </group>
+                </group>
+              </element>
+            </oneOrMore>
+          </element>
+          <element name="sections">
+            <oneOrMore>
+              <element name="section">
+                <group>
+                  <attribute name="number">
+                    <text/>
+                  </attribute>
+                  <text/>
+                </group>
+              </element>
+            </oneOrMore>
+          </element>
+          <element name="playingsequences">
+            <oneOrMore>
+              <element name="playingsequence">
+                <group>
+                  <group>
+                    <attribute name="number">
+                      <text/>
+                    </attribute>
+                    <attribute name="name">
+                      <text/>
+                    </attribute>
+                  </group>
+                  <oneOrMore>
+                    <element name="position">
+                      <group>
+                        <attribute name="number">
+                          <text/>
+                        </attribute>
+                        <text/>
+                      </group>
+                    </element>
+                  </oneOrMore>
+                </group>
+              </element>
+            </oneOrMore>
+          </element>
+          <element name="instruments">
+            <oneOrMore>
+              <element name="instrument">
+                <group>
+                  <attribute name="name">
+                    <text/>
+                  </attribute>
+                  <attribute name="number">
+                    <text/>
+                  </attribute>
+                  <optional>
+                    <attribute name="midiinterface">
+                      <text/>
+                    </attribute>
+                  </optional>
+                  <attribute name="midipreset">
+                    <text/>
+                  </attribute>
+                  <attribute name="midichannel">
+                    <text/>
+                  </attribute>
+                  <attribute name="defaultvelocity">
+                    <text/>
+                  </attribute>
+                  <attribute name="transpose">
+                    <text/>
+                  </attribute>
+                  <attribute name="hold">
+                    <text/>
+                  </attribute>
+                </group>
+              </element>
+            </oneOrMore>
+          </element>
+          <element name="tracks">
+            <oneOrMore>
+              <element name="track">
+                <group>
+                  <group>
+                    <attribute name="number">
+                      <text/>
+                    </attribute>
+                    <attribute name="volume">
+                      <text/>
+                    </attribute>
+                    <attribute name="mute">
+                      <text/>
+                    </attribute>
+                    <attribute name="solo">
+                      <text/>
+                    </attribute>
+                  </group>
+                  <text/>
+                </group>
+              </element>
+            </oneOrMore>
+          </element>
+          <element name="messages">
+            <zeroOrMore>
+              <element name="message">
+                <group>
+                  <group>
+                    <attribute name="number">
+                      <text/>
+                    </attribute>
+                    <attribute name="name">
+                      <text/>
+                    </attribute>
+                    <attribute name="autosend">
+                      <text/>
+                    </attribute>
+                  </group>
+                  <text/>
+                </group>
+              </element>
+            </zeroOrMore>
+          </element>
+        </group>
+      </group>
+    </element>
+  </start>
+</grammar>
