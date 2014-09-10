@@ -110,6 +110,9 @@ private slots:
 private:
     bool keyPress(QKeyEvent *event);
     bool keyRelease(QKeyEvent *event);
+    static void setGeometryFromString(QWidget *widget, const QString &string);
+    static QRect stringToRect(const QString &string);
+    static QString rectToString(const QRect &rect);
 
     Player *player;
     Ui::MainWindow *ui;

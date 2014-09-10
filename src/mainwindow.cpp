@@ -30,6 +30,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QScrollBar>
+#include <QScreen>
 #include "instrumentpropertiesdialog.h"
 #include "preferencesdialog.h"
 #include "trackvolumesdialog.h"
@@ -240,10 +241,42 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     keyToNote.insert(Qt::Key_Aring, 30);
     keyToNote.insert(Qt::Key_acute, 31);
     keyToNote.insert(Qt::Key_Delete, 0);
+
+    setGeometryFromString(this, settings.value("Windows/mainWindowGeometry", rectToString(qApp->primaryScreen()->availableGeometry())).toString());
+    setGeometryFromString(instrumentPropertiesDialog, settings.value("Windows/instrumentPropertiesDialogGeometry").toString());
+    setGeometryFromString(openDialog, settings.value("Windows/openDialogGeometry").toString());
+    setGeometryFromString(preferencesDialog, settings.value("Windows/preferencesDialogGeometry").toString());
+    setGeometryFromString(trackVolumesDialog, settings.value("Windows/trackVolumesDialogGeometry").toString());
+    setGeometryFromString(transposeDialog, settings.value("Windows/transposeDialogGeometry").toString());
+    setGeometryFromString(expandShrinkDialog, settings.value("Windows/expandShrinkDialogGeometry").toString());
+    setGeometryFromString(changeInstrumentDialog, settings.value("Windows/changeInstrumentDialogGeometry").toString());
+    setGeometryFromString(sectionListDialog, settings.value("Windows/sectionListDialogGeometry").toString());
+    setGeometryFromString(songPropertiesDialog, settings.value("Windows/songPropertiesDialogGeometry").toString());
+    setGeometryFromString(playingSequenceDialog, settings.value("Windows/playingSequenceDialogGeometry").toString());
+    setGeometryFromString(playingSequenceListDialog, settings.value("Windows/playingSequenceListDialogGeometry").toString());
+    setGeometryFromString(blockListDialog, settings.value("Windows/blockListDialogGeometry").toString());
+    setGeometryFromString(messageListDialog, settings.value("Windows/messageListDialogGeometry").toString());
+    setGeometryFromString(helpDialog, settings.value("Windows/helpDialogGeometry").toString());
 }
 
 MainWindow::~MainWindow()
 {
+    settings.setValue("Windows/mainWindowGeometry", rectToString(geometry()));
+    settings.setValue("Windows/instrumentPropertiesDialogGeometry", rectToString(instrumentPropertiesDialog->geometry()));
+    settings.setValue("Windows/openDialogGeometry", rectToString(openDialog->geometry()));
+    settings.setValue("Windows/preferencesDialogGeometry", rectToString(preferencesDialog->geometry()));
+    settings.setValue("Windows/trackVolumesDialogGeometry", rectToString(trackVolumesDialog->geometry()));
+    settings.setValue("Windows/transposeDialogGeometry", rectToString(transposeDialog->geometry()));
+    settings.setValue("Windows/expandShrinkDialogGeometry", rectToString(expandShrinkDialog->geometry()));
+    settings.setValue("Windows/changeInstrumentDialogGeometry", rectToString(changeInstrumentDialog->geometry()));
+    settings.setValue("Windows/sectionListDialogGeometry", rectToString(sectionListDialog->geometry()));
+    settings.setValue("Windows/songPropertiesDialogGeometry", rectToString(songPropertiesDialog->geometry()));
+    settings.setValue("Windows/playingSequenceDialogGeometry", rectToString(playingSequenceDialog->geometry()));
+    settings.setValue("Windows/playingSequenceListDialogGeometry", rectToString(playingSequenceListDialog->geometry()));
+    settings.setValue("Windows/blockListDialogGeometry", rectToString(blockListDialog->geometry()));
+    settings.setValue("Windows/messageListDialogGeometry", rectToString(messageListDialog->geometry()));
+    settings.setValue("Windows/helpDialogGeometry", rectToString(helpDialog->geometry()));
+
     delete copySelection_;
     delete copyBlock_;
     delete copyTrack_;
@@ -1199,5 +1232,36 @@ void MainWindow::setDeleteTrackVisibility()
 {
     if (song != NULL && block < song->blocks()) {
         ui->actionTrackDelete->setEnabled(song->block(block)->tracks() > 1);
+    }
+}
+
+QRect MainWindow::stringToRect(const QString &string)
+{
+     QRegExp regExp("=?([\\d]+)[xX]([\\d]+)([+-][\\d]+)([+-][\\d]+)");
+     if (regExp.indexIn(string) >= 0) {
+         QStringList captures = regExp.capturedTexts();
+         if (captures.length() == 5) {
+             return QRect(captures.at(3).toInt(), captures.at(4).toInt(), captures.at(1).toInt(), captures.at(2).toInt());
+         }
+     }
+     return QRect();
+}
+
+QString MainWindow::rectToString(const QRect &rect)
+{
+    return QString::number(rect.width()) + "x" + QString::number(rect.height()) + (rect.x() >= 0 ? QString("+") : QString()) + QString::number(rect.x()) + (rect.y() >= 0 ? QString("+") : QString()) + QString::number(rect.y());
+}
+
+void MainWindow::setGeometryFromString(QWidget *widget, const QString &string)
+{
+    if (widget != NULL) {
+        QRect rect = stringToRect(string);
+        if (rect.isValid()) {
+            widget->setGeometry(rect);
+        } else {
+            QRect mainRect = qApp->primaryScreen()->availableGeometry();
+            QRect widgetRect = widget->geometry();
+            widget->setGeometry(mainRect.x() + (mainRect.width() - widgetRect.width()) / 2, mainRect.y() + (mainRect.height() - widgetRect.height()) / 2, widgetRect.width(), widgetRect.height());
+        }
     }
 }
