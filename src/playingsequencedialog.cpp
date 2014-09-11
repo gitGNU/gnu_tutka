@@ -70,6 +70,7 @@ void PlayingSequenceDialog::setSong(Song *song)
     this->song = song;
     connect(this->song, SIGNAL(blocksChanged(int)), spinBoxDelegate, SLOT(setMaximum(int)));
     playingSequenceTableModel->setSong(song);
+    spinBoxDelegate->setMaximum(song->blocks());
 }
 
 void PlayingSequenceDialog::setPlayseq(unsigned int playseq)
