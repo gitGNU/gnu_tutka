@@ -852,6 +852,7 @@ void MainWindow::setSong(Song *song)
     setMode(player->mode());
     setTime(0);
     setInstrument(ui->spinBoxInstrument->value());
+    ui->tracker->setLine(player->line());
 
     instrumentPropertiesDialog->setSong(song);
     instrumentPropertiesDialog->setInstrument(ui->spinBoxInstrument->value());
