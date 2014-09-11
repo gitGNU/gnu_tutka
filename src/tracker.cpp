@@ -521,7 +521,7 @@ void Tracker::printCursor()
 
     QPainter painter(pixmap);
     painter.setPen(colors[ColorCursor]);
-    painter.drawRect(x, y, width * fontWidth, fontHeight - 1);
+    painter.drawRect(x, y, width * fontWidth + 1, fontHeight - 1);
 }
 
 void Tracker::drawClever(const QRect &area)
