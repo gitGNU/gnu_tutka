@@ -35,7 +35,11 @@ Tracker::Tracker(QWidget *parent) :
     startX(0),
     trackWidth(0),
     cursorLine(0),
+#ifdef __APPLE__
+    font("Monaco", 11),
+#else
     font("Monospace", 11),
+#endif
     fontWidth(0),
     fontHeight(0),
     fontAscent(0),
@@ -61,7 +65,8 @@ Tracker::Tracker(QWidget *parent) :
     mouseSelecting(false),
     mouseButton(Qt::NoButton)
 {
-    font.setStyleHint(QFont::Monospace);
+    font.setStyleHint(QFont::TypeWriter);
+    font.setStyleStrategy(QFont::ForceIntegerMetrics);
     calculateFontSize();
     initColors();
 
