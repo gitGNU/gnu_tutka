@@ -1030,15 +1030,15 @@ void Player::init()
         }
     }
 
-    emit songChanged(song);
-
     // Reset to the beginning
-    block_ = (unsigned int)-1;
-    section_ = (unsigned int)-1;
-    playseq_ = (unsigned int)-1;
-    position_ = (unsigned int)-1;
+    block_ = 0;
+    section_ = 0;
+    playseq_ = 0;
+    position_ = 0;
     line_ = 0;
-    updateLocation();
+
+    emit songChanged(song);
+    updateLocation(true);
 
     delete oldSong;
     oldSong = NULL;
