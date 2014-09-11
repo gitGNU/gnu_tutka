@@ -134,8 +134,11 @@ target.path = /usr/bin
 desktop.path = /usr/share/applications
 desktop.files = tutka.desktop
 
-icon.path = /usr/share/icons/hicolor/48x48/apps
-icon.files = tutka.png
+icon48.path = /usr/share/icons/hicolor/48x48/apps
+icon48.files = icons/48x48/tutka.png
+
+icon512.path = /usr/share/icons/hicolor/512x512/apps
+icon512.files = icons/512x512/tutka.png
 
 translations.path = /usr/share/tutka/translations
 translations.files = *.qm
@@ -151,7 +154,7 @@ QMAKE_CLEAN += *.gcov \
     *.gcno \
     ./.obj/*.gcno
 
-INSTALLS += target schemas desktop icon translations
+INSTALLS += target desktop icon48 icon512 translations
 
 
 
