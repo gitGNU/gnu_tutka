@@ -858,4 +858,5 @@ void Song::connectBlockSignals(Block *block)
 {
     connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
     connect(block, SIGNAL(lengthChanged(int)), this, SIGNAL(blockLengthChanged()));
+    connect(block, SIGNAL(nameChanged(QString)), this, SIGNAL(blockNameChanged()));
 }

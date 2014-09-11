@@ -187,6 +187,9 @@ signals:
     // Emitted when a name of a playing sequence has changed
     void playseqNameChanged();
 
+    // Emitted when a name of a block has changed
+    void blockNameChanged();
+
     // Emitted when a track is muted or soloed
     void trackMutedOrSoloed();
 
