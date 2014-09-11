@@ -113,6 +113,8 @@ TARGET = tutka
 QT += xml widgets gui
 DEFINES += QT_NO_DEBUG_OUTPUT
 TRANSLATIONS += tutka_fi.ts tutka_cs.ts
+ICON = tutka.icns
+QMAKE_INFO_PLIST = tutka.plist
 
 QMAKE_EXTRA_COMPILERS += lrelease
 lrelease.input         = TRANSLATIONS
@@ -128,6 +130,7 @@ macx:SOURCES += coremidi.cpp coremidiinterface.cpp
 macx:HEADERS += coremidi.h coremidiinterface.h
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
 macx:INCLUDEPATH += /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreMIDIServer.framework/Versions/A/Headers
+macx:TARGET = Tutka
 
 target.path = /usr/bin
 
