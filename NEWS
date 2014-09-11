@@ -1,6 +1,21 @@
+1.0.0
+-----
+- Properly use a monospace font on Mac OS X
+
+0.99.1
+------
+- RELAX NG schema for the file format
+- Crash fixes
+- UI update fixes
+- High resolution icons both on Linux and Mac OS X
+
 0.99.0
 ------
 - Rewritten in C++ and Qt
+- Support for Mac OS X
+- Czech localization
+- Save window positions on exit
+- Various bug fixes
 
 0.12.5
 ------
