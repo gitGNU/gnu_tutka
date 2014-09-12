@@ -461,7 +461,7 @@ void Tracker::printTrackHeaders()
     if (song_ != NULL) {
         for (int i = 1; i <= visibleTracks; i++, x += trackWidth) {
             QString name = song_->track(i + leftmostTrack - 1)->name();
-            QString buf = QString("%1: %2").arg(i + leftmostTrack).arg(name);
+            QString buf = QString("%1: %2").arg(i + leftmostTrack).arg(name).left(TRACKER_TRACK_WIDTH - 1);
             QColor color;
 
             if (song_->track(i + leftmostTrack - 1)->isMuted() && !song_->track(i + leftmostTrack - 1)->isSolo()) {
