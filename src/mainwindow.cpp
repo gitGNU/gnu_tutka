@@ -30,7 +30,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QScrollBar>
-#include <QScreen>
+#include <QDesktopWidget>
 #include "instrumentpropertiesdialog.h"
 #include "preferencesdialog.h"
 #include "trackvolumesdialog.h"
@@ -242,7 +242,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     keyToNote.insert(Qt::Key_acute, 31);
     keyToNote.insert(Qt::Key_Delete, 0);
 
-    setGeometryFromString(this, settings.value("Windows/mainWindowGeometry", rectToString(qApp->primaryScreen()->availableGeometry())).toString());
+    setGeometryFromString(this, settings.value("Windows/mainWindowGeometry", rectToString(qApp->desktop()->availableGeometry())).toString());
     setGeometryFromString(instrumentPropertiesDialog, settings.value("Windows/instrumentPropertiesDialogGeometry").toString());
     setGeometryFromString(openDialog, settings.value("Windows/openDialogGeometry").toString());
     setGeometryFromString(preferencesDialog, settings.value("Windows/preferencesDialogGeometry").toString());
@@ -1261,7 +1261,7 @@ void MainWindow::setGeometryFromString(QWidget *widget, const QString &string)
         if (rect.isValid()) {
             widget->setGeometry(rect);
         } else {
-            QRect mainRect = qApp->primaryScreen()->availableGeometry();
+            QRect mainRect = qApp->desktop()->availableGeometry();
             QRect widgetRect = widget->geometry();
             widget->setGeometry(mainRect.x() + (mainRect.width() - widgetRect.width()) / 2, mainRect.y() + (mainRect.height() - widgetRect.height()) / 2, widgetRect.width(), widgetRect.height());
         }
