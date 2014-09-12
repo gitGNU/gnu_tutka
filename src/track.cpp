@@ -37,7 +37,11 @@ Track::~Track()
 
 void Track::setName(const QString &name)
 {
-    name_ = name;
+    if (name_ != name) {
+        name_ = name;
+
+        emit nameChanged(name_);
+    }
 }
 
 QString Track::name() const
@@ -57,9 +61,11 @@ int Track::volume() const
 
 void Track::setMute(bool mute)
 {
-    this->mute = mute;
+    if (this->mute != mute) {
+        this->mute = mute;
 
-    emit mutedChanged(this->mute);
+        emit mutedChanged(this->mute);
+    }
 }
 
 bool Track::isMuted() const
@@ -69,9 +75,11 @@ bool Track::isMuted() const
 
 void Track::setSolo(bool solo)
 {
-    this->solo = solo;
+    if (this->solo != solo) {
+        this->solo = solo;
 
-    emit soloChanged(this->solo);
+        emit soloChanged(this->solo);
+    }
 }
 
 bool Track::isSolo() const

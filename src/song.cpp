@@ -851,6 +851,7 @@ void Song::addTrack(const QString &name)
     Track *track = new Track(name);
     connect(track, SIGNAL(mutedChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
     connect(track, SIGNAL(soloChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
+    connect(track, SIGNAL(nameChanged(QString)), this, SIGNAL(trackNameChanged()));
     tracks.append(track);
 }
 

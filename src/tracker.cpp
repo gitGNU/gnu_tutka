@@ -131,11 +131,15 @@ void Tracker::setSong(Song *song)
 {
     if (song_ != NULL) {
         disconnect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(queueDraw()));
+        disconnect(song_, SIGNAL(trackNameChanged()), this, SLOT(queueDraw()));
     }
 
     song_ = song;
 
-    connect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(queueDraw()));
+    if (song_ != NULL) {
+        connect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(queueDraw()));
+        connect(song_, SIGNAL(trackNameChanged()), this, SLOT(queueDraw()));
+    }
 }
 
 void Tracker::setBlock(unsigned int number)

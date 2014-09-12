@@ -193,6 +193,9 @@ signals:
     // Emitted when a track is muted or soloed
     void trackMutedOrSoloed();
 
+    // Emitted when a name of a track has changed
+    void trackNameChanged();
+
     // Emitted when the length of a block has changed
     void blockLengthChanged();
 
