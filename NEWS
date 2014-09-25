@@ -1,3 +1,10 @@
+1.0.2
+-----
+- Song changed status is now shown in the main window title bar
+- A confirmation dialog is now shown before quitting if the song has been modified
+- Fixes to keyboard event handling when menus are open
+- Long track names overlapping other track names was fixed
+
 1.0.1
 -----
 - Qt4 support was fixed
