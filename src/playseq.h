@@ -71,6 +71,9 @@ signals:
     // Emitted when the playing sequence name changes
     void nameChanged(QString);
 
+    // Emitted when the blocks in the playing sequence change
+    void blocksChanged();
+
 private:
     // Name
     QString name_;

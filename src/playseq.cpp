@@ -57,6 +57,8 @@ unsigned int Playseq::at(unsigned int pos) const
 void Playseq::set(unsigned int pos, unsigned int block)
 {
     blockNumbers[pos < blockNumbers.count() ? pos : (blockNumbers.count() - 1)] = block;
+
+    emit blocksChanged();
 }
 
 void Playseq::insert(unsigned int pos)

@@ -437,6 +437,8 @@ void Song::setSection(unsigned int pos, unsigned int playseq)
         sections_[pos] = playseq;
 
         mutex.unlock();
+
+        setModified();
     }
 }
 
@@ -914,6 +916,7 @@ void Song::connectPlayseqSignals(Playseq *playseq)
 {
     connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
     connect(playseq, SIGNAL(lengthChanged()), this, SLOT(setModified()));
+    connect(playseq, SIGNAL(blocksChanged()), this, SLOT(setModified()));
 }
 
 void Song::connectInstrumentSignals(Instrument *instrument)
