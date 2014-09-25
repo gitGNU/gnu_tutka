@@ -107,6 +107,7 @@ private slots:
     void setSongPath(const QString &path);
     void setDeleteTrackVisibility();
     void setWindowTitle();
+    void quit();
 
 private:
     bool keyPress(QKeyEvent *event);

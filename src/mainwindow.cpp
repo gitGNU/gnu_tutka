@@ -152,7 +152,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(openDialog, SIGNAL(fileSelected(QString)), this, SLOT(setSongPath(QString)));
     connect(ui->actionFileSave, SIGNAL(triggered()), this, SLOT(save()));
     connect(ui->actionFileSaveAs, SIGNAL(triggered()), this, SLOT(saveAs()));
-    connect(ui->actionFileQuit, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(ui->actionFileQuit, SIGNAL(triggered()), this, SLOT(quit()));
     connect(ui->actionEditCut, SIGNAL(triggered()), this, SLOT(cutSelection()));
     connect(ui->actionEditCopy, SIGNAL(triggered()), this, SLOT(copySelection()));
     connect(ui->actionEditPaste, SIGNAL(triggered()), this, SLOT(pasteSelection()));
@@ -1276,4 +1276,31 @@ void MainWindow::setGeometryFromString(QWidget *widget, const QString &string)
 void MainWindow::setWindowTitle()
 {
     QMainWindow::setWindowTitle(tr("Tutka: %1%2").arg(song->name()).arg(song->isModified() ? " (*)" : ""));
+}
+
+void MainWindow::quit()
+{
+    if (song != NULL && song->isModified()) {
+        QMessageBox messageBox;
+        messageBox.setWindowTitle(tr("Tutka"));
+        messageBox.setText(tr("The song has been modified."));
+        messageBox.setInformativeText(tr("Do you want to save your changes?"));
+        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        messageBox.setDefaultButton(QMessageBox::Save);
+        int ret = messageBox.exec();
+
+        switch (ret) {
+        case QMessageBox::Save:
+            save();
+            qApp->quit();
+            break;
+        case QMessageBox::Discard:
+            qApp->quit();
+            break;
+        default:
+            break;
+        }
+    } else {
+        qApp->quit();
+    }
 }
