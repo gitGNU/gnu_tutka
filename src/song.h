@@ -151,6 +151,9 @@ public:
     // Unlocks the song
     void unlock();
 
+    // Returns true if the song has been modified since it was saved, false otherwise
+    bool isModified() const;
+
 public slots:
     // Sets the number of ticks per line for the song
     void setTPL(int ticksPerLine);
@@ -164,11 +167,17 @@ public slots:
     // Sets whether to send sync
     void setSendSync(bool sendSync);
 
+    // Sets the modified status
+    void setModified(bool modified = true);
+
 private slots:
     // If the maximum number of tracks has changed recreate the track volumes
     void checkMaxTracks();
 
 signals:
+    // Emitted when the song name has changed
+    void nameChanged();
+
     // Emitted when the number of blocks has changed
     void blocksChanged(int blocks);
 
@@ -199,6 +208,21 @@ signals:
     // Emitted when the length of a block has changed
     void blockLengthChanged();
 
+    // Emitted when the song's modified status has changed
+    void modifiedChanged();
+
+    // Emitted when the send sync setting has changed
+    void sendSyncChanged();
+
+    // Emitted when the master volume has changed
+    void masterVolumeChanged();
+
+    // Emitted when the ticks per line value has changed
+    void ticksPerLineChanged();
+
+    // Emitted when the tempo has changed
+    void tempoChanged();
+
 private:
     // Initializes an empty song
     void init();
@@ -211,6 +235,12 @@ private:
 
     // Connects signals related to a block
     void connectBlockSignals(Block *block);
+
+    // Connects signals related to a playseq
+    void connectPlayseqSignals(Playseq *playseq);
+
+    // Connects signals related to an instrument
+    void connectInstrumentSignals(Instrument *instrument);
 
     // Name of the song
     QString name_;
@@ -236,6 +266,8 @@ private:
     QString path_;
     // Mutex for locking the song
     QMutex mutex;
+    // Whether the song has been modified since it was saved
+    bool modified;
 };
 
 #endif // SONG_H_

@@ -840,6 +840,8 @@ void MainWindow::setSong(Song *song)
 {
     if (this->song != NULL) {
         disconnect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), this->song, SLOT(setSendSync(bool)));
+        disconnect(this->song, SIGNAL(nameChanged()), this, SLOT(setWindowTitle()));
+        disconnect(this->song, SIGNAL(modifiedChanged()), this, SLOT(setWindowTitle()));
     }
 
     this->song = song;
@@ -853,12 +855,15 @@ void MainWindow::setSong(Song *song)
     setTime(0);
     setInstrument(ui->spinBoxInstrument->value());
     ui->tracker->setLine(player->line());
+    setWindowTitle();
 
     instrumentPropertiesDialog->setSong(song);
     instrumentPropertiesDialog->setInstrument(ui->spinBoxInstrument->value());
     ui->actionSettingsSendMidiSync->setChecked(song->sendSync());
 
     connect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), song, SLOT(setSendSync(bool)));
+    connect(this->song, SIGNAL(nameChanged()), this, SLOT(setWindowTitle()));
+    connect(this->song, SIGNAL(modifiedChanged()), this, SLOT(setWindowTitle()));
 }
 
 void MainWindow::setSection(unsigned int section)
@@ -1266,4 +1271,9 @@ void MainWindow::setGeometryFromString(QWidget *widget, const QString &string)
             widget->setGeometry(mainRect.x() + (mainRect.width() - widgetRect.width()) / 2, mainRect.y() + (mainRect.height() - widgetRect.height()) / 2, widgetRect.width(), widgetRect.height());
         }
     }
+}
+
+void MainWindow::setWindowTitle()
+{
+    QMainWindow::setWindowTitle(tr("Tutka: %1%2").arg(song->name()).arg(song->isModified() ? " (*)" : ""));
 }

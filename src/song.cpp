@@ -28,7 +28,8 @@
 
 Song::Song(const QString &path, QObject *parent) :
     QObject(parent),
-    path_(path)
+    path_(path),
+    modified(false)
 {
     bool initialized = false;
 
@@ -47,6 +48,22 @@ Song::Song(const QString &path, QObject *parent) :
         init();
     }
     checkMaxTracks();
+
+    connect(this, SIGNAL(nameChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(blocksChanged(int)), this, SLOT(setModified()));
+    connect(this, SIGNAL(playseqsChanged(int)), this, SLOT(setModified()));
+    connect(this, SIGNAL(sectionsChanged(unsigned int)), this, SLOT(setModified()));
+    connect(this, SIGNAL(messagesChanged(unsigned int)), this, SLOT(setModified()));
+    connect(this, SIGNAL(maxTracksChanged(unsigned int)), this, SLOT(setModified()));
+    connect(this, SIGNAL(playseqNameChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(blockNameChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(trackMutedOrSoloed()), this, SLOT(setModified()));
+    connect(this, SIGNAL(trackNameChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(blockLengthChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(sendSyncChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(masterVolumeChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(ticksPerLineChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(tempoChanged()), this, SLOT(setModified()));
 }
 
 Song::~Song()
@@ -80,7 +97,7 @@ void Song::init()
     connectBlockSignals(block);
     sections_.append(0);
     Playseq *playseq = new Playseq;
-    connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
+    connectPlayseqSignals(playseq);
     playseqs_.append(playseq);
     blocks_.append(block);
 }
@@ -92,7 +109,11 @@ QString Song::name() const
 
 void Song::setName(const QString &name)
 {
-    name_ = name;
+    if (name_ != name) {
+        name_ = name;
+
+        emit nameChanged();
+    }
 }
 
 unsigned int Song::tempo() const
@@ -112,7 +133,11 @@ bool Song::sendSync() const
 
 void Song::setSendSync(bool sendSync)
 {
-    sendSync_ = sendSync;
+    if (sendSync_ != sendSync) {
+        sendSync_ = sendSync;
+
+        emit sendSyncChanged();
+    }
 }
 
 unsigned int Song::masterVolume() const
@@ -122,7 +147,11 @@ unsigned int Song::masterVolume() const
 
 void Song::setMasterVolume(unsigned int masterVolume)
 {
-    masterVolume_ = masterVolume;
+    if (masterVolume_ != masterVolume) {
+        masterVolume_ = masterVolume;
+
+        emit masterVolumeChanged();
+    }
 }
 
 QString Song::path() const
@@ -293,7 +322,7 @@ void Song::insertPlayseq(unsigned int pos)
 
     // Insert a new playing sequence
     Playseq *playseq = new Playseq;
-    connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
+    connectPlayseqSignals(playseq);
     playseqs_.insert(pos, playseq);
 
     // Update sections
@@ -413,12 +442,20 @@ void Song::setSection(unsigned int pos, unsigned int playseq)
 
 void Song::setTPL(int ticksPerLine)
 {
-    ticksPerLine_ = ticksPerLine;
+    if (ticksPerLine_ != ticksPerLine) {
+        ticksPerLine_ = ticksPerLine;
+
+        emit ticksPerLineChanged();
+    }
 }
 
 void Song::setTempo(int tempo)
 {
-    tempo_ = tempo;
+    if (tempo_ != tempo) {
+        tempo_ = tempo;
+
+        emit tempoChanged();
+    }
 }
 
 void Song::checkMaxTracks()
@@ -453,7 +490,9 @@ void Song::checkMaxTracks()
 void Song::checkInstrument(int instrument)
 {
     while (instrument >= instruments_.count()) {
-        instruments_.append(new Instrument("Unnamed"));
+        Instrument *instrument = new Instrument("Unnamed");
+        connectInstrumentSignals(instrument);
+        instruments_.append(instrument);
     }
 }
 
@@ -518,9 +557,9 @@ bool Song::parse(QDomElement element)
                     if (temp.isElement()) {
                         int number = -1;
                         Block *block = Block::parse(temp);
-                        connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
 
                         if (block != NULL) {
+                            connectBlockSignals(block);
                             prop = temp.attributeNode("number");
                             if (!prop.isNull()) {
                                 number = prop.value().toInt();
@@ -583,6 +622,7 @@ bool Song::parse(QDomElement element)
                         Playseq *playseq = Playseq::parse(temp);
 
                         if (playseq != NULL) {
+                            connectPlayseqSignals(playseq);
                             prop = temp.attributeNode("number");
                             if (!prop.isNull()) {
                                 number = prop.value().toInt();
@@ -590,7 +630,7 @@ bool Song::parse(QDomElement element)
 
                             while (playseqs_.count() < number) {
                                 Playseq *playseq = new Playseq;
-                                connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
+                                connectPlayseqSignals(playseq);
                                 playseqs_.append(playseq);
                             }
                             if (playseqs_.count() == number) {
@@ -614,13 +654,16 @@ bool Song::parse(QDomElement element)
                         Instrument *instrument = Instrument::parse(temp);
 
                         if (instrument != NULL) {
+                            connectInstrumentSignals(instrument);
                             prop = temp.attributeNode("number");
                             if (!prop.isNull()) {
                                 number = prop.value().toInt();
                             }
 
                             while (instruments_.count() < number) {
-                                instruments_.append(new Instrument);
+                                Instrument *instrument = new Instrument;
+                                connectInstrumentSignals(instrument);
+                                instruments_.append(instrument);
                             }
                             if (instruments_.count() == number) {
                                 instruments_.append(instrument);
@@ -834,6 +877,8 @@ void Song::save(const QString &path)
     file.write("<?xml version=\"1.0\"?>\n");
     file.write(document.toByteArray());
     file.close();
+
+    setModified(false);
 }
 
 void Song::lock()
@@ -860,4 +905,32 @@ void Song::connectBlockSignals(Block *block)
     connect(block, SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
     connect(block, SIGNAL(lengthChanged(int)), this, SIGNAL(blockLengthChanged()));
     connect(block, SIGNAL(nameChanged(QString)), this, SIGNAL(blockNameChanged()));
+    connect(block, SIGNAL(areaChanged(int, int, int, int)), this, SLOT(setModified()));
+    connect(block, SIGNAL(tracksChanged(int)), this, SLOT(setModified()));
+    connect(block, SIGNAL(commandPagesChanged(int)), this, SLOT(setModified()));
+}
+
+void Song::connectPlayseqSignals(Playseq *playseq)
+{
+    connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
+    connect(playseq, SIGNAL(playseqChanged()), this, SLOT(setModified()));
+}
+
+void Song::connectInstrumentSignals(Instrument *instrument)
+{
+    connect(instrument, SIGNAL(nameChanged(QString)), this, SLOT(setModified()));
+}
+
+bool Song::isModified() const
+{
+    return modified;
+}
+
+void Song::setModified(bool modified)
+{
+    if (this->modified != modified) {
+        this->modified = modified;
+
+        emit modifiedChanged();
+    }
 }
