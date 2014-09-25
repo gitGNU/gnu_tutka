@@ -316,6 +316,10 @@ void MainWindow::mousePressEvent(QMouseEvent *)
 
 bool MainWindow::keyPress(QKeyEvent *event)
 {
+    if (ui->menubar->activeAction() != NULL) {
+        return false;
+    }
+
     Block *block = ui->tracker->block();
     bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
     bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
