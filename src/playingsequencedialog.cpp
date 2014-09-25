@@ -77,7 +77,7 @@ void PlayingSequenceDialog::setPlayseq(unsigned int playseq)
 {
     if (this->playseq != NULL) {
         disconnect(this->playseq, SIGNAL(nameChanged(QString)), this, SLOT(setWindowTitle()));
-        disconnect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(setDeleteButtonVisibility()));
+        disconnect(this->playseq, SIGNAL(lengthChanged()), this, SLOT(setDeleteButtonVisibility()));
     }
 
     this->playseqNumber = playseq;
@@ -85,7 +85,7 @@ void PlayingSequenceDialog::setPlayseq(unsigned int playseq)
     playingSequenceTableModel->setPlayseq(this->playseq);
 
     connect(this->playseq, SIGNAL(nameChanged(QString)), this, SLOT(setWindowTitle()));
-    connect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(setDeleteButtonVisibility()));
+    connect(this->playseq, SIGNAL(lengthChanged()), this, SLOT(setDeleteButtonVisibility()));
     setWindowTitle();
     setDeleteButtonVisibility();
 }

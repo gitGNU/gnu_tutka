@@ -69,7 +69,7 @@ void Playseq::insert(unsigned int pos)
     // Which block number to insert
     blockNumbers.insert(pos, blockNumbers[pos < blockNumbers.count() ? pos : (blockNumbers.count() - 1)]);
 
-    emit playseqChanged();
+    emit lengthChanged();
 }
 
 void Playseq::remove(unsigned int pos)
@@ -79,7 +79,7 @@ void Playseq::remove(unsigned int pos)
         blockNumbers.removeAt(pos);
     }
 
-    emit playseqChanged();
+    emit lengthChanged();
 }
 
 Playseq *Playseq::parse(QDomElement element)

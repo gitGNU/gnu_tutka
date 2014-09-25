@@ -48,10 +48,10 @@ void PlayingSequenceTableModel::setPlayseq(Playseq *playseq)
 {
     beginResetModel();
     if (this->playseq != NULL) {
-        disconnect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(refresh()));
+        disconnect(this->playseq, SIGNAL(lengthChanged()), this, SLOT(refresh()));
     }
     this->playseq = playseq;
-    connect(this->playseq, SIGNAL(playseqChanged()), this, SLOT(refresh()));
+    connect(this->playseq, SIGNAL(lengthChanged()), this, SLOT(refresh()));
     endResetModel();
 }
 

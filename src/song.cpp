@@ -913,7 +913,7 @@ void Song::connectBlockSignals(Block *block)
 void Song::connectPlayseqSignals(Playseq *playseq)
 {
     connect(playseq, SIGNAL(nameChanged(QString)), this, SIGNAL(playseqNameChanged()));
-    connect(playseq, SIGNAL(playseqChanged()), this, SLOT(setModified()));
+    connect(playseq, SIGNAL(lengthChanged()), this, SLOT(setModified()));
 }
 
 void Song::connectInstrumentSignals(Instrument *instrument)

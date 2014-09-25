@@ -879,13 +879,13 @@ void MainWindow::setPlayseq(unsigned int playseq)
 {
     if (this->playseq < song->playseqs()) {
         disconnect(song->playseq(this->playseq), SIGNAL(nameChanged(QString)), this, SLOT(setPlayseq()));
-        disconnect(song->playseq(this->playseq), SIGNAL(playseqChanged()), this, SLOT(setPosition()));
+        disconnect(song->playseq(this->playseq), SIGNAL(lengthChanged()), this, SLOT(setPosition()));
     }
 
     this->playseq = playseq;
 
     connect(song->playseq(playseq), SIGNAL(nameChanged(QString)), this, SLOT(setPlayseq()));
-    connect(song->playseq(playseq), SIGNAL(playseqChanged()), this, SLOT(setPosition()));
+    connect(song->playseq(playseq), SIGNAL(lengthChanged()), this, SLOT(setPosition()));
 
     QString name = song->playseq(playseq)->name();
     if (name.isEmpty()) {
