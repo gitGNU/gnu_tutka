@@ -301,9 +301,9 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
     if (event->delta() > 0) {
-        player->setLine(player->line() - 8);
+        player->setLine(player->line() - 4);
     } else if (event->delta() < 0) {
-        player->setLine(player->line() + 8);
+        player->setLine(player->line() + 4);
     }
 }
 
