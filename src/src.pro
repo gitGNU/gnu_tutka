@@ -129,7 +129,7 @@ unix:!macx:LIBS += -lasound
 macx:SOURCES += coremidi.cpp coremidiinterface.cpp
 macx:HEADERS += coremidi.h coremidiinterface.h
 macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
-macx:INCLUDEPATH += /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreMIDIServer.framework/Versions/A/Headers
+macx:INCLUDEPATH += /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/CoreMIDI.framework/Versions/A/Headers
 macx:TARGET = Tutka
 
 target.path = /usr/bin
