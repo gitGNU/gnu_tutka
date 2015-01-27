@@ -1,0 +1,795 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Tutka</title>
+</head>
+<body>
+<h1>Tutka</h1>
+
+<h2><a>Usage</a></h2>
+
+<h3 class="nopadding"><a id="blocks">Blocks</a></h3>
+
+<p>
+In Tutka songs are made of blocks. These blocks can be played in any order to
+form a complete song by placing them in a
+<a href="#playingsequence">playing sequence</a>. Blocks can be created and
+deleted and their properties can be edited using the Block List window. The
+Block List window can be opened by selecting List from the Block menu or by
+clicking the Block label in the bottom right part of the main window. The Block
+List window can also be used to select the currently visible and editable block.
+</p>
+
+<h4>Lines</h4>
+
+<p>
+Each block represents a certain period in time - a part of the song. This time
+period is further divided into lines that are represented vertically. A block
+begins from the top and ends at the bottom. All contents of a line are played
+simultaneously. If the playing speed is not varied each line is equal in
+length. There may be any number of lines in a block. The number of lines in a
+block can be changed using the Block List window.
+</p>
+
+<h4>Tracks</h4>
+
+<p>
+Horizontally blocks are divided into tracks. Multiple tracks allow multiple
+notes on the same line because only one note can be played on one track at a
+time. Each track has room for one note and one or more commands on each of the
+block's lines. There may be any number of tracks in a block. The number of
+tracks in a block can be changed using the Block List window.
+</p>
+
+<p>
+Each track has a global master volume between 0 (minimum) and 127 (maximum). It
+can be used to change the volume of a track in the entire song. Tracks can also
+be muted so that their contents will not be played. These settings can be set
+using the Track Volumes window. The Track Volumes window can be opened by
+selecting Track Volumes from the Song menu.
+</p>
+
+<h3><a id="instruments">Instruments</a></h3>
+
+<p>
+Each note is played using an instrument. Each instrument can have properties
+such as name, MIDI interface, MIDI channel, default volume, hold time and so
+on. Instruments are numbered from from 1 to 9 and from A to Z. The currently
+active instrument is shown in the top right part of the main window. It is used
+when playing or adding notes into blocks using the keyboard. The active
+instrument can be selected using the numeric keypad keys so that the Num Lock
+key activates instrument 1, the divide key activates instrument 2 and so on.
+The previous or the next instrument can be activated also by pressing the
+Control key and the left or right cursor keys, respectively, at the same time.
+The active instrument can be edited using the Instrument Properties window
+which can be opened using the Properties button in the top right part of
+the main window.
+</p>
+
+<h3><a id="editing">Editing</a></h3>
+
+<p>
+Notes can be played and entered using the keyboard. The keyboard is divided
+into two octaves. The keys ZSXDCVGBHNJM represent the notes of the lower one of
+the two octaves and the keys Q2W3ER5T6Y7U represent the upper one. The octaves
+in question can be selected using the function keys or by using the Keyboard
+Octaves selector in the main window. The notes will be played using the
+currently active instrument.
+</p>
+
+<h4>Cursor</h4>
+
+<p>
+The current block is shown in the main part of the main window. The cursor
+marks the spot being edited. The cursor keys can be used to move the cursor
+around in a block. The line on which the cursor is highlighted. On each track
+there are six possible cursor positions: the note position, the instrument
+position, two command positions and two command value positions.
+</p>
+
+<h4>Note, instrument and command positions</h4>
+
+<p>
+When the cursor is in a note position the keyboard can be used to play notes
+using the current instrument. If the Edit checkbox is marked the note played is
+also placed in the current cursor position and the cursor is moved downwards
+the number of lines selected using the Space selector in the main window. The
+Edit checkbox can be checked and unchecked using the Space key.
+</p>
+
+<p>
+When the cursor is in an instrument position the keyboard keys 0-9 and A-Z can
+be used to select the instrument using which the note in the note position will
+be played.
+</p>
+
+<p>
+When the cursor is in an command or command value position the keyboard keys
+0-9 and A-F can be used to enter the command to be used in the particular line
+and track of the block.
+</p>
+
+<h3><a id="commands">Commands</a></h3>
+
+<p>
+Commands control things like volume, aftertouch, pitch bending and delays of
+notes on the track they are placed on. Some commands, such as the tempo
+command, affect the playback regardless of which track they are placed on.
+MIDI controllers can also be controlled. Commands are placed on tracks on the
+right side of the notes.
+</p>
+
+<p>
+Commands consist of two byte-sized integers in hexadecimal
+representation. The first byte (integer) is the command number. The second byte
+(integer) is the value to be given to the command. Command numbers 00-7F are
+reserved for Tutka's commands; command numbers 80-FF represent MIDI controllers
+0-127 so that MIDI controller number is the command number minus 80.
+</p>
+
+<p>
+Most commands (and all MIDI controller commands) have a value range of 00-7F
+due to the precision defined in the MIDI protocol. In such commands values
+80-FF can be used to slide the value from the last value to the defined value
+minus 80 during the line the command is on.
+</p>
+
+<p>
+Each block can have multiple command pages. This allows multiple commands to
+be placed on the same line on the same track. The active command page is shown
+on the lower right corner of the main window. The next command page can be
+activated by pressing the Control key and the Tab key simultaneously. The number
+of command pages in a block can be changed using the Block List window.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Command number</th><th>Short description</th><th>Value range</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>00</td><td>Set/slide value of previously used command</td><td>00-7F (slide 80-FF)</td></tr>
+<tr><td>01</td><td>Set/slide pitch wheel</td><td>00-7F (slide 80-FF)</td></tr>
+<tr><td>02</td><td>End block, set line</td><td>00-FF</td></tr>
+<tr><td>03</td><td>Set playing sequence position</td><td>00-FF</td></tr>
+<tr><td>07</td><td>Send program change</td><td>00-7F</td></tr>
+<tr><td>08</td><td>Send System Exclusive message</td><td>00-FF</td></tr>
+<tr><td>09</td><td>Set hold value</td><td>00-FF</td></tr>
+<tr><td>0A</td><td>Retrigger note</td><td>00-FF</td></tr>
+<tr><td>0B</td><td>Note delay</td><td>00-FF</td></tr>
+<tr><td>0C</td><td>Velocity/aftertouch/note off</td><td>00-7F (slide 80-FF)</td></tr>
+<tr><td>0D</td><td>Set channel pressure</td><td>00-7F (slide 80-FF)</td></tr>
+<tr><td>0E</td><td>Set ticks per line/Stop</td><td>00-FF</td></tr>
+<tr><td>0F</td><td>Set tempo/Stop</td><td>00-FF</td></tr>
+<tr><td>80-FF</td><td>Set/slide MIDI controller value</td><td>00-7F (slide 80-FF)</td></tr>
+</tbody>
+</table>
+
+<h3><a id="playingsequence">Playing sequence</a></h3>
+
+<p>
+The playing sequence is used to define in which order the blocks are to be
+played. The same block can be played many times or may not be played at all if
+it is used for testing or editing purposes. The playing sequence can be edited
+using the Playing Sequence window which can be opened by clicking the
+Playing Sequence button in the bottom middle part of the main window.
+</p>
+
+<h4>Sections</h4>
+
+<p>
+For defining the structure of the song even more the song can be constructed
+from multiple playing sequences that can be played in any order. Playing
+sequences can be created using the Playing Sequence window and can then be
+placed in the section list for determining their playing order. The
+section list can be considered to be the playing sequence of playing sequences.
+The section list can be edited using the Section List window which can be
+opened using the Section List button in the bottom left part of the main
+window.
+</p>
+
+<h3><a id="windows">Windows</a></h3>
+
+<h4>Main window</h4>
+
+<p>
+The main window contains the primary controls of Tutka.
+</p>
+
+<p>
+The playback controls are in the top left corner. The buttons can be used to
+play the song from the beginning, to continue playing the song from the current
+position, to play the current block from the beginning, to continue playing
+the current block from the current position and to stop playback.
+</p>
+
+<p>
+The Instrument section in the top right corner contains the selector for
+current instrument. The spin button can be used to select the instrument to use
+for editing. The text field shows the name of the current instrument. The
+<b>Properties</b> button opens the Instrument properties dialog which can be
+used to edit the properties of the current instrument.
+</p>
+
+<p>
+Below the Instrument section are some miscellaneous toggles and settings used
+while editing.
+</p>
+
+<ul>
+<li>
+The <b>Edit</b> check box toggles edit mode on or off. When edit mode
+is on notes can be entered in the tracker view.
+</li>
+<li>
+The <b>Chord</b> check box toggles chord mode on or off. When chord mode is on
+the cursor advances to the next track when a key is pressed and goes back when
+the key is released. This can be used to enter chords in the tracker view.
+</li>
+<li>
+The <b>Space</b> spin button is used to select how many lines the tracker
+advances when a note is entered in edit mode.
+</li>
+<li>
+The <b>Keyboard Octaves</b> combobox is used to select which octaves are played
+when the keyboard is used to enter or play notes.
+</li>
+</ul>
+
+<p>
+The middle part of the main window contains a tracker view that displays one
+block of the song at a time. This is where all actual editing is done.
+</p>
+
+<p>
+The bottom part contains a status bar that shows the currently active section,
+playing sequence, playing sequence position, block and command page. The
+<b>Section</b>, <b>Playing Sequence</b>, <b>Position</b> and <b>Block</b>
+labels can also be clicked to open the Section list, Playing sequence list,
+Playing sequence and Block list windows, respectively. There are also two
+separate status fields for the current playing status and current playing time.
+</p>
+
+<h4>Block list</h4>
+
+<p>
+The Block list window can be used to select the current block, create new
+blocks, delete existing blocks and change the properties of the blocks.
+</p>
+
+<ul>
+<li>
+To select a block click on the line that displays information about the block
+you want to select.
+</li>
+<li>
+To insert a new block before the current block click on the
+<b>Insert New</b> button.
+</li>
+<li>
+To append a new block after all blocks click on the <b>Append New</b> button.
+</li>
+<li>
+To delete the current block click on the <b>Delete</b> button.
+</li>
+<li>
+To change the name of the current block click on the <b>Name</b> cell of the
+current block in the block list. The cell changes to a text entry field and you
+can edit the name of the block. Press Enter when done.
+</li>
+<li>
+To change the number of tracks in the current block click on the <b>Tracks</b>
+cell of the current block in the block list. The cell changes to a numeric
+entry field and you can change the number of tracks in the block. Press Enter
+when done.
+</li>
+<li>
+To change the length of the current block click on the <b>Length</b> cell of
+the current block in the block list. The cell changes to a numeric entry field
+and you can change the number of lines in the block. Press Enter when done.
+</li>
+<li>
+To change the number of command pages in the current block click on the
+<b>Command Pages</b> cell of the current block in the block list. The cell
+changes to a numeric entry field and you can change the number of command
+pages in the block. Press Enter when done.
+</li>
+</ul>
+
+<h4>Playing sequence</h4>
+
+<p>
+The Playing sequence window can be used to select the current position in the
+current playing sequence, insert new positions, delete existing positions and
+change the block to be played in different playing sequence positions.
+</p>
+
+<ul>
+<li>
+To select a playing sequence position click on the line that displays
+information about the playing sequence position you want to select.
+</li>
+<li>
+To insert a new position before the current position click on the <b>Insert</b>
+button.
+</li>
+<li>
+To append a new position after all positions click on the <b>Append</b> button.
+</li>
+<li>
+To delete the current position click on the <b>Delete</b> button.
+</li>
+<li>
+To change the block number to play in the current playing sequence position
+click on the <b>Block Number</b> cell of the current position in the position
+list. The cell changes to a numeric entry field and you can edit the number of
+the block to be played. Press Enter when done.
+</li>
+</ul>
+
+<h4>Playing sequence list</h4>
+
+<p>
+The Playing sequence list window can be used to select the current playing
+sequence, insert new playing sequences, delete existing playing sequences and
+change the name of the current playing sequence.
+</p>
+
+<ul>
+<li>
+To select a playing sequence click on the line that displays
+information about the playing sequence you want to select.
+</li>
+<li>
+To insert a new playing sequence before the current playing sequence click on
+the <b>Insert</b> button.
+</li>
+<li>
+To append a new playing sequence after all playing sequences click on the
+<b>Append</b> button.
+</li>
+<li>
+To delete the current playing sequence click on the <b>Delete</b> button.
+</li>
+<li>
+To change the name of the current playing sequence click on the <b>Name</b>
+cell of the current playing sequence in the playing sequence list. The cell
+changes to a text entry field and you can edit the name of the playing
+sequence. Press Enter when done.
+</li>
+</ul>
+
+<h4>Section list</h4>
+
+<p>
+The Section list window can be used to select the current section, insert new
+sections, delete existing sections and change the playing sequence to be played
+in different sections.
+</p>
+
+<ul>
+<li>
+To select a section click on the line that displays information about the
+section you want to select.
+</li>
+<li>
+To insert a new section before the current section click on the <b>Insert</b>
+button.
+</li>
+<li>
+To append a new section after all sections click on the <b>Append</b> button.
+</li>
+<li>
+To delete the current section click on the <b>Delete</b> button.
+</li>
+<li>
+To change the playing sequence number to play in the current section
+click on the <b>Playing Sequence</b> cell of the current section in the section
+list. The cell changes to a numeric entry field and you can edit the number of
+the playing sequence to be played. Press Enter when done.
+</li>
+</ul>
+
+<h4>Instrument properties</h4>
+
+<p>
+The Instrument properties window can be used to change the name, MIDI
+interface, MIDI channel, volume, transpose and hold of the current instrument.
+</p>
+
+<ul>
+<li>
+The <b>MIDI interface</b> combo box shows all available MIDI interfaces and an
+option for no output.
+</li>
+<li>
+<b>MIDI channel</b> is the MIDI channel to use (on the selected MIDI interface)
+from 1 to 16.
+</li>
+<li>
+<b>Volume</b> is the default volume (velocity) of the instrument from 0 to 127.
+</li>
+<li>
+<b>Transpose</b> is the number of halfnotes to transpose the instrument when 
+played. Valid range is from -24 (two octaves down) to 24 (two octaves up).
+</li>
+<li>
+<b>Hold</b> defines the default hold value for the instrument - the amount of
+ticks until the played note is stopped. Valid range is from 0 to 255. If the
+hold value is 0 the note will not be stopped until another note is played on
+the same track or playing is stopped.
+</li>
+</ul>
+
+<h4>Open file</h4>
+
+<p>
+The Open file dialog can be used to load a Tutka XML file or an MMD song.
+</p>
+
+<h4>Save as</h4>
+
+<p>
+The Save as dialog can be used to save the current song as a Tutka XML file,
+as an MMD song or as an SMF (MIDI) file. The file format depends on the file
+extension: <code>.med</code>, <code>.mmd</code> and <code>.mmd2</code> save as
+an MMD file, <code>.mid</code> saves as an SMF file and other extensions save
+in Tutka format.
+</p>
+
+<h4>Transpose</h4>
+
+<p>
+The Transpose dialog can be used to transpose a part of the song. The area to
+transpose can be entire song, current block, current track or selection. You
+can select whether to transpose all instrument in the area or just the current
+instrument. The notes can be tranposed octave up, octave down, halfnote up or
+halfnote down.
+</p>
+
+<h4>Expand/shrink</h4>
+
+<p>
+The Expand/Shrink dialog can be used to expand or shrink a part of the song.
+Expanding means adding empty lines between existing lines. Shrinking means
+removing lines between lines. Expand/Shrink does NOT change the length of the
+block so before expanding make sure that there is enough space for all notes to
+fit. The area to expand/shrink can be entire song, current block, current track
+or selection. You can select how many lines to add between each line (expand)
+or how many lines two delete after each line (shrink).
+</p>
+
+<h4>Change instrument</h4>
+
+<p>
+The Change instrument dialog can be used to change an instrument to another in 
+a part of the song. The area for changing instruments on can be entire song,
+current block, current track or selection. <b>From</b> and <b>To</b> fields are
+used to select the instrument number to change and the instrument number to
+change to. You can also swap instruments instead changing using the <b>Swap</b>
+button.
+</p>
+
+<h4>Track volumes</h4>
+
+<p>
+The Track volumes dialog is used to set the default volume of each track. All
+volumes are from 0 to 127. Tracks can also be muted: muted tracks are not
+played. Tracks can also be soloed. If tracks are soloed the tracks that are
+not soloed are not played. Descriptive names can also be added to tracks.
+</p>
+
+<p>
+Note that the number of tracks displayed in the track volumes dialog is the
+maximum number of tracks in the current song. If the maximum number of tracks
+in the current song decreases tracks are removed from the Track volumes dialog
+and their names are lost.
+</p>
+
+<h4>Song properties</h4>
+
+<p>
+The Song properties dialog is used to set the name and tempo of the current
+song. The <b>Tempo</b> slider sets the tempo of the song in beats per minute.
+The <b>Ticks per line</b> slider sets how many MIDI ticks each tracker line
+represents. In MIDI a quarter (1/4) note is 24 ticks long, so the default
+value, 6 ticks, means that each line represents a 1/16 note.
+</p>
+
+<h4>Message list</h4>
+
+<p>
+The Message list dialog allows you to create, delete, send, receive, load and
+save MIDI messages, set their names and lengths and determine whether they
+should be automatically sent after loading. Before MIDI messages can be sent,
+received, loaded or saved or before their properties can be changed they must
+be created.
+</p>
+
+<ul>
+<li>
+To select a MIDI message for editing click on the row that contains information
+about the MIDI message.
+</li>
+<li>
+To insert a new MIDI message before the currently selected message click the
+<b>Insert New</b> button.
+</li>
+<li>
+To append a new MIDI message after all messages click the <b>Append New</b>
+button.
+</li>
+<li>
+To delete the currently selected MIDI message click the <b>Delete</b> button.
+</li>
+<li>
+To send the currently selected MIDI message click the <b>Send</b> button.
+</li>
+<li>
+To receive a MIDI message from a MIDI interface as the currently selected
+message click the <b>Receive</b> button to open the Receive MIDI message
+dialog.
+</li>
+<li>
+To load a raw MIDI message from disk as the currently selected message click
+the <b>Load</b> button to open the Load message dialog.
+</li>
+<li>
+To save the currently selected message to a file as a raw MIDI message click
+the <b>Save</b> button to open the Save message dialog.
+</li>
+<li>
+To change the name of the current message click on the <b>Name</b> cell of the
+message list row that contains information about the message. The cell will
+change into a text entry field so you can edit the name. Press Enter when you
+are done.
+</li>
+<li>
+To change the length of the current message click on the <b>Length</b> cell of
+the message list row that contains information about the message. The cell will
+change into a numeric entry field so you can edit the length. Press Enter when
+you are done.
+</li>
+<li>
+To define that the current message should be automatically sent after loading
+the song click on the checkbox in the <b>Automatically send message after
+loading</b> cell of the message list row that contains information about the
+message.
+</li>
+</ul>
+
+<h4>Load message</h4>
+
+<p>
+The Load message dialog can be used to load a raw MIDI message from a file as
+the currently selected message.
+</p>
+
+<h4>Save message</h4>
+
+<p>
+The Save message dialog can be used to save the currently selected message to
+a file as a raw MIDI message.
+</p>
+
+<h4>Receive MIDI message</h4>
+
+<p>
+This dialog allows you to receive a MIDI message to the currently selected
+message.
+</p>
+
+<p>
+The <b>MIDI interface</b> combo box shows all MIDI interfaces that are
+enabled for input in the preferences. At least one MIDI interface must be
+enabled for input to receive a MIDI message.
+</p>
+
+<p>
+Receiving can be started using the <b>Receive</b> button.
+It can be stopped using the <b>Stop</b> button.
+</p>
+
+<h4>Preferences</h4>
+
+<p>
+The <b>MIDI interfaces list</b> allows you to select which of the available
+MIDI interfaces are to be used for input and which for output. If a MIDI
+interface is not enabled for output notes sent to it using an instrument that
+has the MIDI interface defined are not played. If a MIDI interface is not
+enabled for input MIDI messages can not be received through the interface and
+the interface is not used for receiving notes.
+</p>
+
+<p>
+The <b>Scheduling mode</b> is used to control how Tutka schedules the player.
+RTC is currently the most accurate method but may require the system
+administrator to give the user rights to use at least a 512 Hz RTC timer by
+running <code>sysctl dev.rtc.max-user-freq to 512</code>. The other option is
+Nanosleep which is not very accurate.
+</p>
+
+<p>
+If RTC timing is selected Tutka tries to use a 2048 Hz timer if available. If
+it fails it tries 1024 Hz and 512 Hz and if neither of those are available it
+falls back to the Nanosleep method. Another thing worth noting is that
+even a 2048 Hz timer is not precise enough so Tutka busy loops until the very
+exact moment. This causes a slight CPU load while Tutka is playing.
+</p>
+
+<p>
+Elevated privileges and priorities can enhance timing accuracy.
+</p>
+
+<h4>About</h4>
+
+<p>
+This dialog displays information about the version of Tutka you are running.
+</p>
+
+<h4>Quit</h4>
+
+<p>
+This dialog allows you to quit Tutka by clicking on Quit. Click Cancel to
+cancel.
+</p>
+
+<h3><a id="keyboard">Keyboard commands</a></h3>
+
+<table>
+<thead>
+<tr><th>Key (combination)</th><th>Command description</th></tr>
+</thead>
+<tbody>
+<tr><td>Cursor up</td><td>Move cursor one line up</td></tr>
+<tr><td>Cursor down</td><td>Move cursor one line down</td></tr>
+<tr><td>Cursor left</td><td>Move cursor one position left</td></tr>
+<tr><td>Cursor right</td><td>Move cursor one position right</td></tr>
+<tr><td>Home</td><td>Move cursor to first line</td></tr>
+<tr><td>End</td><td>Move cursor to last line</td></tr>
+<tr><td>Page up</td><td>Move cursor 8 lines up</td></tr>
+<tr><td>Page down</td><td>Move cursor 8 lines down</td></tr>
+<tr><td>Space</td><td>Stop, toggle edit mode on/off</td></tr>
+<tr><td>Tab</td><td>Move cursor to next track</td></tr>
+<tr><td>Shift+Tab</td><td>Move cursor to previous track</td></tr>
+<tr><td>Ctrl+Shift+Tab</td><td>Next command page</td></tr>
+<tr><td>F1-F9</td><td>Select keyboard octaves</td></tr>
+<tr><td>Backspace</td><td>Delete current line (current track)</td></tr>
+<tr><td>Shift+Backspace</td><td>Insert line (current track)</td></tr>
+<tr><td>Alt+Backspace</td><td>Delete current line</td></tr>
+<tr><td>Alt+Shift+Backspace</td><td>Insert line</td></tr>
+<tr><td>Del</td><td>Clear current note</td></tr>
+<tr><td>Shift+Del</td><td>Clear current note and commands</td></tr>
+<tr><td>Ctrl+Del</td><td>Clear current commands</td></tr>
+<tr><td>Ctrl+B</td><td>Selection mode on/off</td></tr>
+<tr><td>Ctrl+K</td><td>Clear to the end of track</td></tr>
+<tr><td>Ctrl+N</td><td>New song</td></tr>
+<tr><td>Ctrl+O</td><td>Open song</td></tr>
+<tr><td>Ctrl+S</td><td>Save song</td></tr>
+<tr><td>Shift+Ctrl+S</td><td>Save song as</td></tr>
+<tr><td>Ctrl+P</td><td>Print song</td></tr>
+<tr><td>Ctrl+Q</td><td>Quit</td></tr>
+<tr><td>Ctrl+X</td><td>Cut selection</td></tr>
+<tr><td>Ctrl+C</td><td>Copy selection</td></tr>
+<tr><td>Ctrl+V</td><td>Paste selection</td></tr>
+<tr><td>Ctrl+F3</td><td>Cut block</td></tr>
+<tr><td>Ctrl+F4</td><td>Copy block</td></tr>
+<tr><td>Ctrl+F5</td><td>Paste block</td></tr>
+<tr><td>Shift+F3</td><td>Cut track</td></tr>
+<tr><td>Shift+F4</td><td>Copy track</td></tr>
+<tr><td>Shift+F5</td><td>Paste track</td></tr>
+<tr><td>Ctrl+0-9</td><td>Set space value</td></tr>
+<tr><td>Shift+Cursor left</td><td>Previous playing sequence position</td></tr>
+<tr><td>Shift+Cursor right</td><td>Next playing sequence position</td></tr>
+<tr><td>Alt+Cursor left</td><td>Previous block</td></tr>
+<tr><td>Alt+Cursor right</td><td>Next block</td></tr>
+<tr><td>Ctrl+Cursor left</td><td>Previous instrument</td></tr>
+<tr><td>Ctrl+Cursor right</td><td>Next instrument</td></tr>
+<tr><td>Alt+1-9</td><td>Mute tracks</td></tr>
+<tr><td>Ctrl+Alt+1-9</td><td>Solo tracks</td></tr>
+<tr><td>Right Shift</td><td>Play block</td></tr>
+<tr><td>Right Ctrl</td><td>Play song</td></tr>
+</tbody>
+</table>
+
+<h3><a id="stepbystep">Step by step</a></h3>
+
+<p>
+This is a step by step guide for writing a song using Tutka.
+</p>
+
+<h4>MIDI setup</h4>
+
+<p>
+The first thing to do is to set up the MIDI devices to be used correctly. This
+involves changing the settings of the MIDI devices. Each MIDI instrument that
+is going to be used should be assigned an unique MIDI channel. After this the
+Tutka instruments should be edited so that they reflect the selected MIDI
+instruments. An appropriate MIDI channel should be chosen for each Tutka
+instrument so that all MIDI instruments can be played using different Tutka
+instruments.
+</p>
+
+<p>
+If the MIDI devices are not able to store the selected MIDI instrument setup
+they can probably send the setup using SysEx. Tutka can receive such SysEx
+messages and they can be sent back to the devices to restore the setup.
+This can be achieved using the Message List window.
+</p>
+
+<h4>Setting up tempo</h4>
+
+<p>
+After the setup is done, composing can begin. One of the first things to do is
+to choose a tempo for the song. This can be done using the Song Properties
+window. The tempo is defined in beats per minute. In addition to this it's
+possible to choose how many MIDI ticks each line in the tracker represents.
+If the song is not going to have shorter than 1/16 notes in it, the default
+value, 6, is usually appropriate. If, for example, 1/32 notes are needed,
+the Ticks per line value can be changed to 3 for more fine grained control.
+</p>
+
+<h4>Setting up tracks</h4>
+
+<p>
+The number of tracks can be chosen for each block separately. It's usually
+good, however, to dedicate tracks for different purposes so that they're used
+consistently throughout the whole song. It should also be kept in mind that
+each track can play only one note at a time. This means thinking of the track
+structure a bit. For example, one could allocate track 1 to be used for the
+bass drum, track 2 for the snare drum and track 3 for the hi-hats. This way
+the different drums can always be found from the same track regardless of
+which block is being edited. This also allows naming the tracks appropriately
+in the Track Volumes window.
+</p>
+
+<h4>Writing blocks</h4>
+
+<p>
+Tracker songs are usually composed one block at a time. Each block represents
+a part of the song. The length one each block can be chosen to suit the needs.
+It's usually convenient to keep the blocks relatively short so that if the
+same block is to be repeated, it can be reused without having to create an
+another block with almost the same content. After choosing an appropriate
+length, notes and related commands can be entered in the block. The block
+can be played back and edited until it's satisfactory.
+</p>
+
+<p>
+When one block is ready, an another one can be created. The new block can
+continue from where the previous one left off or can be a completely separate
+block. The order in which the blocks are made does not have to correspond to
+the order in which they're going to be played back in the final song, so
+there no reason not to create blocks for the main ideas of the song first
+before going into details and parts in between.
+</p>
+
+<h4>Setting the playback order</h4>
+
+<p>
+When an appropriate number of parts of the song have been written into blocks
+it's time to choose the order in which the blocks are played back when the
+entire song is played. This is done by creating a playing sequence using the
+Playing Sequence window, which can be opened by clicking on the Position
+label on the bottom of the main window. When the entire song is played back
+the blocks are played back in the order defined in the playing sequence.
+The same block can be played back multiple times.
+</p>
+
+<h4>Structuring the song</h4>
+
+<p>
+Sometimes it's feasible to play longer parts of the song, consisting of
+multiple blocks, multiple times. To avoid having to define these block
+sequences multiple times in the playing sequence, several playing
+sequences can be defined. For example, a song could have an intro, a
+verse and a chorus, of which the verse and the chorus are repeated
+twice. Each of these three parts can be defined as a separate playing
+sequence using the Playing Sequence List window and then the playing
+order of these playing sequences can be defined using the Section List
+window.
+</p>
+</body>
+</html>
+
