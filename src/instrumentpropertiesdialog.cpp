@@ -34,6 +34,7 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
     instrument(0)
 {
     ui->setupUi(this);
+    ui->arpeggioTracker->setEditMode(true);
 
     connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), this, SLOT(setMidiInterface(QString)));
     connect(ui->checkBoxArpeggio, SIGNAL(toggled(bool)), this, SLOT(toggleArpeggio(bool)));
