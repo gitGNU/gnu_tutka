@@ -111,7 +111,6 @@ public:
     void resetTime(bool);
 
     // Set player position
-    void setLine(int line, bool wrap = true);
     void setTick(int);
 
     // Lock the player
@@ -145,6 +144,7 @@ public slots:
     void setPlayseq(int);
     void setPosition(int);
     void setBlock(int);
+    void setLine(int line, bool wrap = true);
 
 private slots:
     // Initializes the player

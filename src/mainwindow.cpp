@@ -138,6 +138,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->tracker, SIGNAL(lineEdited()), this, SLOT(advancePlayerBySpaceLines()));
     connect(ui->tracker, SIGNAL(notePressed(unsigned char)), this, SLOT(playPressedNote(unsigned char)));
     connect(ui->tracker, SIGNAL(octaveChanged(int)), ui->comboBoxKeyboardOctaves, SLOT(setCurrentIndex(int)));
+    connect(ui->tracker, SIGNAL(setLineRequested(int)), player, SLOT(setLine(int)));
     connect(ui->horizontalScrollBarTracker, SIGNAL(valueChanged(int)), ui->tracker, SLOT(setLeftmostTrack(int)));
     connect(ui->verticalScrollBarTracker, SIGNAL(valueChanged(int)), ui->tracker, SLOT(setLine(int)));
     connect(ui->buttonPlaySong, SIGNAL(clicked()), player, SLOT(playSong()));
@@ -288,7 +289,6 @@ bool MainWindow::keyPress(QKeyEvent *event)
         return false;
     }
 
-    Block *block = ui->tracker->block();
     bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
     bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
     bool alt = (event->modifiers() & Qt::AltModifier) != 0;
@@ -501,48 +501,6 @@ bool MainWindow::keyPress(QKeyEvent *event)
                         // Otherwise toggle edit mode
                         ui->checkBoxEdit->setChecked(!ui->checkBoxEdit->isChecked());
                     }
-                    handled = true;
-                }
-                break;
-            case Qt::Key_Down:
-                // Down: Go down
-                if (QApplication::activeWindow() == this) {
-                    player->setLine(player->line() + 1);
-                    handled = true;
-                }
-                break;
-            case Qt::Key_Up:
-                // Up: Go up
-                if (QApplication::activeWindow() == this) {
-                    player->setLine(player->line() - 1);
-                    handled = true;
-                }
-                break;
-            case Qt::Key_Home:
-                // End: Go to the beginning of block
-                if (QApplication::activeWindow() == this) {
-                    player->setLine(0);
-                    handled = true;
-                }
-                break;
-            case Qt::Key_End:
-                // End: Go to the end of block
-                if (QApplication::activeWindow() == this) {
-                    player->setLine(block->length() - 1);
-                    handled = true;
-                }
-                break;
-            case Qt::Key_PageDown:
-                // Page down: Go down 8 lines
-                if (QApplication::activeWindow() == this) {
-                    player->setLine(player->line() + 8);
-                    handled = true;
-                }
-                break;
-            case Qt::Key_PageUp:
-                // Page up: Go up 8 lines
-                if (QApplication::activeWindow() == this) {
-                    player->setLine(player->line() - 8);
                     handled = true;
                 }
                 break;
