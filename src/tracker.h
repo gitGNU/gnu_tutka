@@ -25,6 +25,7 @@
 
 #include <QPixmap>
 #include <QWidget>
+#include <QHash>
 
 class Song;
 class Block;
@@ -38,7 +39,9 @@ class Tracker : public QWidget
 public:
     explicit Tracker(QWidget *parent = 0);
     void setCommandPage(int commandPage);
-    bool isInSelectionMode();
+    bool isInSelectionMode() const;
+    bool isInEditMode() const;
+    bool isInChordMode() const;
     void markSelection(bool enable);
     void stepCursorTrack(int direction);
     void reset();
@@ -49,17 +52,26 @@ public:
     int commandPage() const;
     int cursorTrack() const;
     int cursorItem() const;
+    int octave() const;
     void stepCursorItem(int direction);
     void stepCursorLine(int direction);
     void setCursorItem(int cursorItem);
     void clearMarkSelection();
     void setSelection(int startTrack, int startLine, int endTrack, int endLine);
+    void addChordNote();
+    void removeChordNote();
+    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void keyReleaseEvent(QKeyEvent *event);
 
 public slots:
     void setSong(Song *song);
     void setBlock(unsigned int block);
     void setLine(int line);
     void setLeftmostTrack(int leftmostTrack);
+    void setEditMode(bool enabled);
+    void setChordMode(bool enabled);
+    void setInstrument(int instrument);
+    void setOctave(int octave);
 
 private slots:
     void redrawArea(int startTrack, int startLine, int endTrack, int endLine);
@@ -73,6 +85,10 @@ signals:
     void cursorTrackChanged(int track);
     void selectionChanged(int startTrack, int startLine, int endTrack, int endLine);
     void commandPageChanged(int commandPage);
+    void lineEdited();
+    void setLineRequested(int line);
+    void notePressed(unsigned char note);
+    void octaveChanged(int octave);
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -153,6 +169,14 @@ private:
 
     bool mouseSelecting;
     Qt::MouseButton mouseButton;
+    QList<int> keyboardKeysDown;
+    static QHash<int, char> keyToNote;
+    int chordStatus;
+    int instrument_;
+    int octave_;
+
+    bool inEditMode;
+    bool inChordMode;
 };
 
 #endif // TRACKER_H
