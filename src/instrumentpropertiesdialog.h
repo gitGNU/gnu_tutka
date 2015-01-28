@@ -52,6 +52,7 @@ private slots:
     void toggleArpeggio(bool enabled);
     void setArpeggioBaseNote(int baseNote);
     void setArpeggioLength(int length);
+    void advanceTrackerToNextLine();
 
 private:
     MIDI *midi;

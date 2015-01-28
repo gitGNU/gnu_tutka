@@ -41,6 +41,8 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
     connect(ui->checkBoxArpeggio, SIGNAL(toggled(bool)), this, SLOT(toggleArpeggio(bool)));
     connect(ui->comboBoxArpeggioBaseNote, SIGNAL(currentIndexChanged(int)), this, SLOT(setArpeggioBaseNote(int)));
     connect(ui->spinBoxArpeggioLength, SIGNAL(valueChanged(int)), this, SLOT(setArpeggioLength(int)));
+    connect(ui->arpeggioTracker, SIGNAL(setLineRequested(int)), ui->arpeggioTracker, SLOT(setLine(int)));
+    connect(ui->arpeggioTracker, SIGNAL(lineEdited()), this, SLOT(advanceTrackerToNextLine()));
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(updateMidiInterfaceComboBox()));
     connect(midi, SIGNAL(outputEnabledChanged(bool)), this, SLOT(updateMidiInterfaceComboBox()));
     updateMidiInterfaceComboBox();
@@ -147,4 +149,9 @@ void InstrumentPropertiesDialog::setArpeggioLength(int length)
     if (arpeggio) {
         arpeggio->setLength(length);
     }
+}
+
+void InstrumentPropertiesDialog::advanceTrackerToNextLine()
+{
+    ui->arpeggioTracker->setLine(ui->arpeggioTracker->line() + 1);
 }
