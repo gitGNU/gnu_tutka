@@ -26,7 +26,6 @@
 #include "player.h"
 #include <QMainWindow>
 #include <QSettings>
-#include <QHash>
 
 namespace Ui {
     class MainWindow;
@@ -108,6 +107,8 @@ private slots:
     void setDeleteTrackVisibility();
     void setWindowTitle();
     void quit();
+    void advancePlayerBySpaceLines();
+    void playPressedNote(unsigned char note);
 
 private:
     bool keyPress(QKeyEvent *event);
@@ -139,8 +140,6 @@ private:
     Block *copySelection_;
     Block *copyBlock_;
     Block *copyTrack_;
-    QList<int> keyboardKeysDown;
-    int chordStatus;
     unsigned int block;
     unsigned int playseq;
     int instrument;
@@ -148,7 +147,6 @@ private:
     int selectionStartLine;
     int selectionEndTrack;
     int selectionEndLine;
-    QHash<int, char> keyToNote;
 };
 
 #endif /* MAINWINDOW_H_ */

@@ -27,6 +27,8 @@
 #include "block.h"
 #include "tracker.h"
 
+QHash<int, char> Tracker::keyToNote;
+
 Tracker::Tracker(QWidget *parent) :
     QWidget(parent),
     visibleLines(0),
@@ -63,12 +65,57 @@ Tracker::Tracker(QWidget *parent) :
     selectionEndTrack(-1),
     selectionEndLine(-1),
     mouseSelecting(false),
-    mouseButton(Qt::NoButton)
+    mouseButton(Qt::NoButton),
+    chordStatus(0),
+    instrument_(0),
+    octave_(3),
+    inEditMode(false),
+    inChordMode(false)
 {
     font.setStyleHint(QFont::TypeWriter);
     font.setStyleStrategy(QFont::ForceIntegerMetrics);
     calculateFontSize();
     initColors();
+
+    if (keyToNote.isEmpty()) {
+        keyToNote.insert(Qt::Key_Z, 1);
+        keyToNote.insert(Qt::Key_S, 2);
+        keyToNote.insert(Qt::Key_X, 3);
+        keyToNote.insert(Qt::Key_D, 4);
+        keyToNote.insert(Qt::Key_C, 5);
+        keyToNote.insert(Qt::Key_V, 6);
+        keyToNote.insert(Qt::Key_G, 7);
+        keyToNote.insert(Qt::Key_B, 8);
+        keyToNote.insert(Qt::Key_H, 9);
+        keyToNote.insert(Qt::Key_N, 10);
+        keyToNote.insert(Qt::Key_J, 11);
+        keyToNote.insert(Qt::Key_M, 12);
+        keyToNote.insert(Qt::Key_Q, 13);
+        keyToNote.insert(Qt::Key_Comma, 13);
+        keyToNote.insert(Qt::Key_2, 14);
+        keyToNote.insert(Qt::Key_L, 14);
+        keyToNote.insert(Qt::Key_W, 15);
+        keyToNote.insert(Qt::Key_Period, 15);
+        keyToNote.insert(Qt::Key_3, 16);
+        keyToNote.insert(Qt::Key_Odiaeresis, 16);
+        keyToNote.insert(Qt::Key_E, 17);
+        keyToNote.insert(Qt::Key_Minus, 17);
+        keyToNote.insert(Qt::Key_R, 18);
+        keyToNote.insert(Qt::Key_5, 19);
+        keyToNote.insert(Qt::Key_T, 20);
+        keyToNote.insert(Qt::Key_6, 21);
+        keyToNote.insert(Qt::Key_Y, 22);
+        keyToNote.insert(Qt::Key_7, 23);
+        keyToNote.insert(Qt::Key_U, 24);
+        keyToNote.insert(Qt::Key_I, 25);
+        keyToNote.insert(Qt::Key_9, 26);
+        keyToNote.insert(Qt::Key_O, 27);
+        keyToNote.insert(Qt::Key_0, 28);
+        keyToNote.insert(Qt::Key_P, 29);
+        keyToNote.insert(Qt::Key_Aring, 30);
+        keyToNote.insert(Qt::Key_acute, 31);
+        keyToNote.insert(Qt::Key_Delete, 0);
+    }
 
     backgroundBrush = colors[ColorBackground];
     backgroundCursorBrush = colors[ColorBackgroundCursor];
@@ -299,9 +346,19 @@ void Tracker::clearMarkSelection()
     }
 }
 
-bool Tracker::isInSelectionMode()
+bool Tracker::isInSelectionMode() const
 {
     return inSelectionMode;
+}
+
+bool Tracker::isInEditMode() const
+{
+    return inEditMode;
+}
+
+bool Tracker::isInChordMode() const
+{
+    return inChordMode;
 }
 
 void Tracker::noteToString(unsigned char note, unsigned char instrument, unsigned char effect, unsigned char value, char *buffer)
@@ -839,6 +896,225 @@ void Tracker::resizeEvent(QResizeEvent *event)
     queueDraw();
 }
 
+void Tracker::keyPressEvent(QKeyEvent *event)
+{
+    QWidget::keyPressEvent(event);
+
+    bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
+    bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
+    bool alt = (event->modifiers() & Qt::AltModifier) != 0;
+
+    if (ctrl) {
+        switch (event->key()) {
+        case Qt::Key_B:
+            // CTRL-B: Selection mode on/off
+            markSelection(!isInSelectionMode());
+            break;
+        case Qt::Key_K:
+            // CTRL-K: Clear until the end of the track
+            block_->clear(track(), line(), track(), block_->length() - 1);
+            break;
+        case Qt::Key_Tab:
+            // CTRL-Tab: Next command page
+            setCommandPage(commandPage() + 1);
+            break;
+        case Qt::Key_Backtab:
+            // CTRL-Shift-Tab: Previous command page
+            setCommandPage(commandPage() - 1);
+            break;
+        case Qt::Key_Delete: {
+            if (inEditMode) {
+                // Delete command and refresh
+                for (int i = 0; i < block_->commandPages(); i++) {
+                    block_->setCommandFull(line(), track(), i, 0, 0);
+                }
+                emit lineEdited();
+            }
+            break;
+        }
+        }
+    } else if (shift) {
+        switch (event->key()) {
+        case Qt::Key_Backtab:
+            // Shift-Tab: Previous track
+            stepCursorTrack(-1);
+            break;
+        case Qt::Key_Delete:
+            // Delete note+command and refresh
+            if (inEditMode) {
+                block_->setNote(line(), cursorTrack(), 0, 0, 0);
+                for (int commandPage = 0; commandPage < block_->commandPages(); commandPage++) {
+                    block_->setCommandFull(line(), cursorTrack(), commandPage, 0, 0);
+                }
+                emit lineEdited();
+            }
+            break;
+        case Qt::Key_Backspace:
+            // Shift-Backspace: Insert row
+            if (inEditMode) {
+                block_->insertLine(line(), alt ? -1 : cursorTrack());
+            }
+            break;
+        default:
+            break;
+        }
+    } else if (alt) {
+        switch (event->key()) {
+        case Qt::Key_Backspace:
+            // Backspace: delete line
+            if (inEditMode) {
+                block_->deleteLine(line());
+            }
+            break;
+        default:
+            break;
+        }
+    } else {
+        char note = -1;
+        char data = -1;
+
+        if (cursorItem() == 0) {
+            // Editing notes
+            data = keyToNote.value(event->key(), -1);
+
+            if (data >= 0) {
+                note = data - 1;
+
+                if (inChordMode) {
+                    // Chord mode: check if the key has already been pressed (key repeat)
+                    bool found = keyboardKeysDown.contains(event->key());
+
+                    // Go to next channel if the current key has not been pressed down yet
+                    if (!found) {
+                        // Add the key to the keys down list
+                        keyboardKeysDown.append(event->key());
+
+                        if (inEditMode) {
+                            // Set note and refresh
+                            block_->setNote(line(), cursorTrack(), octave_, data, instrument_);
+                        }
+
+                        addChordNote();
+                    }
+                } else if (inEditMode) {
+                    // Set note and refresh
+                    block_->setNote(line(), cursorTrack(), octave_, data, instrument_);
+                    emit lineEdited();
+                }
+            }
+        } else if (inEditMode) {
+            switch (cursorItem()) {
+            case 1:
+            case 2:
+                // Editing instrument
+                if (event->key() >= Qt::Key_0 && event->key() <= Qt::Key_9) {
+                    data = event->key() - Qt::Key_0;
+                } else if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_F) {
+                    data = 10 + event->key() - Qt::Key_A;
+                } else if (event->key() == Qt::Key_Delete) {
+                    data = 0;
+                }
+
+                if (data >= 0) {
+                    // Set instrument and refresh
+                    int ins = block_->instrument(line(), cursorTrack());
+                    if (cursorItem() == 1) {
+                        ins = (ins & 0x0f) | (data << 4);
+                    } else {
+                        ins = (ins & 0xf0) | data;
+                    }
+                    block_->setInstrument(line(), cursorTrack(), ins);
+                    emit lineEdited();
+                }
+                break;
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                // Editing effects
+                if (event->key() >= Qt::Key_0 && event->key() <= Qt::Key_9) {
+                    data = event->key() - Qt::Key_0;
+                } else if (event->key() >= Qt::Key_A && event->key() <= Qt::Key_F) {
+                    data = 10 + event->key() - Qt::Key_A;
+                } else if (event->key() == Qt::Key_Delete) {
+                    data = 0;
+                }
+
+                if (data >= 0) {
+                    // Set effect and refresh
+                    block_->setCommand(line(), cursorTrack(), commandPage(), cursorItem() - 3, data);
+                    emit lineEdited();
+                }
+                break;
+            }
+        }
+
+        switch (event->key()) {
+        case Qt::Key_F1:
+        case Qt::Key_F2:
+        case Qt::Key_F3:
+        case Qt::Key_F4:
+        case Qt::Key_F5:
+        case Qt::Key_F6:
+        case Qt::Key_F7:
+        case Qt::Key_F8:
+        case Qt::Key_F9:
+        case Qt::Key_F10:
+        case Qt::Key_F11:
+            // F1-F11: Set active keyboard octave
+            setOctave(event->key() - Qt::Key_F1);
+            break;
+        case Qt::Key_Left:
+            // Left: Go left
+            stepCursorItem(-1);
+            break;
+        case Qt::Key_Right:
+            // Right: Go right
+            stepCursorItem(1);
+            break;
+        case Qt::Key_Tab:
+            // Tab: Next track
+            setCursorItem(0);
+            stepCursorTrack(1);
+            break;
+        case Qt::Key_Backspace:
+            if (inEditMode) {
+                // Backspace: delete line
+                block_->deleteLine(line(), cursorTrack());
+                emit lineEdited();
+            }
+            break;
+        default:
+            break;
+        }
+
+        // Play note if a key was pressed but not if cursor is in cmd pos
+        if (note >= 0 && cursorItem() == 0) {
+            emit notePressed(note);
+        }
+    }
+}
+
+void Tracker::keyReleaseEvent(QKeyEvent *event)
+{
+    QWidget::keyReleaseEvent(event);
+
+    bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
+    bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
+
+    // Key has been released
+    if (!ctrl && !shift) {
+        if (inChordMode && cursorItem() == 0) {
+            if (event->key() != Qt::Key_Delete && keyToNote.contains(event->key())) {
+                // Find the key from the keys down list and remove it
+                keyboardKeysDown.removeAll(event->key());
+
+                removeChordNote();
+            }
+        }
+    }
+}
+
 void Tracker::queueDraw()
 {
     oldLine = -2 * visibleLines;
@@ -880,6 +1156,11 @@ int Tracker::cursorItem() const
     return cursorItem_;
 }
 
+int Tracker::octave() const
+{
+    return octave_;
+}
+
 void Tracker::redrawArea(int startTrack, int startLine, int endTrack, int endLine)
 {
     Q_UNUSED(startTrack)
@@ -915,4 +1196,46 @@ void Tracker::setSelection(int startTrack, int startLine, int endTrack, int endL
     inSelectionMode = false;
     queueDraw();
     emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
+}
+
+void Tracker::setEditMode(bool enabled)
+{
+    inEditMode = enabled;
+}
+
+void Tracker::setChordMode(bool enabled)
+{
+    inChordMode = enabled;
+}
+
+void Tracker::setInstrument(int instrument)
+{
+    instrument_ = instrument;
+}
+
+void Tracker::setOctave(int octave)
+{
+    if (octave_ != octave) {
+        octave_ = octave;
+
+        emit octaveChanged(octave_);
+    }
+}
+
+void Tracker::addChordNote()
+{
+    stepCursorTrack(1);
+    chordStatus++;
+}
+
+void Tracker::removeChordNote()
+{
+    // Go to the previous channel
+    stepCursorTrack(-1);
+    chordStatus--;
+
+    // If all chord notes have been released go to the next line
+    if (chordStatus == 0 && inEditMode) {
+        emit lineEdited();
+    }
 }
