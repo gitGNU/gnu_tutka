@@ -835,6 +835,7 @@ void Player::play(Mode mode, bool cont)
     stop();
 
     Mode oldMode = mode_;
+    int oldLine = line_;
     mode_ = mode;
     tick = 0;
     ticksSoFar = 0;
@@ -855,6 +856,10 @@ void Player::play(Mode mode, bool cont)
         break;
     default:
         break;
+    }
+
+    if (line_ != oldLine) {
+        emit lineChanged(line_);
     }
 
     // Get the starting time
