@@ -585,7 +585,7 @@ void Player::run()
                     arpeggio = song->instrument(arpeggioInstrument)->arpeggio();
                     unsigned char arpeggioNote = arpeggio->note(trackStatus->line, 0);
                     if (arpeggioNote != 0) {
-                        note = basenote + ((char)arpeggioNote - (char)song->instrument(arpeggioInstrument)->basenote());
+                        note = basenote + ((char)arpeggioNote - (char)song->instrument(arpeggioInstrument)->arpeggioBaseNote());
                     }
                 }
 

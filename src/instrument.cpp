@@ -35,7 +35,7 @@ Instrument::Instrument(const QString &name, unsigned int midiInterface, QObject 
     transpose_(0),
     hold_(0),
     arpeggio_(NULL),
-    basenote_(1)
+    arpeggioBaseNote_(49)
 {
 }
 
@@ -130,9 +130,14 @@ void Instrument::setArpeggio(Block *arpeggio)
     arpeggio_ = arpeggio;
 }
 
-unsigned char Instrument::basenote() const
+unsigned char Instrument::arpeggioBaseNote() const
 {
-    return basenote_;
+    return arpeggioBaseNote_;
+}
+
+void Instrument::setArpeggioBaseNote(int baseNote)
+{
+    arpeggioBaseNote_ = baseNote;
 }
 
 Instrument *Instrument::parse(QDomElement element)
@@ -219,7 +224,7 @@ Instrument *Instrument::parse(QDomElement element)
                 // Get arpeggio properties
                 prop = cur.attributeNode("basenote");
                 if (!prop.isNull()) {
-                    instrument->basenote_ = prop.value().toInt();
+                    instrument->arpeggioBaseNote_ = prop.value().toInt();
                 }
 
                 // Parse and add all block elements
@@ -258,7 +263,7 @@ void Instrument::save(int number, QDomElement &parentElement, QDomDocument &docu
     if (arpeggio_ != NULL) {
         QDomElement arpeggioElement = document.createElement("arpeggio");
         arpeggioElement.appendChild(document.createTextNode("\n"));
-        arpeggioElement.setAttribute("basenote", basenote_);
+        arpeggioElement.setAttribute("basenote", arpeggioBaseNote_);
         arpeggio_->save(0, arpeggioElement, document);
 
         instrumentElement.appendChild(arpeggioElement);

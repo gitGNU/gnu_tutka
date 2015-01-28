@@ -65,7 +65,7 @@ public:
     Block *arpeggio() const;
 
     // Returns the arpeggio base note of the instrument
-    unsigned char basenote() const;
+    unsigned char arpeggioBaseNote() const;
 
     // Parses an instrument element in an XML file
     static Instrument *parse(QDomElement element);
@@ -91,6 +91,9 @@ public slots:
 
     // Sets the arpeggio block of the instrument
     void setArpeggio(Block *arpeggio);
+
+    // Sets the arpeggio base note of the instrument
+    void setArpeggioBaseNote(int baseNote);
 
     // Sets the midi interface of the instrument
     void setMidiInterface(int interface);
@@ -122,7 +125,7 @@ private:
     // Arpeggio block
     Block *arpeggio_;
     // Arpeggio base note
-    unsigned char basenote_;
+    unsigned char arpeggioBaseNote_;
 };
 
 #endif // INSTRUMENT_H_

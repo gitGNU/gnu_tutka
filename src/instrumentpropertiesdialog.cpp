@@ -37,6 +37,8 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
     ui->arpeggioTracker->setEditMode(true);
 
     connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), this, SLOT(setMidiInterface(QString)));
+    connect(ui->comboBoxArpeggioBaseNote, SIGNAL(currentIndexChanged(int)), this, SLOT(setArpeggioBaseNote(int)));
+    connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), this, SLOT(setMidiChannel(int)));
     connect(ui->checkBoxArpeggio, SIGNAL(toggled(bool)), this, SLOT(toggleArpeggio(bool)));
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(updateMidiInterfaceComboBox()));
     connect(midi, SIGNAL(outputEnabledChanged(bool)), this, SLOT(updateMidiInterfaceComboBox()));
@@ -67,7 +69,6 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         Instrument *oldInstrument = song->instrument(this->instrument);
         disconnect(oldInstrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
         disconnect(ui->lineEditName, SIGNAL(textChanged(QString)), oldInstrument, SLOT(setName(QString)));
-        disconnect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setMidiChannel(int)));
         disconnect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setDefaultVelocity(int)));
         disconnect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setTranspose(int)));
         disconnect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setHold(int)));
@@ -90,7 +91,6 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         // Connect the widgets for editing the instrument
         connect(instrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
         connect(ui->lineEditName, SIGNAL(textChanged(QString)), instrument, SLOT(setName(QString)));
-        connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), this, SLOT(setMidiChannel(int)));
         connect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), instrument, SLOT(setDefaultVelocity(int)));
         connect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), instrument, SLOT(setTranspose(int)));
         connect(ui->horizontalSliderHold, SIGNAL(valueChanged(int)), instrument, SLOT(setHold(int)));
@@ -125,6 +125,11 @@ void InstrumentPropertiesDialog::setMidiInterface(const QString &name)
 void InstrumentPropertiesDialog::setMidiChannel(int midiChannel)
 {
     song->instrument(instrument)->setMidiChannel(midiChannel - 1);
+}
+
+void InstrumentPropertiesDialog::setArpeggioBaseNote(int baseNote)
+{
+    song->instrument(instrument)->setArpeggioBaseNote(baseNote + 1);
 }
 
 void InstrumentPropertiesDialog::toggleArpeggio(bool enabled)
