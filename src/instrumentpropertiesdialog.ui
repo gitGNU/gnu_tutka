@@ -29,7 +29,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <item row="0" column="0">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="labelName">
        <property name="text">
         <string>Name</string>
        </property>
@@ -45,7 +45,7 @@
       <widget class="QLineEdit" name="lineEditName"/>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="labelMidiInterface">
        <property name="text">
         <string>MIDI interface</string>
        </property>
@@ -61,7 +61,7 @@
       <widget class="QComboBox" name="comboBoxMidiInterface"/>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="labelMidiChannel">
        <property name="text">
         <string>MIDI channel</string>
        </property>
@@ -90,7 +90,7 @@
       </widget>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="labelVolume">
        <property name="text">
         <string>Volume</string>
        </property>
@@ -116,7 +116,7 @@
       </widget>
      </item>
      <item row="4" column="0">
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="labelTranspose">
        <property name="text">
         <string>Transpose</string>
        </property>
@@ -145,7 +145,7 @@
       </widget>
      </item>
      <item row="5" column="0">
-      <widget class="QLabel" name="label_6">
+      <widget class="QLabel" name="labelHold">
        <property name="text">
         <string>Hold</string>
        </property>
@@ -170,6 +170,42 @@
        </property>
       </widget>
      </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="labelArpeggio">
+       <property name="text">
+        <string>Arpeggio</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="checkBoxArpeggio"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="arpeggioTrackerLabel">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="Tracker" name="arpeggioTracker" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -185,6 +221,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>Tracker</class>
+   <extends>QWidget</extends>
+   <header>tracker.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>SliderWithLabel</class>
    <extends>QSlider</extends>

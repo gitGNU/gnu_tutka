@@ -89,6 +89,9 @@ public slots:
     // Sets the hold time of the instrument
     void setHold(int hold);
 
+    // Sets the arpeggio block of the instrument
+    void setArpeggio(Block *arpeggio);
+
     // Sets the midi interface of the instrument
     void setMidiInterface(int interface);
 

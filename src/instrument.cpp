@@ -125,6 +125,11 @@ Block *Instrument::arpeggio() const
     return arpeggio_;
 }
 
+void Instrument::setArpeggio(Block *arpeggio)
+{
+    arpeggio_ = arpeggio;
+}
+
 unsigned char Instrument::basenote() const
 {
     return basenote_;

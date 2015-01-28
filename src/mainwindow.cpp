@@ -117,7 +117,6 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(player, SIGNAL(positionChanged(unsigned int)), this, SLOT(setPosition(unsigned int)));
     connect(player, SIGNAL(positionChanged(unsigned int)), playingSequenceDialog, SLOT(setPosition(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), this, SLOT(setBlock(unsigned int)));
-    connect(player, SIGNAL(blockChanged(unsigned int)), ui->tracker, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), transposeDialog, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), expandShrinkDialog, SLOT(setBlock(unsigned int)));
     connect(player, SIGNAL(blockChanged(unsigned int)), changeInstrumentDialog, SLOT(setBlock(unsigned int)));
@@ -901,7 +900,7 @@ void MainWindow::setPosition(unsigned int position)
     ui->labelPosition->setText(tr("Position %1/%2").arg(position + 1).arg(song->playseq(player->playseq())->length()));
 }
 
-void MainWindow::setBlock(unsigned int block)
+void MainWindow::setBlock(unsigned int number)
 {
     if (this->block < song->blocks()) {
         disconnect(song->block(this->block), SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
@@ -909,17 +908,19 @@ void MainWindow::setBlock(unsigned int block)
         disconnect(song->block(this->block), SIGNAL(tracksChanged(int)), this, SLOT(setDeleteTrackVisibility()));
     }
 
-    this->block = block;
+    this->block = number;
 
-    connect(song->block(block), SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
-    connect(song->block(block), SIGNAL(commandPagesChanged(int)), this, SLOT(setCommandPage()));
-    connect(song->block(this->block), SIGNAL(tracksChanged(int)), this, SLOT(setDeleteTrackVisibility()));
+    Block *block = song->block(number);
+    connect(block, SIGNAL(nameChanged(QString)), this, SLOT(setBlock()));
+    connect(block, SIGNAL(commandPagesChanged(int)), this, SLOT(setCommandPage()));
+    connect(block, SIGNAL(tracksChanged(int)), this, SLOT(setDeleteTrackVisibility()));
+    ui->tracker->setBlock(block);
 
-    QString name = song->block(block)->name();
+    QString name = block->name();
     if (name.isEmpty()) {
-        ui->labelBlock->setText(tr("Block %1/%2").arg(block + 1).arg(song->blocks()));
+        ui->labelBlock->setText(tr("Block %1/%2").arg(number + 1).arg(song->blocks()));
     } else {
-        ui->labelBlock->setText(tr("Block %1/%2: %3").arg(block + 1).arg(song->blocks()).arg(name));
+        ui->labelBlock->setText(tr("Block %1/%2: %3").arg(number + 1).arg(song->blocks()).arg(name));
     }
     setCommandPage(ui->tracker->commandPage());
     setDeleteTrackVisibility();

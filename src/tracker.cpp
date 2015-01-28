@@ -142,10 +142,8 @@ void Tracker::setSong(Song *song)
     }
 }
 
-void Tracker::setBlock(unsigned int number)
+void Tracker::setBlock(Block *block)
 {
-    Block *block = song_ != NULL ? song_->block(number) : NULL;
-
     if (block_ != block) {
         if (block_ != NULL) {
             disconnect(block_, SIGNAL(areaChanged(int,int,int,int)), this, SLOT(redrawArea(int,int,int,int)));

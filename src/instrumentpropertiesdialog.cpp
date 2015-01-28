@@ -36,6 +36,7 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
     ui->setupUi(this);
 
     connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), this, SLOT(setMidiInterface(QString)));
+    connect(ui->checkBoxArpeggio, SIGNAL(toggled(bool)), this, SLOT(toggleArpeggio(bool)));
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(updateMidiInterfaceComboBox()));
     connect(midi, SIGNAL(outputEnabledChanged(bool)), this, SLOT(updateMidiInterfaceComboBox()));
     updateMidiInterfaceComboBox();
@@ -82,6 +83,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         ui->horizontalSliderVolume->setValue(instrument->defaultVelocity());
         ui->horizontalSliderTranspose->setValue(instrument->transpose());
         ui->horizontalSliderHold->setValue(instrument->hold());
+        ui->arpeggioTracker->setBlock(instrument->arpeggio());
         updateMidiInterfaceComboBox();
 
         // Connect the widgets for editing the instrument
@@ -122,4 +124,12 @@ void InstrumentPropertiesDialog::setMidiInterface(const QString &name)
 void InstrumentPropertiesDialog::setMidiChannel(int midiChannel)
 {
     song->instrument(instrument)->setMidiChannel(midiChannel - 1);
+}
+
+void InstrumentPropertiesDialog::toggleArpeggio(bool enabled)
+{
+    Block *oldArpeggio = song->instrument(instrument)->arpeggio();
+    song->instrument(instrument)->setArpeggio(enabled ? new Block(1, 8, 1) : 0);
+    ui->arpeggioTracker->setBlock(song->instrument(instrument)->arpeggio());
+    delete oldArpeggio;
 }

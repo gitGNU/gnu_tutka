@@ -57,7 +57,7 @@ public:
 
 public slots:
     void setSong(Song *song);
-    void setBlock(unsigned int block);
+    void setBlock(Block *block);
     void setLine(int line);
     void setLeftmostTrack(int leftmostTrack);
 
