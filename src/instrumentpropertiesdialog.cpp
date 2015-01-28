@@ -37,9 +37,10 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
     ui->arpeggioTracker->setEditMode(true);
 
     connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), this, SLOT(setMidiInterface(QString)));
-    connect(ui->comboBoxArpeggioBaseNote, SIGNAL(currentIndexChanged(int)), this, SLOT(setArpeggioBaseNote(int)));
     connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), this, SLOT(setMidiChannel(int)));
     connect(ui->checkBoxArpeggio, SIGNAL(toggled(bool)), this, SLOT(toggleArpeggio(bool)));
+    connect(ui->comboBoxArpeggioBaseNote, SIGNAL(currentIndexChanged(int)), this, SLOT(setArpeggioBaseNote(int)));
+    connect(ui->spinBoxArpeggioLength, SIGNAL(valueChanged(int)), this, SLOT(setArpeggioLength(int)));
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(updateMidiInterfaceComboBox()));
     connect(midi, SIGNAL(outputEnabledChanged(bool)), this, SLOT(updateMidiInterfaceComboBox()));
     updateMidiInterfaceComboBox();
@@ -127,15 +128,23 @@ void InstrumentPropertiesDialog::setMidiChannel(int midiChannel)
     song->instrument(instrument)->setMidiChannel(midiChannel - 1);
 }
 
+void InstrumentPropertiesDialog::toggleArpeggio(bool enabled)
+{
+    Block *oldArpeggio = song->instrument(instrument)->arpeggio();
+    song->instrument(instrument)->setArpeggio(enabled ? new Block(1, ui->spinBoxArpeggioLength->value(), 1) : 0);
+    ui->arpeggioTracker->setBlock(song->instrument(instrument)->arpeggio());
+    delete oldArpeggio;
+}
+
 void InstrumentPropertiesDialog::setArpeggioBaseNote(int baseNote)
 {
     song->instrument(instrument)->setArpeggioBaseNote(baseNote + 1);
 }
 
-void InstrumentPropertiesDialog::toggleArpeggio(bool enabled)
+void InstrumentPropertiesDialog::setArpeggioLength(int length)
 {
-    Block *oldArpeggio = song->instrument(instrument)->arpeggio();
-    song->instrument(instrument)->setArpeggio(enabled ? new Block(1, 8, 1) : 0);
-    ui->arpeggioTracker->setBlock(song->instrument(instrument)->arpeggio());
-    delete oldArpeggio;
+    Block *arpeggio = song->instrument(instrument)->arpeggio();
+    if (arpeggio) {
+        arpeggio->setLength(length);
+    }
 }

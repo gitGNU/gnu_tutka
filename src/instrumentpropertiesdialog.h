@@ -49,8 +49,9 @@ private slots:
     void updateMidiInterfaceComboBox();
     void setMidiInterface(const QString &name);
     void setMidiChannel(int midiChannel);
-    void setArpeggioBaseNote(int baseNote);
     void toggleArpeggio(bool enabled);
+    void setArpeggioBaseNote(int baseNote);
+    void setArpeggioLength(int length);
 
 private:
     MIDI *midi;
