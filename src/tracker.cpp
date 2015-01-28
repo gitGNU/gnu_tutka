@@ -1072,6 +1072,30 @@ void Tracker::keyPressEvent(QKeyEvent *event)
             // Right: Go right
             stepCursorItem(1);
             break;
+        case Qt::Key_Down:
+            // Down: Go down
+            emit setLineRequested(line_ + 1);
+            break;
+        case Qt::Key_Up:
+            // Up: Go up
+            emit setLineRequested(line_ - 1);
+            break;
+        case Qt::Key_Home:
+            // Home: Go to the beginning of block
+            emit setLineRequested(0);
+            break;
+        case Qt::Key_End:
+            // End: Go to the end of block
+            emit setLineRequested(block_->length() - 1);
+            break;
+        case Qt::Key_PageDown:
+            // Page down: Go down 8 lines
+            emit setLineRequested(line_ + 8);
+            break;
+        case Qt::Key_PageUp:
+            // Page up: Go up 8 lines
+            emit setLineRequested(line_ - 8);
+            break;
         case Qt::Key_Tab:
             // Tab: Next track
             setCursorItem(0);
