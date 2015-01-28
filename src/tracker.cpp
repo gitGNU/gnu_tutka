@@ -908,25 +908,25 @@ void Tracker::keyPressEvent(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_B:
             // CTRL-B: Selection mode on/off
-            markSelection(!isInSelectionMode());
+            markSelection(!inSelectionMode);
             break;
         case Qt::Key_K:
             // CTRL-K: Clear until the end of the track
-            block_->clear(track(), line(), track(), block_->length() - 1);
+            block_->clear(cursorTrack_, line_, cursorTrack_, block_->length() - 1);
             break;
         case Qt::Key_Tab:
             // CTRL-Tab: Next command page
-            setCommandPage(commandPage() + 1);
+            setCommandPage(commandPage_ + 1);
             break;
         case Qt::Key_Backtab:
             // CTRL-Shift-Tab: Previous command page
-            setCommandPage(commandPage() - 1);
+            setCommandPage(commandPage_ - 1);
             break;
         case Qt::Key_Delete: {
             if (inEditMode) {
                 // Delete command and refresh
                 for (int i = 0; i < block_->commandPages(); i++) {
-                    block_->setCommandFull(line(), track(), i, 0, 0);
+                    block_->setCommandFull(line_, cursorTrack_, i, 0, 0);
                 }
                 emit lineEdited();
             }
@@ -942,9 +942,9 @@ void Tracker::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Delete:
             // Delete note+command and refresh
             if (inEditMode) {
-                block_->setNote(line(), cursorTrack(), 0, 0, 0);
+                block_->setNote(line_, cursorTrack_, 0, 0, 0);
                 for (int commandPage = 0; commandPage < block_->commandPages(); commandPage++) {
-                    block_->setCommandFull(line(), cursorTrack(), commandPage, 0, 0);
+                    block_->setCommandFull(line_, cursorTrack_, commandPage, 0, 0);
                 }
                 emit lineEdited();
             }
@@ -952,7 +952,7 @@ void Tracker::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Backspace:
             // Shift-Backspace: Insert row
             if (inEditMode) {
-                block_->insertLine(line(), alt ? -1 : cursorTrack());
+                block_->insertLine(line_, alt ? -1 : cursorTrack_);
             }
             break;
         default:
@@ -963,7 +963,7 @@ void Tracker::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Backspace:
             // Backspace: delete line
             if (inEditMode) {
-                block_->deleteLine(line());
+                block_->deleteLine(line_);
             }
             break;
         default:
@@ -973,7 +973,7 @@ void Tracker::keyPressEvent(QKeyEvent *event)
         char note = -1;
         char data = -1;
 
-        if (cursorItem() == 0) {
+        if (cursorItem_ == 0) {
             // Editing notes
             data = keyToNote.value(event->key(), -1);
 
@@ -991,19 +991,19 @@ void Tracker::keyPressEvent(QKeyEvent *event)
 
                         if (inEditMode) {
                             // Set note and refresh
-                            block_->setNote(line(), cursorTrack(), octave_, data, instrument_);
+                            block_->setNote(line_, cursorTrack_, octave_, data, instrument_);
                         }
 
                         addChordNote();
                     }
                 } else if (inEditMode) {
                     // Set note and refresh
-                    block_->setNote(line(), cursorTrack(), octave_, data, instrument_);
+                    block_->setNote(line_, cursorTrack_, octave_, data, instrument_);
                     emit lineEdited();
                 }
             }
         } else if (inEditMode) {
-            switch (cursorItem()) {
+            switch (cursorItem_) {
             case 1:
             case 2:
                 // Editing instrument
@@ -1017,13 +1017,13 @@ void Tracker::keyPressEvent(QKeyEvent *event)
 
                 if (data >= 0) {
                     // Set instrument and refresh
-                    int ins = block_->instrument(line(), cursorTrack());
-                    if (cursorItem() == 1) {
+                    int ins = block_->instrument(line_, cursorTrack_);
+                    if (cursorItem_ == 1) {
                         ins = (ins & 0x0f) | (data << 4);
                     } else {
                         ins = (ins & 0xf0) | data;
                     }
-                    block_->setInstrument(line(), cursorTrack(), ins);
+                    block_->setInstrument(line_, cursorTrack_, ins);
                     emit lineEdited();
                 }
                 break;
@@ -1042,7 +1042,7 @@ void Tracker::keyPressEvent(QKeyEvent *event)
 
                 if (data >= 0) {
                     // Set effect and refresh
-                    block_->setCommand(line(), cursorTrack(), commandPage(), cursorItem() - 3, data);
+                    block_->setCommand(line_, cursorTrack_, commandPage_, cursorItem_ - 3, data);
                     emit lineEdited();
                 }
                 break;
@@ -1080,7 +1080,7 @@ void Tracker::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Backspace:
             if (inEditMode) {
                 // Backspace: delete line
-                block_->deleteLine(line(), cursorTrack());
+                block_->deleteLine(line_, cursorTrack_);
                 emit lineEdited();
             }
             break;
@@ -1089,7 +1089,7 @@ void Tracker::keyPressEvent(QKeyEvent *event)
         }
 
         // Play note if a key was pressed but not if cursor is in cmd pos
-        if (note >= 0 && cursorItem() == 0) {
+        if (note >= 0 && cursorItem_ == 0) {
             emit notePressed(note);
         }
     }
@@ -1104,7 +1104,7 @@ void Tracker::keyReleaseEvent(QKeyEvent *event)
 
     // Key has been released
     if (!ctrl && !shift) {
-        if (inChordMode && cursorItem() == 0) {
+        if (inChordMode && cursorItem_ == 0) {
             if (event->key() != Qt::Key_Delete && keyToNote.contains(event->key())) {
                 // Find the key from the keys down list and remove it
                 keyboardKeysDown.removeAll(event->key());
