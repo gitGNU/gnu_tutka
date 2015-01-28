@@ -35,7 +35,7 @@ Instrument::Instrument(const QString &name, unsigned int midiInterface, QObject 
     transpose_(0),
     hold_(0),
     arpeggio_(NULL),
-    basenote_(0)
+    basenote_(1)
 {
 }
 
