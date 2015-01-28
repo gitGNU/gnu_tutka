@@ -34,15 +34,15 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
     instrument(0)
 {
     ui->setupUi(this);
-    ui->arpeggioTracker->setEditMode(true);
+    ui->trackerArpeggio->setEditMode(true);
 
     connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), this, SLOT(setMidiInterface(QString)));
     connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), this, SLOT(setMidiChannel(int)));
     connect(ui->checkBoxArpeggio, SIGNAL(toggled(bool)), this, SLOT(toggleArpeggio(bool)));
     connect(ui->comboBoxArpeggioBaseNote, SIGNAL(currentIndexChanged(int)), this, SLOT(setArpeggioBaseNote(int)));
     connect(ui->spinBoxArpeggioLength, SIGNAL(valueChanged(int)), this, SLOT(setArpeggioLength(int)));
-    connect(ui->arpeggioTracker, SIGNAL(setLineRequested(int)), ui->arpeggioTracker, SLOT(setLine(int)));
-    connect(ui->arpeggioTracker, SIGNAL(lineEdited()), this, SLOT(advanceTrackerToNextLine()));
+    connect(ui->trackerArpeggio, SIGNAL(setLineRequested(int)), ui->trackerArpeggio, SLOT(setLine(int)));
+    connect(ui->trackerArpeggio, SIGNAL(lineEdited()), this, SLOT(advanceTrackerToNextLine()));
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(updateMidiInterfaceComboBox()));
     connect(midi, SIGNAL(outputEnabledChanged(bool)), this, SLOT(updateMidiInterfaceComboBox()));
     updateMidiInterfaceComboBox();
@@ -88,7 +88,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         ui->horizontalSliderVolume->setValue(instrument->defaultVelocity());
         ui->horizontalSliderTranspose->setValue(instrument->transpose());
         ui->horizontalSliderHold->setValue(instrument->hold());
-        ui->arpeggioTracker->setBlock(instrument->arpeggio());
+        ui->trackerArpeggio->setBlock(instrument->arpeggio());
         updateMidiInterfaceComboBox();
 
         // Connect the widgets for editing the instrument
@@ -134,7 +134,13 @@ void InstrumentPropertiesDialog::toggleArpeggio(bool enabled)
 {
     Block *oldArpeggio = song->instrument(instrument)->arpeggio();
     song->instrument(instrument)->setArpeggio(enabled ? new Block(1, ui->spinBoxArpeggioLength->value(), 1) : 0);
-    ui->arpeggioTracker->setBlock(song->instrument(instrument)->arpeggio());
+    ui->labelArpeggioBaseNote->setEnabled(enabled);
+    ui->labelArpeggioLength->setEnabled(enabled);
+    ui->labelArpeggioTracker->setEnabled(enabled);
+    ui->comboBoxArpeggioBaseNote->setEnabled(enabled);
+    ui->spinBoxArpeggioLength->setEnabled(enabled);
+    ui->trackerArpeggio->setEnabled(enabled);
+    ui->trackerArpeggio->setBlock(song->instrument(instrument)->arpeggio());
     delete oldArpeggio;
 }
 
@@ -153,5 +159,5 @@ void InstrumentPropertiesDialog::setArpeggioLength(int length)
 
 void InstrumentPropertiesDialog::advanceTrackerToNextLine()
 {
-    ui->arpeggioTracker->setLine(ui->arpeggioTracker->line() + 1);
+    ui->trackerArpeggio->setLine(ui->trackerArpeggio->line() + 1);
 }
