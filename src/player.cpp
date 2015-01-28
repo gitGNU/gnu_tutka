@@ -580,12 +580,12 @@ void Player::run()
                 }
 
                 int arpeggioInstrument = note != 0 && instrument > 0 ? (instrument - 1) : trackStatus->instrument;
-                if (arpeggioInstrument >= 0 && song->instrument(arpeggioInstrument)->arpeggio() != NULL) {
+                if (arpeggioInstrument >= 0) {
                     // Add arpeggio note (if any) to the track's base note
                     arpeggio = song->instrument(arpeggioInstrument)->arpeggio();
-                    unsigned char arpeggioNote = arpeggio->note(trackStatus->line, 0);
-                    if (arpeggioNote != 0) {
-                        note = basenote + ((char)arpeggioNote - (char)song->instrument(arpeggioInstrument)->arpeggioBaseNote());
+                    if (arpeggio != NULL) {
+                        unsigned char arpeggioNote = arpeggio->note(trackStatus->line, 0);
+                        note = arpeggioNote != 0 ? (basenote + ((char)arpeggioNote - (char)song->instrument(arpeggioInstrument)->arpeggioBaseNote())) : 0;
                     }
                 }
 
