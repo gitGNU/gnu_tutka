@@ -90,6 +90,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         ui->horizontalSliderHold->setValue(instrument->hold());
         ui->trackerArpeggio->setBlock(instrument->arpeggio());
         updateMidiInterfaceComboBox();
+        updateArpeggio();
 
         // Connect the widgets for editing the instrument
         connect(instrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
@@ -118,6 +119,33 @@ void InstrumentPropertiesDialog::updateMidiInterfaceComboBox()
     ui->comboBoxMidiInterface->blockSignals(false);
 }
 
+void InstrumentPropertiesDialog::updateArpeggio()
+{
+    Block *arpeggio = song->instrument(instrument)->arpeggio();
+    bool enabled = arpeggio != NULL;
+    ui->labelArpeggioBaseNote->setEnabled(enabled);
+    ui->labelArpeggioLength->setEnabled(enabled);
+    ui->labelArpeggioBlock->setEnabled(enabled);
+    ui->comboBoxArpeggioBaseNote->setEnabled(enabled);
+    ui->spinBoxArpeggioLength->setEnabled(enabled);
+    ui->trackerArpeggio->setEnabled(enabled);
+
+    ui->checkBoxArpeggio->blockSignals(true);
+    ui->checkBoxArpeggio->setChecked(enabled);
+    ui->checkBoxArpeggio->blockSignals(false);
+    if (enabled) {
+        ui->spinBoxArpeggioLength->blockSignals(true);
+        ui->spinBoxArpeggioLength->setValue(arpeggio->length());
+        ui->spinBoxArpeggioLength->blockSignals(false);
+        ui->comboBoxArpeggioBaseNote->blockSignals(true);
+        ui->comboBoxArpeggioBaseNote->setCurrentIndex(song->instrument(instrument)->arpeggioBaseNote() - 1);
+        ui->comboBoxArpeggioBaseNote->blockSignals(false);
+    } else {
+        ui->spinBoxArpeggioLength->setValue(8);
+        ui->comboBoxArpeggioBaseNote->setCurrentIndex(48);
+    }
+}
+
 void InstrumentPropertiesDialog::setMidiInterface(const QString &name)
 {
     if (song != NULL) {
@@ -134,14 +162,10 @@ void InstrumentPropertiesDialog::toggleArpeggio(bool enabled)
 {
     Block *oldArpeggio = song->instrument(instrument)->arpeggio();
     song->instrument(instrument)->setArpeggio(enabled ? new Block(1, ui->spinBoxArpeggioLength->value(), 1) : 0);
-    ui->labelArpeggioBaseNote->setEnabled(enabled);
-    ui->labelArpeggioLength->setEnabled(enabled);
-    ui->labelArpeggioBlock->setEnabled(enabled);
-    ui->comboBoxArpeggioBaseNote->setEnabled(enabled);
-    ui->spinBoxArpeggioLength->setEnabled(enabled);
-    ui->trackerArpeggio->setEnabled(enabled);
     ui->trackerArpeggio->setBlock(song->instrument(instrument)->arpeggio());
     delete oldArpeggio;
+
+    updateArpeggio();
 }
 
 void InstrumentPropertiesDialog::setArpeggioBaseNote(int baseNote)

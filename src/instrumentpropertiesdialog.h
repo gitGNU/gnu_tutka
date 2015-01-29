@@ -47,6 +47,7 @@ public slots:
 
 private slots:
     void updateMidiInterfaceComboBox();
+    void updateArpeggio();
     void setMidiInterface(const QString &name);
     void setMidiChannel(int midiChannel);
     void toggleArpeggio(bool enabled);
