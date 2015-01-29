@@ -136,7 +136,7 @@ void InstrumentPropertiesDialog::toggleArpeggio(bool enabled)
     song->instrument(instrument)->setArpeggio(enabled ? new Block(1, ui->spinBoxArpeggioLength->value(), 1) : 0);
     ui->labelArpeggioBaseNote->setEnabled(enabled);
     ui->labelArpeggioLength->setEnabled(enabled);
-    ui->labelArpeggioTracker->setEnabled(enabled);
+    ui->labelArpeggioBlock->setEnabled(enabled);
     ui->comboBoxArpeggioBaseNote->setEnabled(enabled);
     ui->spinBoxArpeggioLength->setEnabled(enabled);
     ui->trackerArpeggio->setEnabled(enabled);
