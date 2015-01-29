@@ -256,11 +256,15 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     bool handled = false;
 
-    if (watched->isWindowType() && dynamic_cast<QLineEdit *>(QApplication::focusWidget()) == NULL && dynamic_cast<QSpinBox *>(QApplication::focusWidget()) == NULL && dynamic_cast<Tracker *>(QApplication::focusWidget()) == NULL) {
-        if (event->type() == QEvent::KeyPress) {
-            handled = keyPress(static_cast<QKeyEvent *>(event));
-        } else if (event->type() == QEvent::KeyRelease) {
-            handled = keyRelease(static_cast<QKeyEvent *>(event));
+    if ((event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) && watched->isWindowType() && dynamic_cast<QLineEdit *>(QApplication::focusWidget()) == NULL && dynamic_cast<QSpinBox *>(QApplication::focusWidget()) == NULL && dynamic_cast<Tracker *>(QApplication::focusWidget()) == NULL) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+
+        if (QApplication::activeWindow() == this || (keyEvent->key() != Qt::Key_Tab && keyEvent->key() != Qt::Key_Backtab && keyEvent->key() != Qt::Key_Left && keyEvent->key() != Qt::Key_Right && keyEvent->key() != Qt::Key_Home && keyEvent->key() != Qt::Key_End && keyEvent->key() != Qt::Key_PageUp && keyEvent->key() != Qt::Key_PageDown)) {
+            if (event->type() == QEvent::KeyPress) {
+                handled = keyPress(keyEvent);
+            } else if (event->type() == QEvent::KeyRelease) {
+                handled = keyRelease(keyEvent);
+            }
         }
     }
 
