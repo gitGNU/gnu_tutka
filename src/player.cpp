@@ -500,6 +500,7 @@ void Player::run()
 {
     ExternalSync prevsyncMode = syncMode;
     unsigned int oldTime = (unsigned int)-1;
+    unsigned int oldLine = line_;
 
     tick = 0;
     ticksSoFar = 0;
@@ -510,7 +511,7 @@ void Player::run()
 
     while (true) {
         bool looped = false;
-        unsigned int oldLine = line_;
+        oldLine = line_;
 
         // Lock
         mutex.lock();
@@ -810,6 +811,10 @@ void Player::run()
     // The mutex is locked if the thread was killed and loop broken
     song->unlock();
     mutex.unlock();
+
+    if (line_ != oldLine) {
+        emit lineChanged(line_);
+    }
 }
 
 void Player::playWithoutScheduling()
