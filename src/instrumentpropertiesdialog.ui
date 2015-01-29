@@ -171,727 +171,763 @@
       </widget>
      </item>
      <item row="6" column="0">
-      <widget class="QLabel" name="labelArpeggio">
-       <property name="text">
-        <string>Arpeggio</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QCheckBox" name="checkBoxArpeggio"/>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="labelArpeggioBlock">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Arpeggio block</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="Tracker" name="trackerArpeggio" native="true">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QLabel" name="arpeggioLabel">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>1</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="labelArpeggioBaseNote">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
        <property name="text">
-        <string>Arpeggio base note</string>
+        <string>Arpeggio</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="indent">
+        <number>4</number>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
-      <widget class="QComboBox" name="comboBoxArpeggioBaseNote">
-       <property name="enabled">
-        <bool>false</bool>
+     <item row="6" column="1">
+      <layout class="QFormLayout" name="formLayoutArpeggio">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
-       <property name="currentIndex">
-        <number>48</number>
-       </property>
-       <item>
-        <property name="text">
-         <string>C-1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G-A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>G#A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A-A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>A#A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>B-A</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C-B</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>C#B</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D-B</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>D#B</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>E-B</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F-B</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>F#B</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="labelArpeggioLength">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Arpeggio length</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QSpinBox" name="spinBoxArpeggioLength">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>65536</number>
-       </property>
-       <property name="value">
-        <number>8</number>
-       </property>
-      </widget>
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelArpeggio">
+         <property name="text">
+          <string>enabled</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="checkBoxArpeggio">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelArpeggioBaseNote">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Base note</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="comboBoxArpeggioBaseNote">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="currentIndex">
+          <number>48</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>C-1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-3</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-6</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-9</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G-A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>G#A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A-A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>A#A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>B-A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C-B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>C#B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D-B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>D#B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>E-B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F-B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>F#B</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="labelArpeggioLength">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Length</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="spinBoxArpeggioLength">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>65536</number>
+         </property>
+         <property name="value">
+          <number>8</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="labelArpeggioBlock">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Block</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="Tracker" name="trackerArpeggio" native="true">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
