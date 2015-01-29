@@ -274,6 +274,9 @@ void Tracker::stepCursorItem(int direction)
         stepCursorTrack(direction);
         cursorItem_ = 6;
     } else {
+        if (song_ == NULL && cursorItem_ > 0 && cursorItem_ < 3) {
+            cursorItem_ = direction > 0 ? 3 : 0;
+        }
         setVisibleArea();
         queueDraw();
     }
@@ -388,8 +391,8 @@ void Tracker::noteToString(unsigned char note, unsigned char instrument, unsigne
     buffer[1] = noteNames[note][1];
     buffer[2] = noteNames[note][2];
     buffer[3] = ' ';
-    buffer[4] = hexMap[(instrument & 0xf0) >> 4];
-    buffer[5] = hexMap[instrument & 0x0f];
+    buffer[4] = song_ != NULL ? hexMap[(instrument & 0xf0) >> 4] : ' ';
+    buffer[5] = song_ != NULL ? hexMap[instrument & 0x0f] : ' ';
     buffer[6] = ' ';
     buffer[7] = hexMap[(effect & 0xf0) >> 4];
     buffer[8] = hexMap[effect & 0x0f];
@@ -759,9 +762,9 @@ void Tracker::mouseToCursorPos(int x, int y, int *cursorTrack, int *cursorItem, 
         if (*cursorItem < 4) {
             *cursorItem = 0;
         } else if (*cursorItem == 4) {
-            *cursorItem = 1;
+            *cursorItem = song_ != NULL ? 1 : 0;
         } else if (*cursorItem == 5 || *cursorItem == 6) {
-            *cursorItem = 2;
+            *cursorItem = song_ != NULL ? 2 : 3;
         } else if (*cursorItem == 7) {
             *cursorItem = 3;
         } else if (*cursorItem == 8 || *cursorItem == 9) {
