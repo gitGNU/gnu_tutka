@@ -348,7 +348,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
 
     switch (command) {
     case CommandPitchWheel:
-        // Program change can be sent if the MIDI channel is known
+        // Pitch wheel can be set if the MIDI channel is known
         if (midiChannel != -1) {
             if (value < 0x80) {
                 if (tick == 0) {
@@ -368,7 +368,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         }
         break;
     case CommandProgramChange:
-        // Pitch wheel can be set if the MIDI channel is known
+        // Program change can be sent if the MIDI channel is known
         if (midiChannel != -1 && tick == 0) {
             output->programChange(midiChannel, value & 0x7f);
         }
