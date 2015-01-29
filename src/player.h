@@ -39,6 +39,10 @@ class Player : public QThread {
 
     // Track status values
     class TrackStatus {
+    public:
+        TrackStatus();
+        void reset();
+
     private:
         char baseNote;
         char instrument;
@@ -52,6 +56,7 @@ class Player : public QThread {
 
         friend class Player;
     };
+
 public:
     enum Command {
         CommandPreviousCommandValue = 0x00,

@@ -264,9 +264,8 @@ void Player::stopMuted()
             QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
             if (trackStatus->note != -1) {
                 midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
-                trackStatus->note = -1;
             }
-            trackStatus->baseNote = -1;
+            trackStatus->reset();
         }
     }
 }
@@ -281,13 +280,8 @@ void Player::stopNotes()
         QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
         if (trackStatus->note != -1) {
             midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
-
-            trackStatus->midiChannel = -1;
-            trackStatus->note = -1;
-            trackStatus->volume = -1;
-            trackStatus->hold = -1;
         }
-        trackStatus->baseNote = -1;
+        trackStatus->reset();
     }
 }
 
@@ -965,15 +959,7 @@ void Player::trackStatusCreate(bool recreateAll)
 
     // Set new tracks to -1
     while (trackStatuses.count() < maxTracks) {
-        TrackStatus *status = new TrackStatus;
-        status->instrument = -1;
-        status->previousCommand = 0;
-        status->note = -1;
-        status->midiChannel = -1;
-        status->midiInterface = -1;
-        status->volume = -1;
-        status->hold = -1;
-        trackStatuses.append(QSharedPointer<TrackStatus>(status));
+        trackStatuses.append(QSharedPointer<TrackStatus>(new TrackStatus));
     }
 }
 
@@ -1290,4 +1276,20 @@ Player::Mode Player::mode() const
 MIDI *Player::midi() const
 {
     return midi_;
+}
+
+Player::TrackStatus::TrackStatus()
+{
+    reset();
+}
+
+void Player::TrackStatus::reset()
+{
+    instrument = -1;
+    previousCommand = 0;
+    note = -1;
+    midiChannel = -1;
+    midiInterface = -1;
+    volume = -1;
+    hold = -1;
 }
