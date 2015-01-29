@@ -954,12 +954,12 @@ void Player::continueBlock()
     play(ModePlayBlock, true);
 }
 
-void Player::trackStatusCreate()
+void Player::trackStatusCreate(bool recreateAll)
 {
     int maxTracks = song != NULL ? song->maxTracks() : 0;
 
     // Free the extraneous status structures
-    while (trackStatuses.count() > maxTracks) {
+    while (trackStatuses.count() > (recreateAll ? 0 : maxTracks)) {
         trackStatuses.removeLast();
     }
 
@@ -1018,7 +1018,7 @@ void Player::init()
     remapMidiOutputs();
 
     // Recreate the track status array
-    trackStatusCreate();
+    trackStatusCreate(true);
     connect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(trackStatusCreate()));
 
     // Check solo status

@@ -151,7 +151,7 @@ private slots:
     void init();
 
     // Reallocate track status array
-    void trackStatusCreate();
+    void trackStatusCreate(bool recreateAll = false);
 
     // Refreshes playseq from section and block from position
     void updateLocation(bool alwaysSendLocationSignals = false);
