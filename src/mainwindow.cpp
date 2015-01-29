@@ -255,7 +255,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     bool handled = false;
 
-    if (watched->isWidgetType() && dynamic_cast<QLineEdit *>(QApplication::focusWidget()) == NULL && dynamic_cast<QSpinBox *>(QApplication::focusWidget()) == NULL) {
+    if (watched->isWindowType() && dynamic_cast<QLineEdit *>(QApplication::focusWidget()) == NULL && dynamic_cast<QSpinBox *>(QApplication::focusWidget()) == NULL && dynamic_cast<Tracker *>(QApplication::focusWidget()) == NULL) {
         if (event->type() == QEvent::KeyPress) {
             handled = keyPress(static_cast<QKeyEvent *>(event));
         } else if (event->type() == QEvent::KeyRelease) {
@@ -518,7 +518,7 @@ bool MainWindow::keyPress(QKeyEvent *event)
         }
     }
 
-    if (!handled && QApplication::activeWindow() == this) {
+    if (!handled) {
         ui->tracker->keyPressEvent(event);
     }
 
