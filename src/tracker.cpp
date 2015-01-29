@@ -587,52 +587,57 @@ void Tracker::printCursor()
 
 void Tracker::drawClever(const QRect &area)
 {
-    if (!isVisible() || block_ == NULL) {
+    if (!isVisible()) {
         return;
     }
 
-    int dist = line_ - oldLine;
-    if (dist != 0) {
-        oldLine = line_;
-        int absdist = abs(dist);
-        int redrawcnt = visibleLines;
-        int y = startY;
+    QPainter painter(this);
+    if (block_ != NULL) {
+        int dist = line_ - oldLine;
+        if (dist != 0) {
+            oldLine = line_;
+            int absdist = abs(dist);
+            int redrawcnt = visibleLines;
+            int y = startY;
 
-        // Scrolling less than half the tracker area so that the cursor is still visible after scrolling?
-        if (absdist <= cursorLine) {
-            // Remove the cursor row before scrolling
-            printNotes(0, (cursorLine) * fontHeight + startY, geometry().width(), fontHeight, oldLine - dist, false);
-        }
-
-        // Scroll the stuff already drawn on the screen
-        if (absdist < visibleLines) {
-            QPainter painter(pixmap);
-            if (dist > 0) {
-                // go down in pattern -- scroll up
-                redrawcnt = absdist;
-                painter.drawPixmap(0, y, *pixmap, 0, y + (absdist * fontHeight), geometry().width(), (visibleLines - absdist) * fontHeight);
-                y += (visibleLines - absdist) * fontHeight;
-            } else if (dist < 0) {
-                // go up in pattern -- scroll down
-                redrawcnt = absdist;
-                painter.drawPixmap(0, y + (absdist * fontHeight), *pixmap, 0, y, geometry().width(), (visibleLines - absdist) * fontHeight);
+            // Scrolling less than half the tracker area so that the cursor is still visible after scrolling?
+            if (absdist <= cursorLine) {
+                // Remove the cursor row before scrolling
+                printNotes(0, (cursorLine) * fontHeight + startY, geometry().width(), fontHeight, oldLine - dist, false);
             }
+
+            // Scroll the stuff already drawn on the screen
+            if (absdist < visibleLines) {
+                QPainter painter(pixmap);
+                if (dist > 0) {
+                    // go down in pattern -- scroll up
+                    redrawcnt = absdist;
+                    painter.drawPixmap(0, y, *pixmap, 0, y + (absdist * fontHeight), geometry().width(), (visibleLines - absdist) * fontHeight);
+                    y += (visibleLines - absdist) * fontHeight;
+                } else if (dist < 0) {
+                    // go up in pattern -- scroll down
+                    redrawcnt = absdist;
+                    painter.drawPixmap(0, y + (absdist * fontHeight), *pixmap, 0, y, geometry().width(), (visibleLines - absdist) * fontHeight);
+                }
+            }
+
+            // Print the new rows that are now visible
+            printNotes(0, y, geometry().width(), redrawcnt * fontHeight, oldLine, true);
         }
 
-        // Print the new rows that are now visible
-        printNotes(0, y, geometry().width(), redrawcnt * fontHeight, oldLine, true);
+        // Redraw the cursor row to include the cursor
+        printNotes(0, (cursorLine) * fontHeight + startY, geometry().width(), fontHeight, line_, true);
+        printCursor();
+
+        // Print the channel headers and separator bars
+        printTrackHeaders();
+        printBars();
+
+        painter.drawPixmap(area.x(), area.y(), area.width(), area.height(), *pixmap);
+    } else {
+        painter.fillRect(area.x(), area.y(), area.width(), area.height(), isEnabled() ? backgroundBrush : QPalette().shadow());
     }
 
-    // Redraw the cursor row to include the cursor
-    printNotes(0, (cursorLine) * fontHeight + startY, geometry().width(), fontHeight, line_, true);
-    printCursor();
-
-    // Print the channel headers and separator bars
-    printTrackHeaders();
-    printBars();
-
-    QPainter painter(this);
-    painter.drawPixmap(area.x(), area.y(), area.width(), area.height(), *pixmap);
 }
 
 void Tracker::drawStupid(const QRect &area)
