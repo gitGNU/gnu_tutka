@@ -248,6 +248,21 @@ MainWindow::~MainWindow()
     delete copySelection_;
     delete copyBlock_;
     delete copyTrack_;
+    delete instrumentPropertiesDialog;
+    delete openDialog;
+    delete preferencesDialog;
+    delete trackVolumesDialog;
+    delete transposeDialog;
+    delete expandShrinkDialog;
+    delete changeInstrumentDialog;
+    delete sectionListDialog;
+    delete songPropertiesDialog;
+    delete playingSequenceDialog;
+    delete playingSequenceListDialog;
+    delete blockListDialog;
+    delete messageListDialog;
+    delete helpDialog;
+    delete externalSyncActionGroup;
     delete ui;
 }
 
