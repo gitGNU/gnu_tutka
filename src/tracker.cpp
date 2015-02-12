@@ -125,6 +125,11 @@ Tracker::Tracker(QWidget *parent) :
     initDisplay(geometry().width(), geometry().height());
 }
 
+Tracker::~Tracker()
+{
+    delete pixmap;
+}
+
 void Tracker::setTracks(int tracks)
 {
     if (this->tracks != tracks) {

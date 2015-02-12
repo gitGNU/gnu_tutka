@@ -38,6 +38,8 @@ class Tracker : public QWidget
 
 public:
     explicit Tracker(QWidget *parent = 0);
+    virtual ~Tracker();
+
     void setCommandPage(int commandPage);
     bool isInSelectionMode() const;
     bool isInEditMode() const;
