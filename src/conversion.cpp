@@ -120,7 +120,7 @@ static void mmd2CommandToSongCommand(unsigned char &command, unsigned char &valu
     case 0x3d:
     case 0x3e:
     case 0x3f:
-        if (mmdcmd3x->ctrlr_types[command - 0x31] == MCS_TYPE_STD_MSB) {
+        if (mmdcmd3x != NULL && mmdcmd3x->ctrlr_types[command - 0x31] == MCS_TYPE_STD_MSB) {
             command = mmdcmd3x->ctrlr_numbers[command - 0x31] + 0x80;
         }
         break;
@@ -240,7 +240,7 @@ Song *mmd2ToSong(struct MMD2 *mmd)
                     // Command values may need special handling
                     unsigned char command = block->command(line, track, 0);
                     unsigned char value = block->commandValue(line, track, 0);
-                    mmd2CommandToSongCommand(command, value, mmd->expdata->mmdcmd3x);
+                    mmd2CommandToSongCommand(command, value, mmd->expdata != NULL ? mmd->expdata->mmdcmd3x : NULL);
                     block->setCommandFull(line, track, 0, command, value);
                 }
 
