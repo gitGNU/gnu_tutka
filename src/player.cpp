@@ -985,7 +985,7 @@ void Player::setSong(const QString &path)
         QByteArray header = file.read(4);
         if (header.length() == 4) {
             const char *data = header.data();
-            if (data[0] == (ID_MMD2 >> 24) && data[1] == ((ID_MMD2 >> 16) & 0xff) && data[2] == ((ID_MMD2 >> 8) & 0xff) && data[3] == (ID_MMD2 & 0xff)) {
+            if (data[0] == (ID_MMD2 >> 24) && data[1] == ((ID_MMD2 >> 16) & 0xff) && data[2] == ((ID_MMD2 >> 8) & 0xff) && (data[3] == (ID_MMD0 & 0xff) || data[3] == (ID_MMD1 & 0xff) || data[3] == (ID_MMD2 & 0xff))) {
                 song = mmd2ToSong(MMD2_load(path.toUtf8().constData()));
             }
         }

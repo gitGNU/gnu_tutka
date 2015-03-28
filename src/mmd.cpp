@@ -639,7 +639,7 @@ struct MMD2 *MMD2_parse(unsigned char *base, int offset)
     int i;
 
     // Check whether the file begins with MMD2 or not
-    if (data[0] == 0x4d && data[1] == 0x4d && data[2] == 0x44 && data[3] == 0x32) {
+    if (data[0] == 0x4d && data[1] == 0x4d && data[2] == 0x44 && data[3] >= 0x30 && data[3] <= 0x32) {
         mmd = (struct MMD2 *)calloc(1, sizeof(struct MMD2));
         // Read in MMD2 structure
         mmd->id = getlong(data);
