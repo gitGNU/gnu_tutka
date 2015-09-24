@@ -908,7 +908,7 @@ void Tracker::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 
     initDisplay(geometry().width(), geometry().height());
-    update();
+    drawStupid(QRect(QPoint(), geometry().size()));
 }
 
 void Tracker::keyPressEvent(QKeyEvent *event)
