@@ -79,7 +79,6 @@ private slots:
     void redrawArea(int startTrack, int startLine, int endTrack, int endLine);
     void setTracks(int tracks);
     void checkBounds();
-    void queueDraw();
 
 signals:
     void lineChanged(int line, int length, int visibleLines);
