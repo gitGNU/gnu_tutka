@@ -892,7 +892,7 @@ void Tracker::mouseReleaseEvent(QMouseEvent *event)
 
 void Tracker::paintEvent(QPaintEvent *event)
 {
-    if (inSelectionMode) {
+    if (inSelectionMode || mouseSelecting) {
         oldLine = -2 * visibleLines;
     }
     drawClever(event->rect());
