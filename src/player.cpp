@@ -542,6 +542,7 @@ void Player::run()
         }
 
         Block *block = song->block(block_);
+        int commandPages = block->commandPages();
 
         // Send MIDI sync if requested
         if (song->sendSync()) {
@@ -586,7 +587,7 @@ void Player::run()
 
                 // Stop notes if there are new notes about to be played
                 if (note != 0) {
-                    for (int commandPage = 0; commandPage < block->commandPages(); commandPage++) {
+                    for (int commandPage = 0; commandPage < commandPages; commandPage++) {
                         unsigned char command = block->command(line_, track, commandPage);
                         unsigned char value = block->commandValue(line_, track, commandPage);
 
@@ -630,7 +631,7 @@ void Player::run()
                 }
 
                 // Handle commands on all command pages
-                for (int commandPage = 0; commandPage < block->commandPages(); commandPage++) {
+                for (int commandPage = 0; commandPage < commandPages; commandPage++) {
                     unsigned char command = block->command(line_, track, commandPage);
                     unsigned char value = block->commandValue(line_, track, commandPage);
                     handleCommand(trackStatus, note, instrument, command, value, &volume, &delay, &hold);
