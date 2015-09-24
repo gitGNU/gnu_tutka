@@ -1,3 +1,8 @@
+1.1.0
+-----
+- Instrument specific arpeggio support
+- Tracker drawing performance improvements
+
 1.0.2
 -----
 - Song changed status is now shown in the main window title bar
