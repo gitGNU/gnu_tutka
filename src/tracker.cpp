@@ -141,7 +141,7 @@ void Tracker::setTracks(int tracks)
         }
 
         initDisplay(geometry().width(), geometry().height());
-        queueDraw();
+        update();
 
         emit trackChanged(leftmostTrack, tracks, visibleTracks);
     }
@@ -159,7 +159,7 @@ void Tracker::setCommandPage(int commandPage)
         commandPage_ = commandPage;
         emit commandPageChanged(commandPage_);
 
-        queueDraw();
+        update();
     }
 }
 
@@ -175,22 +175,22 @@ void Tracker::setLine(int line)
         line_ = line;
         emit lineChanged(line, block_->length(), visibleLines);
 
-        queueDraw();
+        update();
     }
 }
 
 void Tracker::setSong(Song *song)
 {
     if (song_ != NULL) {
-        disconnect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(queueDraw()));
-        disconnect(song_, SIGNAL(trackNameChanged()), this, SLOT(queueDraw()));
+        disconnect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(update()));
+        disconnect(song_, SIGNAL(trackNameChanged()), this, SLOT(update()));
     }
 
     song_ = song;
 
     if (song_ != NULL) {
-        connect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(queueDraw()));
-        connect(song_, SIGNAL(trackNameChanged()), this, SLOT(queueDraw()));
+        connect(song_, SIGNAL(trackMutedOrSoloed()), this, SLOT(update()));
+        connect(song_, SIGNAL(trackNameChanged()), this, SLOT(update()));
     }
 }
 
@@ -231,7 +231,7 @@ void Tracker::setBlock(unsigned int number)
                 emit commandPageChanged(commandPage_);
             }
         }
-        queueDraw();
+        update();
     }
 }
 
@@ -243,7 +243,7 @@ void Tracker::setLeftmostTrack(int leftmostTrack)
         }
 
         this->leftmostTrack = leftmostTrack;
-        queueDraw();
+        update();
 
         if (cursorTrack_ < leftmostTrack) {
             cursorTrack_ = leftmostTrack;
@@ -285,7 +285,7 @@ void Tracker::stepCursorItem(int direction)
             cursorItem_ = direction > 0 ? 3 : 0;
         }
         setVisibleArea();
-        queueDraw();
+        update();
     }
 }
 
@@ -293,7 +293,7 @@ void Tracker::setCursorItem(int cursorItem)
 {
     cursorItem_ = cursorItem % 7;
     setVisibleArea();
-    queueDraw();
+    update();
 }
 
 void Tracker::stepCursorTrack(int direction)
@@ -311,7 +311,7 @@ void Tracker::stepCursorTrack(int direction)
     }
 
     setVisibleArea();
-    queueDraw();
+    update();
 
     emit cursorTrackChanged(cursorTrack_);
 }
@@ -338,7 +338,7 @@ void Tracker::markSelection(bool enable)
         selectionStartTrack = selectionEndTrack = cursorTrack_;
         selectionStartLine = selectionEndLine = line_;
         inSelectionMode = true;
-        queueDraw();
+        update();
     }
 
     emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
@@ -350,7 +350,7 @@ void Tracker::clearMarkSelection()
         selectionStartTrack = selectionEndTrack = -1;
         selectionStartLine = selectionEndLine = -1;
         inSelectionMode = false;
-        queueDraw();
+        update();
 
         emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     }
@@ -616,16 +616,15 @@ void Tracker::drawClever(const QRect &area)
 
             // Scroll the stuff already drawn on the screen
             if (absdist < visibleLines) {
-                QPainter painter(pixmap);
                 if (dist > 0) {
                     // go down in pattern -- scroll up
                     redrawcnt = absdist;
-                    painter.drawPixmap(0, y, *pixmap, 0, y + (absdist * fontHeight), geometry().width(), (visibleLines - absdist) * fontHeight);
+                    pixmap->scroll(0, -(absdist * fontHeight), 0, y, geometry().width(), visibleLines * fontHeight);
                     y += (visibleLines - absdist) * fontHeight;
                 } else if (dist < 0) {
                     // go up in pattern -- scroll down
                     redrawcnt = absdist;
-                    painter.drawPixmap(0, y + (absdist * fontHeight), *pixmap, 0, y, geometry().width(), (visibleLines - absdist) * fontHeight);
+                    pixmap->scroll(0, (absdist * fontHeight), 0, y, geometry().width(), visibleLines * fontHeight);
                 }
             }
 
@@ -696,7 +695,7 @@ void Tracker::reset()
     block_ = NULL;
     initDisplay(geometry().width(), geometry().height());
     setVisibleArea();
-    queueDraw();
+    update();
 }
 
 void Tracker::initColors()
@@ -822,7 +821,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
             selectionEndLine = selectionStartLine;
             selectionEndTrack = selectionStartTrack;
             mouseSelecting = true;
-            queueDraw();
+            update();
             emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
         } else if (mouseButton == Qt::RightButton) {
             // Tracker cursor posititioning and clear block mark if any
@@ -830,7 +829,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
                 selectionStartTrack = selectionEndTrack = -1;
                 selectionStartLine = selectionEndLine = -1;
                 inSelectionMode = false;
-                queueDraw();
+                update();
                 emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
             }
             mouseToCursorPos(x, y, &cursorTrack, &cursorItem, &line);
@@ -842,7 +841,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
             if (line != line_) {
                 setLine(line);
             }
-            queueDraw();
+            update();
         }
     }
 
@@ -875,7 +874,7 @@ void Tracker::mouseMoveEvent(QMouseEvent *event)
         } else if ((selectionEndLine < line_ - (visibleLines / 2)) || (y <= 0 && line_ > selectionEndLine)) {
             setLine(line_ - 1);
         }
-        queueDraw();
+        update();
         emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     }
 
@@ -908,7 +907,7 @@ void Tracker::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 
     initDisplay(geometry().width(), geometry().height());
-    queueDraw();
+    update();
 }
 
 void Tracker::keyPressEvent(QKeyEvent *event)
@@ -1154,12 +1153,6 @@ void Tracker::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
-void Tracker::queueDraw()
-{
-    oldLine = -2 * visibleLines;
-    update();
-}
-
 Song *Tracker::song() const
 {
     return song_;
@@ -1207,14 +1200,14 @@ void Tracker::redrawArea(int startTrack, int startLine, int endTrack, int endLin
     Q_UNUSED(endTrack)
     Q_UNUSED(endLine)
 
-    queueDraw();
+    update();
 }
 
 void Tracker::checkBounds()
 {
     if (cursorTrack_ >= block_->tracks()) {
         cursorTrack_ = block_->tracks() - 1;
-        queueDraw();
+        update();
     }
 
     if (line_ >= block_->length()) {
@@ -1233,7 +1226,7 @@ void Tracker::setSelection(int startTrack, int startLine, int endTrack, int endL
     selectionEndTrack = endTrack;
     selectionEndLine = endLine;
     inSelectionMode = false;
-    queueDraw();
+    update();
     emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
 }
 
