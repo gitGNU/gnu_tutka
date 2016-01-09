@@ -1211,7 +1211,8 @@ void Tracker::redrawArea(int startTrack, int startLine, int endTrack, int endLin
     Q_UNUSED(endTrack)
     Q_UNUSED(endLine)
 
-    update();
+    // TODO: redraw only the changed area
+    drawStupid();
 }
 
 void Tracker::checkBounds()
