@@ -56,7 +56,6 @@ public:
     int cursorItem() const;
     int octave() const;
     void stepCursorItem(int direction);
-    void stepCursorLine(int direction);
     void setCursorItem(int cursorItem);
     void clearMarkSelection();
     void setSelection(int startTrack, int startLine, int endTrack, int endLine);
