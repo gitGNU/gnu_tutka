@@ -123,7 +123,7 @@ private:
     void printTrackHeaders();
     void printCursor();
     void drawClever(const QRect &area);
-    void drawStupid(const QRect &area);
+    void drawStupid(const QRect &area = QRect());
     void initDisplay(int width, int height);
     void initColors();
     void calculateFontSize();
