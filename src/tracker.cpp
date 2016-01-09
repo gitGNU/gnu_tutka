@@ -242,7 +242,7 @@ void Tracker::setLeftmostTrack(int leftmostTrack)
         }
 
         this->leftmostTrack = leftmostTrack;
-        update();
+        drawStupid();
 
         if (cursorTrack_ < leftmostTrack) {
             cursorTrack_ = leftmostTrack;
