@@ -835,7 +835,7 @@ void Tracker::mousePressEvent(QMouseEvent *event)
                 setVisibleArea();
             }
             if (line != line_) {
-                setLine(line);
+                emit setLineRequested(line);
             }
             update();
         }
@@ -866,9 +866,9 @@ void Tracker::mouseMoveEvent(QMouseEvent *event)
             setLeftmostTrack(leftmostTrack - 1);
         }
         if ((selectionEndLine > line_ + (visibleLines / 2)) || (y > geometry().height() && line_ < selectionEndLine)) {
-            setLine(line_ + 1);
+            emit setLineRequested(line_ + 1);
         } else if ((selectionEndLine < line_ - (visibleLines / 2)) || (y <= 0 && line_ > selectionEndLine)) {
-            setLine(line_ - 1);
+            emit setLineRequested(line_ - 1);
         }
         update();
         emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
