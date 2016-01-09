@@ -317,18 +317,6 @@ void Tracker::stepCursorTrack(int direction)
     emit cursorTrackChanged(cursorTrack_);
 }
 
-void Tracker::stepCursorLine(int direction)
-{
-    int line = line_ + direction;
-
-    while (line < 0) {
-        line += block_->length();
-    }
-    line %= block_->length();
-
-    setLine(line);
-}
-
 void Tracker::markSelection(bool enable)
 {
     if (!enable) {
