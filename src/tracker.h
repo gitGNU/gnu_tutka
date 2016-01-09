@@ -167,6 +167,7 @@ private:
     int selectionStartLine;
     int selectionEndTrack;
     int selectionEndLine;
+    int oldSelectionStartTrack;
 
     bool mouseSelecting;
     Qt::MouseButton mouseButton;
