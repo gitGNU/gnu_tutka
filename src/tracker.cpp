@@ -678,6 +678,7 @@ void Tracker::initDisplay(int width, int height)
     }
     cursorLine = visibleLines / 2;
     startY = (height - fontHeight * visibleLines) / 2 + fontHeight;
+    oldLine = -2 * visibleLines;
 
     trackWidth = TRACKER_TRACK_WIDTH * fontWidth;
     int u = width - lineNumbersSpace - 10;
