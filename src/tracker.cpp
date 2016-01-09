@@ -64,6 +64,7 @@ Tracker::Tracker(QWidget *parent) :
     selectionStartLine(-1),
     selectionEndTrack(-1),
     selectionEndLine(-1),
+    oldSelectionStartTrack(-1),
     mouseSelecting(false),
     mouseButton(Qt::NoButton),
     chordStatus(0),
@@ -350,7 +351,7 @@ void Tracker::clearMarkSelection()
         selectionStartTrack = selectionEndTrack = -1;
         selectionStartLine = selectionEndLine = -1;
         inSelectionMode = false;
-        drawStupid(QRect(QPoint(), geometry().size()));
+        update();
 
         emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     }
@@ -601,6 +602,12 @@ void Tracker::drawClever(const QRect &area)
 
     QPainter painter(this);
     if (block_ != NULL) {
+        // If selection has been added or removed, redraw everything
+        if (selectionStartTrack != oldSelectionStartTrack) {
+            oldLine = -2 * visibleLines;
+            oldSelectionStartTrack = selectionStartTrack;
+        }
+
         int dist = line_ - oldLine;
         if (dist != 0) {
             oldLine = line_;
