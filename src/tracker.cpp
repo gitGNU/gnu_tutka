@@ -230,7 +230,7 @@ void Tracker::setBlock(Block *block)
                 emit commandPageChanged(commandPage_);
             }
         }
-        update();
+        drawStupid();
     }
 }
 
@@ -655,7 +655,7 @@ void Tracker::drawClever(const QRect &area)
 void Tracker::drawStupid(const QRect &area)
 {
     oldLine = -2 * visibleLines;
-    update(area);
+    update(area.isEmpty() ? QRect(QPoint(), geometry().size()) : area);
 }
 
 void Tracker::initDisplay(int width, int height)
@@ -908,7 +908,7 @@ void Tracker::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
 
-    drawStupid(QRect(QPoint(), geometry().size()));
+    drawStupid();
 }
 
 void Tracker::resizeEvent(QResizeEvent *event)
@@ -916,7 +916,7 @@ void Tracker::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 
     initDisplay(geometry().width(), geometry().height());
-    drawStupid(QRect(QPoint(), geometry().size()));
+    drawStupid();
 }
 
 void Tracker::keyPressEvent(QKeyEvent *event)
