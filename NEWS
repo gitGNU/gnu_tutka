@@ -1,3 +1,11 @@
+1.0.3
+-----
+- Song is now considered to be changed when the playing sequence or section contents change
+- Track statuses are now properly reset when loading a new song or notes are stopped
+- Several fixes to the tracker widget appearance in various situations
+- Significant improvements to the tracker widget redrawing performance
+- Support for loading MMD0 and MMD1 songs
+
 1.0.2
 -----
 - Song changed status is now shown in the main window title bar
