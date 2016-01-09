@@ -161,7 +161,7 @@ void Tracker::setCommandPage(int commandPage)
         commandPage_ = commandPage;
         emit commandPageChanged(commandPage_);
 
-        update();
+        drawStupid();
     }
 }
 
