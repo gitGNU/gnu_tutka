@@ -350,7 +350,7 @@ void Tracker::clearMarkSelection()
         selectionStartTrack = selectionEndTrack = -1;
         selectionStartLine = selectionEndLine = -1;
         inSelectionMode = false;
-        update();
+        drawStupid(QRect(QPoint(), geometry().size()));
 
         emit selectionChanged(selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
     }
