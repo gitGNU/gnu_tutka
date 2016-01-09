@@ -59,6 +59,7 @@ Tracker::Tracker(QWidget *parent) :
     cursorTrack_(0),
     cursorItem_(0),
     leftmostTrack(0),
+    oldLeftmostTrack(0),
     inSelectionMode(false),
     selectionStartTrack(-1),
     selectionStartLine(-1),
@@ -606,6 +607,12 @@ void Tracker::drawClever(const QRect &area)
         if (selectionStartTrack != oldSelectionStartTrack) {
             oldLine = -2 * visibleLines;
             oldSelectionStartTrack = selectionStartTrack;
+        }
+
+        // If leftmost track has changed, redraw everything
+        if (leftmostTrack != oldLeftmostTrack) {
+            oldLine = -2 * visibleLines;
+            oldLeftmostTrack = leftmostTrack;
         }
 
         int dist = line_ - oldLine;

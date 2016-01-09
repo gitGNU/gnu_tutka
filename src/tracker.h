@@ -160,6 +160,7 @@ private:
     int cursorTrack_;
     int cursorItem_;
     int leftmostTrack;
+    int oldLeftmostTrack;
 
     // Block selection stuff
     bool inSelectionMode;
