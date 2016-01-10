@@ -794,7 +794,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>C&amp;ut</string>
+    <string>C&amp;ut </string>
    </property>
    <property name="shortcut">
     <string>Alt+F3</string>
@@ -807,7 +807,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>&amp;Copy</string>
+    <string>&amp;Copy </string>
    </property>
    <property name="shortcut">
     <string>Alt+F4</string>
@@ -820,7 +820,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>&amp;Paste</string>
+    <string>&amp;Paste </string>
    </property>
    <property name="shortcut">
     <string>Alt+F5</string>
@@ -873,7 +873,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>C&amp;ut</string>
+    <string>C&amp;ut </string>
    </property>
    <property name="shortcut">
     <string>Shift+F3</string>
@@ -886,7 +886,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>&amp;Copy</string>
+    <string>&amp;Copy </string>
    </property>
    <property name="shortcut">
     <string>Shift+F4</string>
@@ -899,7 +899,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>&amp;Paste</string>
+    <string>&amp;Paste </string>
    </property>
    <property name="shortcut">
     <string>Shift+F5</string>
