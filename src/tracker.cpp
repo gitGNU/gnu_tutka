@@ -1118,7 +1118,6 @@ void Tracker::keyPressEvent(QKeyEvent *event)
             if (inEditMode) {
                 // Backspace: delete line
                 block_->deleteLine(line_, cursorTrack_);
-                emit lineEdited();
             }
             break;
         default:
