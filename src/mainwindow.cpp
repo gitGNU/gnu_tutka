@@ -526,6 +526,16 @@ bool MainWindow::keyPress(QKeyEvent *event)
                     handled = true;
                 }
                 break;
+            case Qt::Key_Menu:
+                // Menu: Continue song
+                player->continueSong();
+                handled = true;
+                break;
+            case Qt::Key_Meta:
+                // Windows: Continue block
+                player->continueBlock();
+                handled = true;
+                break;
             default:
                 break;
             }
