@@ -959,10 +959,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="mainwindow.ui" line="686"/>
-        <location filename="mainwindow.ui" line="795"/>
-        <location filename="mainwindow.ui" line="874"/>
         <source>C&amp;ut</source>
         <translation>&amp;Leikkaa</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="795"/>
+        <location filename="mainwindow.ui" line="874"/>
+        <source>C&amp;ut </source>
+        <translation>&amp;Leikkaa </translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="689"/>
@@ -971,10 +975,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="mainwindow.ui" line="699"/>
-        <location filename="mainwindow.ui" line="808"/>
-        <location filename="mainwindow.ui" line="887"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopioi</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="808"/>
+        <location filename="mainwindow.ui" line="887"/>
+        <source>&amp;Copy </source>
+        <translation>&amp;Kopioi </translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="702"/>
@@ -983,10 +991,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="mainwindow.ui" line="712"/>
-        <location filename="mainwindow.ui" line="821"/>
-        <location filename="mainwindow.ui" line="900"/>
         <source>&amp;Paste</source>
         <translation>&amp;Liimaa</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="821"/>
+        <location filename="mainwindow.ui" line="900"/>
+        <source>&amp;Paste </source>
+        <translation>&amp;Liimaa </translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="715"/>
