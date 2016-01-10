@@ -532,8 +532,13 @@ bool MainWindow::keyPress(QKeyEvent *event)
                 handled = true;
                 break;
             case Qt::Key_Meta:
+#ifdef __linux
                 // Windows: Continue block
                 player->continueBlock();
+#elif __APPLE__
+                // Control: Play block
+                player->playBlock();
+#endif
                 handled = true;
                 break;
             default:
