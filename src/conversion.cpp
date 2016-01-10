@@ -203,7 +203,7 @@ Song *mmd2ToSong(struct MMD2 *mmd)
             struct PlaySeq *PlaySeq = mmd->song->playseqtable[number];
 
             Playseq *playseq = song->playseq(number);
-            if (PlaySeq->name != NULL) {
+            if (PlaySeq->name[0] != 0) {
                 playseq->setName(QString::fromLatin1(PlaySeq->name));
             }
             while (playseq->length() < PlaySeq->length) {
