@@ -307,6 +307,9 @@ bool MainWindow::keyPress(QKeyEvent *event)
         return false;
     }
 
+    // TODO workaround: sometimes the menu bar somehow gets focus even when it has a no focus policy - make sure there is no focus
+    ui->menubar->clearFocus();
+
     bool shift = (event->modifiers() & Qt::ShiftModifier) != 0;
     bool ctrl = (event->modifiers() & Qt::ControlModifier) != 0;
     bool alt = (event->modifiers() & Qt::AltModifier) != 0;
