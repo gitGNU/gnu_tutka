@@ -1,6 +1,6 @@
 /* mmd.h
  *
- * Copyright 2002-2014 Vesa Halttunen
+ * Copyright 2002-2016 Vesa Halttunen
  *
  * This file is part of Tutka.
  *
