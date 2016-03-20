@@ -43,6 +43,10 @@ public slots:
     void makeVisible();
     void setSong(Song *song);
 
+private slots:
+    void setTempo();
+    void setTicksPerLine();
+
 private:
     Ui::SongPropertiesDialog *ui;
     Song *song;
