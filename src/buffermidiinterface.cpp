@@ -29,6 +29,23 @@ BufferMIDIInterface::BufferMIDIInterface(BufferMIDI *midi, DirectionFlags flags,
 {
 }
 
+void BufferMIDIInterface::tempo(unsigned int tempo)
+{
+    MIDIInterface::tempo(tempo);
+
+    unsigned int ms = 60000000 / tempo;
+    QByteArray data(6, 0);
+
+    data[0] = 0xff;
+    data[1] = 0x51;
+    data[2] = 0x03;
+    data[3] = (ms >> 16) & 0xff;
+    data[4] = (ms >> 8) & 0xff;
+    data[5] = ms & 0xff;
+
+    write(data);
+}
+
 void BufferMIDIInterface::write(const QByteArray &dataArray)
 {
     int length = dataArray.length();
