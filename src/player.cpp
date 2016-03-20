@@ -325,11 +325,8 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         midiChannel = trackStatus->midiChannel;
     }
 
-    if (midiInterface < 0 || midiChannel < 0) {
-        return;
-    }
-
-    QSharedPointer<MIDIInterface> output = midi_->output(midiInterface);
+    // If the MIDI interface is not known, use the null output interface
+    QSharedPointer<MIDIInterface> output = midi_->output(midiInterface >= 0 ? midiInterface : 0);
 
     // Check for previous command if any
     if (command == CommandPreviousCommandValue) {
