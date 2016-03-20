@@ -82,7 +82,7 @@ public:
     void clock();
 
     // Set the tempo (used when exporting)
-    void tempo(unsigned int);
+    virtual void tempo(unsigned int);
 
 protected:
     virtual void write(const QByteArray &data);

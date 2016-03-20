@@ -34,6 +34,7 @@ class BufferMIDIInterface : public MIDIInterface
 public:
     explicit BufferMIDIInterface(BufferMIDI *midi, DirectionFlags flags, QObject *parent = NULL);
     QByteArray data() const;
+    virtual void tempo(unsigned int);
 
 protected:
     virtual void write(const QByteArray &data);
