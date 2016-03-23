@@ -553,18 +553,16 @@ void Player::run()
             line_ %= block->length();
         }
 
-        // Play notes scheduled to be played
+        // Stop notes if there are new notes about to be played
         for (int track = 0; track < block->tracks(); track++) {
             QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
 
             // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
             if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
-                unsigned int volume = 127;
-                int delay = 0, hold = -1;
+                int delay = 0;
                 unsigned char basenote = block->note(line_, track);
                 unsigned char instrument = block->instrument(line_, track);
                 unsigned char note = basenote;
-                Block *arpeggio = NULL;
 
                 if (note != 0) {
                     trackStatus->line = 0;
@@ -572,17 +570,17 @@ void Player::run()
                     basenote = trackStatus->baseNote;
                 }
 
+                // Use previous instrument if none defined
                 int arpeggioInstrument = note != 0 && instrument > 0 ? (instrument - 1) : trackStatus->instrument;
                 if (arpeggioInstrument >= 0) {
                     // Add arpeggio note (if any) to the track's base note
-                    arpeggio = song->instrument(arpeggioInstrument)->arpeggio();
+                    Block *arpeggio = song->instrument(arpeggioInstrument)->arpeggio();
                     if (arpeggio != NULL) {
                         unsigned char arpeggioNote = arpeggio->note(trackStatus->line, 0);
                         note = arpeggioNote != 0 ? (basenote + ((char)arpeggioNote - (char)song->instrument(arpeggioInstrument)->arpeggioBaseNote())) : 0;
                     }
                 }
 
-                // Stop notes if there are new notes about to be played
                 if (note != 0) {
                     for (int commandPage = 0; commandPage < commandPages; commandPage++) {
                         unsigned char command = block->command(line_, track, commandPage);
@@ -615,6 +613,38 @@ void Player::run()
                             midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                             trackStatus->note = -1;
                         }
+                    }
+                }
+            }
+        }
+
+        // Play notes scheduled to be played
+        for (int track = 0; track < block->tracks(); track++) {
+            QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
+
+            // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
+            if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
+                unsigned int volume = 127;
+                int delay = 0, hold = -1;
+                unsigned char basenote = block->note(line_, track);
+                unsigned char instrument = block->instrument(line_, track);
+                unsigned char note = basenote;
+                Block *arpeggio = NULL;
+
+                if (note != 0) {
+                    trackStatus->line = 0;
+                } else {
+                    basenote = trackStatus->baseNote;
+                }
+
+                // Use previous instrument if none defined
+                int arpeggioInstrument = note != 0 && instrument > 0 ? (instrument - 1) : trackStatus->instrument;
+                if (arpeggioInstrument >= 0) {
+                    // Add arpeggio note (if any) to the track's base note
+                    arpeggio = song->instrument(arpeggioInstrument)->arpeggio();
+                    if (arpeggio != NULL) {
+                        unsigned char arpeggioNote = arpeggio->note(trackStatus->line, 0);
+                        note = arpeggioNote != 0 ? (basenote + ((char)arpeggioNote - (char)song->instrument(arpeggioInstrument)->arpeggioBaseNote())) : 0;
                     }
                 }
 
