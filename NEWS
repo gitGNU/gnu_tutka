@@ -1,3 +1,9 @@
+1.0.4
+-----
+- Non-MIDI related commands now work even if no note has been played on the channel
+- Setting the tempo and ticks per line using player commands now affect the song properties dialog
+- Tempo is no longer incorrectly sent over MIDI
+
 1.0.3
 -----
 - Song is now considered to be changed when the playing sequence or section contents change
