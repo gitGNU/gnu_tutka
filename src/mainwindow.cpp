@@ -716,7 +716,7 @@ void MainWindow::setSelection(int startTrack, int startLine, int endTrack, int e
 
 void MainWindow::showAbout()
 {
-    QMessageBox::about(this, tr("About Tutka"), tr("Tutka 1.1.0\n\n© 2002-2015 Vesa Halttunen <vesuri@jormas.com>"));
+    QMessageBox::about(this, tr("About Tutka"), tr("Tutka 1.1.0\n\n© 2002-2016 Vesa Halttunen <vesuri@jormas.com>"));
 }
 
 void MainWindow::cutSelection()
