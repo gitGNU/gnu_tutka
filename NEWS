@@ -1,7 +1,20 @@
 1.1.0
 -----
 - Instrument specific arpeggio support
-- Tracker drawing performance improvements
+
+1.0.4
+-----
+- Non-MIDI related commands now work even if no note has been played on the channel
+- Setting the tempo and ticks per line using player commands now affect the song properties dialog
+- Tempo is no longer incorrectly sent over MIDI
+
+1.0.3
+-----
+- Song is now considered to be changed when the playing sequence or section contents change
+- Track statuses are now properly reset when loading a new song or notes are stopped
+- Several fixes to the tracker widget appearance in various situations
+- Significant improvements to the tracker widget redrawing performance
+- Support for loading MMD0 and MMD1 songs
 
 1.0.2
 -----
