@@ -348,9 +348,8 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
                 }
             } else {
                 if (tick < song->ticksPerLine() - 1) {
-                    int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL]) / ((int)song->ticksPerLine() - 1);
-
-                    output->pitchWheel(midiChannel, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL] + tick * delta);
+                    float delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL]) / (float)song->ticksPerLine();
+                    output->pitchWheel(midiChannel, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL] + (tick + 1) * delta);
                 } else {
                     output->pitchWheel(midiChannel, value - 0x80);
                     midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_PITCH_WHEEL] = value - 0x80;
@@ -416,9 +415,8 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
                     }
                 } else {
                     if (tick < song->ticksPerLine() - 1) {
-                        int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH]) / ((int)song->ticksPerLine() - 1);
-
-                        output->aftertouch(midiChannel, trackStatus->note, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH] + tick * delta);
+                        float delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH]) / (float)song->ticksPerLine();
+                        output->aftertouch(midiChannel, trackStatus->note, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH] + (tick + 1) * delta);
                     } else {
                         output->aftertouch(midiChannel, trackStatus->note, value - 0x80);
                         midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_AFTERTOUCH] = value - 0x80;
@@ -437,9 +435,8 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
                 }
             } else {
                 if (tick < song->ticksPerLine() - 1) {
-                    int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE]) / ((int)song->ticksPerLine() - 1);
-
-                    output->channelPressure(midiChannel, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE] + tick * delta);
+                    float delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE]) / (float)song->ticksPerLine();
+                    output->channelPressure(midiChannel, midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE] + (tick + 1) * delta);
                 } else {
                     output->channelPressure(midiChannel, value - 0x80);
                     midiControllerValues[midiInterface][midiChannel * VALUES + VALUES_CHANNEL_PRESSURE] = value - 0x80;
@@ -481,9 +478,8 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
                 }
             } else {
                 if (tick < song->ticksPerLine() - 1) {
-                    int delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers]) / ((int)song->ticksPerLine() - 1);
-
-                    output->controller(midiChannel, command - CommandMidiControllers, midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers] + tick * delta);
+                    float delta = (value - 0x80 - midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers]) / (float)song->ticksPerLine();
+                    output->controller(midiChannel, command - CommandMidiControllers, midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers] + (tick + 1) * delta);
                 } else {
                     output->controller(midiChannel, command - CommandMidiControllers, value - 0x80);
                     midiControllerValues[midiInterface][midiChannel * VALUES + command - CommandMidiControllers] = value - 0x80;
