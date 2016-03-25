@@ -1,3 +1,7 @@
+1.0.5
+-----
+- MIDI controller slides are now smooth regardless of the magnitude of the slide
+
 1.0.4
 -----
 - Non-MIDI related commands now work even if no note has been played on the channel
