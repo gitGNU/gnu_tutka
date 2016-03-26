@@ -253,7 +253,7 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
             if (trackStatus->volume != 0) {
                 // Play note
                 trackStatus->note = note + instrument->transpose();
-                midi_->output(instrument->midiInterface())->noteOn(trackStatus->midiChannel, trackStatus->note, trackStatus->volume);
+                postponedNotes.append(NoteOn(instrument->midiInterface(), trackStatus->midiChannel, trackStatus->note, trackStatus->volume));
             } else {
                 trackStatus->note = -1;
             }
@@ -554,7 +554,6 @@ void Player::run()
             line_ %= block->length();
         }
 
-        // Play notes scheduled to be played
         for (int track = 0; track < block->tracks(); track++) {
             QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
 
@@ -690,6 +689,13 @@ void Player::run()
                 }
             }
         }
+
+        // Play notes scheduled to be played
+        for (int i = 0; i < postponedNotes.count(); i++) {
+            const NoteOn &noteOn = postponedNotes.at(i);
+            midi_->output(noteOn.midiInterface)->noteOn(noteOn.midiChannel, noteOn.note, noteOn.volume);
+        }
+        postponedNotes.clear();
 
         // Decrement hold times of notes and stop notes that should be stopped
         for (int track = 0; track < song->maxTracks(); track++) {

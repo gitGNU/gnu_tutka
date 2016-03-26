@@ -57,6 +57,15 @@ class Player : public QThread {
         friend class Player;
     };
 
+    class NoteOn {
+    public:
+        NoteOn(unsigned int midiInterface, char midiChannel, char note, char volume) { this->midiInterface = midiInterface; this->midiChannel = midiChannel; this->note = note; this->volume = volume; }
+        unsigned int midiInterface;
+        char midiChannel;
+        char note;
+        char volume;
+    };
+
 public:
     enum Command {
         CommandPreviousCommandValue = 0x00,
@@ -245,6 +254,8 @@ private:
     unsigned char postCommand, postValue;
     // Indicates whether the tempo has changed
     bool tempoChanged;
+    // A list of notes to be played
+    QList<NoteOn> postponedNotes;
 };
 
 #endif // PLAYER_H_
