@@ -222,7 +222,7 @@ bool Player::nextPosition()
     return looped ? nextSection() : false;
 }
 
-void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigned char volume, unsigned char track)
+void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigned char volume, unsigned char track, bool postpone)
 {
     // Notes are played if the track is not muted and no tracks are soloed or the current track is soloed
     if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
@@ -253,7 +253,11 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
             if (trackStatus->volume != 0) {
                 // Play note
                 trackStatus->note = note + instrument->transpose();
-                postponedNotes.append(NoteOn(instrument->midiInterface(), trackStatus->midiChannel, trackStatus->note, trackStatus->volume));
+                if (postpone) {
+                    postponedNotes.append(NoteOn(instrument->midiInterface(), trackStatus->midiChannel, trackStatus->note, trackStatus->volume));
+                } else {
+                    midi_->output(instrument->midiInterface())->noteOn(trackStatus->midiChannel, trackStatus->note, trackStatus->volume);
+                }
             } else {
                 trackStatus->note = -1;
             }
@@ -659,7 +663,7 @@ void Player::run()
 
                     // Play note if instrument is defined
                     if (instrument != 0) {
-                        playNote(instrument - 1, note, volume, track);
+                        playNote(instrument - 1, note, volume, track, true);
 
                         if (instrument <= song->instruments()) {
                             instr = song->instrument(instrument - 1);

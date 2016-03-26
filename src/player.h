@@ -114,7 +114,7 @@ public:
     void playWithoutScheduling();
 
     // Plays a note using given instrument on a given channel
-    void playNote(unsigned int, unsigned char, unsigned char, unsigned char);
+    void playNote(unsigned int instrumentNumber, unsigned char note, unsigned char volume, unsigned char track, bool postpone = false);
     // Stops notes playing on muted tracks
     void stopMuted();
     // Stops notes playing at the moment
