@@ -240,10 +240,9 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
             trackStatus->instrument = instrumentNumber;
 
             // Update track status for the selected output
-            trackStatus->note = note + instrument->transpose();
+            trackStatus->volume = instrument->defaultVelocity() * volume / 127 * song->track(track)->volume() / 127 * song->masterVolume() / 127;
             trackStatus->midiChannel = instrument->midiChannel();
             trackStatus->midiInterface = instrument->midiInterface();
-            trackStatus->volume = instrument->defaultVelocity() * volume / 127 * song->track(track)->volume() / 127 * song->masterVolume() / 127;
             trackStatus->hold = instrument->hold() > 0 ? instrument->hold() : -1;
 
             // Make sure the volume isn't too large
@@ -251,8 +250,13 @@ void Player::playNote(unsigned int instrumentNumber, unsigned char note, unsigne
                 trackStatus->volume = 127;
             }
 
-            // Play note
-            midi_->output(instrument->midiInterface())->noteOn(trackStatus->midiChannel, trackStatus->note, trackStatus->volume);
+            if (trackStatus->volume != 0) {
+                // Play note
+                trackStatus->note = note + instrument->transpose();
+                midi_->output(instrument->midiInterface())->noteOn(trackStatus->midiChannel, trackStatus->note, trackStatus->volume);
+            } else {
+                trackStatus->note = -1;
+            }
         }
     }
 }
@@ -411,6 +415,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
                         } else {
                             output->noteOff(midiChannel, trackStatus->note, 127);
                             trackStatus->note = -1;
+                            trackStatus->line = -1;
                         }
                     }
                 } else {
@@ -561,14 +566,17 @@ void Player::run()
                 unsigned char note = basenote;
 
                 if (note != 0) {
-                    trackStatus->line = 0;
+                    // Start the arpeggio from the beginning if a note is played on the track
+                    if (tick == 0) {
+                        trackStatus->line = 0;
+                    }
                 } else {
                     basenote = trackStatus->baseNote;
                 }
 
                 // Use previous instrument if none defined
                 int arpeggioInstrument = note != 0 && instrument > 0 ? (instrument - 1) : trackStatus->instrument;
-                if (arpeggioInstrument >= 0) {
+                if (arpeggioInstrument >= 0 && trackStatus->line >= 0) {
                     // Add arpeggio note (if any) to the track's base note
                     Block *arpeggio = song->instrument(arpeggioInstrument)->arpeggio();
                     if (arpeggio != NULL) {
@@ -628,14 +636,17 @@ void Player::run()
                 Block *arpeggio = NULL;
 
                 if (note != 0) {
-                    trackStatus->line = 0;
+                    // Start the arpeggio from the beginning if a note is played on the track
+                    if (tick == 0) {
+                        trackStatus->line = 0;
+                    }
                 } else {
                     basenote = trackStatus->baseNote;
                 }
 
                 // Use previous instrument if none defined
                 int arpeggioInstrument = note != 0 && instrument > 0 ? (instrument - 1) : trackStatus->instrument;
-                if (arpeggioInstrument >= 0) {
+                if (arpeggioInstrument >= 0 && trackStatus->line >= 0) {
                     // Add arpeggio note (if any) to the track's base note
                     arpeggio = song->instrument(arpeggioInstrument)->arpeggio();
                     if (arpeggio != NULL) {
@@ -653,6 +664,7 @@ void Player::run()
                     }
                 }
 
+                bool hadVolume = volume > 0;
                 // Handle commands on all command pages
                 for (int commandPage = 0; commandPage < commandPages; commandPage++) {
                     unsigned char command = block->command(line_, track, commandPage);
@@ -695,6 +707,11 @@ void Player::run()
                         }
 
                         trackStatus->hold = hold == 0 ? -1 : hold;
+
+                        // If there would have been volume but the block's commands killed it, stop the arpeggio
+                        if (hadVolume && volume == 0) {
+                            trackStatus->line = -1;
+                        }
                     }
                 }
 
@@ -735,7 +752,7 @@ void Player::run()
                 QSharedPointer<TrackStatus> trackStatus = trackStatuses[track];
                 int arpeggioInstrument = trackStatus->instrument;
 
-                if (arpeggioInstrument >= 0 && trackStatus->baseNote >= 0) {
+                if (arpeggioInstrument >= 0 && trackStatus->baseNote >= 0 && trackStatus->line >= 0) {
                     Instrument *instrument = song->instrument(arpeggioInstrument);
                     if (instrument->arpeggio() != NULL) {
                         trackStatus->line++;
@@ -1281,6 +1298,7 @@ Player::TrackStatus::TrackStatus()
 void Player::TrackStatus::reset()
 {
     instrument = -1;
+    line = -1;
     previousCommand = 0;
     note = -1;
     midiChannel = -1;
