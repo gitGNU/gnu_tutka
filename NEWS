@@ -5,6 +5,7 @@
 1.0.5
 -----
 - MIDI controller slides are now smooth regardless of the magnitude of the slide
+- Confirmation dialog is now shown before creating a new song if the current song has been modified
 
 1.0.4
 -----
