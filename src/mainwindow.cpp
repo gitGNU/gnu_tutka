@@ -152,7 +152,7 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->comboBoxKeyboardOctaves, SIGNAL(currentIndexChanged(int)), ui->tracker, SLOT(setOctave(int)));
     connect(ui->checkBoxEdit, SIGNAL(toggled(bool)), ui->tracker, SLOT(setEditMode(bool)));
     connect(ui->checkBoxChord, SIGNAL(toggled(bool)), ui->tracker, SLOT(setChordMode(bool)));
-    connect(ui->actionFileNew, SIGNAL(triggered()), player, SLOT(setSong()));
+    connect(ui->actionFileNew, SIGNAL(triggered()), this, SLOT(newSong()));
     connect(ui->actionFileOpen, SIGNAL(triggered()), openDialog, SLOT(show()));
     connect(openDialog, SIGNAL(fileSelected(QString)), player, SLOT(setSong(QString)));
     connect(openDialog, SIGNAL(fileSelected(QString)), this, SLOT(setSongPath(QString)));
@@ -1000,18 +1000,40 @@ void MainWindow::setWindowTitle()
     QMainWindow::setWindowTitle(tr("Tutka: %1%2").arg(song->name()).arg(song->isModified() ? " (*)" : ""));
 }
 
+int MainWindow::showModifiedDialog() const
+{
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(tr("Tutka"));
+    messageBox.setText(tr("The song has been modified."));
+    messageBox.setInformativeText(tr("Do you want to save your changes?"));
+    messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    messageBox.setDefaultButton(QMessageBox::Save);
+    return messageBox.exec();
+}
+
+void MainWindow::newSong()
+{
+    if (song != NULL && song->isModified()) {
+        switch (showModifiedDialog()) {
+        case QMessageBox::Save:
+            save();
+            player->setSong();
+            break;
+        case QMessageBox::Discard:
+            player->setSong();
+            break;
+        default:
+            break;
+        }
+    } else {
+        player->setSong();
+    }
+}
+
 void MainWindow::quit()
 {
     if (song != NULL && song->isModified()) {
-        QMessageBox messageBox;
-        messageBox.setWindowTitle(tr("Tutka"));
-        messageBox.setText(tr("The song has been modified."));
-        messageBox.setInformativeText(tr("Do you want to save your changes?"));
-        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        messageBox.setDefaultButton(QMessageBox::Save);
-        int ret = messageBox.exec();
-
-        switch (ret) {
+        switch (showModifiedDialog()) {
         case QMessageBox::Save:
             save();
             qApp->quit();
