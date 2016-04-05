@@ -106,11 +106,13 @@ private slots:
     void setSongPath(const QString &path);
     void setDeleteTrackVisibility();
     void setWindowTitle();
+    void newSong();
     void quit();
     void advancePlayerBySpaceLines();
     void playPressedNote(unsigned char note);
 
 private:
+    int showModifiedDialog() const;
     bool keyPress(QKeyEvent *event);
     bool keyRelease(QKeyEvent *event);
     static void setGeometryFromString(QWidget *widget, const QString &string);
