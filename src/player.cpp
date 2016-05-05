@@ -865,13 +865,16 @@ void Player::play(Mode mode, bool cont)
             line_ = 0;
         }
         updateLocation(true);
+        midi()->start();
         break;
     case ModePlayBlock:
         if (!cont) {
             line_ = 0;
         }
+        midi()->start();
         break;
     default:
+        midi()->cont();
         break;
     }
 
@@ -893,6 +896,8 @@ void Player::play(Mode mode, bool cont)
 
 void Player::stop()
 {
+    midi()->stop();
+
     if (mode_ != ModeIdle) {
         mode_ = ModeIdle;
         emit modeChanged(mode_);

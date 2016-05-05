@@ -81,6 +81,15 @@ public:
     // Send a clock message
     void clock();
 
+    // Send a start message
+    void start();
+
+    // Send a continue message
+    void cont();
+
+    // Send a stop message
+    void stop();
+
     // Set the tempo (used when exporting)
     virtual void tempo(unsigned int);
 

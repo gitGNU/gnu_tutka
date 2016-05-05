@@ -84,3 +84,24 @@ void MIDI::updateInterfaces()
     outputs_.append(QSharedPointer<MIDIInterface>(output));
     inputs_.clear();
 }
+
+void MIDI::start() const
+{
+    for (int output = 0; output < outputs_.count(); output++) {
+        outputs_[output]->start();
+    }
+}
+
+void MIDI::stop() const
+{
+    for (int output = 0; output < outputs_.count(); output++) {
+        outputs_[output]->stop();
+    }
+}
+
+void MIDI::cont() const
+{
+    for (int output = 0; output < outputs_.count(); output++) {
+        outputs_[output]->cont();
+    }
+}

@@ -47,6 +47,10 @@ public:
     int input(const QString &name) const;
     unsigned int inputs() const;
 
+    void start() const;
+    void stop() const;
+    void cont() const;
+
 signals:
     void outputsChanged();
     void inputsChanged();

@@ -174,6 +174,33 @@ void MIDIInterface::clock()
     write(data);
 }
 
+void MIDIInterface::start()
+{
+    qDebug("Start");
+
+    QByteArray data(1, 0xfa);
+
+    write(data);
+}
+
+void MIDIInterface::cont()
+{
+    qDebug("Continue");
+
+    QByteArray data(1, 0xfb);
+
+    write(data);
+}
+
+void MIDIInterface::stop()
+{
+    qDebug("Stop");
+
+    QByteArray data(1, 0xfc);
+
+    write(data);
+}
+
 void MIDIInterface::tempo(unsigned int tempo)
 {
     qDebug("Tempo %d", tempo);
