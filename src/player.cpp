@@ -865,16 +865,13 @@ void Player::play(Mode mode, bool cont)
             line_ = 0;
         }
         updateLocation(true);
-        midi()->start();
         break;
     case ModePlayBlock:
         if (!cont) {
             line_ = 0;
         }
-        midi()->start();
         break;
     default:
-        midi()->cont();
         break;
     }
 
@@ -884,6 +881,15 @@ void Player::play(Mode mode, bool cont)
 
     // Get the starting time
     resetTime(!cont);
+
+    // Send MIDI start or continue if sync is requested
+    if (mode != ModeIdle && song->sendSync()) {
+        if (cont) {
+            midi()->cont();
+        } else {
+            midi()->start();
+        }
+    }
 
     // For some reason the priority setting crashes with realtime Jack
     //            if (editor == NULL || editor_player_get_external_sync(editor) != EXTERNAL_SYNC_JACK_START_ONLY)
@@ -896,8 +902,6 @@ void Player::play(Mode mode, bool cont)
 
 void Player::stop()
 {
-    midi()->stop();
-
     if (mode_ != ModeIdle) {
         mode_ = ModeIdle;
         emit modeChanged(mode_);
@@ -912,6 +916,11 @@ void Player::stop()
         // If external sync is used send sync to get out of the sync wait loop
         if (syncMode != Off) {
             externalSync(0);
+        }
+
+        // Send MIDI stop if sync is requested
+        if (song->sendSync()) {
+            midi()->stop();
         }
 
         // Wait until the thread is dead
