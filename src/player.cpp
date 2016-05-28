@@ -56,7 +56,8 @@ Player::Player(MIDI *midi, const QString &path, QObject *parent) :
     solo(0),
     postCommand(0),
     postValue(0),
-    tempoChanged(false)
+    tempoChanged(false),
+    killWhenLooped(false)
 {
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(remapMidiOutputs()));
     connect(midi, SIGNAL(startReceived()), this, SLOT(playSong()));
@@ -86,7 +87,8 @@ Player::Player(MIDI *midi, Song *song, QObject *parent) :
     solo(0),
     postCommand(0),
     postValue(0),
-    tempoChanged(false)
+    tempoChanged(false),
+    killWhenLooped(false)
 {
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(remapMidiOutputs()));
 
@@ -779,7 +781,7 @@ void Player::run()
         }
 
         // Check whether this thread should be killed
-        if (killThread || (scheduler == NULL && looped)) {
+        if (killThread || (killWhenLooped && looped)) {
             break;
         }
         song->unlock();
@@ -839,6 +841,7 @@ void Player::playWithoutScheduling()
 {
     scheduler = NULL;
     mode_ = ModePlaySong;
+    killWhenLooped = true;
     for (int instrument = 0; instrument < song->instruments(); instrument++) {
         song->instrument(instrument)->setMidiInterface(0);
     }
@@ -1244,6 +1247,11 @@ void Player::setExternalSync(ExternalSync externalSync)
 void Player::setScheduler(Scheduler *scheduler)
 {
     this->scheduler = scheduler;
+}
+
+void Player::setKillWhenLooped(bool killWhenLooped)
+{
+    this->killWhenLooped = killWhenLooped;
 }
 
 unsigned int Player::section() const

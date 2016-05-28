@@ -1,6 +1,7 @@
 1.1.0
 -----
 - Instrument specific arpeggio support
+- Tutka now quits after the song has been played when playing a song without the GUI (-p option)
 
 1.0.5
 -----

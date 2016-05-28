@@ -102,6 +102,8 @@ int runWithoutGUI(int argc, char **argv)
     MIDI *midi = new HostMIDI;
     Player *player = new Player(midi, argv[1]);
     player->setScheduler(Scheduler::schedulers().last());
+    player->setKillWhenLooped(true);
+    QObject::connect(player, SIGNAL(finished()), &app, SLOT(quit()));
     for (int output = 0; output < midi->outputs(); output++) {
         midi->output(output)->setEnabled(true);
     }

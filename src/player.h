@@ -136,6 +136,9 @@ public:
     void setExternalSync(ExternalSync externalSync);
     void setScheduler(Scheduler *scheduler);
 
+    // Set whether the player should quit when the song loops
+    void setKillWhenLooped(bool killWhenLooped);
+
     MIDI *midi() const;
 
 public slots:
@@ -256,6 +259,8 @@ private:
     bool tempoChanged;
     // A list of notes to be played
     QList<NoteOn> postponedNotes;
+    // Whether the player should quit when the song loops
+    bool killWhenLooped;
 };
 
 #endif // PLAYER_H_
