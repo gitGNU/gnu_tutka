@@ -52,7 +52,7 @@ class Player : public QThread {
         char midiChannel;
         char volume;
         char note;
-        char hold;
+        int hold;
 
         friend class Player;
     };
