@@ -187,30 +187,20 @@ Song *mmd2ToSong(struct MMD2 *mmd)
         song->setTempo(mmd->song->deftempo);
         song->setTPL(mmd->song->tempo2);
 
-        // Sections
-        for (int section = song->sections(); section < mmd->song->songlen; section++) {
-            song->insertSection(section);
-        }
-        for (int section = 0; section < mmd->song->songlen; section++) {
-            song->setSection(section, mmd->song->sectiontable[section]);
-        }
-
-        // Playing sequences
-        for (int playseq = song->playseqs(); playseq < mmd->song->numpseqs; playseq++) {
-            song->insertPlayseq(playseq);
-        }
-        for (int number = 0; number < mmd->song->numpseqs; number++) {
-            struct PlaySeq *PlaySeq = mmd->song->playseqtable[number];
-
-            Playseq *playseq = song->playseq(number);
-            if (PlaySeq->name[0] != 0) {
-                playseq->setName(QString::fromLatin1(PlaySeq->name));
+        // Instruments
+        song->checkInstrument(mmd->song->numsamples);
+        for (int number = 0; number < mmd->song->numsamples; number++) {
+            Instrument *instrument = song->instrument(number);
+            if (mmd->expdata) {
+                instrument->setName(QString::fromLatin1((char *)mmd->expdata->iinfo[number].name));
+                instrument->setHold(mmd->expdata->exp_smp[number].hold != 0);
             }
-            while (playseq->length() < PlaySeq->length) {
-                playseq->insert(playseq->length());
-            }
-            for (int position = 0; position < PlaySeq->length; position++) {
-                playseq->set(position, PlaySeq->seq[position]);
+            instrument->setMidiChannel(mmd->song->sample[number].midich - 1);
+            instrument->setTranspose(mmd->song->sample[number].strans);
+            if (mmd->song->sample[number].svol == 64) {
+                instrument->setDefaultVelocity(127);
+            } else {
+                instrument->setDefaultVelocity(mmd->song->sample[number].svol * 2);
             }
         }
 
@@ -262,21 +252,32 @@ Song *mmd2ToSong(struct MMD2 *mmd)
             }
         }
 
-        // Instruments
-        song->checkInstrument(mmd->song->numsamples);
-        for (int number = 0; number < mmd->song->numsamples; number++) {
-            Instrument *instrument = song->instrument(number);
-            if (mmd->expdata) {
-                instrument->setName(QString::fromLatin1((char *)mmd->expdata->iinfo[number].name));
-                instrument->setHold(mmd->expdata->exp_smp[number].hold != 0);
+        // Playing sequences
+        for (int playseq = song->playseqs(); playseq < mmd->song->numpseqs; playseq++) {
+            qWarning("XX inserting playseq %d", playseq);
+            song->insertPlayseq(playseq);
+        }
+        for (int number = 0; number < mmd->song->numpseqs; number++) {
+            struct PlaySeq *PlaySeq = mmd->song->playseqtable[number];
+
+            Playseq *playseq = song->playseq(number);
+            if (PlaySeq->name[0] != 0) {
+                playseq->setName(QString::fromLatin1(PlaySeq->name));
             }
-            instrument->setMidiChannel(mmd->song->sample[number].midich - 1);
-            instrument->setTranspose(mmd->song->sample[number].strans);
-            if (mmd->song->sample[number].svol == 64) {
-                instrument->setDefaultVelocity(127);
-            } else {
-                instrument->setDefaultVelocity(mmd->song->sample[number].svol * 2);
+            while (playseq->length() < PlaySeq->length) {
+                playseq->insert(playseq->length());
             }
+            for (int position = 0; position < PlaySeq->length; position++) {
+                playseq->set(position, PlaySeq->seq[position]);
+            }
+        }
+
+        // Sections
+        for (int section = song->sections(); section < mmd->song->songlen; section++) {
+            song->insertSection(section);
+        }
+        for (int section = 0; section < mmd->song->songlen; section++) {
+            song->setSection(section, mmd->song->sectiontable[section]);
         }
 
         // Track volumes
