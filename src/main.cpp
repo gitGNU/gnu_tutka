@@ -117,9 +117,6 @@ int runWithoutGUI(int argc, char **argv)
 
     int returnCode = app.exec();
 
-    player->stopAllNotes();
-    app.processEvents();
-
     delete player;
     delete midi;
 

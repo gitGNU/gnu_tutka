@@ -23,6 +23,7 @@
 #include <cstddef>
 #include <cstdlib>
 #include <sys/time.h>
+#include <QCoreApplication>
 #include <QThread>
 #include <QTimer>
 #include <QFile>
@@ -91,6 +92,7 @@ Player::Player(MIDI *midi, Song *song, QObject *parent) :
     killWhenLooped(false)
 {
     connect(midi, SIGNAL(outputsChanged()), this, SLOT(remapMidiOutputs()));
+    connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(stop()));
 
     QTimer::singleShot(0, this, SLOT(init()));
 }
@@ -99,6 +101,7 @@ Player::~Player()
 {
     // Stop the player
     stop();
+    wait();
 }
 
 void Player::updateLocation(bool alwaysSendLocationSignals)
