@@ -59,6 +59,7 @@ Song::Song(const QString &path, QObject *parent) :
     connect(this, SIGNAL(blockNameChanged()), this, SLOT(setModified()));
     connect(this, SIGNAL(trackMutedOrSoloed()), this, SLOT(setModified()));
     connect(this, SIGNAL(trackNameChanged()), this, SLOT(setModified()));
+    connect(this, SIGNAL(trackVolumeChanged()), this, SLOT(setModified()));
     connect(this, SIGNAL(blockLengthChanged()), this, SLOT(setModified()));
     connect(this, SIGNAL(sendSyncChanged()), this, SLOT(setModified()));
     connect(this, SIGNAL(masterVolumeChanged()), this, SLOT(setModified()));
@@ -899,6 +900,7 @@ void Song::addTrack(const QString &name)
     connect(track, SIGNAL(mutedChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
     connect(track, SIGNAL(soloChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
     connect(track, SIGNAL(nameChanged(QString)), this, SIGNAL(trackNameChanged()));
+    connect(track, SIGNAL(volumeChanged(int)), this, SIGNAL(trackVolumeChanged()));
     tracks.append(track);
 }
 

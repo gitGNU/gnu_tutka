@@ -193,17 +193,20 @@ signals:
     // Emitted when the maximum number of tracks has changed
     void maxTracksChanged(unsigned int maxTracks);
 
-    // Emitted when a name of a playing sequence has changed
+    // Emitted when the name of a playing sequence has changed
     void playseqNameChanged();
 
-    // Emitted when a name of a block has changed
+    // Emitted when the name of a block has changed
     void blockNameChanged();
 
     // Emitted when a track is muted or soloed
     void trackMutedOrSoloed();
 
-    // Emitted when a name of a track has changed
+    // Emitted when the name of a track has changed
     void trackNameChanged();
+
+    // Emitted when the volume of a track has changed
+    void trackVolumeChanged();
 
     // Emitted when the length of a block has changed
     void blockLengthChanged();

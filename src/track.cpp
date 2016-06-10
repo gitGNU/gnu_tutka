@@ -51,7 +51,11 @@ QString Track::name() const
 
 void Track::setVolume(int volume)
 {
-    volume_ = volume;
+    if (volume_ != volume) {
+        volume_ = volume;
+
+        emit volumeChanged(volume_);
+    }
 }
 
 int Track::volume() const

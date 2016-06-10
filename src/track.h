@@ -45,6 +45,7 @@ public slots:
 
 signals:
     void nameChanged(QString name);
+    void volumeChanged(int volume);
     void mutedChanged(bool muted);
     void soloChanged(bool solo);
 
