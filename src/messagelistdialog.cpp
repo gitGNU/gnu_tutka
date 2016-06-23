@@ -105,12 +105,16 @@ void MessageListDialog::sendMessage()
 
 void MessageListDialog::receiveMessage()
 {
-    if (selectedMessage >= 0 && song->message(selectedMessage)->length() > 0) {
+    if (selectedMessage >= 0) {
         disconnect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(receiveMessage()));
         connect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(stopReception()));
         connect(midi, SIGNAL(inputReceived(QByteArray)), this, SLOT(receiveMessage(QByteArray)), Qt::UniqueConnection);
         ui->pushButtonReceive->setText(tr("Stop"));
-        ui->labelStatus->setText(tr("%1/%2 bytes received").arg(0).arg(song->message(selectedMessage)->length()));
+        if (song->message(selectedMessage)->length() > 0) {
+            ui->labelStatus->setText(tr("%1/%2 bytes received").arg(0).arg(song->message(selectedMessage)->length()));
+        } else {
+            ui->labelStatus->setText(tr("%1 bytes received").arg(0));
+        }
     }
 }
 
@@ -168,11 +172,15 @@ void MessageListDialog::receiveMessage(const QByteArray &data)
     }
 
     receivedMessage.append(data);
-    ui->labelStatus->setText(tr("%1/%2 bytes received").arg(receivedMessage.length()).arg(song->message(selectedMessage)->length()));
 
-    if (receivedMessage.length() >= song->message(selectedMessage)->length()) {
+    if (song->message(selectedMessage)->length() > 0) {
+        ui->labelStatus->setText(tr("%1/%2 bytes received").arg(receivedMessage.length()).arg(song->message(selectedMessage)->length()));
+    } else {
+        ui->labelStatus->setText(tr("%1 bytes received").arg(receivedMessage.length()));
+    }
+
+    if (song->message(selectedMessage)->length() > 0 && receivedMessage.length() >= song->message(selectedMessage)->length()) {
         receivedMessage.truncate(song->message(selectedMessage)->length());
-        song->message(selectedMessage)->setData(receivedMessage);
 
         stopReception();
     }
@@ -180,11 +188,15 @@ void MessageListDialog::receiveMessage(const QByteArray &data)
 
 void MessageListDialog::setReceiveButtonVisibility()
 {
-    ui->pushButtonReceive->setEnabled(selectedMessage >= 0 && song->message(selectedMessage)->length() > 0);
+    ui->pushButtonReceive->setEnabled(selectedMessage >= 0);
 }
 
 void MessageListDialog::stopReception()
 {
+    if (!receivedMessage.isEmpty()) {
+        song->message(selectedMessage)->setData(receivedMessage);
+    }
+
     receivedMessage.clear();
 
     disconnect(midi, SIGNAL(inputReceived(QByteArray)), this, SLOT(receiveMessage(QByteArray)));
@@ -192,4 +204,7 @@ void MessageListDialog::stopReception()
     connect(ui->pushButtonReceive, SIGNAL(clicked()), this, SLOT(receiveMessage()));
     ui->pushButtonReceive->setText(tr("Receive"));
     ui->labelStatus->setText(QString());
+
+    ui->tableView->reset();
+    setSelection();
 }

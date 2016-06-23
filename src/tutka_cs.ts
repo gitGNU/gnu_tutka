@@ -1284,6 +1284,12 @@ p, li { white-space: pre-wrap; }
         <translation>Přijato %1/%2 bytů</translation>
     </message>
     <message>
+        <location filename="messagelistdialog.cpp" line="113"/>
+        <location filename="messagelistdialog.cpp" line="171"/>
+        <source>%1 bytes received</source>
+        <translation>Přijato %1 bytů</translation>
+    </message>
+    <message>
         <location filename="messagelistdialog.cpp" line="120"/>
         <source>Load message</source>
         <translation>Nahrát zprávu</translation>
