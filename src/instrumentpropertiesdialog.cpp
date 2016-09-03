@@ -35,6 +35,7 @@ InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *pare
 {
     ui->setupUi(this);
     ui->trackerArpeggio->setEditMode(true);
+    ui->trackerArpeggio->setTranslucentWhenNotFocused(true);
 
     connect(ui->comboBoxMidiInterface, SIGNAL(currentIndexChanged(QString)), this, SLOT(setMidiInterface(QString)));
     connect(ui->horizontalSliderMidiChannel, SIGNAL(valueChanged(int)), this, SLOT(setMidiChannel(int)));

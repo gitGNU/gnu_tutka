@@ -71,7 +71,8 @@ Tracker::Tracker(QWidget *parent) :
     instrument_(0),
     octave_(3),
     inEditMode(false),
-    inChordMode(false)
+    inChordMode(false),
+    translucentWhenNotFocused(false)
 {
     font.setStyleHint(QFont::TypeWriter);
     font.setStyleStrategy(QFont::ForceIntegerMetrics);
@@ -587,6 +588,7 @@ void Tracker::drawClever(const QRect &area)
     }
 
     QPainter painter(this);
+    painter.setOpacity(hasFocus() ? 1.0 : (translucentWhenNotFocused ? 0.5 : 1.0));
     if (block_ != NULL) {
         // If selection has been added or removed, redraw everything
         if (selectionStartTrack != oldSelectionStartTrack) {
@@ -637,7 +639,6 @@ void Tracker::drawClever(const QRect &area)
     } else {
         painter.fillRect(area.x(), area.y(), area.width(), area.height(), isEnabled() ? backgroundBrush : QPalette().shadow());
     }
-
 }
 
 void Tracker::drawStupid(const QRect &area)
@@ -1267,4 +1268,11 @@ void Tracker::removeChordNote()
     if (chordStatus == 0 && inEditMode) {
         emit lineEdited();
     }
+}
+
+void Tracker::setTranslucentWhenNotFocused(bool translucentWhenNotFocused)
+{
+    this->translucentWhenNotFocused = translucentWhenNotFocused;
+
+    update();
 }

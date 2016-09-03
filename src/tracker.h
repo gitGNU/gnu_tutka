@@ -61,6 +61,7 @@ public:
     void setSelection(int startTrack, int startLine, int endTrack, int endLine);
     void addChordNote();
     void removeChordNote();
+    void setTranslucentWhenNotFocused(bool translucentWhenNotFocused);
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
 
@@ -178,6 +179,8 @@ private:
 
     bool inEditMode;
     bool inChordMode;
+
+    bool translucentWhenNotFocused;
 };
 
 #endif // TRACKER_H
