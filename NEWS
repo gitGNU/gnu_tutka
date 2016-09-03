@@ -3,6 +3,7 @@
 - Instrument specific arpeggio support
 - Tutka now quits after the song has been played when playing a song without the GUI (-p option)
 - Hold values greater than 127 now work as expected
+- MIDI message reception now works as expected
 
 1.0.5
 -----

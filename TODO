@@ -1,13 +1,7 @@
 TODO
 ----
 
-1.1.x: arpeggiator
-------------------
-- Arpeggiator
-
-1.2.x?
-------
-- Editing/playing multiple songs at the same time is not implemented
-- Instrument specific note data maps are not implemented
-- Configurable keyboard?
-- Undo?
+1.1.x
+-----
+- Swap instruments with each other
+- Insert track to all blocks
