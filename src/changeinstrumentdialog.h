@@ -23,7 +23,7 @@
 #ifndef CHANGEINSTRUMENTDIALOG_H
 #define CHANGEINSTRUMENTDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 
 namespace Ui {
     class ChangeInstrumentDialog;
@@ -31,7 +31,7 @@ namespace Ui {
 
 class Song;
 
-class ChangeInstrumentDialog : public QDialog
+class ChangeInstrumentDialog : public TutkaDialog
 {
     Q_OBJECT
 

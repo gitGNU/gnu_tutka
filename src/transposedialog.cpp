@@ -25,7 +25,7 @@
 #include "ui_transposedialog.h"
 
 TransposeDialog::TransposeDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::TransposeDialog),
     song(NULL),
     block(0),

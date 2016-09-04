@@ -23,7 +23,7 @@
 #ifndef PLAYINGSEQUENCEDIALOG_H
 #define PLAYINGSEQUENCEDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 #include <QItemSelection>
 
 namespace Ui {
@@ -35,7 +35,7 @@ class Playseq;
 class PlayingSequenceTableModel;
 class SpinBoxDelegate;
 
-class PlayingSequenceDialog : public QDialog
+class PlayingSequenceDialog : public TutkaDialog
 {
     Q_OBJECT
 

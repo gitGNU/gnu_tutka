@@ -28,7 +28,7 @@
 #include "ui_playingsequencedialog.h"
 
 PlayingSequenceDialog::PlayingSequenceDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::PlayingSequenceDialog),
     song(NULL),
     playseq(NULL),

@@ -26,7 +26,7 @@
 #include "ui_trackvolumesdialog.h"
 
 TrackVolumesDialog::TrackVolumesDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::TrackVolumesDialog),
     song(NULL)
 {

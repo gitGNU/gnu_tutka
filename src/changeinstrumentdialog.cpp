@@ -25,7 +25,7 @@
 #include "ui_changeinstrumentdialog.h"
 
 ChangeInstrumentDialog::ChangeInstrumentDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::ChangeInstrumentDialog),
     song(NULL),
     block(0),

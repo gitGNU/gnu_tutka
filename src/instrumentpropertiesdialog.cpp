@@ -27,7 +27,7 @@
 #include "ui_instrumentpropertiesdialog.h"
 
 InstrumentPropertiesDialog::InstrumentPropertiesDialog(MIDI *midi, QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     midi(midi),
     ui(new Ui::InstrumentPropertiesDialog),
     song(NULL),

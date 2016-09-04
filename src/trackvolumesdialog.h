@@ -23,7 +23,7 @@
 #ifndef TRACKVOLUMESDIALOG_H
 #define TRACKVOLUMESDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 
 namespace Ui {
     class TrackVolumesDialog;
@@ -31,7 +31,7 @@ namespace Ui {
 
 class Song;
 
-class TrackVolumesDialog : public QDialog
+class TrackVolumesDialog : public TutkaDialog
 {
     Q_OBJECT
 

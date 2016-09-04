@@ -25,7 +25,7 @@
 #include "ui_expandshrinkdialog.h"
 
 ExpandShrinkDialog::ExpandShrinkDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::ExpandShrinkDialog),
     song(NULL),
     block(0),

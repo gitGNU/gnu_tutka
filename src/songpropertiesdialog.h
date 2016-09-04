@@ -23,7 +23,7 @@
 #ifndef SONGPROPERTIESDIALOG_H
 #define SONGPROPERTIESDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 
 namespace Ui {
     class SongPropertiesDialog;
@@ -31,7 +31,7 @@ namespace Ui {
 
 class Song;
 
-class SongPropertiesDialog : public QDialog
+class SongPropertiesDialog : public TutkaDialog
 {
     Q_OBJECT
 

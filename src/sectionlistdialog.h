@@ -23,7 +23,7 @@
 #ifndef SECTIONLISTDIALOG_H
 #define SECTIONLISTDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 #include <QItemSelection>
 
 namespace Ui {
@@ -34,7 +34,7 @@ class Song;
 class SectionListTableModel;
 class SpinBoxDelegate;
 
-class SectionListDialog : public QDialog
+class SectionListDialog : public TutkaDialog
 {
     Q_OBJECT
 

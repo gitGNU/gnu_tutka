@@ -27,7 +27,7 @@
 #include "ui_blocklistdialog.h"
 
 BlockListDialog::BlockListDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::BlockListDialog),
     song(NULL),
     blockListTableModel(new BlockListTableModel(this)),

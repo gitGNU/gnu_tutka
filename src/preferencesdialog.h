@@ -23,7 +23,7 @@
 #ifndef PREFERENCESDIALOG_H
 #define PREFERENCESDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 #include <QSettings>
 #include <QHash>
 
@@ -36,7 +36,7 @@ class OutputMidiInterfacesTableModel;
 class InputMidiInterfacesTableModel;
 class Scheduler;
 
-class PreferencesDialog : public QDialog
+class PreferencesDialog : public TutkaDialog
 {
     Q_OBJECT
 

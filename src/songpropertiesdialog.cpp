@@ -25,7 +25,7 @@
 #include "ui_songpropertiesdialog.h"
 
 SongPropertiesDialog::SongPropertiesDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::SongPropertiesDialog),
     song(NULL)
 {

@@ -23,7 +23,7 @@
 #ifndef TRANSPOSEDIALOG_H
 #define TRANSPOSEDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 
 namespace Ui {
     class TransposeDialog;
@@ -31,7 +31,7 @@ namespace Ui {
 
 class Song;
 
-class TransposeDialog : public QDialog
+class TransposeDialog : public TutkaDialog
 {
     Q_OBJECT
 

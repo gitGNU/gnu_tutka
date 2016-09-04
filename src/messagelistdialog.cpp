@@ -30,7 +30,7 @@
 #include "ui_messagelistdialog.h"
 
 MessageListDialog::MessageListDialog(MIDI *midi, QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     midi(midi),
     ui(new Ui::MessageListDialog),
     settings("nongnu.org", "Tutka"),

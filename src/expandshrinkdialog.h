@@ -23,7 +23,7 @@
 #ifndef EXPANDSHRINKDIALOG_H
 #define EXPANDSHRINKDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 
 namespace Ui {
     class ExpandShrinkDialog;
@@ -31,7 +31,7 @@ namespace Ui {
 
 class Song;
 
-class ExpandShrinkDialog : public QDialog
+class ExpandShrinkDialog : public TutkaDialog
 {
     Q_OBJECT
 

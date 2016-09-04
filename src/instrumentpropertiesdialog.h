@@ -23,7 +23,7 @@
 #ifndef INSTRUMENTPROPERTIESDIALOG_H
 #define INSTRUMENTPROPERTIESDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 
 class MIDI;
 class Song;
@@ -32,7 +32,7 @@ namespace Ui {
     class InstrumentPropertiesDialog;
 }
 
-class InstrumentPropertiesDialog : public QDialog
+class InstrumentPropertiesDialog : public TutkaDialog
 {
     Q_OBJECT
 

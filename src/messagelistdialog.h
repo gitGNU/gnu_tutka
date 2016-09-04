@@ -24,7 +24,7 @@
 #define MESSAGELISTDIALOG_H
 
 #include <QSettings>
-#include <QDialog>
+#include "tutkadialog.h"
 #include <QItemSelection>
 
 namespace Ui {
@@ -35,7 +35,7 @@ class MIDI;
 class Song;
 class MessageListTableModel;
 
-class MessageListDialog : public QDialog
+class MessageListDialog : public TutkaDialog
 {
     Q_OBJECT
 

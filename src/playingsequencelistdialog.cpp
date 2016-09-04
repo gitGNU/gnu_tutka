@@ -26,7 +26,7 @@
 #include "ui_playingsequencelistdialog.h"
 
 PlayingSequenceListDialog::PlayingSequenceListDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::PlayingSequenceListDialog),
     song(NULL),
     playingSequenceListTableModel(new PlayingSequenceListTableModel(this)),

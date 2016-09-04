@@ -301,6 +301,11 @@ void MainWindow::mousePressEvent(QMouseEvent *)
     }
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    event->accept();
+}
+
 bool MainWindow::keyPress(QKeyEvent *event)
 {
     if (ui->menubar->activeAction() != NULL) {

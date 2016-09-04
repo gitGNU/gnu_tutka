@@ -23,7 +23,7 @@
 #ifndef BLOCKLISTDIALOG_H
 #define BLOCKLISTDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 #include <QItemSelection>
 
 namespace Ui {
@@ -33,7 +33,7 @@ namespace Ui {
 class Song;
 class BlockListTableModel;
 
-class BlockListDialog : public QDialog
+class BlockListDialog : public TutkaDialog
 {
     Q_OBJECT
 

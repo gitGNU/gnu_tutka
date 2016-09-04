@@ -23,7 +23,7 @@
 #ifndef PLAYINGSEQUENCELISTDIALOG_H
 #define PLAYINGSEQUENCELISTDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 #include <QItemSelection>
 
 namespace Ui {
@@ -33,7 +33,7 @@ namespace Ui {
 class Song;
 class PlayingSequenceListTableModel;
 
-class PlayingSequenceListDialog : public QDialog
+class PlayingSequenceListDialog : public TutkaDialog
 {
     Q_OBJECT
 

@@ -23,13 +23,13 @@
 #ifndef HELPDIALOG_H
 #define HELPDIALOG_H
 
-#include <QDialog>
+#include "tutkadialog.h"
 
 namespace Ui {
 class HelpDialog;
 }
 
-class HelpDialog : public QDialog
+class HelpDialog : public TutkaDialog
 {
     Q_OBJECT
     

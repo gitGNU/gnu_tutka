@@ -27,7 +27,7 @@
 #include "ui_sectionlistdialog.h"
 
 SectionListDialog::SectionListDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::SectionListDialog),
     song(NULL),
     sectionListTableModel(new SectionListTableModel(this)),

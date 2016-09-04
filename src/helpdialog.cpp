@@ -24,7 +24,7 @@
 #include "ui_helpdialog.h"
 
 HelpDialog::HelpDialog(QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     ui(new Ui::HelpDialog)
 {
     ui->setupUi(this);

@@ -30,7 +30,7 @@
 #include "ui_preferencesdialog.h"
 
 PreferencesDialog::PreferencesDialog(Player *player, QWidget *parent) :
-    QDialog(parent),
+    TutkaDialog(parent),
     player(player),
     ui(new Ui::PreferencesDialog),
     settings("nongnu.org", "Tutka"),

@@ -45,7 +45,8 @@ SOURCES += main.cpp \
     scheduler.cpp \
     schedulerrtc.cpp \
     schedulernanosleep.cpp \
-    helpdialog.cpp
+    helpdialog.cpp \
+    tutkadialog.cpp
 
 HEADERS += block.h \
            instrument.h \
@@ -90,7 +91,8 @@ HEADERS += block.h \
     scheduler.h \
     schedulerrtc.h \
     schedulernanosleep.h \
-    helpdialog.h
+    helpdialog.h \
+    tutkadialog.h
 
 FORMS += \
     mainwindow.ui \
