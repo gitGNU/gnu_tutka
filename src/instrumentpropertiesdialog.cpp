@@ -72,6 +72,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
         // Disconnect the widgets from any previously selected instrument
         Instrument *oldInstrument = song->instrument(this->instrument);
         disconnect(oldInstrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
+        disconnect(oldInstrument, SIGNAL(defaultVelocityChanged(int)), ui->horizontalSliderVolume, SLOT(setValue(int)));
         disconnect(ui->lineEditName, SIGNAL(textChanged(QString)), oldInstrument, SLOT(setName(QString)));
         disconnect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setDefaultVelocity(int)));
         disconnect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), oldInstrument, SLOT(setTranspose(int)));
@@ -95,6 +96,7 @@ void InstrumentPropertiesDialog::setInstrument(int number)
 
         // Connect the widgets for editing the instrument
         connect(instrument, SIGNAL(nameChanged(QString)), ui->lineEditName, SLOT(setText(QString)));
+        connect(instrument, SIGNAL(defaultVelocityChanged(int)), ui->horizontalSliderVolume, SLOT(setValue(int)));
         connect(ui->lineEditName, SIGNAL(textChanged(QString)), instrument, SLOT(setName(QString)));
         connect(ui->horizontalSliderVolume, SIGNAL(valueChanged(int)), instrument, SLOT(setDefaultVelocity(int)));
         connect(ui->horizontalSliderTranspose, SIGNAL(valueChanged(int)), instrument, SLOT(setTranspose(int)));

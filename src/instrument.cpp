@@ -50,9 +50,11 @@ QString Instrument::name() const
 
 void Instrument::setName(const QString &name)
 {
-    name_ = name;
+    if (name_ != name) {
+        name_ = name;
 
-    emit nameChanged(name_);
+        emit nameChanged(name_);
+    }
 }
 
 unsigned int Instrument::midiInterface() const
@@ -97,7 +99,11 @@ unsigned char Instrument::defaultVelocity() const
 
 void Instrument::setDefaultVelocity(int defaultVelocity)
 {
-    defaultVelocity_ = defaultVelocity;
+    if (defaultVelocity_ != defaultVelocity) {
+        defaultVelocity_ = defaultVelocity;
+
+        emit defaultVelocityChanged(defaultVelocity_);
+    }
 }
 
 char Instrument::transpose() const

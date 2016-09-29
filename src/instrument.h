@@ -105,6 +105,9 @@ signals:
     // Emitted when the name has changed
     void nameChanged(QString name);
 
+    // Emitted when the default velocity has changed
+    void defaultVelocityChanged(int defaultVelocity);
+
 private:
     // Name
     QString name_;

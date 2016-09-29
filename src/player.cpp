@@ -494,6 +494,25 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
             }
         }
         break;
+    case CommandInstrumentVolume: {
+        char trackInstrument = instrument != 0 ? (instrument - 1) : trackStatus->instrument;
+        Instrument *instrument = song->instrument(trackInstrument);
+        if (instrument != NULL) {
+            if (value < 0x80) {
+                if (tick == 0) {
+                    instrument->setDefaultVelocity(value);
+                }
+            } else {
+                if (tick < song->ticksPerLine() - 1) {
+                    float delta = (value - 0x80 - instrument->defaultVelocity()) / (float)song->ticksPerLine();
+                    instrument->setDefaultVelocity(track->volume() + (tick + 1) * delta);
+                } else {
+                    instrument->setDefaultVelocity(value - 0x80);
+                }
+            }
+        }
+        break;
+    }
     }
 
     // Handle MIDI controllers
