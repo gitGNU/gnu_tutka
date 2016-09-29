@@ -31,6 +31,7 @@
 
 class Song;
 class Block;
+class Track;
 class MIDI;
 class Scheduler;
 
@@ -40,10 +41,11 @@ class Player : public QThread {
     // Track status values
     class TrackStatus {
     public:
-        TrackStatus();
+        TrackStatus(unsigned int track);
         void reset();
 
     private:
+        unsigned int track;
         char baseNote;
         char instrument;
         char line;
@@ -81,7 +83,9 @@ public:
         CommandChannelPressure = 0x0d,
         CommandTicksPerLine = 0x0e,
         CommandTempo = 0x0f,
-        CommandNotDefined = 0x10,
+        CommandTrackVolume = 0x1c,
+        CommandInstrumentVolume = 0x2c,
+        CommandNotDefined = 0x7f,
         CommandMidiControllers = 0x80
     };
 

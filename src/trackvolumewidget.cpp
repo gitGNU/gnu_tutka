@@ -58,6 +58,7 @@ TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget 
     connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateVolumeLabel(int)));
     connect(muteCheckBox, SIGNAL(toggled(bool)), track, SLOT(setMute(bool)));
     connect(soloCheckBox, SIGNAL(toggled(bool)), track, SLOT(setSolo(bool)));
+    connect(track, SIGNAL(volumeChanged(int)), volumeSlider, SLOT(setValue(int)));
     connect(track, SIGNAL(mutedChanged(bool)), muteCheckBox, SLOT(setChecked(bool)));
     connect(track, SIGNAL(soloChanged(bool)), soloCheckBox, SLOT(setChecked(bool)));
     connect(nameLineEdit, SIGNAL(textChanged(QString)), track, SLOT(setName(QString)));

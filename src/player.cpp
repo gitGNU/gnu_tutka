@@ -350,6 +350,7 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         trackStatus->previousCommand = command;
     }
 
+    Track *track = song->track(trackStatus->track);
     switch (command) {
     case CommandPitchWheel:
         // Pitch wheel can be set if the MIDI channel is known
@@ -477,6 +478,20 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         } else {
             song->setTempo(value);
             output->tempo(value);
+        }
+        break;
+    case CommandTrackVolume:
+        if (value < 0x80) {
+            if (tick == 0) {
+                track->setVolume(value);
+            }
+        } else {
+            if (tick < song->ticksPerLine() - 1) {
+                float delta = (value - 0x80 - track->volume()) / (float)song->ticksPerLine();
+                track->setVolume(track->volume() + (tick + 1) * delta);
+            } else {
+                track->setVolume(value - 0x80);
+            }
         }
         break;
     }
@@ -967,8 +982,8 @@ void Player::trackStatusCreate(bool recreateAll)
     }
 
     // Set new tracks to -1
-    while (trackStatuses.count() < maxTracks) {
-        trackStatuses.append(QSharedPointer<TrackStatus>(new TrackStatus));
+    for (unsigned int track = trackStatuses.count(); track < maxTracks; track++) {
+        trackStatuses.append(QSharedPointer<TrackStatus>(new TrackStatus(track)));
     }
 }
 
@@ -1290,7 +1305,8 @@ MIDI *Player::midi() const
     return midi_;
 }
 
-Player::TrackStatus::TrackStatus()
+Player::TrackStatus::TrackStatus(unsigned int track) :
+    track(track)
 {
     reset();
 }
