@@ -318,7 +318,7 @@ void Player::resetPitch()
     }
 }
 
-void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned char note, unsigned char instrument, unsigned char command, unsigned char value, unsigned int *volume, int *delay, int *hold)
+void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned char note, unsigned char instrument, unsigned char command, unsigned char value, unsigned int *volume, int *delay, int *repeat, int *hold)
 {
     if (command == 0 && value == 0) {
         return;
@@ -401,10 +401,12 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
         *hold = value;
         break;
     case CommandRetrigger:
-        *delay = -value;
+        *delay = (value & 0xf0) >> 4;
+        *repeat = value & 0x0f;
         break;
     case CommandDelay:
         *delay = value;
+        *repeat = -1;
         break;
     case CommandVelocity:
         if (note != 0) {
@@ -537,6 +539,11 @@ void Player::handleCommand(QSharedPointer<TrackStatus> trackStatus, unsigned cha
     }
 }
 
+bool shouldPlayNote(unsigned int tick, int delay, int repeat)
+{
+    return (delay >= 0 && tick == delay) || (repeat == 0 && tick == 0) || (repeat > 0 && tick >= delay && (tick - delay) % repeat == 0);
+}
+
 void Player::run()
 {
     ExternalSync prevsyncMode = syncMode;
@@ -603,7 +610,7 @@ void Player::run()
             // The track is taken into account if the track is not muted and no tracks are soloed or the current track is soloed
             if (!song->track(track)->isMuted() && (!solo || (solo && song->track(track)->isSolo()))) {
                 unsigned int volume = 127;
-                int delay = 0, hold = -1;
+                int delay = 0, repeat = -1, hold = -1;
                 unsigned char basenote = block->note(line_, track);
                 unsigned char instrument = block->instrument(line_, track);
                 unsigned char note = basenote;
@@ -646,17 +653,19 @@ void Player::run()
 
                             switch (command) {
                             case CommandRetrigger:
-                                delay = -value;
+                                delay = (value & 0xf0) >> 4;
+                                repeat = value & 0x0f;
                                 break;
                             case CommandDelay:
                                 delay = value;
+                                repeat = -1;
                                 break;
                             }
                         }
                     }
 
                     // Stop currently playing note
-                    if ((delay >= 0 && tick == delay) || (delay < 0 && tick % (-delay) == 0)) {
+                    if (shouldPlayNote(tick, delay, repeat)) {
                         if (trackStatus->note != -1) {
                             midi_->output(trackStatus->midiInterface)->noteOff(trackStatus->midiChannel, trackStatus->note, 127);
                             trackStatus->note = -1;
@@ -669,7 +678,7 @@ void Player::run()
                     for (int commandPage = 0; commandPage < arpeggio->commandPages(); commandPage++) {
                         unsigned char command = arpeggio->command(trackStatus->line, 0, commandPage);
                         unsigned char value = arpeggio->commandValue(trackStatus->line, 0, commandPage);
-                        handleCommand(trackStatus, note, instrument, command, value, &volume, &delay, &hold);
+                        handleCommand(trackStatus, note, instrument, command, value, &volume, &delay, &repeat, &hold);
                     }
                 }
 
@@ -678,7 +687,7 @@ void Player::run()
                 for (int commandPage = 0; commandPage < commandPages; commandPage++) {
                     unsigned char command = block->command(line_, track, commandPage);
                     unsigned char value = block->commandValue(line_, track, commandPage);
-                    handleCommand(trackStatus, note, instrument, command, value, &volume, &delay, &hold);
+                    handleCommand(trackStatus, note, instrument, command, value, &volume, &delay, &repeat, &hold);
                 }
 
                 // Set the channel base note and instrument regardless of whether there's an actual note to be played right now
@@ -690,7 +699,7 @@ void Player::run()
                 }
 
                 // Is there a note to play?
-                if (note != 0 && ((delay >= 0 && tick == delay) || (delay < 0 && tick % (-delay) == 0))) {
+                if (note != 0 && shouldPlayNote(tick, delay, repeat)) {
                     Instrument *instr = NULL;
 
                     note--;

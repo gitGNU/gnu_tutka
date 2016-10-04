@@ -124,7 +124,7 @@ public:
     // Stops notes playing at the moment
     void stopNotes();
     // Handles a command
-    void handleCommand(QSharedPointer<TrackStatus>, unsigned char, unsigned char, unsigned char, unsigned char, unsigned int *, int *, int *);
+    void handleCommand(QSharedPointer<TrackStatus>, unsigned char, unsigned char, unsigned char, unsigned char, unsigned int *, int *, int *, int *);
     // Resets the player time
     void resetTime(bool);
 

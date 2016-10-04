@@ -2,6 +2,7 @@
 -----
 - Set track volume command
 - Set instrument volume command
+- Retrigger note without repeat command
 
 1.1.0
 -----
