@@ -3,6 +3,7 @@
 - Set track volume command
 - Set instrument volume command
 - Retrigger note without repeat command
+- Change block length when expanding or shrinking
 
 1.1.0
 -----

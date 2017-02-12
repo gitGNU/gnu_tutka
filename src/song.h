@@ -137,7 +137,7 @@ public:
     void transpose(int instrument, int halfNotes);
 
     // Expands/shrinks all blocks in a song
-    void expandShrink(int factor);
+    void expandShrink(int factor, bool changeBlockLength);
 
     // Changes or swaps an instrument with another in all blocks of a song
     void changeInstrument(int from, int to, bool swap);

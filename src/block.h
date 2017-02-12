@@ -101,7 +101,7 @@ public:
     void transpose(int instrument, int halfNotes, int startTrack, int startLine, int endTrack, int endLine);
 
     // Expands/shrinks a block or a part of it
-    void expandShrink(int factor, int startTrack, int startLine, int endTrack, int endLine);
+    void expandShrink(int factor, int startTrack, int startLine, int endTrack, int endLine, bool changeBlockLength);
 
     // Changes or swaps an instrument to another
     void changeInstrument(int from, int to, bool swap, int startTrack, int startLine, int endTrack, int endLine);

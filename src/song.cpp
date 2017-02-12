@@ -506,10 +506,10 @@ void Song::transpose(int instrument, int halfNotes)
     }
 }
 
-void Song::expandShrink(int factor)
+void Song::expandShrink(int factor, bool changeBlockLength)
 {
     for (int block = 0; block < blocks_.count(); block++) {
-        blocks_[block]->expandShrink(factor, 0, 0, blocks_[block]->tracks() - 1, blocks_[block]->length() - 1);
+        blocks_[block]->expandShrink(factor, 0, 0, blocks_[block]->tracks() - 1, blocks_[block]->length() - 1, changeBlockLength);
     }
 }
 

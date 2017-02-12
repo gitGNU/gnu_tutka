@@ -122,24 +122,25 @@ void ExpandShrinkDialog::expandShrink(bool shrink)
         factor = -factor;
     }
 
+    bool changeBlockLength = ui->checkBoxChangeBlockLength->isChecked();
     switch (ui->comboBoxArea->currentIndex()) {
     case AreaSong:
-        song->expandShrink(factor);
+        song->expandShrink(factor, changeBlockLength);
         break;
     case AreaBlock: {
         Block *block = song->block(this->block);
-        block->expandShrink(factor, 0, 0, block->tracks() - 1, block->length() - 1);
+        block->expandShrink(factor, 0, 0, block->tracks() - 1, block->length() - 1, changeBlockLength);
         break;
     }
     case AreaTrack: {
         Block *block = song->block(this->block);
-        block->expandShrink(factor, track, 0, track, block->length() - 1);
+        block->expandShrink(factor, track, 0, track, block->length() - 1, changeBlockLength);
         break;
     }
     case AreaSelection:
         if (selectionStartTrack >= 0 && selectionStartLine >= 0 && selectionEndTrack >= 0 && selectionEndLine >= 0) {
             Block *block = song->block(this->block);
-            block->expandShrink(factor, selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine);
+            block->expandShrink(factor, selectionStartTrack, selectionStartLine, selectionEndTrack, selectionEndLine, changeBlockLength);
         }
         break;
     default:

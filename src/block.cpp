@@ -350,7 +350,7 @@ void Block::transpose(int instrument, int halfNotes, int startTrack, int startLi
     emit areaChanged(startTrack, startLine, endTrack, endLine);
 }
 
-void Block::expandShrink(int factor, int startTrack, int startLine, int endTrack, int endLine)
+void Block::expandShrink(int factor, int startTrack, int startLine, int endTrack, int endLine, bool changeBlockLength)
 {
     if (factor > -2 && factor < 2) {
         return;
@@ -358,10 +358,14 @@ void Block::expandShrink(int factor, int startTrack, int startLine, int endTrack
 
     checkBounds(startTrack, startLine, endTrack, endLine);
 
+    int lines = endLine - startLine + 1;
+
     if (factor < 0) {
         // Shrink
-        for (int line = startLine; line <= endLine; line++) {
-            if ((line - startLine) < (endLine + 1 - startLine) / -factor) {
+        if (lines >= -factor)
+        {
+            int newEndLine = startLine + (endLine + 1 - startLine) / -factor - 1;
+            for (int line = startLine; line <= newEndLine; line++) {
                 for (int track = startTrack; track <= endTrack; track++) {
                     notes_[(line * tracks_ + track) * 2] = notes_[((startLine + (line - startLine) * -factor) * tracks_ + track) * 2];
                     notes_[(line * tracks_ + track) * 2 + 1] = notes_[((startLine + (line - startLine) * -factor) * tracks_ + track) * 2 + 1];
@@ -370,19 +374,27 @@ void Block::expandShrink(int factor, int startTrack, int startLine, int endTrack
                         commands_[commandPage * tracks_ * length_ * 2 + (line * tracks_ + track) * 2 + 1] = commands_[commandPage * tracks_ * length_ * 2 + ((startLine + (line - startLine) * -factor) * tracks_ + track) * 2 + 1];
                     }
                 }
+            }
+
+            if (changeBlockLength) {
+                Block *block = copy(startTrack, endLine + 1, endTrack, length_ - 1);
+                setLength(length_ - lines + lines / -factor);
+                paste(block, startTrack, newEndLine + 1);
+                delete block;
             } else {
-                for (int track = startTrack; track <= endTrack; track++) {
-                    notes_[(line * tracks_ + track) * 2] = 0;
-                    notes_[(line * tracks_ + track) * 2 + 1] = 0;
-                    for (unsigned int commandPage = 0; commandPage < commandPages_; commandPage++) {
-                        commands_[commandPage * tracks_ * length_ * 2 + (line * tracks_ + track) * 2] = 0;
-                        commands_[commandPage * tracks_ * length_ * 2 + (line * tracks_ + track) * 2 + 1] = 0;
-                    }
-                }
+                clear(startTrack, newEndLine + 1, endTrack, endLine);
             }
         }
     } else {
         // Expand
+        if (changeBlockLength) {
+            Block *block = copy(startTrack, endLine + 1, endTrack, length_ - 1);
+            setLength(length_ + lines * (factor - 1));
+            endLine = startLine + lines * factor - 1;
+            paste(block, startTrack, endLine + 1);
+            delete block;
+        }
+
         for (int line = endLine; line >= startLine; line--) {
             if ((line - startLine) % factor == 0) {
                 for (int track = startTrack; track <= endTrack; track++) {
