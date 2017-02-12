@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=Tutka MIDI Tracker
+Name[fr]=Tracker MIDI Tutka
 Comment=Compose music using MIDI
+Comment[fr]=Composer de la musique en utilisant du MIDI
 Exec=tutka
 Icon=tutka
 Terminal=false
