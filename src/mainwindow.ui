@@ -16,13 +16,31 @@
   </property>
   <widget class="QWidget" name="widgetMain">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
      <widget class="QWidget" name="widgetTop" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>4</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>4</number>
+       </property>
+       <property name="bottomMargin">
         <number>4</number>
        </property>
        <item>
@@ -34,13 +52,22 @@
           <enum>QFrame::Sunken</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout">
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
+           <number>4</number>
+          </property>
+          <property name="bottomMargin">
+           <number>4</number>
+          </property>
           <property name="horizontalSpacing">
            <number>2</number>
           </property>
           <property name="verticalSpacing">
-           <number>4</number>
-          </property>
-          <property name="margin">
            <number>4</number>
           </property>
           <item row="0" column="0">
@@ -116,7 +143,16 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
+           <number>4</number>
+          </property>
+          <property name="bottomMargin">
            <number>4</number>
           </property>
           <item>
@@ -134,7 +170,16 @@
              <property name="spacing">
               <number>4</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
               <number>0</number>
              </property>
              <item>
@@ -176,7 +221,16 @@
              <property name="spacing">
               <number>4</number>
              </property>
-             <property name="margin">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
               <number>0</number>
              </property>
              <item>
@@ -306,7 +360,16 @@
     <item>
      <widget class="QWidget" name="widgetTracker" native="true">
       <layout class="QGridLayout" name="gridLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <property name="spacing">
@@ -342,7 +405,16 @@
     <item>
      <widget class="QWidget" name="widgetStatusBar" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>4</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>4</number>
+       </property>
+       <property name="bottomMargin">
         <number>4</number>
        </property>
        <item>
@@ -357,7 +429,16 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
+           <number>4</number>
+          </property>
+          <property name="bottomMargin">
            <number>4</number>
           </property>
           <item>
@@ -416,7 +497,16 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
+           <number>4</number>
+          </property>
+          <property name="bottomMargin">
            <number>4</number>
           </property>
           <item>
@@ -447,7 +537,16 @@
           <property name="spacing">
            <number>4</number>
           </property>
-          <property name="margin">
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
+           <number>4</number>
+          </property>
+          <property name="bottomMargin">
            <number>4</number>
           </property>
           <item>
@@ -471,7 +570,7 @@
      <x>0</x>
      <y>0</y>
      <width>819</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -545,6 +644,20 @@
     <property name="title">
      <string>&amp;Track</string>
     </property>
+    <widget class="QMenu" name="menuTrackInsert">
+     <property name="title">
+      <string>I&amp;nsert</string>
+     </property>
+     <addaction name="actionTrackInsertCurrentBlock"/>
+     <addaction name="actionTrackInsertAllBlocks"/>
+    </widget>
+    <widget class="QMenu" name="menuTrackDelete">
+     <property name="title">
+      <string>&amp;Delete</string>
+     </property>
+     <addaction name="actionTrackDeleteCurrentBlock"/>
+     <addaction name="actionTrackDeleteAllBlocks"/>
+    </widget>
     <addaction name="actionTrackCut"/>
     <addaction name="actionTrackCopy"/>
     <addaction name="actionTrackPaste"/>
@@ -553,8 +666,8 @@
     <addaction name="separator"/>
     <addaction name="actionTrackSelectAll"/>
     <addaction name="separator"/>
-    <addaction name="actionTrackInsert"/>
-    <addaction name="actionTrackDelete"/>
+    <addaction name="menuTrackInsert"/>
+    <addaction name="menuTrackDelete"/>
     <addaction name="separator"/>
     <addaction name="actionTrackTranspose"/>
     <addaction name="actionTrackExpandShrink"/>
@@ -608,8 +721,7 @@
   <action name="actionFileNew">
    <property name="icon">
     <iconset theme="document-new">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -621,8 +733,7 @@
   <action name="actionFileOpen">
    <property name="icon">
     <iconset theme="document-open">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Open</string>
@@ -634,8 +745,7 @@
   <action name="actionFileSave">
    <property name="icon">
     <iconset theme="document-save">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -647,8 +757,7 @@
   <action name="actionFileSaveAs">
    <property name="icon">
     <iconset theme="document-save-as">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Save &amp;As</string>
@@ -668,8 +777,7 @@
   <action name="actionFileQuit">
    <property name="icon">
     <iconset theme="application-exit">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -681,8 +789,7 @@
   <action name="actionEditCut">
    <property name="icon">
     <iconset theme="edit-cut">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>C&amp;ut</string>
@@ -694,8 +801,7 @@
   <action name="actionEditCopy">
    <property name="icon">
     <iconset theme="edit-copy">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -707,8 +813,7 @@
   <action name="actionEditPaste">
    <property name="icon">
     <iconset theme="edit-paste">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -720,8 +825,7 @@
   <action name="actionEditClear">
    <property name="icon">
     <iconset theme="edit-clear">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Clear</string>
@@ -770,8 +874,7 @@
   <action name="actionSongProperties">
    <property name="icon">
     <iconset theme="document-properties">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Properties</string>
@@ -790,8 +893,7 @@
   <action name="actionBlockCut">
    <property name="icon">
     <iconset theme="edit-cut">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>C&amp;ut </string>
@@ -803,8 +905,7 @@
   <action name="actionBlockCopy">
    <property name="icon">
     <iconset theme="edit-copy">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy </string>
@@ -816,8 +917,7 @@
   <action name="actionBlockPaste">
    <property name="icon">
     <iconset theme="edit-paste">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste </string>
@@ -829,8 +929,7 @@
   <action name="actionBlockClear">
    <property name="icon">
     <iconset theme="edit-clear">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Clear</string>
@@ -839,8 +938,7 @@
   <action name="actionBlockSelectAll">
    <property name="icon">
     <iconset theme="edit-select-all">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Select All</string>
@@ -869,8 +967,7 @@
   <action name="actionTrackCut">
    <property name="icon">
     <iconset theme="edit-cut">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>C&amp;ut </string>
@@ -882,8 +979,7 @@
   <action name="actionTrackCopy">
    <property name="icon">
     <iconset theme="edit-copy">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy </string>
@@ -895,8 +991,7 @@
   <action name="actionTrackPaste">
    <property name="icon">
     <iconset theme="edit-paste">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste </string>
@@ -908,8 +1003,7 @@
   <action name="actionTrackClear">
    <property name="icon">
     <iconset theme="edit-clear">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Clear</string>
@@ -918,31 +1012,10 @@
   <action name="actionTrackSelectAll">
    <property name="icon">
     <iconset theme="edit-select-all">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Select All</string>
-   </property>
-  </action>
-  <action name="actionTrackInsert">
-   <property name="icon">
-    <iconset theme="list-add">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>I&amp;nsert</string>
-   </property>
-  </action>
-  <action name="actionTrackDelete">
-   <property name="icon">
-    <iconset theme="list-remove">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Delete</string>
    </property>
   </action>
   <action name="actionTrackTranspose">
@@ -999,8 +1072,7 @@
   <action name="actionHelpAbout">
    <property name="icon">
     <iconset theme="help-about">
-     <normaloff/>
-    </iconset>
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;About</string>
@@ -1033,6 +1105,26 @@
   <action name="actionBlockSplit">
    <property name="text">
     <string>Split</string>
+   </property>
+  </action>
+  <action name="actionTrackInsertCurrentBlock">
+   <property name="text">
+    <string>Current block</string>
+   </property>
+  </action>
+  <action name="actionTrackInsertAllBlocks">
+   <property name="text">
+    <string>All blocks</string>
+   </property>
+  </action>
+  <action name="actionTrackDeleteCurrentBlock">
+   <property name="text">
+    <string>Current block</string>
+   </property>
+  </action>
+  <action name="actionTrackDeleteAllBlocks">
+   <property name="text">
+    <string>All blocks</string>
    </property>
   </action>
  </widget>

@@ -474,9 +474,9 @@ void Song::checkMaxTracks()
     }
 
     if (oldMax < max) {
-        for (int track = oldMax; track < max; track++) {
-            // Give a descriptive name for the new track
-            addTrack(QString("Track %1").arg(track + 1));
+        while (tracks.count() < max) {
+            // Give a descriptive name for each new track
+            addTrack(-1, QString("Track %1").arg(tracks.count() + 1));
         }
     } else if (oldMax > max) {
         // Tracks removed: free track datas
@@ -517,6 +517,21 @@ void Song::changeInstrument(int from, int to, bool swap)
 {
     for (int block = 0; block < blocks_.count(); block++) {
         blocks_[block]->changeInstrument(from, to, swap, 0, 0, blocks_[block]->tracks() - 1, blocks_[block]->length() - 1);
+    }
+}
+
+void Song::insertTrack(int track)
+{
+    addTrack(track, QString("Track %1").arg(track + 1));
+    for (int block = 0; block < blocks_.count(); block++) {
+        blocks_[block]->insertTrack(track);
+    }
+}
+
+void Song::deleteTrack(int track)
+{
+    for (int block = 0; block < blocks_.count(); block++) {
+        blocks_[block]->deleteTrack(track);
     }
 }
 
@@ -894,14 +909,17 @@ void Song::unlock()
     mutex.unlock();
 }
 
-void Song::addTrack(const QString &name)
+void Song::addTrack(int index, const QString &name)
 {
     Track *track = new Track(name);
     connect(track, SIGNAL(mutedChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
     connect(track, SIGNAL(soloChanged(bool)), this, SIGNAL(trackMutedOrSoloed()));
     connect(track, SIGNAL(nameChanged(QString)), this, SIGNAL(trackNameChanged()));
     connect(track, SIGNAL(volumeChanged(int)), this, SIGNAL(trackVolumeChanged()));
-    tracks.append(track);
+    if (index < 0 || index > tracks.count()) {
+        index = tracks.count();
+    }
+    tracks.insert(index, track);
 }
 
 void Song::connectBlockSignals(Block *block)

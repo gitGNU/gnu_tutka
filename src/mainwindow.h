@@ -91,8 +91,10 @@ private slots:
     void pasteTrack();
     void clearTrack();
     void selectAllTrack();
-    void insertTrack();
-    void deleteTrack();
+    void insertTrackCurrentBlock();
+    void insertTrackAllBlocks();
+    void deleteTrackCurrentBlock();
+    void deleteTrackAllBlocks();
     void setExternalSync();
     void save();
     void saveAs();

@@ -142,6 +142,12 @@ public:
     // Changes or swaps an instrument with another in all blocks of a song
     void changeInstrument(int from, int to, bool swap);
 
+    // Inserts a track in all blocks
+    void insertTrack(int track);
+
+    // Deletes a track from all blocks
+    void deleteTrack(int track);
+
     // Saves a song to an XML file
     void save(const QString &path);
 
@@ -234,7 +240,7 @@ private:
     bool parse(QDomElement element);
 
     // Creates a new track and associates it with this song
-    void addTrack(const QString &name = QString());
+    void addTrack(int index = -1, const QString &name = QString());
 
     // Connects signals related to a block
     void connectBlockSignals(Block *block);

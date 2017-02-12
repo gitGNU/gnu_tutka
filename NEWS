@@ -4,6 +4,7 @@
 - Set instrument volume command
 - Retrigger note without repeat command
 - Change block length when expanding or shrinking
+- Insert/delete track from all blocks
 
 1.1.0
 -----

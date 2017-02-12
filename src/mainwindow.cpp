@@ -187,8 +187,10 @@ MainWindow::MainWindow(Player *player, QWidget *parent) :
     connect(ui->actionTrackPaste, SIGNAL(triggered()), this, SLOT(pasteTrack()));
     connect(ui->actionTrackClear, SIGNAL(triggered()), this, SLOT(clearTrack()));
     connect(ui->actionTrackSelectAll, SIGNAL(triggered()), this, SLOT(selectAllTrack()));
-    connect(ui->actionTrackInsert, SIGNAL(triggered()), this, SLOT(insertTrack()));
-    connect(ui->actionTrackDelete, SIGNAL(triggered()), this, SLOT(deleteTrack()));
+    connect(ui->actionTrackInsertCurrentBlock, SIGNAL(triggered()), this, SLOT(insertTrackCurrentBlock()));
+    connect(ui->actionTrackInsertAllBlocks, SIGNAL(triggered()), this, SLOT(insertTrackAllBlocks()));
+    connect(ui->actionTrackDeleteCurrentBlock, SIGNAL(triggered()), this, SLOT(deleteTrackCurrentBlock()));
+    connect(ui->actionTrackDeleteAllBlocks, SIGNAL(triggered()), this, SLOT(deleteTrackAllBlocks()));
     connect(ui->actionTrackTranspose, SIGNAL(triggered()), transposeDialog, SLOT(showTrack()));
     connect(ui->actionTrackExpandShrink, SIGNAL(triggered()), expandShrinkDialog, SLOT(showTrack()));
     connect(ui->actionTrackChangeInstrument, SIGNAL(triggered()), changeInstrumentDialog, SLOT(showTrack()));
@@ -828,14 +830,24 @@ void MainWindow::selectAllTrack()
     ui->tracker->setSelection(ui->tracker->track(), 0, ui->tracker->track(), song->block(block)->length() - 1);
 }
 
-void MainWindow::insertTrack()
+void MainWindow::insertTrackCurrentBlock()
 {
     song->block(block)->insertTrack(ui->tracker->track());
 }
 
-void MainWindow::deleteTrack()
+void MainWindow::insertTrackAllBlocks()
+{
+    song->insertTrack(ui->tracker->track());
+}
+
+void MainWindow::deleteTrackCurrentBlock()
 {
     song->block(block)->deleteTrack(ui->tracker->track());
+}
+
+void MainWindow::deleteTrackAllBlocks()
+{
+    song->deleteTrack(ui->tracker->track());
 }
 
 void MainWindow::setExternalSync()
@@ -970,7 +982,7 @@ void MainWindow::setSongPath(const QString &path)
 void MainWindow::setDeleteTrackVisibility()
 {
     if (song != NULL && block < song->blocks()) {
-        ui->actionTrackDelete->setEnabled(song->block(block)->tracks() > 1);
+        ui->actionTrackDeleteCurrentBlock->setEnabled(song->block(block)->tracks() > 1);
     }
 }
 

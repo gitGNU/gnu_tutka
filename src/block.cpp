@@ -485,13 +485,15 @@ void Block::insertTrack(int track)
     // Add a new track
     setTracks(tracks_ + 1);
 
-    // Move tracks to the right
-    Block *block = copy(track, 0, tracks_ - 1, length_ - 1);
-    paste(block, track + 1, 0);
-    delete block;
+    if (track < tracks_ - 1) {
+        // Move tracks to the right
+        Block *block = copy(track, 0, tracks_ - 1, length_ - 1);
+        paste(block, track + 1, 0);
+        delete block;
 
-    // Clear the inserted track
-    clear(track, 0, track, length_ - 1);
+        // Clear the inserted track
+        clear(track, 0, track, length_ - 1);
+    }
 }
 
 void Block::deleteTrack(int track)
