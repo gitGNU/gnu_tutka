@@ -270,7 +270,12 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     bool handled = false;
 
-    if ((event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) && watched->isWindowType() && dynamic_cast<QLineEdit *>(QApplication::focusWidget()) == NULL && dynamic_cast<QSpinBox *>(QApplication::focusWidget()) == NULL && dynamic_cast<Tracker *>(QApplication::focusWidget()) == NULL && dynamic_cast<QComboBox *>(QApplication::focusWidget()) == NULL) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    bool isWindow = watched->isWindowType();
+#else
+    bool isWindow = watched == this || watched->inherits("QDialog");
+#endif
+    if ((event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) && isWindow && dynamic_cast<QLineEdit *>(QApplication::focusWidget()) == NULL && dynamic_cast<QSpinBox *>(QApplication::focusWidget()) == NULL && dynamic_cast<Tracker *>(QApplication::focusWidget()) == NULL && dynamic_cast<QComboBox *>(QApplication::focusWidget()) == NULL) {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
 
         if (QApplication::activeWindow() == this || (keyEvent->modifiers() != Qt::NoModifier && keyEvent->key() != Qt::Key_Backtab) || (keyEvent->key() != Qt::Key_Tab && keyEvent->key() != Qt::Key_Backtab && keyEvent->key() != Qt::Key_Left && keyEvent->key() != Qt::Key_Right && keyEvent->key() != Qt::Key_Home && keyEvent->key() != Qt::Key_End && keyEvent->key() != Qt::Key_PageUp && keyEvent->key() != Qt::Key_PageDown)) {
