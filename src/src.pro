@@ -114,7 +114,7 @@ TEMPLATE = app
 TARGET = tutka
 QT += xml widgets gui
 DEFINES += QT_NO_DEBUG_OUTPUT
-TRANSLATIONS += tutka_fi.ts tutka_cs.ts
+TRANSLATIONS += tutka_fi.ts tutka_cs.ts tutka_fr.ts
 ICON = tutka.icns
 QMAKE_INFO_PLIST = tutka.plist
 
