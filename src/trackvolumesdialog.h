@@ -45,6 +45,7 @@ public slots:
 
 private slots:
     void setTracks(unsigned int tracks);
+    void setTracks();
 
 private:
     Ui::TrackVolumesDialog *ui;

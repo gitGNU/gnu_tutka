@@ -35,7 +35,9 @@ class TrackVolumeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit TrackVolumeWidget(unsigned int number, Track *track, QWidget *parent = 0);
+    explicit TrackVolumeWidget(unsigned int number, QWidget *parent = 0);
+
+    void setTrack(Track *track);
 
 private slots:
     void updateVolumeLabel(int volume);

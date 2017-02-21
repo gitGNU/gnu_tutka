@@ -28,10 +28,10 @@
 #include "track.h"
 #include "trackvolumewidget.h"
 
-TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget *parent) :
+TrackVolumeWidget::TrackVolumeWidget(unsigned int number, QWidget *parent) :
     QWidget(parent),
     trackNumber(number),
-    track(track),
+    track(NULL),
     volumeLabel(new QLabel),
     volumeSlider(new QSlider),
     muteCheckBox(new QCheckBox(tr("Mute"))),
@@ -48,20 +48,38 @@ TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget 
 
     volumeSlider->setMinimum(0);
     volumeSlider->setMaximum(127);
-    volumeSlider->setValue(track->volume());
-    updateVolumeLabel(track->volume());
-    muteCheckBox->setChecked(track->isMuted());
-    soloCheckBox->setChecked(track->isSolo());
-    nameLineEdit->setText(track->name());
-
-    connect(volumeSlider, SIGNAL(valueChanged(int)), track, SLOT(setVolume(int)));
     connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateVolumeLabel(int)));
-    connect(muteCheckBox, SIGNAL(toggled(bool)), track, SLOT(setMute(bool)));
-    connect(soloCheckBox, SIGNAL(toggled(bool)), track, SLOT(setSolo(bool)));
-    connect(track, SIGNAL(volumeChanged(int)), volumeSlider, SLOT(setValue(int)));
-    connect(track, SIGNAL(mutedChanged(bool)), muteCheckBox, SLOT(setChecked(bool)));
-    connect(track, SIGNAL(soloChanged(bool)), soloCheckBox, SLOT(setChecked(bool)));
-    connect(nameLineEdit, SIGNAL(textChanged(QString)), track, SLOT(setName(QString)));
+}
+
+void TrackVolumeWidget::setTrack(Track *newTrack)
+{
+    if (track) {
+        disconnect(volumeSlider, SIGNAL(valueChanged(int)), track, SLOT(setVolume(int)));
+        disconnect(muteCheckBox, SIGNAL(toggled(bool)), track, SLOT(setMute(bool)));
+        disconnect(soloCheckBox, SIGNAL(toggled(bool)), track, SLOT(setSolo(bool)));
+        disconnect(track, SIGNAL(volumeChanged(int)), volumeSlider, SLOT(setValue(int)));
+        disconnect(track, SIGNAL(mutedChanged(bool)), muteCheckBox, SLOT(setChecked(bool)));
+        disconnect(track, SIGNAL(soloChanged(bool)), soloCheckBox, SLOT(setChecked(bool)));
+        disconnect(nameLineEdit, SIGNAL(textChanged(QString)), track, SLOT(setName(QString)));
+    }
+
+    track = newTrack;
+
+    if (track) {
+        volumeSlider->setValue(track->volume());
+        updateVolumeLabel(track->volume());
+        muteCheckBox->setChecked(track->isMuted());
+        soloCheckBox->setChecked(track->isSolo());
+        nameLineEdit->setText(track->name());
+
+        connect(volumeSlider, SIGNAL(valueChanged(int)), track, SLOT(setVolume(int)));
+        connect(muteCheckBox, SIGNAL(toggled(bool)), track, SLOT(setMute(bool)));
+        connect(soloCheckBox, SIGNAL(toggled(bool)), track, SLOT(setSolo(bool)));
+        connect(track, SIGNAL(volumeChanged(int)), volumeSlider, SLOT(setValue(int)));
+        connect(track, SIGNAL(mutedChanged(bool)), muteCheckBox, SLOT(setChecked(bool)));
+        connect(track, SIGNAL(soloChanged(bool)), soloCheckBox, SLOT(setChecked(bool)));
+        connect(nameLineEdit, SIGNAL(textChanged(QString)), track, SLOT(setName(QString)));
+    }
 }
 
 void TrackVolumeWidget::updateVolumeLabel(int volume)

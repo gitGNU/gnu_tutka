@@ -49,23 +49,35 @@ void TrackVolumesDialog::setSong(Song *song)
 {
     if (this->song != NULL) {
         disconnect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(setTracks(uint)));
+        disconnect(this->song, SIGNAL(tracksChanged()), this, SLOT(setTracks()));
     }
 
     this->song = song;
     setTracks(this->song->maxTracks());
+    setTracks();
 
     connect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(setTracks(uint)));
+    connect(this->song, SIGNAL(tracksChanged()), this, SLOT(setTracks()));
 }
 
 void TrackVolumesDialog::setTracks(unsigned int tracks)
 {
-    while(ui->scrollAreaWidgetContents->layout()->count() > 0) {
-        QLayoutItem *item = ui->scrollAreaWidgetContents->layout()->takeAt(0);
+    while(ui->scrollAreaWidgetContents->layout()->count() > tracks) {
+        QLayoutItem *item = ui->scrollAreaWidgetContents->layout()->takeAt(ui->scrollAreaWidgetContents->layout()->count() - 1);
         delete item->widget();
         delete item;
     }
 
-    for (int track = 0; track < tracks; track++) {
-        ui->scrollAreaWidgetContents->layout()->addWidget(new TrackVolumeWidget(track + 1, song->track(track)));
+    while(ui->scrollAreaWidgetContents->layout()->count() < tracks) {
+        ui->scrollAreaWidgetContents->layout()->addWidget(new TrackVolumeWidget(ui->scrollAreaWidgetContents->layout()->count() + 1));
+    }
+}
+
+void TrackVolumesDialog::setTracks()
+{
+    for (int track = 0; track < song->maxTracks(); track++) {
+        QLayoutItem *item = ui->scrollAreaWidgetContents->layout()->itemAt(track);
+        TrackVolumeWidget *widget = qobject_cast<TrackVolumeWidget *>(item->widget());
+        widget->setTrack(song->track(track));
     }
 }

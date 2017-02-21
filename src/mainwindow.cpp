@@ -589,6 +589,7 @@ void MainWindow::setSong(Song *song)
         disconnect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), this->song, SLOT(setSendSync(bool)));
         disconnect(this->song, SIGNAL(nameChanged()), this, SLOT(setWindowTitle()));
         disconnect(this->song, SIGNAL(modifiedChanged()), this, SLOT(setWindowTitle()));
+        disconnect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(setDeleteTrackVisibility()));
     }
 
     this->song = song;
@@ -611,6 +612,7 @@ void MainWindow::setSong(Song *song)
     connect(ui->actionSettingsSendMidiSync, SIGNAL(triggered(bool)), song, SLOT(setSendSync(bool)));
     connect(this->song, SIGNAL(nameChanged()), this, SLOT(setWindowTitle()));
     connect(this->song, SIGNAL(modifiedChanged()), this, SLOT(setWindowTitle()));
+    connect(this->song, SIGNAL(maxTracksChanged(uint)), this, SLOT(setDeleteTrackVisibility()));
 }
 
 void MainWindow::setSection(unsigned int section)
@@ -983,6 +985,7 @@ void MainWindow::setDeleteTrackVisibility()
 {
     if (song != NULL && block < song->blocks()) {
         ui->actionTrackDeleteCurrentBlock->setEnabled(song->block(block)->tracks() > 1);
+        ui->actionTrackDeleteAllBlocks->setEnabled(song->maxTracks() > 1);
     }
 }
 

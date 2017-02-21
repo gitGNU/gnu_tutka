@@ -524,14 +524,33 @@ void Song::insertTrack(int track)
 {
     addTrack(track, QString("Track %1").arg(track + 1));
     for (int block = 0; block < blocks_.count(); block++) {
+        disconnect(blocks_[block], SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
         blocks_[block]->insertTrack(track);
+        connect(blocks_[block], SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
     }
+
+    // Maximum number of tracks will have changed since a track has been added to every block
+    emit maxTracksChanged(tracks.count());
+
+    emit tracksChanged();
 }
 
 void Song::deleteTrack(int track)
 {
-    for (int block = 0; block < blocks_.count(); block++) {
-        blocks_[block]->deleteTrack(track);
+    if (maxTracks() > 1) {
+        for (int block = 0; block < blocks_.count(); block++) {
+            disconnect(blocks_[block], SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+            blocks_[block]->deleteTrack(track);
+            connect(blocks_[block], SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
+        }
+        Track *trackToBeDeleted = tracks.takeAt(track);
+
+        // Maximum number of tracks will have changed since a track has been deleted from every block
+        emit maxTracksChanged(tracks.count());
+
+        emit tracksChanged();
+
+        delete trackToBeDeleted;
     }
 }
 

@@ -199,6 +199,9 @@ signals:
     // Emitted when the maximum number of tracks has changed
     void maxTracksChanged(unsigned int maxTracks);
 
+    // Emitted when multipe tracks have changed
+    void tracksChanged();
+
     // Emitted when the name of a playing sequence has changed
     void playseqNameChanged();
 
