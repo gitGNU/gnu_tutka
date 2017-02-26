@@ -2193,6 +2193,15 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>Song</name>
+    <message>
+        <location filename="song.cpp" line="479"/>
+        <location filename="song.cpp" line="525"/>
+        <source>Track %1</source>
+        <translation>Raita %1</translation>
+    </message>
+</context>
+<context>
     <name>SongPropertiesDialog</name>
     <message>
         <location filename="songpropertiesdialog.ui" line="14"/>

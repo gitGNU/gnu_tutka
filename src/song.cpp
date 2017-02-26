@@ -476,7 +476,7 @@ void Song::checkMaxTracks()
     if (oldMax < max) {
         while (tracks.count() < max) {
             // Give a descriptive name for each new track
-            addTrack(-1, QString("Track %1").arg(tracks.count() + 1));
+            addTrack(-1, tr("Track %1").arg(tracks.count() + 1));
         }
     } else if (oldMax > max) {
         // Tracks removed: free track datas
@@ -522,7 +522,7 @@ void Song::changeInstrument(int from, int to, bool swap)
 
 void Song::insertTrack(int track)
 {
-    addTrack(track, QString("Track %1").arg(track + 1));
+    addTrack(track, tr("Track %1").arg(track + 1));
     for (int block = 0; block < blocks_.count(); block++) {
         disconnect(blocks_[block], SIGNAL(tracksChanged(int)), this, SLOT(checkMaxTracks()));
         blocks_[block]->insertTrack(track);
