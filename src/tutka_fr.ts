@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
+<TS version="2.1" language="fr_FR">
 <context>
     <name>BlockListDialog</name>
     <message>
@@ -52,7 +52,7 @@
     <message>
         <location filename="changeinstrumentdialog.ui" line="14"/>
         <source>Change Instrument</source>
-        <translation>Changer d'instrument</translation>
+        <translation>Changer d&apos;instrument</translation>
     </message>
     <message>
         <location filename="changeinstrumentdialog.ui" line="34"/>
@@ -67,7 +67,7 @@
     <message>
         <location filename="changeinstrumentdialog.ui" line="54"/>
         <source>To</source>
-        <translation>Jusqu'à</translation>
+        <translation>Jusqu&apos;à</translation>
     </message>
     <message>
         <location filename="changeinstrumentdialog.ui" line="65"/>
@@ -108,42 +108,47 @@
         <translation>Étendre/réduire</translation>
     </message>
     <message>
-        <location filename="expandshrinkdialog.ui" line="36"/>
+        <location filename="expandshrinkdialog.ui" line="45"/>
         <source>Area</source>
         <translation>Partie</translation>
     </message>
     <message>
-        <location filename="expandshrinkdialog.ui" line="46"/>
+        <location filename="expandshrinkdialog.ui" line="55"/>
         <source>Factor</source>
         <translation>Facteur</translation>
     </message>
     <message>
-        <location filename="expandshrinkdialog.ui" line="57"/>
+        <location filename="expandshrinkdialog.ui" line="66"/>
         <source>Song</source>
         <translation>Morceau</translation>
     </message>
     <message>
-        <location filename="expandshrinkdialog.ui" line="62"/>
+        <location filename="expandshrinkdialog.ui" line="71"/>
         <source>Block</source>
         <translation>Bloc</translation>
     </message>
     <message>
-        <location filename="expandshrinkdialog.ui" line="67"/>
+        <location filename="expandshrinkdialog.ui" line="76"/>
         <source>Track</source>
         <translation>Piste</translation>
     </message>
     <message>
-        <location filename="expandshrinkdialog.ui" line="72"/>
+        <location filename="expandshrinkdialog.ui" line="81"/>
         <source>Selection</source>
         <translation>Sélection</translation>
     </message>
     <message>
-        <location filename="expandshrinkdialog.ui" line="109"/>
+        <location filename="expandshrinkdialog.ui" line="99"/>
+        <source>Change block length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="expandshrinkdialog.ui" line="125"/>
         <source>Shrink</source>
         <translation>Réduire</translation>
     </message>
     <message>
-        <location filename="expandshrinkdialog.ui" line="116"/>
+        <location filename="expandshrinkdialog.ui" line="132"/>
         <source>Expand</source>
         <translation>Étendre</translation>
     </message>
@@ -160,7 +165,7 @@
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;title&gt;Tutka&lt;/title&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:18px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:xx-large; font-weight:600;&quot;&gt;Tutka&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:x-large; font-weight:600;&quot;&gt;Usage&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a name=&quot;blocks&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;B&lt;/span&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;locks&lt;/span&gt; &lt;/p&gt;
@@ -168,7 +173,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Lines&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Each block represents a certain period in time - a part of the song. This time period is further divided into lines that are represented vertically. A block begins from the top and ends at the bottom. All contents of a line are played simultaneously. If the playing speed is not varied each line is equal in length. There may be any number of lines in a block. The number of lines in a block can be changed using the Block List window. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Tracks&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Horizontally blocks are divided into tracks. Multiple tracks allow multiple notes on the same line because only one note can be played on one track at a time. Each track has room for one note and one or more commands on each of the block's lines. There may be any number of tracks in a block. The number of tracks in a block can be changed using the Block List window. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Horizontally blocks are divided into tracks. Multiple tracks allow multiple notes on the same line because only one note can be played on one track at a time. Each track has room for one note and one or more commands on each of the block&apos;s lines. There may be any number of tracks in a block. The number of tracks in a block can be changed using the Block List window. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Each track has a global master volume between 0 (minimum) and 127 (maximum). It can be used to change the volume of a track in the entire song. Tracks can also be muted so that their contents will not be played. These settings can be set using the Track Volumes window. The Track Volumes window can be opened by selecting Track Volumes from the Song menu. &lt;/p&gt;
 &lt;p style=&quot; margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a name=&quot;instruments&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;I&lt;/span&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;nstruments&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Each note is played using an instrument. Each instrument can have properties such as name, MIDI interface, MIDI channel, default volume, hold time and so on. Instruments are numbered from from 1 to 9 and from A to Z. The currently active instrument is shown in the top right part of the main window. It is used when playing or adding notes into blocks using the keyboard. The active instrument can be selected using the numeric keypad keys so that the Num Lock key activates instrument 1, the divide key activates instrument 2 and so on. The previous or the next instrument can be activated also by pressing the Control key and the left or right cursor keys, respectively, at the same time. The active instrument can be edited using the Instrument Properties window which can be opened using the Properties button in the top right part of the main window. &lt;/p&gt;
@@ -182,7 +187,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When the cursor is in an command or command value position the keyboard keys 0-9 and A-F can be used to enter the command to be used in the particular line and track of the block. &lt;/p&gt;
 &lt;p style=&quot; margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a name=&quot;commands&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;C&lt;/span&gt;&lt;span style=&quot; font-size:large; font-weight:600;&quot;&gt;ommands&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Commands control things like volume, aftertouch, pitch bending and delays of notes on the track they are placed on. Some commands, such as the tempo command, affect the playback regardless of which track they are placed on. MIDI controllers can also be controlled. Commands are placed on tracks on the right side of the notes. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Commands consist of two byte-sized integers in hexadecimal representation. The first byte (integer) is the command number. The second byte (integer) is the value to be given to the command. Command numbers 00-7F are reserved for Tutka's commands; command numbers 80-FF represent MIDI controllers 0-127 so that MIDI controller number is the command number minus 80. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Commands consist of two byte-sized integers in hexadecimal representation. The first byte (integer) is the command number. The second byte (integer) is the value to be given to the command. Command numbers 00-7F are reserved for Tutka&apos;s commands; command numbers 80-FF represent MIDI controllers 0-127 so that MIDI controller number is the command number minus 80. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Most commands (and all MIDI controller commands) have a value range of 00-7F due to the precision defined in the MIDI protocol. In such commands values 80-FF can be used to slide the value from the last value to the defined value minus 80 during the line the command is on. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Each block can have multiple command pages. This allows multiple commands to be placed on the same line on the same track. The active command page is shown on the lower right corner of the main window. The next command page can be activated by pressing the Control key and the Tab key simultaneously. The number of command pages in a block can be changed using the Block List window. &lt;/p&gt;
 &lt;table border=&quot;0&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;&quot; cellspacing=&quot;2&quot; cellpadding=&quot;0&quot;&gt;&lt;thead&gt;
@@ -362,7 +367,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Open file&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The Open file dialog can be used to load a Tutka XML file or an MMD song. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Save as&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The Save as dialog can be used to save the current song as a Tutka XML file, as an MMD song or as an SMF (MIDI) file. The file format depends on the file extension: &lt;span style=&quot; font-family:'monospace';&quot;&gt;.med&lt;/span&gt;, &lt;span style=&quot; font-family:'monospace';&quot;&gt;.mmd&lt;/span&gt; and &lt;span style=&quot; font-family:'monospace';&quot;&gt;.mmd2&lt;/span&gt; save as an MMD file, &lt;span style=&quot; font-family:'monospace';&quot;&gt;.mid&lt;/span&gt; saves as an SMF file and other extensions save in Tutka format. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The Save as dialog can be used to save the current song as a Tutka XML file, as an MMD song or as an SMF (MIDI) file. The file format depends on the file extension: &lt;span style=&quot; font-family:&apos;monospace&apos;;&quot;&gt;.med&lt;/span&gt;, &lt;span style=&quot; font-family:&apos;monospace&apos;;&quot;&gt;.mmd&lt;/span&gt; and &lt;span style=&quot; font-family:&apos;monospace&apos;;&quot;&gt;.mmd2&lt;/span&gt; save as an MMD file, &lt;span style=&quot; font-family:&apos;monospace&apos;;&quot;&gt;.mid&lt;/span&gt; saves as an SMF file and other extensions save in Tutka format. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Transpose&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The Transpose dialog can be used to transpose a part of the song. The area to transpose can be entire song, current block, current track or selection. You can select whether to transpose all instrument in the area or just the current instrument. The notes can be tranposed octave up, octave down, halfnote up or halfnote down. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Expand/shrink&lt;/span&gt; &lt;/p&gt;
@@ -397,7 +402,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Receiving can be started using the &lt;span style=&quot; font-weight:600;&quot;&gt;Receive&lt;/span&gt; button. It can be stopped using the &lt;span style=&quot; font-weight:600;&quot;&gt;Stop&lt;/span&gt; button. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Preferences&lt;/span&gt; &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;MIDI interfaces list&lt;/span&gt; allows you to select which of the available MIDI interfaces are to be used for input and which for output. If a MIDI interface is not enabled for output notes sent to it using an instrument that has the MIDI interface defined are not played. If a MIDI interface is not enabled for input MIDI messages can not be received through the interface and the interface is not used for receiving notes. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;Scheduling mode&lt;/span&gt; is used to control how Tutka schedules the player. RTC is currently the most accurate method but may require the system administrator to give the user rights to use at least a 512 Hz RTC timer by running &lt;span style=&quot; font-family:'monospace';&quot;&gt;sysctl dev.rtc.max-user-freq to 512&lt;/span&gt;. The other option is Nanosleep which is not very accurate. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The &lt;span style=&quot; font-weight:600;&quot;&gt;Scheduling mode&lt;/span&gt; is used to control how Tutka schedules the player. RTC is currently the most accurate method but may require the system administrator to give the user rights to use at least a 512 Hz RTC timer by running &lt;span style=&quot; font-family:&apos;monospace&apos;;&quot;&gt;sysctl dev.rtc.max-user-freq to 512&lt;/span&gt;. The other option is Nanosleep which is not very accurate. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If RTC timing is selected Tutka tries to use a 2048 Hz timer if available. If it fails it tries 1024 Hz and 512 Hz and if neither of those are available it falls back to the Nanosleep method. Another thing worth noting is that even a 2048 Hz timer is not precise enough so Tutka busy loops until the very exact moment. This causes a slight CPU load while Tutka is playing. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Elevated privileges and priorities can enhance timing accuracy. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;About&lt;/span&gt; &lt;/p&gt;
@@ -657,16 +662,16 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The first thing to do is to set up the MIDI devices to be used correctly. This involves changing the settings of the MIDI devices. Each MIDI instrument that is going to be used should be assigned an unique MIDI channel. After this the Tutka instruments should be edited so that they reflect the selected MIDI instruments. An appropriate MIDI channel should be chosen for each Tutka instrument so that all MIDI instruments can be played using different Tutka instruments. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If the MIDI devices are not able to store the selected MIDI instrument setup they can probably send the setup using SysEx. Tutka can receive such SysEx messages and they can be sent back to the devices to restore the setup. This can be achieved using the Message List window. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Setting up tempo&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;After the setup is done, composing can begin. One of the first things to do is to choose a tempo for the song. This can be done using the Song Properties window. The tempo is defined in beats per minute. In addition to this it's possible to choose how many MIDI ticks each line in the tracker represents. If the song is not going to have shorter than 1/16 notes in it, the default value, 6, is usually appropriate. If, for example, 1/32 notes are needed, the Ticks per line value can be changed to 3 for more fine grained control. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;After the setup is done, composing can begin. One of the first things to do is to choose a tempo for the song. This can be done using the Song Properties window. The tempo is defined in beats per minute. In addition to this it&apos;s possible to choose how many MIDI ticks each line in the tracker represents. If the song is not going to have shorter than 1/16 notes in it, the default value, 6, is usually appropriate. If, for example, 1/32 notes are needed, the Ticks per line value can be changed to 3 for more fine grained control. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Setting up tracks&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The number of tracks can be chosen for each block separately. It's usually good, however, to dedicate tracks for different purposes so that they're used consistently throughout the whole song. It should also be kept in mind that each track can play only one note at a time. This means thinking of the track structure a bit. For example, one could allocate track 1 to be used for the bass drum, track 2 for the snare drum and track 3 for the hi-hats. This way the different drums can always be found from the same track regardless of which block is being edited. This also allows naming the tracks appropriately in the Track Volumes window. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The number of tracks can be chosen for each block separately. It&apos;s usually good, however, to dedicate tracks for different purposes so that they&apos;re used consistently throughout the whole song. It should also be kept in mind that each track can play only one note at a time. This means thinking of the track structure a bit. For example, one could allocate track 1 to be used for the bass drum, track 2 for the snare drum and track 3 for the hi-hats. This way the different drums can always be found from the same track regardless of which block is being edited. This also allows naming the tracks appropriately in the Track Volumes window. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Writing blocks&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Tracker songs are usually composed one block at a time. Each block represents a part of the song. The length one each block can be chosen to suit the needs. It's usually convenient to keep the blocks relatively short so that if the same block is to be repeated, it can be reused without having to create an another block with almost the same content. After choosing an appropriate length, notes and related commands can be entered in the block. The block can be played back and edited until it's satisfactory. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When one block is ready, an another one can be created. The new block can continue from where the previous one left off or can be a completely separate block. The order in which the blocks are made does not have to correspond to the order in which they're going to be played back in the final song, so there no reason not to create blocks for the main ideas of the song first before going into details and parts in between. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Tracker songs are usually composed one block at a time. Each block represents a part of the song. The length one each block can be chosen to suit the needs. It&apos;s usually convenient to keep the blocks relatively short so that if the same block is to be repeated, it can be reused without having to create an another block with almost the same content. After choosing an appropriate length, notes and related commands can be entered in the block. The block can be played back and edited until it&apos;s satisfactory. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When one block is ready, an another one can be created. The new block can continue from where the previous one left off or can be a completely separate block. The order in which the blocks are made does not have to correspond to the order in which they&apos;re going to be played back in the final song, so there no reason not to create blocks for the main ideas of the song first before going into details and parts in between. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Setting the playback order&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When an appropriate number of parts of the song have been written into blocks it's time to choose the order in which the blocks are played back when the entire song is played. This is done by creating a playing sequence using the Playing Sequence window, which can be opened by clicking on the Position label on the bottom of the main window. When the entire song is played back the blocks are played back in the order defined in the playing sequence. The same block can be played back multiple times. &lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When an appropriate number of parts of the song have been written into blocks it&apos;s time to choose the order in which the blocks are played back when the entire song is played. This is done by creating a playing sequence using the Playing Sequence window, which can be opened by clicking on the Position label on the bottom of the main window. When the entire song is played back the blocks are played back in the order defined in the playing sequence. The same block can be played back multiple times. &lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:medium; font-weight:600;&quot;&gt;Structuring the song&lt;/span&gt; &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Sometimes it's feasible to play longer parts of the song, consisting of multiple blocks, multiple times. To avoid having to define these block sequences multiple times in the playing sequence, several playing sequences can be defined. For example, a song could have an intro, a verse and a chorus, of which the verse and the chorus are repeated twice. Each of these three parts can be defined as a separate playing sequence using the Playing Sequence List window and then the playing order of these playing sequences can be defined using the Section List window. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Sometimes it&apos;s feasible to play longer parts of the song, consisting of multiple blocks, multiple times. To avoid having to define these block sequences multiple times in the playing sequence, several playing sequences can be defined. For example, a song could have an intro, a verse and a chorus, of which the verse and the chorus are repeated twice. Each of these three parts can be defined as a separate playing sequence using the Playing Sequence List window and then the playing order of these playing sequences can be defined using the Section List window. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -688,7 +693,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="instrumentpropertiesdialog.ui" line="14"/>
         <source>Instrument Properties</source>
-        <translation>Propriétés d'instrument</translation>
+        <translation>Propriétés d&apos;instrument</translation>
     </message>
     <message>
         <location filename="instrumentpropertiesdialog.ui" line="34"/>
@@ -720,531 +725,1231 @@ p, li { white-space: pre-wrap; }
         <source>Hold</source>
         <translation>Maintien</translation>
     </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="182"/>
+        <source>Arpeggio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="203"/>
+        <source>enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="223"/>
+        <source>Base note</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="237"/>
+        <source>C-1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="242"/>
+        <source>C#1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="247"/>
+        <source>D-1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="252"/>
+        <source>D#1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="257"/>
+        <source>E-1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="262"/>
+        <source>F-1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="267"/>
+        <source>F#1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="272"/>
+        <source>G-1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="277"/>
+        <source>G#1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="282"/>
+        <source>A-1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="287"/>
+        <source>A#1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="292"/>
+        <source>B-1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="297"/>
+        <source>C-2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="302"/>
+        <source>C#2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="307"/>
+        <source>D-2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="312"/>
+        <source>D#2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="317"/>
+        <source>E-2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="322"/>
+        <source>F-2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="327"/>
+        <source>F#2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="332"/>
+        <source>G-2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="337"/>
+        <source>G#2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="342"/>
+        <source>A-2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="347"/>
+        <source>A#2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="352"/>
+        <source>B-2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="357"/>
+        <source>C-3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="362"/>
+        <source>C#3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="367"/>
+        <source>D-3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="372"/>
+        <source>D#3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="377"/>
+        <source>E-3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="382"/>
+        <source>F-3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="387"/>
+        <source>F#3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="392"/>
+        <source>G-3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="397"/>
+        <source>G#3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="402"/>
+        <source>A-3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="407"/>
+        <source>A#3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="412"/>
+        <source>B-3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="417"/>
+        <source>C-4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="422"/>
+        <source>C#4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="427"/>
+        <source>D-4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="432"/>
+        <source>D#4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="437"/>
+        <source>E-4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="442"/>
+        <source>F-4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="447"/>
+        <source>F#4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="452"/>
+        <source>G-4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="457"/>
+        <source>G#4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="462"/>
+        <source>A-4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="467"/>
+        <source>A#4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="472"/>
+        <source>B-4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="477"/>
+        <source>C-5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="482"/>
+        <source>C#5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="487"/>
+        <source>D-5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="492"/>
+        <source>D#5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="497"/>
+        <source>E-5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="502"/>
+        <source>F-5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="507"/>
+        <source>F#5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="512"/>
+        <source>G-5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="517"/>
+        <source>G#5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="522"/>
+        <source>A-5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="527"/>
+        <source>A#5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="532"/>
+        <source>B-5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="537"/>
+        <source>C-6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="542"/>
+        <source>C#6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="547"/>
+        <source>D-6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="552"/>
+        <source>D#6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="557"/>
+        <source>E-6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="562"/>
+        <source>F-6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="567"/>
+        <source>F#6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="572"/>
+        <source>G-6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="577"/>
+        <source>G#6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="582"/>
+        <source>A-6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="587"/>
+        <source>A#6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="592"/>
+        <source>B-6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="597"/>
+        <source>C-7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="602"/>
+        <source>C#7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="607"/>
+        <source>D-7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="612"/>
+        <source>D#7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="617"/>
+        <source>E-7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="622"/>
+        <source>F-7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="627"/>
+        <source>F#7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="632"/>
+        <source>G-7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="637"/>
+        <source>G#7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="642"/>
+        <source>A-7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="647"/>
+        <source>A#7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="652"/>
+        <source>B-7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="657"/>
+        <source>C-8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="662"/>
+        <source>C#8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="667"/>
+        <source>D-8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="672"/>
+        <source>D#8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="677"/>
+        <source>E-8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="682"/>
+        <source>F-8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="687"/>
+        <source>F#8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="692"/>
+        <source>G-8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="697"/>
+        <source>G#8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="702"/>
+        <source>A-8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="707"/>
+        <source>A#8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="712"/>
+        <source>B-8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="717"/>
+        <source>C-9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="722"/>
+        <source>C#9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="727"/>
+        <source>D-9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="732"/>
+        <source>D#9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="737"/>
+        <source>E-9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="742"/>
+        <source>F-9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="747"/>
+        <source>F#9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="752"/>
+        <source>G-9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="757"/>
+        <source>G#9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="762"/>
+        <source>A-9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="767"/>
+        <source>A#9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="772"/>
+        <source>B-9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="777"/>
+        <source>C-A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="782"/>
+        <source>C#A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="787"/>
+        <source>D-A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="792"/>
+        <source>D#A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="797"/>
+        <source>E-A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="802"/>
+        <source>F-A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="807"/>
+        <source>F#A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="812"/>
+        <source>G-A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="817"/>
+        <source>G#A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="822"/>
+        <source>A-A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="827"/>
+        <source>A#A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="832"/>
+        <source>B-A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="837"/>
+        <source>C-B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="842"/>
+        <source>C#B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="847"/>
+        <source>D-B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="852"/>
+        <source>D#B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="857"/>
+        <source>E-B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="862"/>
+        <source>F-B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="867"/>
+        <source>F#B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="878"/>
+        <source>Length</source>
+        <translation>Longueur</translation>
+    </message>
+    <message>
+        <location filename="instrumentpropertiesdialog.ui" line="904"/>
+        <source>Block</source>
+        <translation>Bloc</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <location filename="mainwindow.ui" line="15"/>
+        <location filename="mainwindow.cpp" line="1031"/>
         <source>Tutka</source>
         <translation>Tutka</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="49"/>
+        <location filename="mainwindow.ui" line="76"/>
         <source>Song</source>
         <translation>Morceau</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="59"/>
         <location filename="mainwindow.ui" line="86"/>
+        <location filename="mainwindow.ui" line="113"/>
         <source>Play</source>
         <translation>Lire</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="69"/>
         <location filename="mainwindow.ui" line="96"/>
+        <location filename="mainwindow.ui" line="123"/>
         <source>Continue</source>
         <translation>Continue</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="76"/>
+        <location filename="mainwindow.ui" line="103"/>
         <source>Block</source>
         <translation>Bloc</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="106"/>
+        <location filename="mainwindow.ui" line="133"/>
         <source>Stop</source>
         <translation>Stop</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="125"/>
+        <location filename="mainwindow.ui" line="161"/>
         <source>Instrument</source>
         <translation>Instrument</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="166"/>
+        <location filename="mainwindow.ui" line="211"/>
         <source>Properties</source>
         <translation>Propriétés</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="201"/>
+        <location filename="mainwindow.ui" line="255"/>
         <source>Edit</source>
         <translation>Éditer</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="211"/>
+        <location filename="mainwindow.ui" line="265"/>
         <source>Chord</source>
         <translation>Accord</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="218"/>
+        <location filename="mainwindow.ui" line="272"/>
         <source>Space</source>
         <translation>Espace</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="238"/>
+        <location filename="mainwindow.ui" line="292"/>
         <source>Keyboard Octaves</source>
         <translation>Octaves de clavier</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="252"/>
+        <location filename="mainwindow.ui" line="306"/>
         <source>1 and 2</source>
         <translation>1 et 2</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="257"/>
+        <location filename="mainwindow.ui" line="311"/>
         <source>2 and 3</source>
         <translation>2 et 3</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="262"/>
+        <location filename="mainwindow.ui" line="316"/>
         <source>3 and 4</source>
         <translation>3 et 4</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="267"/>
+        <location filename="mainwindow.ui" line="321"/>
         <source>4 and 5</source>
         <translation>4 et 5</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="272"/>
+        <location filename="mainwindow.ui" line="326"/>
         <source>5 and 6</source>
         <translation>5 et 6</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="277"/>
+        <location filename="mainwindow.ui" line="331"/>
         <source>6 and 7</source>
         <translation>6 et 7</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="282"/>
+        <location filename="mainwindow.ui" line="336"/>
         <source>7 and 8</source>
         <translation>7 et 8</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="287"/>
+        <location filename="mainwindow.ui" line="341"/>
         <source>8 and 9</source>
         <translation>8 et 9</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="292"/>
+        <location filename="mainwindow.ui" line="346"/>
         <source>9 and A</source>
         <translation>9 et A</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="366"/>
+        <location filename="mainwindow.ui" line="447"/>
         <source>Section 1/1</source>
         <translation>Section 1/1</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="373"/>
+        <location filename="mainwindow.ui" line="454"/>
         <source>Playing Sequence 1/1</source>
         <translation>Séquence de lecture 1/1</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="380"/>
+        <location filename="mainwindow.ui" line="461"/>
         <source>Position 1/1</source>
         <translation>Position 1/1</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="387"/>
+        <location filename="mainwindow.ui" line="468"/>
         <source>Block 1/1</source>
         <translation>Bloc 1/1</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="394"/>
+        <location filename="mainwindow.ui" line="475"/>
         <source>Command Page 1/1</source>
         <translation>Page de commande 1/1</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="425"/>
-        <location filename="mainwindow.cpp" line="891"/>
+        <location filename="mainwindow.ui" line="515"/>
+        <location filename="mainwindow.cpp" line="690"/>
         <source>Stopped</source>
         <translation>Arrêté</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="456"/>
+        <location filename="mainwindow.ui" line="555"/>
         <source>00:00</source>
         <translation>00:00</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="479"/>
+        <location filename="mainwindow.ui" line="578"/>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="491"/>
+        <location filename="mainwindow.ui" line="590"/>
         <source>&amp;Edit</source>
         <translation>Édit&amp;er</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="505"/>
+        <location filename="mainwindow.ui" line="604"/>
         <source>S&amp;ong</source>
         <translation>M&amp;orceau</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="518"/>
+        <location filename="mainwindow.ui" line="617"/>
         <source>&amp;Playing Sequence</source>
         <translation>Séquence de &amp;lecture</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="526"/>
+        <location filename="mainwindow.ui" line="625"/>
         <source>&amp;Block</source>
         <translation>&amp;Bloc</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="544"/>
+        <location filename="mainwindow.ui" line="645"/>
         <source>&amp;Track</source>
         <translation>Pis&amp;te</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="563"/>
+        <location filename="mainwindow.ui" line="678"/>
         <source>&amp;MIDI</source>
         <translation>&amp;MIDI</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="572"/>
+        <location filename="mainwindow.ui" line="687"/>
         <source>&amp;Settings</source>
         <translation>Paramètre&amp;s</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="576"/>
+        <location filename="mainwindow.ui" line="691"/>
         <source>External Sync</source>
         <translation>Synchronisation externe</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="590"/>
-        <location filename="mainwindow.ui" line="1028"/>
+        <location filename="mainwindow.ui" line="705"/>
+        <location filename="mainwindow.ui" line="1102"/>
         <source>&amp;Help</source>
         <translation>&amp;Aide</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="613"/>
+        <location filename="mainwindow.ui" line="727"/>
         <source>&amp;New</source>
         <translation>&amp;Nouveau</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="616"/>
+        <location filename="mainwindow.ui" line="730"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="626"/>
+        <location filename="mainwindow.ui" line="739"/>
         <source>&amp;Open</source>
         <translation>&amp;Ouvrir</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="629"/>
+        <location filename="mainwindow.ui" line="742"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="639"/>
+        <location filename="mainwindow.ui" line="751"/>
         <source>&amp;Save</source>
         <translation>&amp;Sauvegarder</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="642"/>
+        <location filename="mainwindow.ui" line="754"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="652"/>
+        <location filename="mainwindow.ui" line="763"/>
         <source>Save &amp;As</source>
         <translation>Sauveg&amp;arder sous...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="655"/>
+        <location filename="mainwindow.ui" line="766"/>
         <source>Ctrl+Shift+S</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="660"/>
+        <location filename="mainwindow.ui" line="771"/>
         <source>Print</source>
         <translation>Imprimer</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="663"/>
+        <location filename="mainwindow.ui" line="774"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="673"/>
+        <location filename="mainwindow.ui" line="783"/>
         <source>&amp;Quit</source>
         <translation>&amp;Quitter</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="676"/>
+        <location filename="mainwindow.ui" line="786"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="686"/>
+        <location filename="mainwindow.ui" line="795"/>
         <source>C&amp;ut</source>
         <translation>Co&amp;uper</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="795"/>
-        <location filename="mainwindow.ui" line="874"/>
+        <location filename="mainwindow.ui" line="899"/>
+        <location filename="mainwindow.ui" line="973"/>
         <source>C&amp;ut </source>
         <translation>Co&amp;uper </translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="689"/>
+        <location filename="mainwindow.ui" line="1107"/>
+        <source>Split</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="1112"/>
+        <location filename="mainwindow.ui" line="1122"/>
+        <source>Current block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="1117"/>
+        <location filename="mainwindow.ui" line="1127"/>
+        <source>All blocks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="798"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="699"/>
+        <location filename="mainwindow.ui" line="807"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copier</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="808"/>
-        <location filename="mainwindow.ui" line="887"/>
+        <location filename="mainwindow.ui" line="911"/>
+        <location filename="mainwindow.ui" line="985"/>
         <source>&amp;Copy </source>
         <translation>&amp;Copier </translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="702"/>
+        <location filename="mainwindow.ui" line="810"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="712"/>
+        <location filename="mainwindow.ui" line="819"/>
         <source>&amp;Paste</source>
         <translation>Co&amp;ller</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="821"/>
-        <location filename="mainwindow.ui" line="900"/>
+        <location filename="mainwindow.ui" line="923"/>
+        <location filename="mainwindow.ui" line="997"/>
         <source>&amp;Paste </source>
         <translation>Co&amp;ller </translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="715"/>
+        <location filename="mainwindow.ui" line="822"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="725"/>
-        <location filename="mainwindow.ui" line="834"/>
-        <location filename="mainwindow.ui" line="913"/>
+        <location filename="mainwindow.ui" line="831"/>
+        <location filename="mainwindow.ui" line="935"/>
+        <location filename="mainwindow.ui" line="1009"/>
         <source>&amp;Clear</source>
         <translation>&amp;Enlever</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="730"/>
-        <location filename="mainwindow.ui" line="755"/>
-        <location filename="mainwindow.ui" line="849"/>
-        <location filename="mainwindow.ui" line="948"/>
+        <location filename="mainwindow.ui" line="836"/>
+        <location filename="mainwindow.ui" line="861"/>
+        <location filename="mainwindow.ui" line="949"/>
+        <location filename="mainwindow.ui" line="1023"/>
         <source>&amp;Transpose</source>
         <translation>&amp;Transposer</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="735"/>
-        <location filename="mainwindow.ui" line="760"/>
-        <location filename="mainwindow.ui" line="854"/>
-        <location filename="mainwindow.ui" line="953"/>
+        <location filename="mainwindow.ui" line="841"/>
+        <location filename="mainwindow.ui" line="866"/>
+        <location filename="mainwindow.ui" line="954"/>
+        <location filename="mainwindow.ui" line="1028"/>
         <source>&amp;Expand/Shrink</source>
         <translation>Ét&amp;endre/réduire</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="740"/>
-        <location filename="mainwindow.ui" line="765"/>
-        <location filename="mainwindow.ui" line="859"/>
-        <location filename="mainwindow.ui" line="958"/>
+        <location filename="mainwindow.ui" line="846"/>
+        <location filename="mainwindow.ui" line="871"/>
+        <location filename="mainwindow.ui" line="959"/>
+        <location filename="mainwindow.ui" line="1033"/>
         <source>Change &amp;Instrument</source>
-        <translation>Changer d'&amp;instrument</translation>
+        <translation>Changer d&apos;&amp;instrument</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="745"/>
+        <location filename="mainwindow.ui" line="851"/>
         <source>&amp;Section List</source>
         <translation>Liste de &amp;section</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="750"/>
+        <location filename="mainwindow.ui" line="856"/>
         <source>Track &amp;Volumes</source>
         <translation>&amp;Volume des pistes</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="775"/>
+        <location filename="mainwindow.ui" line="880"/>
         <source>&amp;Properties</source>
         <translation>&amp;Propriétés</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="780"/>
+        <location filename="mainwindow.ui" line="885"/>
         <source>&amp;Edit Current</source>
         <translation>Édit&amp;er la séquence en cours</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="785"/>
-        <location filename="mainwindow.ui" line="864"/>
+        <location filename="mainwindow.ui" line="890"/>
+        <location filename="mainwindow.ui" line="964"/>
         <source>&amp;List</source>
         <translation>&amp;Liste</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="798"/>
+        <location filename="mainwindow.ui" line="902"/>
         <source>Alt+F3</source>
         <translation>Alt+F3</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="811"/>
+        <location filename="mainwindow.ui" line="914"/>
         <source>Alt+F4</source>
         <translation>Alt+F4</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="824"/>
+        <location filename="mainwindow.ui" line="926"/>
         <source>Alt+F5</source>
         <translation>Alt+F5</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="844"/>
-        <location filename="mainwindow.ui" line="923"/>
+        <location filename="mainwindow.ui" line="944"/>
+        <location filename="mainwindow.ui" line="1018"/>
         <source>&amp;Select All</source>
         <translation>Tout &amp;sélectionner</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="877"/>
+        <location filename="mainwindow.ui" line="976"/>
         <source>Shift+F3</source>
         <translation>Shift+F3</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="890"/>
+        <location filename="mainwindow.ui" line="988"/>
         <source>Shift+F4</source>
         <translation>Shift+F4</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="903"/>
+        <location filename="mainwindow.ui" line="1000"/>
         <source>Shift+F5</source>
         <translation>Shift+F5</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="933"/>
+        <location filename="mainwindow.ui" line="649"/>
         <source>I&amp;nsert</source>
         <translation>I&amp;nsérer</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="943"/>
+        <location filename="mainwindow.ui" line="656"/>
         <source>&amp;Delete</source>
         <translation>E&amp;ffacer</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="963"/>
+        <location filename="mainwindow.ui" line="1038"/>
         <source>&amp;Kill All Notes</source>
         <translation>Éteindre &amp;toutes les notes</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="968"/>
+        <location filename="mainwindow.ui" line="1043"/>
         <source>&amp;Reset Pitch</source>
         <translation>&amp;Réinitialiser la hauteur</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="973"/>
+        <location filename="mainwindow.ui" line="1048"/>
         <source>&amp;Message List</source>
         <translation>Liste des &amp;messages</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="981"/>
+        <location filename="mainwindow.ui" line="1056"/>
         <source>Send MIDI Sync</source>
         <translation>Envoyer la synchronisation MIDI</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="989"/>
+        <location filename="mainwindow.ui" line="1064"/>
         <source>Record Controllers</source>
         <translation>Enregistrer les contrôleurs</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="994"/>
+        <location filename="mainwindow.ui" line="1069"/>
         <source>&amp;Preferences</source>
         <translation>&amp;Préférences</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="1004"/>
+        <location filename="mainwindow.ui" line="1078"/>
         <source>&amp;About</source>
         <translation>À &amp;propos</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="1015"/>
+        <location filename="mainwindow.ui" line="1089"/>
         <source>Off</source>
         <translation>aucune</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="1023"/>
+        <location filename="mainwindow.ui" line="1097"/>
         <source>MIDI</source>
         <translation>MIDI</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="63"/>
+        <location filename="mainwindow.cpp" line="64"/>
         <source>Open file</source>
         <translation>Ouvrir un fichier</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="63"/>
+        <location filename="mainwindow.cpp" line="64"/>
         <source>Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med)</source>
         <translation>Morceaux Tutka (*.tutka);;Morceaux OctaMED SoundStudios (*.med)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="824"/>
+        <location filename="mainwindow.cpp" line="620"/>
         <source>Section %1/%2</source>
         <translation>Section %1/%2</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="841"/>
+        <location filename="mainwindow.cpp" line="637"/>
         <source>Playing Sequence %1/%2</source>
         <translation>Séquence de lecture %1/%2</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="843"/>
+        <location filename="mainwindow.cpp" line="639"/>
         <source>Playing Sequence %1/%2: %3</source>
         <translation>Séquence de lecture : %1/%2 : %3</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="849"/>
+        <location filename="mainwindow.cpp" line="641"/>
+        <location filename="mainwindow.cpp" line="646"/>
         <source>Position %1/%2</source>
         <translation>Position %1/%2</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="868"/>
+        <location filename="mainwindow.cpp" line="667"/>
         <source>Block %1/%2</source>
         <translation>Bloc %1/%2</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="870"/>
+        <location filename="mainwindow.cpp" line="669"/>
         <source>Block %1/%2: %3</source>
         <translation>Bloc %1/%2: %3</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="878"/>
+        <location filename="mainwindow.cpp" line="677"/>
         <source>Command Page %1/%2</source>
         <translation>Page de commande %1/%2</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="885"/>
+        <location filename="mainwindow.cpp" line="684"/>
         <source>Playing song</source>
         <translation>Morceau lu</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="888"/>
+        <location filename="mainwindow.cpp" line="687"/>
         <source>Playing block</source>
         <translation>Bloc lu</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="933"/>
+        <location filename="mainwindow.cpp" line="733"/>
         <source>About Tutka</source>
         <translation>À propos de Tutka</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="933"/>
-        <source>Tutka 1.1.1\n\n© 2002-2016 Vesa Halttunen &lt;vesuri@jormas.com&gt;</source>
-        <translation>Tutka 1.1.1\n\n© 2002-2016 Vesa Halttunen &lt;vesuri@jormas.com&gt;</translation>
+        <location filename="mainwindow.cpp" line="733"/>
+        <source>Tutka 1.1.1
+
+© 2002-2016 Vesa Halttunen &lt;vesuri@jormas.com&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1058"/>
+        <location filename="mainwindow.cpp" line="1025"/>
+        <source>Tutka: %1%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="1032"/>
+        <source>The song has been modified.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="1033"/>
+        <source>Do you want to save your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tutka 1.1.1\n\n© 2002-2016 Vesa Halttunen &lt;vesuri@jormas.com&gt;</source>
+        <translation type="vanished">Tutka 1.1.1\n\n© 2002-2016 Vesa Halttunen &lt;vesuri@jormas.com&gt;</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="873"/>
         <source>Save as</source>
         <translation>Sauvegarder sous</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1058"/>
+        <location filename="mainwindow.cpp" line="873"/>
         <source>Tutka songs (*.tutka);;OctaMED SoundStudio songs (*.med);;Standard MIDI files (*.mid)</source>
         <translation>Morceaux Tutka (*.tutka);;morceaux OctaMED SoundStudios (*.med);;fichiers standard MIDI (*.mid)</translation>
     </message>
@@ -1278,7 +1983,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="messagelistdialog.ui" line="87"/>
-        <location filename="messagelistdialog.cpp" line="193"/>
+        <location filename="messagelistdialog.cpp" line="205"/>
         <source>Receive</source>
         <translation>Recevoir</translation>
     </message>
@@ -1298,24 +2003,24 @@ p, li { white-space: pre-wrap; }
         <translation>Arrêter</translation>
     </message>
     <message>
-        <location filename="messagelistdialog.cpp" line="113"/>
-        <location filename="messagelistdialog.cpp" line="171"/>
+        <location filename="messagelistdialog.cpp" line="114"/>
+        <location filename="messagelistdialog.cpp" line="177"/>
         <source>%1/%2 bytes received</source>
         <translation>%1/%2 bits reçus</translation>
     </message>
     <message>
-        <location filename="messagelistdialog.cpp" line="113"/>
-        <location filename="messagelistdialog.cpp" line="171"/>
+        <location filename="messagelistdialog.cpp" line="116"/>
+        <location filename="messagelistdialog.cpp" line="179"/>
         <source>%1 bytes received</source>
         <translation>%1 bits reçus</translation>
     </message>
     <message>
-        <location filename="messagelistdialog.cpp" line="120"/>
+        <location filename="messagelistdialog.cpp" line="124"/>
         <source>Load message</source>
         <translation>Charger un message</translation>
     </message>
     <message>
-        <location filename="messagelistdialog.cpp" line="133"/>
+        <location filename="messagelistdialog.cpp" line="137"/>
         <source>Save message as</source>
         <translation>Sauvegarder un message sous</translation>
     </message>
@@ -1373,6 +2078,16 @@ p, li { white-space: pre-wrap; }
         <source>Delete</source>
         <translation>Effacer</translation>
     </message>
+    <message>
+        <location filename="playingsequencedialog.cpp" line="148"/>
+        <source>Playing Sequence %1/%2</source>
+        <translation>Séquence de lecture %1/%2</translation>
+    </message>
+    <message>
+        <location filename="playingsequencedialog.cpp" line="150"/>
+        <source>Playing Sequence %1/%2: %3</source>
+        <translation>Séquence de lecture : %1/%2 : %3</translation>
+    </message>
 </context>
 <context>
     <name>PlayingSequenceListDialog</name>
@@ -1408,12 +2123,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>PlayingSequenceTableModel</name>
     <message>
-        <location filename="playingsequencetablemodel.cpp" line="84"/>
+        <location filename="playingsequencetablemodel.cpp" line="90"/>
         <source>Block Number</source>
         <translation>Numéro du bloc</translation>
     </message>
     <message>
-        <location filename="playingsequencetablemodel.cpp" line="86"/>
+        <location filename="playingsequencetablemodel.cpp" line="92"/>
         <source>Block Name</source>
         <translation>Nom du bloc</translation>
     </message>
@@ -1433,12 +2148,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="preferencesdialog.ui" line="44"/>
         <source>Scheduling mode</source>
-        <translation>Mode d'ordonnancement</translation>
+        <translation>Mode d&apos;ordonnancement</translation>
     </message>
     <message>
         <location filename="preferencesdialog.ui" line="116"/>
         <source>Input MIDI interfaces</source>
-        <translation>Interfaces MIDI d'entrée</translation>
+        <translation>Interfaces MIDI d&apos;entrée</translation>
     </message>
 </context>
 <context>
