@@ -254,7 +254,6 @@ Song *mmd2ToSong(struct MMD2 *mmd)
 
         // Playing sequences
         for (int playseq = song->playseqs(); playseq < mmd->song->numpseqs; playseq++) {
-            qWarning("XX inserting playseq %d", playseq);
             song->insertPlayseq(playseq);
         }
         for (int number = 0; number < mmd->song->numpseqs; number++) {
