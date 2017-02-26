@@ -689,6 +689,19 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>Instrument</name>
+    <message>
+        <location filename="instrument.cpp" line="31"/>
+        <source>No output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="instrument.h" line="37"/>
+        <source>Unnamed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InstrumentPropertiesDialog</name>
     <message>
         <location filename="instrumentpropertiesdialog.ui" line="14"/>
@@ -1384,6 +1397,14 @@ p, li { white-space: pre-wrap; }
         <location filename="instrumentpropertiesdialog.ui" line="904"/>
         <source>Block</source>
         <translation>Bloc</translation>
+    </message>
+</context>
+<context>
+    <name>MIDIInterface</name>
+    <message>
+        <location filename="midiinterface.cpp" line="28"/>
+        <source>No output</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2157,6 +2178,14 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="conversion.cpp" line="182"/>
+        <source>Untitled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SectionListDialog</name>
     <message>
         <location filename="sectionlistdialog.ui" line="14"/>
@@ -2195,10 +2224,20 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Song</name>
     <message>
+        <location filename="song.cpp" line="91"/>
+        <source>Untitled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="song.cpp" line="479"/>
         <location filename="song.cpp" line="525"/>
         <source>Track %1</source>
         <translation>Piste %1</translation>
+    </message>
+    <message>
+        <location filename="song.cpp" line="496"/>
+        <source>Unnamed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

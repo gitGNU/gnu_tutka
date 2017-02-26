@@ -34,7 +34,7 @@ class Instrument : public QObject {
     Q_OBJECT
 
 public:
-    Instrument(const QString &name = "Unnamed", unsigned int midiInterface = 0, QObject *parent = NULL);
+    Instrument(const QString &name = tr("Unnamed"), unsigned int midiInterface = 0, QObject *parent = NULL);
     virtual ~Instrument();
 
     // Returns the name of the instrument

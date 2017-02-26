@@ -179,7 +179,7 @@ Song *mmd2ToSong(struct MMD2 *mmd)
     if (mmd->expdata != NULL && mmd->expdata->songname != NULL) {
         song->setName(QString::fromLatin1(mmd->expdata->songname));
     } else {
-        song->setName("Untitled");
+        song->setName(QObject::tr("Untitled"));
     }
 
     if (mmd->song) {

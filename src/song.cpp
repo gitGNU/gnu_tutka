@@ -88,7 +88,7 @@ Song::~Song()
 
 void Song::init()
 {
-    name_ = "Untitled";
+    name_ = tr("Untitled");
     tempo_ = 120;
     ticksPerLine_ = 6;
     masterVolume_ = 127;
@@ -493,7 +493,7 @@ void Song::checkMaxTracks()
 void Song::checkInstrument(int instrument)
 {
     while (instrument >= instruments_.count()) {
-        Instrument *instrument = new Instrument("Unnamed");
+        Instrument *instrument = new Instrument(tr("Unnamed"));
         connectInstrumentSignals(instrument);
         instruments_.append(instrument);
     }

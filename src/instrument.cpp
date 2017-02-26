@@ -28,7 +28,7 @@ Instrument::Instrument(const QString &name, unsigned int midiInterface, QObject 
     QObject(parent),
     name_(name),
     midiInterface_(midiInterface),
-    midiInterfaceName_("No output"),
+    midiInterfaceName_(tr("No output")),
     midiPreset_(0),
     midiChannel_(0),
     defaultVelocity_(127),

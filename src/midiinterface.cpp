@@ -25,7 +25,7 @@
 
 MIDIInterface::MIDIInterface(DirectionFlags flags, QObject *parent) :
     QObject(parent),
-    name_("No output"),
+    name_(tr("No output")),
     flags_(flags),
     enabled(false),
     tick(0)
