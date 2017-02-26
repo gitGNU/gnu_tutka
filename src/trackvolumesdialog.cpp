@@ -69,7 +69,7 @@ void TrackVolumesDialog::setTracks(unsigned int tracks)
     }
 
     while(ui->scrollAreaWidgetContents->layout()->count() < tracks) {
-        ui->scrollAreaWidgetContents->layout()->addWidget(new TrackVolumeWidget(ui->scrollAreaWidgetContents->layout()->count() + 1));
+        ui->scrollAreaWidgetContents->layout()->addWidget(new TrackVolumeWidget(ui->scrollAreaWidgetContents->layout()->count() + 1, song->track(ui->scrollAreaWidgetContents->layout()->count())));
     }
 }
 

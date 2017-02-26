@@ -28,7 +28,7 @@
 #include "track.h"
 #include "trackvolumewidget.h"
 
-TrackVolumeWidget::TrackVolumeWidget(unsigned int number, QWidget *parent) :
+TrackVolumeWidget::TrackVolumeWidget(unsigned int number, Track *track, QWidget *parent) :
     QWidget(parent),
     trackNumber(number),
     track(NULL),
@@ -49,6 +49,8 @@ TrackVolumeWidget::TrackVolumeWidget(unsigned int number, QWidget *parent) :
     volumeSlider->setMinimum(0);
     volumeSlider->setMaximum(127);
     connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(updateVolumeLabel(int)));
+
+    setTrack(track);
 }
 
 void TrackVolumeWidget::setTrack(Track *newTrack)
